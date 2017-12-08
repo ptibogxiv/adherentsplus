@@ -44,9 +44,25 @@ define("NOCSRFCHECK",1);	// We accept to go on this page from external web site.
 $entity=(! empty($_GET['entity']) ? (int) $_GET['entity'] : (! empty($_POST['entity']) ? (int) $_POST['entity'] : 1));
 if (is_numeric($entity)) define("DOLENTITY", $entity);
 
-require '../../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/adherents/class/adherent.class.php';
-require_once DOL_DOCUMENT_ROOT.'/adherents/class/adherent_type.class.php';
+$res = 0;
+if (! $res && file_exists("../main.inc.php"))
+{
+	$res = @include "../main.inc.php";
+}
+if (! $res && file_exists("../../main.inc.php"))
+{
+	$res = @include "../../main.inc.php";
+}
+if (! $res && file_exists("../../../main.inc.php"))
+{
+	$res = @include "../../../main.inc.php";
+}
+if (! $res)
+{
+	die("Main include failed");
+}
+dol_include_once('/adherentsplus/class/adherent.class.php');
+dol_include_once('/adherentsplus/class/adherent_type.class.php');
 require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
 require_once DOL_DOCUMENT_ROOT.'/core/class/html.formcompany.class.php';
 require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
@@ -222,7 +238,7 @@ if ($action == 'add')
     if (! $error)
     {
         // email a peu pres correct et le login n'existe pas
-        $adh = new Adherent($db);
+        $adh = new AdherentPlus($db);
         $adh->statut      = -1;
         $adh->public      = $public;
         $adh->firstname   = $_POST["firstname"];
@@ -383,7 +399,7 @@ if ($action == 'added')
 
 $form = new Form($db);
 $formcompany = new FormCompany($db);
-$adht = new AdherentType($db);
+$adht = new AdherentTypePlus($db);
 $extrafields->fetch_name_optionals_label('adherent');    // fetch optionals attributes and labels
 
 
