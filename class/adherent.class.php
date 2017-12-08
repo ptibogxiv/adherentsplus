@@ -158,7 +158,6 @@ class AdherentPlus extends CommonObject
         $from=$conf->email_from;
         if (! empty($conf->global->ADHERENT_MAIL_FROM)) $from=$conf->global->ADHERENT_MAIL_FROM;
 
-        // Send email (substitutionarray must be done just before this)
         include_once DOL_DOCUMENT_ROOT.'/core/class/CMailFile.class.php';
         $mailfile = new CMailFile($subjecttosend, $this->email, $from, $texttosend, $filename_list, $mimetype_list, $mimefilename_list, $addr_cc, $addr_bcc, $deliveryreceipt, $msgishtml);
         if ($mailfile->sendfile())
@@ -199,9 +198,6 @@ class AdherentPlus extends CommonObject
 		$infos.= $langs->transnoentities("Town").": ".$this->town."\n";
 		$infos.= $langs->transnoentities("Country").": ".$this->country."\n";
 		$infos.= $langs->transnoentities("EMail").": ".$this->email."\n";
-        $infos.= $langs->transnoentities("PhonePro").": ".$this->phone."\n";
-        $infos.= $langs->transnoentities("PhonePerso").": ".$this->phone_perso."\n";
-        $infos.= $langs->transnoentities("PhoneMobile").": ".$this->phone_mobile."\n";
 		if (empty($conf->global->ADHERENT_LOGIN_NOT_REQUIRED))
 		{
 		    $infos.= $langs->transnoentities("Login").": ".$this->login."\n";
@@ -246,11 +242,6 @@ class AdherentPlus extends CommonObject
 				'%PHOTO%'=>$msgishtml?dol_htmlentitiesbr($this->photo):$this->photo,
 				'%LOGIN%'=>$msgishtml?dol_htmlentitiesbr($this->login):$this->login,
 				'%PASSWORD%'=>$msgishtml?dol_htmlentitiesbr($this->pass):$this->pass,
-                '%TYPE%'=>$msgishtml?dol_htmlentitiesbr($this->type):$this->type,
-                '%PHONE_PRO%'=>$msgishtml?dol_htmlentitiesbr($this->phone):$this->phone,
-                '%PHONE_PERSO%'=>$msgishtml?dol_htmlentitiesbr($this->phone_perso):$this->phone_perso,
-                '%PHONE_MOBILE%'=>$msgishtml?dol_htmlentitiesbr($this->phone_mobile):$this->phone_mobile,
-				// For backward compatibility
 				'%INFOS%'=>$msgishtml?dol_htmlentitiesbr($infos):$infos,
 				'%SOCIETE%'=>$msgishtml?dol_htmlentitiesbr($this->societe):$this->societe,
 				'%PRENOM%'=>$msgishtml?dol_htmlentitiesbr($this->firstname):$this->firstname,
@@ -666,7 +657,7 @@ class AdherentPlus extends CommonObject
         $this->db->begin();
 
         // Search for last subscription id and end date
-        $sql = "SELECT rowid, datec as dateop, dateadh as datedeb, datef as datefin";
+        $sql = "SELECT rowid, fk_type, datec as dateop, dateadh as datedeb, datef as datefin";
         $sql.= " FROM ".MAIN_DB_PREFIX."subscription";
         $sql.= " WHERE fk_adherent=".$this->id;
         $sql.= " ORDER by dateadh DESC";	// Sort by start subscription date
@@ -688,6 +679,7 @@ class AdherentPlus extends CommonObject
             $resql=$this->db->query($sql);
             if ($resql)
             {
+                $this->fk_adherent_type=$obj->fk_type;
                 $this->last_subscription_date=$dateop;
                 $this->last_subscription_date_start=$datedeb;
                 $this->last_subscription_date_end=$datefin;
@@ -1222,14 +1214,14 @@ class AdherentPlus extends CommonObject
 
 		require_once DOL_DOCUMENT_ROOT.'/adherents/class/subscription.class.php';
 
-        $sql = "SELECT c.rowid, c.fk_adherent, c.subscription, c.note, c.fk_bank,";
+        $sql = "SELECT c.rowid, c.fk_adherent, c.subscription, c.note, c.fk_bank, c.fk_type,";
         $sql.= " c.tms as datem,";
         $sql.= " c.datec as datec,";
         $sql.= " c.dateadh as dateh,";
         $sql.= " c.datef as datef";
         $sql.= " FROM ".MAIN_DB_PREFIX."subscription as c";
         $sql.= " WHERE c.fk_adherent = ".$this->id;
-        $sql.= " ORDER BY c.dateadh";
+        $sql.= " ORDER BY c.dateadh DESC";
         dol_syslog(get_class($this)."::fetch_subscriptions", LOG_DEBUG);
 
         $resql=$this->db->query($sql);
@@ -1251,6 +1243,7 @@ class AdherentPlus extends CommonObject
                 $subscription=new Subscription($this->db);
                 $subscription->id=$obj->rowid;
                 $subscription->fk_adherent=$obj->fk_adherent;
+                $subscription->fk_type=$obj->fk_type;
                 $subscription->amount=$obj->subscription;
                 $subscription->note=$obj->note;
                 $subscription->fk_bank=$obj->fk_bank;
@@ -1287,7 +1280,7 @@ class AdherentPlus extends CommonObject
      *	@param	int     	$datesubend			Date end subscription
      *	@return int         					rowid of record added, <0 if KO
      */
-    function subscription($date, $montant, $accountid=0, $operation='', $label='', $num_chq='', $emetteur_nom='', $emetteur_banque='', $datesubend=0)
+    function subscription($userid, $date, $montant, $accountid, $operation='', $label='', $num_chq='', $emetteur_nom='', $emetteur_banque='', $datesubend=0)
     {
         global $conf,$langs,$user;
 
@@ -1317,14 +1310,15 @@ class AdherentPlus extends CommonObject
         $subscription->dateh=$date;		// Date of new subscription
         $subscription->datef=$datefin;	// End data of new subscription
         $subscription->amount=$montant;
+        $subscription->fk_bank=$accountid;
         $subscription->note=$label;
 
-        $rowid=$subscription->create($user);
+        $rowid=$subscription->create($userid);
         if ($rowid > 0)
         {
             // Update denormalized subscription end date (read database subscription to find values)
             // This will also update this->datefin
-            $result=$this->update_end_date($user);
+            $result=$this->update_end_date($userid);
             if ($result > 0)
             {
                 // Change properties of object (used by triggers)
@@ -1334,7 +1328,7 @@ class AdherentPlus extends CommonObject
                 $this->last_subscription_date_end=$datefin;
 
                 // Call trigger
-                $result=$this->call_trigger('MEMBER_SUBSCRIPTION',$user);
+                $result=$this->call_trigger('MEMBER_SUBSCRIPTION',$userid);
                 if ($result < 0) { $error++; }
                 // End call triggers
             }
@@ -1345,9 +1339,9 @@ class AdherentPlus extends CommonObject
                 return $rowid;
             }
             else
-			{
-                $this->db->rollback();
-                return -2;
+			  {
+                //$this->db->rollback();
+                return $rowid;
             }
         }
         else
@@ -1407,7 +1401,56 @@ class AdherentPlus extends CommonObject
             return -1;
         }
     }
+    
+        /**
+     *		Function that revalidate a member as shift
+     *
+     *		@param	User	$user		user adherent qui valide
+     *		@return	int					<0 if KO, 0 if nothing done, >0 if OK
+     */
+    function revalidate($user)
+    {
+        global $langs,$conf;
 
+		$error=0;
+		$now=dol_now();
+
+		// Check parameters
+        if ($this->statut == 1)
+        {
+            dol_syslog(get_class($this)."::validate statut of member does not allow this", LOG_WARNING);
+            return 0;
+        }
+
+        $this->db->begin();
+
+        $sql = "UPDATE ".MAIN_DB_PREFIX."adherent SET";
+        $sql.= " statut = -1";
+//$sql.= ", datevalid = '".$this->db->idate($now)."'";
+// $sql.= ", fk_user_valid=".$user->id;
+        $sql.= " WHERE rowid = ".$this->id;
+
+        dol_syslog(get_class($this)."::validate", LOG_DEBUG);
+        $result = $this->db->query($sql);
+        if ($result)
+        {
+            $this->statut=-1;
+
+            // Call trigger
+            $result=$this->call_trigger('MEMBER_CREATE',$user);
+            if ($result < 0) { $error++; $this->db->rollback(); return -1; }
+            // End call triggers
+
+            $this->db->commit();
+            return 1;
+        }
+        else
+        {
+            $this->error=$this->db->error();
+            $this->db->rollback();
+            return -1;
+        }
+    }
 
     /**
      *		Fonction qui resilie un adherent
@@ -1622,11 +1665,11 @@ class AdherentPlus extends CommonObject
 
         if ($option == 'card' || $option == 'category')
         {
-            $link = '<a href="' . dol_buildpath('/adherentsplus/card.php?rowid='.$this->id.'', 1) . '"';
+            $link = '<a href="'.DOL_URL_ROOT.'/adherents/card.php?rowid='.$this->id.'"';
         }
         if ($option == 'subscription')
         {
-            $link = '<a href="' . dol_buildpath('/adherentsplus/card.php?rowid='.$this->id.'', 1) . '"';
+            $link = '<a href="'.DOL_URL_ROOT.'/adherents/subscription.php?rowid='.$this->id.'"';
         }
 
         $linkclose="";
