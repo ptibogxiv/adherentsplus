@@ -272,7 +272,7 @@ print "</tr>\n";
 print '<tr class="oddeven"><td>'.$langs->trans("SOCIETE_SUBSCRIBE_MONTH_PRESTART").'</td>';
 print '<td>';
 print $form->selectarray('SOCIETE_SUBSCRIBE_MONTH_PRESTART', array('0'=>'0','1'=>'1','2'=>'2','3'=>'3','4'=>'4'), (empty($conf->global->SOCIETE_SUBSCRIBE_MONTH_PRESTART)?'0':$conf->global->SOCIETE_SUBSCRIBE_MONTH_PRESTART), 0);
-print $langs->trans("month").'</td>';
+print $langs->trans("monthbefore").'</td>';
 print "</tr>\n";
 
 // time before renewing welcome fee

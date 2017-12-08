@@ -183,4 +183,7 @@ ADHERENT_SUBSCRIPTION_TRI=Prorata trimestriel
 ADHERENT_SUBSCRIPTION_MEN=Prorata mensuel
 monthbefore=mois avant la fin de validité
 AdherentMultiOneThirdparty=Mode multi adhérent par tiers
+AutoSubscription=Renouvellement/Adhésion automatique
+SubscriptionWelcome=Droit d'entrée
+SubscriptionPrice=Cotisation
 

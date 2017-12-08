@@ -265,7 +265,7 @@ class SubscriptionPlus extends CommonObject
 		$result='';
         $label=$langs->trans("ShowSubscription").': '.$this->ref;
 
-        $link = '<a href="'.DOL_URL_ROOT.'/adherents/subscription/card.php?rowid='.$this->id.'" title="'.dol_escape_htmltag($label, 1).'" class="classfortooltip">';
+        $link = '<a href="'.dol_buildpath('/adherentsplus/subscription/card.php?rowid='.$this->id.'', 1).'" title="'.dol_escape_htmltag($label, 1).'" class="classfortooltip">';
 		$linkend='</a>';
 
 		$picto='payment';

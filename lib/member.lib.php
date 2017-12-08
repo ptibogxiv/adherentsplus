@@ -119,7 +119,7 @@ function member_type_prepare_head(AdherentTypePlus $object)
 	$h=0;
 	$head = array();
 
-	$head[$h][0] = dol_buildpath('/adherentsplus/type.php?rowid='.$object->id.'');
+	$head[$h][0] = dol_buildpath('/adherentsplus/type.php?rowid='.$object->id.'', 1);
 	$head[$h][1] = $langs->trans("Card");
 	$head[$h][2] = 'card';
 	$h++;
