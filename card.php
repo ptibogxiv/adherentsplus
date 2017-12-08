@@ -188,7 +188,7 @@ if (empty($reshook))
 					$obj = $db->fetch_object($resql);
 					if ($obj && $obj->rowid > 0)
 					{
-						$othermember=new Adherentplus($db);
+						$othermember=new AdherentPlus($db);
 						$othermember->fetch($obj->rowid);
 						$thirdparty=new Societe($db);
 						$thirdparty->fetch($socid);
@@ -631,7 +631,7 @@ if (empty($reshook))
 
 		$db->begin();
 
-		$adht = new AdherentType($db);
+		$adht = new AdherentTypePlus($db);
 		$adht->fetch($object->typeid);
 
 		$result=$object->validate($user);
@@ -676,7 +676,7 @@ if (empty($reshook))
 
 		if ($confirm == 'yes')
 		{
-			$adht = new AdherentType($db);
+			$adht = new AdherentTypePlus($db);
 			$adht->fetch($object->typeid);
 
 			$result=$object->resiliate($user);
@@ -763,7 +763,7 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action))
 	// -----------------------------------------
 	if (empty($object->error) && $id)
 	{
-		$object = new Adherentplus($db);
+		$object = new AdherentPlus($db);
 		$result=$object->fetch($id);
 		if ($result <= 0) dol_print_error('',$object->error);
 	}
@@ -795,7 +795,7 @@ else
 			$object->country=$tmparray['label'];
 		}
 
-		$adht = new AdherentType($db);
+		$adht = new AdherentTypePlus($db);
 
 		print load_fiche_titre($langs->trans("NewMember"));
 
@@ -1000,7 +1000,7 @@ else
 			dol_print_error($db); exit;
 		}
 
-		$adht = new AdherentType($db);
+		$adht = new AdherentTypePlus($db);
 		$adht->fetch($object->typeid);
 
 		// We set country_id, and country_code, country of the chosen country
@@ -1332,7 +1332,7 @@ else
 		{
 			$langs->load("mails");
 
-			$adht = new AdherentType($db);
+			$adht = new AdherentTypePlus($db);
 			$adht->fetch($object->typeid);
 
 			$subjecttosend=$object->makeSubstitution($conf->global->ADHERENT_MAIL_VALID_SUBJECT);
@@ -1374,7 +1374,7 @@ else
 		{
 			$langs->load("mails");
 
-			$adht = new AdherentType($db);
+			$adht = new AdherentTypePlus($db);
 			$adht->fetch($object->typeid);
 
 			$subjecttosend=$object->makeSubstitution($conf->global->ADHERENT_MAIL_RESIL_SUBJECT);
