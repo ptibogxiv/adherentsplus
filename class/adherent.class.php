@@ -1665,11 +1665,11 @@ class AdherentPlus extends CommonObject
 
         if ($option == 'card' || $option == 'category')
         {
-            $link = '<a href="'.DOL_URL_ROOT.'/adherents/card.php?rowid='.$this->id.'"';
+            $link = '<a href="'.dol_buildpath('/adherentsplus/card.php?rowid='.$this->id.'', 1).'"';
         }
         if ($option == 'subscription')
         {
-            $link = '<a href="'.DOL_URL_ROOT.'/adherents/subscription.php?rowid='.$this->id.'"';
+            $link = '<a href="'.dol_buildpath('/adherentsplus/type.php?rowid=subscription.php?rowid='.$this->id.'', 1).'"';
         }
 
         $linkclose="";

@@ -47,7 +47,7 @@ class modAdherentsPlus extends DolibarrModules
     	global $conf;
 
         $this->db = $db;
-        $this->numero = 204510; // 310;
+        $this->numero = 431499; // 310;
 
         $this->family = "hr";
         $this->module_position = 20;
