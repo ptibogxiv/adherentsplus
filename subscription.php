@@ -1035,10 +1035,15 @@ if ($rowid > 0)
         print "</td></tr>";
 
 // Date end subscription
+if (NULL == $object->datefin) {
+$datefin=$today;
+} else {
+$datefin=$object->datefin;
+}
           $year = strftime("%Y",$datefrom);
             if ($conf->global->ADHERENT_SUBSCRIPTION_PRORATA > '0') {
           $dateto1=dol_mktime(0,0,0,$conf->global->SOCIETE_SUBSCRIBE_MONTH_START,1,$year);
-           if ($object->datefin > $oday){
+           if ($object->datefin > $today){
            $dateto1=dol_mktime(0,0,0,$conf->global->SOCIETE_SUBSCRIBE_MONTH_START,1,$year+1);
            }
            elseif ($dateto1 > $today){
@@ -1050,7 +1055,7 @@ if ($rowid > 0)
            $dateto=dol_time_plus_duree($dateto1,-1,'d');
             }
             else {
-            $dateto=dol_time_plus_duree($object->datefin,1,'y'); //premiere fin adhesion
+            $dateto=dol_time_plus_duree($datefin,+1,'y'); //premiere fin adhesion
             }
             
             		// By default, no date is suggested
