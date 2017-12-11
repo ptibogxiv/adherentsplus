@@ -23,10 +23,26 @@
  *		\brief      Page of subscription members statistics
  */
 
-require '../../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/adherents/class/adherentstats.class.php';
+$res = 0;
+if (! $res && file_exists("../main.inc.php"))
+{
+	$res = @include "../main.inc.php";
+}
+if (! $res && file_exists("../../main.inc.php"))
+{
+	$res = @include "../../main.inc.php";
+}
+if (! $res && file_exists("../../../main.inc.php"))
+{
+	$res = @include "../../../main.inc.php";
+}
+if (! $res)
+{
+	die("Main include failed");
+}
+dol_include_once('/adherentsplus/class/adherentstats.class.php');
 require_once DOL_DOCUMENT_ROOT.'/core/class/dolgraph.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/member.lib.php';
+dol_include_once('/adherentsplus/lib/member.lib.php');
 
 $WIDTH=DolGraph::getDefaultGraphSizeForStats('width');
 $HEIGHT=DolGraph::getDefaultGraphSizeForStats('height');
