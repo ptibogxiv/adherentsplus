@@ -41,9 +41,9 @@ if (! $res)
 {
 	die("Main include failed");
 }
-require_once DOL_DOCUMENT_ROOT.'/core/lib/member.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/adherentsex/class/adherent.class.php';
-require_once DOL_DOCUMENT_ROOT.'/adherentsex/class/subscription.class.php';
+dol_include_once('/adherentsplus/lib/member.lib.php');
+dol_include_once('/adherentsplus/class/adherent.class.php');
+dol_include_once('/adherentsplus/class/subscription.class.php');
 if (! empty($conf->banque->enabled)) {
 	require_once DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php';
 }
@@ -53,8 +53,8 @@ $langs->load("bills");
 $langs->load("members");
 $langs->load("users");
 
-$adh = new Adherent($db);
-$object = new Subscription($db);
+$adh = new AdherentPlus($db);
+$object = new SubscriptionPlus($db);
 $errmsg='';
 
 $action=GETPOST("action",'alpha');

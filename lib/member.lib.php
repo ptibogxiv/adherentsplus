@@ -239,7 +239,7 @@ function member_stats_prepare_head($object)
  *  @param	Subscription	$object		Subscription
  *  @return array						head
  */
-function subscription_prepare_head(Subscription $object)
+function subscription_prepare_head(SubscriptionPlus $object)
 {
 	global $db, $langs, $conf, $user;
 
@@ -251,7 +251,7 @@ function subscription_prepare_head(Subscription $object)
 	$head[$h][2] = 'general';
 	$h++;
 
-	$head[$h][0] = Ddol_buildpath('/adherentsplus/subscription/info.php?rowid='.$object->id.'', 1);
+	$head[$h][0] = dol_buildpath('/adherentsplus/subscription/info.php?rowid='.$object->id.'', 1);
 	$head[$h][1] = $langs->trans("Info");
 	$head[$h][2] = 'info';
 	$h++;

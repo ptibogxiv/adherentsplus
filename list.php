@@ -49,7 +49,7 @@ dol_include_once('/adherentsplus/class/adherent.class.php');
 dol_include_once('/adherentsplus/class/adherent_type.class.php');
 require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
 
-$langs->loadLangs(array("members","companies"));
+$langs->loadLangs(array("adherentsplus@adherentsplus","companies"));
 
 $action=GETPOST('action','aZ09');
 $massaction=GETPOST('massaction','alpha');
@@ -202,8 +202,8 @@ if (empty($reshook))
     $objectlabel='Members';
     $permtoread = $user->rights->adherent->lire;
     $permtodelete = $user->rights->adherent->supprimer;
-    $uploaddir = $conf->adherent->dir_output;
-    include DOL_DOCUMENT_ROOT.'/core/actions_massactions.inc.php';
+    $uploaddir = $conf->adherentsplus->dir_output;
+    //include DOL_DOCUMENT_ROOT.'/core/actions_massactions.inc.php';
 }
 
 
