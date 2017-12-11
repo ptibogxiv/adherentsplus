@@ -19,6 +19,7 @@ use Luracast\Restler\RestException;
 
 dol_include_once('/adherentsplus/class/adherent.class.php');
 dol_include_once('/adherentsplus/class/subscription.class.php');
+dol_include_once('/adherentsplus/class/adherent_type.class.php');
 
 /**
  * API class for members
@@ -26,7 +27,7 @@ dol_include_once('/adherentsplus/class/subscription.class.php');
  * @access protected
  * @class  DolibarrApiAccess {@requires user,external}
  */
-class Members extends DolibarrApi
+class AdherentsPlus extends DolibarrApi
 {
     /**
      * @var array   $FIELDS     Mandatory fields, checked when create and update object
@@ -152,6 +153,110 @@ class Members extends DolibarrApi
 
         return $obj_ret;
     }
+    
+     /**
+     * List members types
+     *
+     * Get a list of members types
+     *
+     * @param string    $sortfield  Sort field
+     * @param string    $sortorder  Sort order
+     * @param int       $limit      Limit for list
+     * @param int       $page       Page number
+     * @param string    $sqlfilters Other criteria to filter answers separated by a comma. Syntax example "(t.libelle:like:'SO-%') and (t.subscription:=:'1')"
+     * @return array                Array of member type objects
+     *
+     * @throws RestException
+     */
+    function type($sortfield = "t.rowid", $sortorder = 'ASC', $limit = 0, $page = 0, $sqlfilters = '') {
+        global $db, $conf;
+
+        $obj_ret = array();
+
+        if(! DolibarrApiAccess::$user->rights->adherent->lire) {
+            throw new RestException(401);
+        }
+
+        $sql = "SELECT t.rowid";
+        $sql.= " FROM ".MAIN_DB_PREFIX."adherent_type as t";
+        $sql.= ' WHERE t.entity IN ('.getEntity('adherent').')';
+
+        // Add sql filters
+        if ($sqlfilters)
+        {
+            if (! DolibarrApi::_checkFilters($sqlfilters))
+            {
+                throw new RestException(503, 'Error when validating parameter sqlfilters '.$sqlfilters);
+            }
+	        $regexstring='\(([^:\'\(\)]+:[^:\'\(\)]+:[^:\(\)]+)\)';
+            $sql.=" AND (".preg_replace_callback('/'.$regexstring.'/', 'DolibarrApi::_forge_criteria_callback', $sqlfilters).")";
+        }
+
+        $sql.= $db->order($sortfield, $sortorder);
+        if ($limit)    {
+            if ($page < 0)
+            {
+                $page = 0;
+            }
+            $offset = $limit * $page;
+
+            $sql.= $db->plimit($limit + 1, $offset);
+        }
+
+        $result = $db->query($sql);
+        if ($result)
+        {
+            $i=0;
+            $num = $db->num_rows($result);
+            $min = min($num, ($limit <= 0 ? $num : $limit));
+            while ($i < $min)
+            {
+            	$obj = $db->fetch_object($result);
+                $membertype = new AdherentTypePlus($this->db);
+                if ($membertype->fetch($obj->rowid)) {
+                    $obj_ret[] = $this->_cleanObjectDatas($membertype);
+                }
+                $i++;
+            }
+        }
+        else {
+            throw new RestException(503, 'Error when retrieve member type list : '.$db->lasterror());
+        }
+        if ( ! count($obj_ret)) {
+            throw new RestException(404, 'No member type found');
+        }
+
+        return $obj_ret;
+    }
+    
+     /**
+     * Get properties of a member type object
+     *
+     * Return an array with member type informations
+     *
+     * @param     int     $id ID of member type
+     * @return    array|mixed data without useless information
+     *
+     * @throws    RestException
+     */
+    function gettype($id)
+    {
+        if(! DolibarrApiAccess::$user->rights->adherent->lire) {
+            throw new RestException(401);
+        }
+
+        $membertype = new AdherentTypePlus($this->db);
+        $result = $membertype->fetch($id);
+        if( ! $result ) {
+            throw new RestException(404, 'member type not found');
+        }
+
+        if( ! DolibarrApi::_checkAccessToResource('member',$membertype->id,'adherent_type')) {
+            throw new RestException(401, 'Access not allowed for login '.DolibarrApiAccess::$user->login);
+        }
+
+        return $this->_cleanObjectDatas($membertype);
+    }
 
     /**
      * Create member object
@@ -175,6 +280,30 @@ class Members extends DolibarrApi
             throw new RestException(500, 'Error creating member', array_merge(array($member->error), $member->errors));
         }
         return $member->id;
+    }
+    
+    /**
+     * Create member type object
+     *
+     * @param array $request_data   Request data
+     * @return int  ID of member type
+     */
+    function posttype($request_data = null)
+    {
+        if (! DolibarrApiAccess::$user->rights->adherent->configurer) {
+            throw new RestException(401);
+        }
+        // Check mandatory fields
+        $result = $this->_validate($request_data);
+
+        $membertype = new AdherentTypePlus($this->db);
+        foreach($request_data as $field => $value) {
+            $membertype->$field = $value;
+        }
+        if ($membertype->create(DolibarrApiAccess::$user) < 0) {
+            throw new RestException(500, 'Error creating member type', array_merge(array($membertype->error), $membertype->errors));
+        }
+        return $membertype->id;
     }
 
     /**
@@ -234,6 +363,44 @@ class Members extends DolibarrApi
 
         return false;
     }
+    
+        /**
+     * Update member type
+     *
+     * @param int   $id             ID of member type to update
+     * @param array $request_data   Datas
+     * @return int
+     */
+    function puttype($id, $request_data = null)
+    {
+        if (! DolibarrApiAccess::$user->rights->adherent->configurer) {
+            throw new RestException(401);
+        }
+
+        $membertype = new AdherentTypePlus($this->db);
+        $result = $membertype->fetch($id);
+        if( ! $result ) {
+            throw new RestException(404, 'member type not found');
+        }
+
+        if( ! DolibarrApi::_checkAccessToResource('member',$membertype->id,'adherent_type')) {
+            throw new RestException(401, 'Access not allowed for login '.DolibarrApiAccess::$user->login);
+        }
+
+        foreach($request_data as $field => $value) {
+            if ($field == 'id') continue;
+            // Process the status separately because it must be updated using
+            // the validate() and resiliate() methods of the class AdherentType.
+            $membertype->$field = $value;
+        }
+
+        // If there is no error, update() returns the number of affected rows
+        // so if the update is a no op, the return value is zero.
+        if ($membertype->update(DolibarrApiAccess::$user) >= 0)
+            return $this->get($id);
+
+        return false;
+    }
 
     /**
      * Delete member
@@ -267,6 +434,39 @@ class Members extends DolibarrApi
             )
         );
     }
+    
+    /**
+     * Delete member type
+     *
+     * @param int $id   member type ID
+     * @return array
+     */
+    function deletetype($id)
+    {
+        if (! DolibarrApiAccess::$user->rights->adherent->configurer) {
+            throw new RestException(401);
+        }
+        $membertype = new AdherentTypePlus($this->db);
+        $result = $membertype->fetch($id);
+        if( ! $result ) {
+            throw new RestException(404, 'member type not found');
+        }
+
+        if ( ! DolibarrApi::_checkAccessToResource('member',$membertype->id,'adherent_type')) {
+            throw new RestException(401, 'Access not allowed for login '.DolibarrApiAccess::$user->login);
+        }
+
+        if (! $membertype->delete($membertype->id)) {
+            throw new RestException(401,'error when deleting member type');
+        }
+
+        return array(
+            'success' => array(
+                'code' => 200,
+                'message' => 'member type deleted'
+            )
+        );
+    }    
 
     /**
      * Validate fields before creating an object
