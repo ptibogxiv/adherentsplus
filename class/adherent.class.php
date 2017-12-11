@@ -1669,7 +1669,7 @@ class AdherentPlus extends CommonObject
         }
         if ($option == 'subscription')
         {
-            $link = '<a href="'.dol_buildpath('/adherentsplus/type.php?rowid=subscription.php?rowid='.$this->id.'', 1).'"';
+            $link = '<a href="'.dol_buildpath('/adherentsplus/card.php?rowid='.$this->id.'', 1).'"';
         }
 
         $linkclose="";

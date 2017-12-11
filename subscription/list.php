@@ -44,8 +44,8 @@ if (! $res)
 	die("Main include failed");
 }
 
-require_once DOL_DOCUMENT_ROOT.'/adherentsex/class/adherent.class.php';
-require_once DOL_DOCUMENT_ROOT.'/adherentsex/class/subscription.class.php';
+dol_include_once('/adherentsplus/class/adherent.class.php');
+dol_include_once('/adherentsplus/class/subscription.class.php');
 require_once DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php';
 
 $langs->load("members");
@@ -285,8 +285,8 @@ if ($result)
 
 
     // Static objects
-    $subscription=new Subscription($db);
-    $adherent=new Adherent($db);
+    $subscription=new SubscriptionPlus($db);
+    $adherent=new AdherentPlus($db);
     $accountstatic=new Account($db);
 
     $total=0;
