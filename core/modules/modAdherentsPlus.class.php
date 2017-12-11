@@ -70,7 +70,7 @@ class modAdherentsPlus extends DolibarrModules
         $this->depends = array();
         $this->requiredby = array('modMailmanSpip');
         $this->langfiles = array("members","companies");
-
+        $this->need_dolibarr_version = array(6,0);
         // Constants
         //-----------
         $this->const = array();
@@ -269,17 +269,45 @@ $r=0;
 // Example to declare the Top Menu entry:
 $this->menu[$r]=array(	'fk_menu'=>0,			// Put 0 if this is a top menu
 			'type'=>'top',			// This is a Top menu entry
-			'titre'=>'AdherentsPlus',
+			'titre'=>'Members',
 			'mainmenu'=>'adherentsplus',
 			'leftmenu'=>'adherentsplus',
 			'url'=>'/adherentsplus/index.php',
-			'langs'=>'mylangfile',	// Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
+			'langs'=>'adherentsplus@adherentsplus',	// Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
 			'position'=>100,
 			'enabled'=>'1',			// Define condition to show or hide menu entry. Use '$conf->monmodule->enabled' if entry must be visible if module is enabled.
 			'perms'=>'1',			// Use 'perms'=>'$user->rights->monmodule->level1->level2' if you want your menu with a permission rules
 			'target'=>'',
 			'user'=>0);				// 0=Menu for internal users, 1=external users, 2=both
+        $r++;
 
+        $this->menu[$r] = array('fk_menu' => 'fk_mainmenu=adherentsplus',
+            'type' => 'left',
+            'titre' => 'Members',
+            'mainmenu' => 'adherentsplus',
+            'leftmenu' => 'adherentsplus',
+            'url' => '/adherentsplus/index.php',
+            'langs' => 'adherentsplus@adherentsplus',
+            'position' => 110,
+            'enabled' => 1,
+            'perms' => '$user->rights->adherent->lire',
+            'target' => '',
+            'user' => 0);
+        $r++;
+        
+            $this->menu[$r] = array('fk_menu' => 'fk_mainmenu=adherentsplus',
+            'type' => 'left',
+            'titre' => 'Subscriptions',
+            'mainmenu' => 'adherentsplus',
+            'leftmenu' => 'adherentsplus',
+            'url' => '/adherentsplus/index.php',
+            'langs' => 'adherentsplus@adherentsplus',
+            'position' => 120,
+            'enabled' => 1,
+            'perms' => '$user->rights->adherent->lire',
+            'target' => '',
+            'user' => 0);
+        $r++;
 
 
 

@@ -17,7 +17,7 @@
 
 use Luracast\Restler\RestException;
 
-require_once DOL_DOCUMENT_ROOT.'/adherents/class/adherent_type.class.php';
+dol_include_once('/adherentsplus/class/adherent_type.class.php');
 
 /**
  * API class for members types
@@ -59,7 +59,7 @@ class MembersTypes extends DolibarrApi
             throw new RestException(401);
         }
 
-        $membertype = new AdherentType($this->db);
+        $membertype = new AdherentTypePlus($this->db);
         $result = $membertype->fetch($id);
         if( ! $result ) {
             throw new RestException(404, 'member type not found');
@@ -130,7 +130,7 @@ class MembersTypes extends DolibarrApi
             while ($i < $min)
             {
             	$obj = $db->fetch_object($result);
-                $membertype = new AdherentType($this->db);
+                $membertype = new AdherentTypePlus($this->db);
                 if ($membertype->fetch($obj->rowid)) {
                     $obj_ret[] = $this->_cleanObjectDatas($membertype);
                 }
@@ -161,7 +161,7 @@ class MembersTypes extends DolibarrApi
         // Check mandatory fields
         $result = $this->_validate($request_data);
 
-        $membertype = new AdherentType($this->db);
+        $membertype = new AdherentTypePlus($this->db);
         foreach($request_data as $field => $value) {
             $membertype->$field = $value;
         }
@@ -184,7 +184,7 @@ class MembersTypes extends DolibarrApi
             throw new RestException(401);
         }
 
-        $membertype = new AdherentType($this->db);
+        $membertype = new AdherentTypePlus($this->db);
         $result = $membertype->fetch($id);
         if( ! $result ) {
             throw new RestException(404, 'member type not found');
@@ -220,7 +220,7 @@ class MembersTypes extends DolibarrApi
         if (! DolibarrApiAccess::$user->rights->adherent->configurer) {
             throw new RestException(401);
         }
-        $membertype = new AdherentType($this->db);
+        $membertype = new AdherentTypePlus($this->db);
         $result = $membertype->fetch($id);
         if( ! $result ) {
             throw new RestException(404, 'member type not found');

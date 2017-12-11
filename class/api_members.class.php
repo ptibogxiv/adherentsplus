@@ -17,8 +17,8 @@
 
 use Luracast\Restler\RestException;
 
-require_once DOL_DOCUMENT_ROOT.'/adherents/class/adherent.class.php';
-require_once DOL_DOCUMENT_ROOT.'/adherents/class/subscription.class.php';
+dol_include_once('/adherentsplus/class/adherent.class.php');
+dol_include_once('/adherentsplus/class/subscription.class.php');
 
 /**
  * API class for members
@@ -61,7 +61,7 @@ class Members extends DolibarrApi
             throw new RestException(401);
         }
 
-        $member = new Adherent($this->db);
+        $member = new AdherentPlus($this->db);
         $result = $member->fetch($id);
         if( ! $result ) {
             throw new RestException(404, 'member not found');
@@ -136,7 +136,7 @@ class Members extends DolibarrApi
             while ($i < $min)
             {
             	$obj = $db->fetch_object($result);
-                $member = new Adherent($this->db);
+                $member = new AdherentPlus($this->db);
                 if($member->fetch($obj->rowid)) {
                     $obj_ret[] = $this->_cleanObjectDatas($member);
                 }
@@ -167,7 +167,7 @@ class Members extends DolibarrApi
         // Check mandatory fields
         $result = $this->_validate($request_data);
 
-        $member = new Adherent($this->db);
+        $member = new AdherentPlus($this->db);
         foreach($request_data as $field => $value) {
             $member->$field = $value;
         }
@@ -190,7 +190,7 @@ class Members extends DolibarrApi
             throw new RestException(401);
         }
 
-        $member = new Adherent($this->db);
+        $member = new AdherentPlus($this->db);
         $result = $member->fetch($id);
         if( ! $result ) {
             throw new RestException(404, 'member not found');
@@ -212,6 +212,12 @@ class Members extends DolibarrApi
                     }
                 } else if ($value == '1') {
                     $result = $member->validate(DolibarrApiAccess::$user);
+                    if ($result < 0) {
+                        throw new RestException(500, 'Error when validating member: '.$member->error);
+                    }
+                }
+                else if ($value == '-1') {
+                    $result = $member->revalidate(DolibarrApiAccess::$user);
                     if ($result < 0) {
                         throw new RestException(500, 'Error when validating member: '.$member->error);
                     }
@@ -240,7 +246,7 @@ class Members extends DolibarrApi
         if(! DolibarrApiAccess::$user->rights->adherent->supprimer) {
             throw new RestException(401);
         }
-        $member = new Adherent($this->db);
+        $member = new AdherentPlus($this->db);
         $result = $member->fetch($id);
         if( ! $result ) {
             throw new RestException(404, 'member not found');
@@ -317,7 +323,7 @@ class Members extends DolibarrApi
             throw new RestException(401);
         }
 
-        $member = new Adherent($this->db);
+        $member = new AdherentPlus($this->db);
         $result = $member->fetch($id);
         if( ! $result ) {
             throw new RestException(404, 'member not found');
@@ -348,7 +354,7 @@ class Members extends DolibarrApi
             throw new RestException(401);
         }
 
-        $member = new Adherent($this->db);
+        $member = new AdherentPlus($this->db);
         $result = $member->fetch($id);
         if( ! $result ) {
             throw new RestException(404, 'member not found');

@@ -17,7 +17,7 @@
 
 use Luracast\Restler\RestException;
 
-require_once DOL_DOCUMENT_ROOT.'/adherents/class/subscription.class.php';
+dol_include_once('/adherentsplus/class/subscription.class.php');
 
 /**
  * API class for subscriptions
@@ -62,7 +62,7 @@ class Subscriptions extends DolibarrApi
             throw new RestException(401);
         }
 
-        $subscription = new Subscription($this->db);
+        $subscription = new SubscriptionPlus($this->db);
         $result = $subscription->fetch($id);
         if( ! $result ) {
             throw new RestException(404, 'Subscription not found');
@@ -127,7 +127,7 @@ class Subscriptions extends DolibarrApi
             while ($i < min($limit, $num))
             {
                 $obj = $db->fetch_object($result);
-                $subscription = new Subscription($this->db);
+                $subscription = new SubscriptionPlus($this->db);
                 if($subscription->fetch($obj->rowid)) {
                     $obj_ret[] = $this->_cleanObjectDatas($subscription);
                 }
@@ -158,7 +158,7 @@ class Subscriptions extends DolibarrApi
         // Check mandatory fields
         $result = $this->_validate($request_data);
 
-        $subscription = new Subscription($this->db);
+        $subscription = new SubscriptionPlus($this->db);
         foreach($request_data as $field => $value) {
             $subscription->$field = $value;
         }
@@ -181,7 +181,7 @@ class Subscriptions extends DolibarrApi
             throw new RestException(401);
         }
 
-        $subscription = new Subscription($this->db);
+        $subscription = new SubscriptionPlus($this->db);
         $result = $subscription->fetch($id);
         if( ! $result ) {
             throw new RestException(404, 'Subscription not found');
@@ -210,7 +210,7 @@ class Subscriptions extends DolibarrApi
         if(! DolibarrApiAccess::$user->rights->adherent->cotisation->creer) {
             throw new RestException(401);
         }
-        $subscription = new Subscription($this->db);
+        $subscription = new SubscriptionPlus($this->db);
         $result = $subscription->fetch($id);
         if( ! $result ) {
             throw new RestException(404, 'Subscription not found');
