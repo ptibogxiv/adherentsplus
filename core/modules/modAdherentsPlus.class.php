@@ -295,7 +295,55 @@ $this->menu[$r]=array(	'fk_menu'=>0,			// Put 0 if this is a top menu
             'user' => 0);
         $r++;
         
+             $this->menu[$r] = array('fk_menu' => 'fk_mainmenu=adherentsplus,fk_leftmenu=adherentsplus',
+            'type' => 'left',
+            'titre' => 'NewMember',
+            'mainmenu' => 'adherentsplus',           
+            'url' => '/adherentsplus/card.php?&action=create',
+            'langs' => 'adherentsplus@adherentsplus',
+            'position' => 111,
+            'enabled' => 1,
+            'perms' => '$user->rights->adherent->lire',
+            'target' => '',
+            'user' => 0);
+        $r++;
+            $this->menu[$r] = array('fk_menu' => 'fk_mainmenu=adherentsplus,fk_leftmenu=adherentsplus',
+            'type' => 'left',
+            'titre' => 'MembersList',
+            'mainmenu' => 'adherentsplus',            
+            'url' => '/adherentsplus/list.php',
+            'langs' => 'adherentsplus@adherentsplus',
+            'position' => 112,
+            'enabled' => 1,
+            'perms' => '$user->rights->adherent->lire',
+            'target' => '',
+            'user' => 0);
+        $r++;  
         
+                    $this->menu[$r] = array('fk_menu' => 'fk_mainmenu=adherentsplus,fk_leftmenu=adherentsplus',
+            'type' => 'left',
+            'titre' => 'MenuMembersStats',
+            'mainmenu' => 'adherentsplus',           
+            'url' => '/adherentsplus/stats/index.php',
+            'langs' => 'adherentsplus@adherentsplus',
+            'position' => 118,
+            'enabled' => 1,
+            'perms' => '$user->rights->adherent->lire',
+            'target' => '',
+            'user' => 0);
+        $r++;
+            $this->menu[$r] = array('fk_menu' => 'fk_mainmenu=adherentsplus,fk_leftmenu=adherentsplus',
+            'type' => 'left',
+            'titre' => 'MembersCards',
+            'mainmenu' => 'adherentsplus',            
+            'url' => '/adherentsplus/cartes/carte.php',
+            'langs' => 'adherentsplus@adherentsplus',
+            'position' => 119,
+            'enabled' => 1,
+            'perms' => '$user->rights->adherent->lire',
+            'target' => '',
+            'user' => 0);
+        $r++;         
         
             $this->menu[$r] = array('fk_menu' => 'fk_mainmenu=adherentsplus',
             'type' => 'left',
@@ -361,21 +409,21 @@ $this->menu[$r]=array(	'fk_menu'=>0,			// Put 0 if this is a top menu
             'target' => '',
             'user' => 0);
         $r++;
-                        $this->menu[$r] = array('fk_menu' => 'fk_mainmenu=adherentsplus,fk_leftmenu=adherentstypes',
+            $this->menu[$r] = array('fk_menu' => 'fk_mainmenu=adherentsplus,fk_leftmenu=adherentstypes',
             'type' => 'left',
-            'titre' => 'MembersTypesList',
+            'titre' => 'NewMemberType',
             'mainmenu' => 'adherentsplus',           
             'url' => '/adherentsplus/type.php?&action=create',
             'langs' => 'adherentsplus@adherentsplus',
-            'position' => 121,
+            'position' => 141,
             'enabled' => 1,
             'perms' => '$user->rights->adherent->lire',
             'target' => '',
             'user' => 0);
         $r++;
-                $this->menu[$r] = array('fk_menu' => 'fk_mainmenu=adherentsplus,fk_leftmenu=adherentstypes',
+            $this->menu[$r] = array('fk_menu' => 'fk_mainmenu=adherentsplus,fk_leftmenu=adherentstypes',
             'type' => 'left',
-            'titre' => 'ListOfSubscriptions',
+            'titre' => 'MembersTypesList',
             'mainmenu' => 'adherentsplus',            
             'url' => '/adherentsplus/type.php',
             'langs' => 'adherentsplus@adherentsplus',

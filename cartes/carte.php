@@ -22,10 +22,26 @@
  *	\ingroup    member
  *	\brief      Page to output members business cards
  */
-require '../../main.inc.php';
+$res = 0;
+if (! $res && file_exists("../main.inc.php"))
+{
+	$res = @include "../main.inc.php";
+}
+if (! $res && file_exists("../../main.inc.php"))
+{
+	$res = @include "../../main.inc.php";
+}
+if (! $res && file_exists("../../../main.inc.php"))
+{
+	$res = @include "../../../main.inc.php";
+}
+if (! $res)
+{
+	die("Main include failed");
+}
 require_once DOL_DOCUMENT_ROOT.'/core/lib/format_cards.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/adherents/class/adherent.class.php';
+dol_include_once('/adherentsplus/class/adherent.class.php');
 require_once DOL_DOCUMENT_ROOT.'/core/modules/member/modules_cards.php';
 require_once DOL_DOCUMENT_ROOT.'/core/modules/printsheet/modules_labels.php';
 
@@ -44,7 +60,7 @@ $model=GETPOST("model");			// Doc template to use for business cards
 $modellabel=GETPOST("modellabel");	// Doc template to use for address sheet
 $mesg='';
 
-$adherentstatic=new Adherent($db);
+$adherentstatic=new AdherentPlus($db);
 
 
 /*
