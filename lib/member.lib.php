@@ -192,32 +192,32 @@ function member_stats_prepare_head($object)
     $h = 0;
     $head = array();
 
-    $head[$h][0] = dol_buildpath('/adherentsplus/stats/index.php');
+    $head[$h][0] = dol_buildpath('/adherentsplus/stats/index.php', 1);
     $head[$h][1] = $langs->trans("Subscriptions");
     $head[$h][2] = 'statssubscription';
     $h++;
 
-    $head[$h][0] = dol_buildpath('/adherentsplus/stats/geo.php?mode=memberbycountry');
+    $head[$h][0] = dol_buildpath('/adherentsplus/stats/geo.php?mode=memberbycountry', 1);
     $head[$h][1] = $langs->trans("Country");
     $head[$h][2] = 'statscountry';
     $h++;
 
-    $head[$h][0] = dol_buildpath('/adherentsplus/stats/geo.php?mode=memberbyregion');
+    $head[$h][0] = dol_buildpath('/adherentsplus/stats/geo.php?mode=memberbyregion', 1);
     $head[$h][1] = $langs->trans("Region");
     $head[$h][2] = 'statsregion';
     $h++;
 
-    $head[$h][0] = dol_buildpath('/adherentsplus/stats/geo.php?mode=memberbystate');
+    $head[$h][0] = dol_buildpath('/adherentsplus/stats/geo.php?mode=memberbystate', 1);
     $head[$h][1] = $langs->trans("State");
     $head[$h][2] = 'statsstate';
     $h++;
 
-    $head[$h][0] = dol_buildpath('/adherentsplus/stats/geo.php?mode=memberbytown');
+    $head[$h][0] = dol_buildpath('/adherentsplus/stats/geo.php?mode=memberbytown', 1);
     $head[$h][1] = $langs->trans('Town');
     $head[$h][2] = 'statstown';
     $h++;
 
-    $head[$h][0] = dol_buildpath('/adherentsplus/stats/byproperties.php');
+    $head[$h][0] = dol_buildpath('/adherentsplus/stats/byproperties.php', 1);
     $head[$h][1] = $langs->trans('ByProperties');
     $head[$h][2] = 'statsbyproperties';
     $h++;
@@ -246,12 +246,12 @@ function subscription_prepare_head(Subscription $object)
 	$h = 0;
 	$head = array();
 
-	$head[$h][0] = dol_buildpath('/adherentsplus/subscription/card.php?rowid='.$object->id.'');
+	$head[$h][0] = dol_buildpath('/adherentsplus/subscription/card.php?rowid='.$object->id.'', 1);
 	$head[$h][1] = $langs->trans("Card");
 	$head[$h][2] = 'general';
 	$h++;
 
-	$head[$h][0] = Ddol_buildpath('/adherentsplus/subscription/info.php?rowid='.$object->id.'');
+	$head[$h][0] = Ddol_buildpath('/adherentsplus/subscription/info.php?rowid='.$object->id.'', 1);
 	$head[$h][1] = $langs->trans("Info");
 	$head[$h][2] = 'info';
 	$h++;

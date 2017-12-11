@@ -21,9 +21,25 @@
  *		\brief      Page with statistics on members
  */
 
-require '../../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/member.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/adherents/class/adherent.class.php';
+$res = 0;
+if (! $res && file_exists("../main.inc.php"))
+{
+	$res = @include "../main.inc.php";
+}
+if (! $res && file_exists("../../main.inc.php"))
+{
+	$res = @include "../../main.inc.php";
+}
+if (! $res && file_exists("../../../main.inc.php"))
+{
+	$res = @include "../../../main.inc.php";
+}
+if (! $res)
+{
+	die("Main include failed");
+}
+dol_include_once('/adherentsplus/lib/member.lib.php');
+dol_include_once('/adherentsplus/class/adherent.class.php');
 
 $graphwidth = 700;
 $mapratio = 0.5;
@@ -52,7 +68,7 @@ $langs->load("companies");
  * View
  */
 
-$memberstatic=new Adherent($db);
+$memberstatic=new AdherentPlus($db);
 
 llxHeader('',$langs->trans("MembersStatisticsByProperties"),'','',0,0,array('https://www.google.com/jsapi'));
 

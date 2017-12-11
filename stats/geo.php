@@ -21,8 +21,24 @@
  *		\brief      Page with geographical statistics on members
  */
 
-require '../../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/member.lib.php';
+$res = 0;
+if (! $res && file_exists("../main.inc.php"))
+{
+	$res = @include "../main.inc.php";
+}
+if (! $res && file_exists("../../main.inc.php"))
+{
+	$res = @include "../../main.inc.php";
+}
+if (! $res && file_exists("../../../main.inc.php"))
+{
+	$res = @include "../../../main.inc.php";
+}
+if (! $res)
+{
+	die("Main include failed");
+}
+dol_include_once('/adherentsplus/lib/member.lib.php');
 require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/core/class/dolgraph.class.php';
 
