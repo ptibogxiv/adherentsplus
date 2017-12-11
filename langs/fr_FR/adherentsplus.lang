@@ -19,6 +19,7 @@ SetLinkToUser=Lier à un utilisateur Dolibarr
 SetLinkToThirdParty=Lier à un tiers Dolibarr
 MembersCards=Cartes d'adhérent
 MembersList=Liste des adhérents
+MembersTypesList=Liste des types
 MembersListToValid=Liste des adhérents brouillons (à valider)
 MembersListValid=Liste des adhérents valides
 MembersListUpToDate=Liste des adhérents valides à jour d'adhésion
