@@ -65,6 +65,11 @@ class modAdherentsPlus extends DolibarrModules
        // Config pages. Put here list of php page, stored into oblyon/admin directory, to use to setup module.
     $this->config_page_url = array("adherent.php@adherentsplus");
 
+
+    		// Defined all module parts (triggers, login, substitutions, menus, css, etc...)
+		$this->module_parts = array(
+'hooks' => array('thirdpartycard'),
+		);
         // Dependencies
         //------------
         $this->depends = array();
