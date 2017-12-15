@@ -39,6 +39,7 @@ class SubscriptionPlus extends CommonObject
 	var $dateh;				// Subscription start date (date subscription)
 	var $datef;				// Subscription end date
 	var $fk_adherent;
+  var $fk_type;
 	var $amount;
 	var $fk_bank;
 
@@ -63,7 +64,6 @@ class SubscriptionPlus extends CommonObject
 	function create($userid)
 	{
 		global $langs;
-
 		$now=dol_now();
 
 		// Check parameters
@@ -72,11 +72,17 @@ class SubscriptionPlus extends CommonObject
 			$this->error=$langs->trans("ErrorBadValueForDate");
 			return -1;
 		}
-    $adherent=new AdherentPlus($this->db);
-    $adherent= fetch($this->fk_adherent);
     
 		$sql = "INSERT INTO ".MAIN_DB_PREFIX."subscription (fk_adherent, fk_type, datec, dateadh, datef, subscription, note)";
-    $sql.= " VALUES (".$this->fk_adherent.", ".$adherent->typeid.", '".$this->db->idate($now)."',";
+        if ($this->fk_type == NULL) {
+dol_include_once('/adherentsplus/class/adherent.class.php');
+		$member=new AdherentPlus($this->db);
+		$result=$member->fetch($this->fk_adherent);
+    $type=$member->typeid;
+    }else {
+    $type=$this->fk_type;
+    }
+    $sql.= " VALUES (".$this->fk_adherent.", '".$type."', '".$this->db->idate($now)."',";
 		$sql.= " '".$this->db->idate($this->dateh)."',";
 		$sql.= " '".$this->db->idate($this->datef)."',";
 		$sql.= " ".$this->amount.",";
