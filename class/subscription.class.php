@@ -72,9 +72,11 @@ class SubscriptionPlus extends CommonObject
 			$this->error=$langs->trans("ErrorBadValueForDate");
 			return -1;
 		}
-
-		$sql = "INSERT INTO ".MAIN_DB_PREFIX."subscription (fk_adherent, datec, dateadh, datef, subscription, note)";
-        $sql.= " VALUES (".$this->fk_adherent.", '".$this->db->idate($now)."',";
+    $adherent=new AdherentPlus($this->db);
+    $adherent= fetch($this->fk_adherent);
+    
+		$sql = "INSERT INTO ".MAIN_DB_PREFIX."subscription (fk_adherent, fk_type, datec, dateadh, datef, subscription, note)";
+    $sql.= " VALUES (".$this->fk_adherent.", ".$adherent->typeid.", '".$this->db->idate($now)."',";
 		$sql.= " '".$this->db->idate($this->dateh)."',";
 		$sql.= " '".$this->db->idate($this->datef)."',";
 		$sql.= " ".$this->amount.",";
@@ -107,7 +109,7 @@ class SubscriptionPlus extends CommonObject
 		$sql.=" tms,";
 		$sql.=" dateadh as dateh,";
 		$sql.=" datef,";
-		$sql.=" subscription, note, fk_bank";
+		$sql.=" subscription, note, fk_bank, fk_type";
 		$sql.=" FROM ".MAIN_DB_PREFIX."subscription";
 		$sql.="	WHERE rowid=".$rowid;
 
@@ -121,7 +123,7 @@ class SubscriptionPlus extends CommonObject
 
 				$this->id             = $obj->rowid;
 				$this->ref            = $obj->rowid;
-
+				$this->fk_type        = $obj->fk_type;
 				$this->fk_adherent    = $obj->fk_adherent;
 				$this->datec          = $this->db->jdate($obj->datec);
 				$this->datem          = $this->db->jdate($obj->tms);
