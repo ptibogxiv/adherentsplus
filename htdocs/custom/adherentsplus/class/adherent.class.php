@@ -1212,7 +1212,7 @@ class AdherentPlus extends CommonObject
     {
         global $langs;
 
-		require_once DOL_DOCUMENT_ROOT.'/adherents/class/subscription.class.php';
+dol_include_once('/adherentsplus/class/subscription.class.php');
 
         $sql = "SELECT c.rowid, c.fk_adherent, c.subscription, c.note, c.fk_bank, c.fk_type,";
         $sql.= " c.tms as datem,";
@@ -1240,7 +1240,7 @@ class AdherentPlus extends CommonObject
                 $this->last_subscription_date=$obj->dateh;
                 $this->last_subscription_amount=$obj->subscription;
 
-                $subscription=new Subscription($this->db);
+                $subscription=new SubscriptionPlus($this->db);
                 $subscription->id=$obj->rowid;
                 $subscription->fk_adherent=$obj->fk_adherent;
                 $subscription->fk_type=$obj->fk_type;
@@ -1284,7 +1284,7 @@ class AdherentPlus extends CommonObject
     {
         global $conf,$langs,$user;
 
-		require_once DOL_DOCUMENT_ROOT.'/adherents/class/subscription.class.php';
+dol_include_once('/adherentsplus/class/subscription.class.php');
 
 		$error=0;
 
@@ -1305,7 +1305,7 @@ class AdherentPlus extends CommonObject
         }
 
         // Create subscription
-        $subscription=new Subscription($this->db);
+        $subscription=new SubscriptionPlus($this->db);
         $subscription->fk_adherent=$this->id;
         $subscription->dateh=$date;		// Date of new subscription
         $subscription->datef=$datefin;	// End data of new subscription

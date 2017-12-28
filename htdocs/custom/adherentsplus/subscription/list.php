@@ -45,6 +45,7 @@ if (! $res)
 }
 
 dol_include_once('/adherentsplus/class/adherent.class.php');
+dol_include_once('/adherentsplus/class/adherent_type.class.php');
 dol_include_once('/adherentsplus/class/subscription.class.php');
 require_once DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php';
 
@@ -138,7 +139,7 @@ $sql = "SELECT d.rowid, d.login, d.firstname, d.lastname, d.societe, d.photo,";
 $sql.= " c.rowid as crowid, c.subscription,";
 $sql.= " c.dateadh,";
 $sql.= " c.datef,";
-$sql.= " c.fk_bank as bank, c.note,";
+$sql.= " c.fk_bank as bank, c.note, c.fk_type,";
 $sql.= " b.fk_account";
 $sql.= " FROM ".MAIN_DB_PREFIX."adherent as d, ".MAIN_DB_PREFIX."subscription as c";
 $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."bank as b ON c.fk_bank=b.rowid";
@@ -234,6 +235,9 @@ if ($result)
 	print '<td class="liste_titre" align="left">';
 	print '<input class="flat" type="text" name="search_ref" value="'.dol_escape_htmltag($search_ref).'" size="4"></td>';
 
+  print '<td class="liste_titre" align="left">';
+	print '<input class="flat" type="text" name="search_type" value="'.dol_escape_htmltag($search_typee).'" size="12"></td>';
+
 	print '<td class="liste_titre" align="left">';
 	print '<input class="flat" type="text" name="search_lastname" value="'.dol_escape_htmltag($search_lastname).'" size="12"></td>';
 
@@ -269,6 +273,7 @@ if ($result)
 
 	print '<tr class="liste_titre">';
 	print_liste_field_titre("Ref",$_SERVER["PHP_SELF"],"c.rowid",$param,"","",$sortfield,$sortorder);
+  print_liste_field_titre("Type",$_SERVER["PHP_SELF"],"c.fk_type",$param,"","",$sortfield,$sortorder);
 	print_liste_field_titre("Name",$_SERVER["PHP_SELF"],"d.lastname",$param,"","",$sortfield,$sortorder);
 	print_liste_field_titre("Login",$_SERVER["PHP_SELF"],"d.login",$param,"","",$sortfield,$sortorder);
 	print_liste_field_titre("Label",$_SERVER["PHP_SELF"],"c.note",$param,"",'align="left"',$sortfield,$sortorder);
@@ -306,13 +311,17 @@ if ($result)
         $adherent->login=$obj->login;
         $adherent->photo=$obj->photo;
 
-
+      $adht = new AdherentTypePlus($db);
+			$adht->fetch($obj->fk_type);
 
         print '<tr class="oddeven">';
 
         // Ref
         print '<td>'.$subscription->getNomUrl(1).'</td>';
-
+        
+        // Ref
+        print '<td>'.$adht->getNomUrl(1).'</td>';
+        
         // Lastname
         print '<td>'.$adherent->getNomUrl(-1).'</td>';
 

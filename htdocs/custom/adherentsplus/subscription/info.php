@@ -43,9 +43,9 @@ if (! $res)
 	die("Main include failed");
 }
 require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/adherentsex/class/adherent.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/member.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/adherentsex/class/subscription.class.php';
+dol_include_once('/adherentsplus/class/adherent.class.php');
+dol_include_once('/adherentsplus/lib/member.lib.php');
+dol_include_once('/adherentsplus/class/subscription.class.php');
 
 $langs->load("companies");
 $langs->load("bills");
@@ -55,26 +55,25 @@ $langs->load("users");
 if (!$user->rights->adherent->lire)
 	accessforbidden();
 
-$rowid=isset($_GET["rowid"])?$_GET["rowid"]:$_POST["rowid"];
+$rowid=GETPOST("rowid",'int');
 
 
 
 /*
  * View
  */
+$form = new Form($db);
 
 llxHeader();
 
-$form = new Form($db);
-
-$object = new Subscription($db);
+$object = new SubscriptionPlus($db);
 $result = $object->fetch($rowid);
 
 $head = subscription_prepare_head($object);
 
 dol_fiche_head($head, 'info', $langs->trans("Subscription"), -1, 'payment');
 
-$linkback = '<a href="'.DOL_URL_ROOT.'/adherentsex/subscription/list.php">'.$langs->trans("BackToList").'</a>';
+$linkback = '<a href="'.dol_buildpath('/adherentsplus/subscription/list.php', 1).'">'.$langs->trans("BackToList").'</a>';
 
 dol_banner_tab($object, 'rowid', $linkback, 1);
 
