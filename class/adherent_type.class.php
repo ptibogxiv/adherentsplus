@@ -65,7 +65,7 @@ class AdherentTypePlus extends CommonObject
   public $welcome;
 	public $price;
 	public $automatic;
-
+	public $family;
     /**
 	 *	Constructor
 	 *
@@ -138,6 +138,7 @@ class AdherentTypePlus extends CommonObject
         $sql.= "note = '".$this->db->escape($this->note)."',";
         $sql.= "vote = '".$this->vote."',";
         $sql.= "automatic = '".$this->automatic."',";
+        $sql.= "family = '".$this->family."',";
         $sql.= "mail_valid = '".$this->db->escape($this->mail_valid)."'";
         $sql.= " WHERE rowid =".$this->id;
 
@@ -212,7 +213,7 @@ class AdherentTypePlus extends CommonObject
      */
     function fetch($rowid)
     {
-        $sql = "SELECT d.rowid, d.libelle as label, d.statut, d.subscription, d.welcome, d.price, d.automatic, d.mail_valid, d.note, d.vote";
+        $sql = "SELECT d.rowid, d.libelle as label, d.statut, d.subscription, d.welcome, d.price, d.automatic,d.family, d.mail_valid, d.note, d.vote";
         $sql .= " FROM ".MAIN_DB_PREFIX."adherent_type as d";
         $sql .= " WHERE d.rowid = ".$rowid;
 
@@ -234,6 +235,7 @@ class AdherentTypePlus extends CommonObject
                 $this->statut         = $obj->statut;
                 $this->subscription   = $obj->subscription;
                 $this->automatic       = $obj->automatic;
+                $this->family         = $obj->family;
                 $this->mail_valid     = $obj->mail_valid;
                 $this->note           = $obj->note;
                 $this->vote           = $obj->vote;
