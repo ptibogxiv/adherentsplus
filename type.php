@@ -287,6 +287,10 @@ if ($action == 'create')
 
 	print '<tr><td class="titlefieldcreate fieldrequired">'.$langs->trans("Label").'</td><td><input type="text" name="label" size="40"></td></tr>';
 
+  print '<tr><td>'.$langs->trans("GroupSubscription").'</td><td>';
+	print $form->selectyesno("group",0,1);
+	print '</td></tr>';
+
 	print '<tr><td>'.$langs->trans("SubscriptionRequired").'</td><td>';
 	print $form->selectyesno("subscription",1,1);
 	print '</td></tr>';
@@ -365,6 +369,10 @@ if ($rowid > 0)
 		print '<div class="underbanner clearboth"></div>';
 
 		print '<table class="border" width="100%">';
+
+    print '<tr><td class="titlefield">'.$langs->trans("GroupSubscription").'</td><td>';
+		print yn($object->group);
+		print '</tr>';
 
 		print '<tr><td class="titlefield">'.$langs->trans("SubscriptionRequired").'</td><td>';
 		print yn($object->subscription);
@@ -707,6 +715,10 @@ if ($rowid > 0)
 		print '<tr><td class="titlefield">'.$langs->trans("Ref").'</td><td>'.$object->id.'</td></tr>';
 
 		print '<tr><td class="fieldrequired">'.$langs->trans("Label").'</td><td><input type="text" name="label" size="40" value="'.dol_escape_htmltag($object->label).'"></td></tr>';
+
+    print '<tr><td>'.$langs->trans("GroupSubscription").'</td><td>';
+		print $form->selectyesno("group",$object->group,1);
+		print '</td></tr>';
 
 		print '<tr><td>'.$langs->trans("SubscriptionRequired").'</td><td>';
 		print $form->selectyesno("subscription",$object->subscription,1);
