@@ -234,9 +234,10 @@ if (! $rowid && $action != 'create' && $action != 'edit')
 		print '<tr class="liste_titre">';
 		print '<th>'.$langs->trans("Ref").'</th>';
 		print '<th>'.$langs->trans("Label").'</th>';
+    print '<th align="center">'.$langs->trans("GroupSubscription").'</th>';
 		print '<th align="center">'.$langs->trans("SubscriptionRequired").'</th>';
 		print '<th align="center">'.$langs->trans("VoteAllowed").'</th>';
-    print '<td align="center">'.$langs->trans("AutoSubscription").'</td>';
+    print '<th align="center">'.$langs->trans("AutoSubscription").'</th>';
 		print '<th>&nbsp;</th>';
 		print "</tr>\n";
 
@@ -246,6 +247,7 @@ if (! $rowid && $action != 'create' && $action != 'edit')
 			print '<tr class="oddeven">';
 			print '<td><a href="'.$_SERVER["PHP_SELF"].'?rowid='.$objp->rowid.'">'.img_object($langs->trans("ShowType"),'group').' '.$objp->rowid.'</a></td>';
 			print '<td>'.dol_escape_htmltag($objp->label).'</td>';
+      print '<td align="center">'.yn($objp->family).'</td>';
 			print '<td align="center">'.yn($objp->subscription).'</td>';
 			print '<td align="center">'.yn($objp->vote).'</td>';
       print '<td align="center">'.yn($objp->automatic).'</td>';

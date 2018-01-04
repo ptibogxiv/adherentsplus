@@ -213,7 +213,7 @@ class AdherentTypePlus extends CommonObject
      */
     function fetch($rowid)
     {
-        $sql = "SELECT d.rowid, d.libelle as label, d.statut, d.subscription, d.welcome, d.price, d.automatic,d.family, d.mail_valid, d.note, d.vote";
+        $sql = "SELECT d.rowid, d.libelle as label, d.statut, d.subscription, d.welcome, d.price, d.automatic, d.family, d.mail_valid, d.note, d.vote";
         $sql .= " FROM ".MAIN_DB_PREFIX."adherent_type as d";
         $sql .= " WHERE d.rowid = ".$rowid;
 
@@ -234,7 +234,7 @@ class AdherentTypePlus extends CommonObject
                 $this->libelle        = $obj->label;	// For backward compatibility
                 $this->statut         = $obj->statut;
                 $this->subscription   = $obj->subscription;
-                $this->automatic       = $obj->automatic;
+                $this->automatic      = $obj->automatic;
                 $this->family         = $obj->family;
                 $this->mail_valid     = $obj->mail_valid;
                 $this->note           = $obj->note;
