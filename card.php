@@ -1813,8 +1813,12 @@ print '<tr class="oddeven"><td colspan="3" class="opacitymedium">'.$langs->trans
 }
 print '</table>'."\n";   
 } elseif ($adht->family=='1' && $object->fk_parent>'0') {
-print load_fiche_titre($langs->trans("SecondaryMembers"), '', '');
-print '<tr class="oddeven"><td colspan="3" class="opacitymedium">'.$langs->trans("NotPossible").'</td></tr>'."\n";      
+print load_fiche_titre($langs->trans("PrincipalMember"), '', '');
+print '<table class="noborder" summary="listofdocumentstable" id="'.$modulepart.'_table" width="100%">'."\n";
+$objp = new Adherentplus($db);
+$objp->fetch($object->fk_parent);
+print '<tr class="oddeven"><td align="left"><a href="'.$dolibarr_main_url_root.dol_buildpath('/adherentsplus/card.php?rowid='.$object->fk_parent, 1).'">'.img_picto('', 'object_user').' '.$objp->firstname.' '.$objp->lastname.'</a></td></tr>';
+print '</table>'."\n";     
 } 
 		print '</div></div></div>';
 
