@@ -601,7 +601,7 @@ if ($rowid > 0)
 
     dol_fiche_head($head, 'subscription', $langs->trans("Member"), -1, 'user');
 
-    $linkback = '<a href="'.DOL_URL_ROOT.'/adherents/list.php">'.$langs->trans("BackToList").'</a>';
+    $linkback = '<a href="'.dol_buildpath('/adherentsplus/list.php', 1).'">'.$langs->trans("BackToList").'</a>';
 
     dol_banner_tab($object, 'rowid', $linkback);
 
@@ -814,7 +814,7 @@ if ($rowid > 0)
         $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."bank as b ON c.fk_bank = b.rowid";
         $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."bank_account as ba ON b.fk_account = ba.rowid";
         $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."adherent_type as t ON c.fk_type=t.rowid";
-        $sql.= " WHERE d.rowid = c.fk_adherent AND d.rowid=".$rowid." ORDER BY c.dateadh DESC";
+        $sql.= " WHERE (d.rowid = c.fk_adherent AND d.rowid=".$rowid.") ORDER BY c.dateadh DESC";
 
         $result = $db->query($sql);
         if ($result)

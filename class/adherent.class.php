@@ -675,6 +675,7 @@ class AdherentPlus extends CommonObject
             $sql = "UPDATE ".MAIN_DB_PREFIX."adherent SET";
             $sql.= " datefin=".($datefin != '' ? "'".$this->db->idate($datefin)."'" : "null");
             $sql.= " WHERE rowid = ".$this->id;
+            $sql.= " OR fk_parent = ".$this->id;
 
             dol_syslog(get_class($this)."::update_end_date", LOG_DEBUG);
             $resql=$this->db->query($sql);

@@ -166,7 +166,7 @@ if ($action == 'confirm_delete' && $confirm == 'yes' && $user->rights->adherent-
     $result=$object->delete($user);
     if ($result > 0)
     {
-    	header("Location: ".dol_include_once('/adherentsplus/subscription/card.php?rowid='.$object->fk_adherent));
+    	header("Location: ".dol_buildpath('/adherentsplus/subscription/list.php',1));
     	exit;
     }
     else
@@ -211,9 +211,9 @@ if ($user->rights->adherent->cotisation->creer && $action == 'edit')
 
 	dol_fiche_head($head, 'general', $langs->trans("Subscription"), 0, 'payment');
 
-    $linkback = '<a href="'.DOL_URL_ROOT.'/adherentsplus/subscription/list.php">'.$langs->trans("BackToList").'</a>';
+    $linkback = '<a href="'.dol_buildpath('/adherentsplus/subscription/list.php',1).'">'.$langs->trans("BackToList").'</a>';
 
-    print "\n";
+  print "\n";
 	print '<table class="border" width="100%">';
 
     // Ref
@@ -310,7 +310,7 @@ if ($rowid && $action != 'edit')
     print '<form action="'.$_SERVER["PHP_SELF"].'" method="post">';
     print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
 
-    $linkback = '<a href="'.DOL_URL_ROOT.'/adherentsplus/subscription/list.php">'.$langs->trans("BackToList").'</a>';
+    $linkback = '<a href="'.dol_buildpath('/adherentsplus/subscription/list.php',1).'">'.$langs->trans("BackToList").'</a>';
 
     dol_banner_tab($object, 'rowid', $linkback, 1);
 

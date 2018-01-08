@@ -1423,7 +1423,7 @@ else
 		if (empty($conf->global->ADHERENT_LOGIN_NOT_REQUIRED)) $rowspan++;
 		if (! empty($conf->societe->enabled)) $rowspan++;
 
-		$linkback = '<a href="'.DOL_URL_ROOT.'/adherentsplus/list.php">'.$langs->trans("BackToList").'</a>';
+		$linkback = '<a href="'.dol_buildpath('/adherentsplus/list.php', 1).'">'.$langs->trans("BackToList").'</a>';
 
 		dol_banner_tab($object, 'rowid', $linkback);
 
@@ -1806,19 +1806,16 @@ print '<td align="left"><a href="'.$dolibarr_main_url_root.dol_buildpath('/adher
 print '<td align="right"></td>';
 print "</tr>";
 $i++;
-}}
-else
-{
-dol_print_error($db);
 }
-      
-    print '<tr class="oddeven"><td colspan="3" class="opacitymedium">'.$langs->trans("None").'</td></tr>'."\n";
-    print '</table>'."\n";   
-    } elseif ($adht->family=='1' && $object->fk_parent>'0') {
-    print load_fiche_titre($langs->trans("SecondaryMembers"), '', '');      
-    }
-
-    
+if ($num=='0'){
+print '<tr class="oddeven"><td colspan="3" class="opacitymedium">'.$langs->trans("None").'</td></tr>'."\n";
+}
+}
+print '</table>'."\n";   
+} elseif ($adht->family=='1' && $object->fk_parent>'0') {
+print load_fiche_titre($langs->trans("SecondaryMembers"), '', '');
+print '<tr class="oddeven"><td colspan="3" class="opacitymedium">'.$langs->trans("NotPossible").'</td></tr>'."\n";      
+} 
 		print '</div></div></div>';
 
 	}
