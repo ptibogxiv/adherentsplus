@@ -1779,8 +1779,43 @@ else
 		$formactions = new FormActions($db);
 		$somethingshown = $formactions->showactions($object, 'member', $socid);
 		*/
-    if ($adht->family=='1'){
-    print 'liste des adherents secondaires prochainement ici';    
+    if ($adht->family=='1' && $object->fk_parent=='0'){
+    print load_fiche_titre($langs->trans("SecondaryMembers"), '', ''); 
+    print '<table class="noborder" summary="listofdocumentstable" id="'.$modulepart.'_table" width="100%">'."\n";
+$sql = "SELECT d.rowid, d.login, d.lastname, d.firstname, d.societe as company, d.fk_soc,";
+$sql.= " d.datefin, d.address, d.zip, d.town, d.state_id, d.country,";
+$sql.= " d.email, d.phone, d.phone_perso, d.phone_mobile, d.skype, d.birth, d.public, d.photo,";
+$sql.= " d.fk_adherent_type as type_id, d.morphy, d.statut, d.datec as date_creation, d.tms as date_update";
+$sql.= " FROM ".MAIN_DB_PREFIX."adherent as d";
+$sql.= " WHERE d.fk_parent = $id ";
+        
+$result = $db->query($sql);
+if ($result){
+$num = $db->num_rows($result);
+$i = 0;
+
+$var=True;
+while ($i < $num){            
+$objp = $db->fetch_object($result);
+$var=!$var;
+                      
+print "<tr ".$bc[$var].">";
+print '<td>'.$objp->rowid;              
+print '</td>';
+print '<td align="left"><a href="'.$dolibarr_main_url_root.dol_buildpath('/adherentsplus/card.php?rowid='.$objp->rowid, 1).'">'.img_picto('', 'object_user').' '.$objp->firstname.' '.$objp->lastname.'</a></td>';
+print '<td align="right"></td>';
+print "</tr>";
+$i++;
+}}
+else
+{
+dol_print_error($db);
+}
+      
+    print '<tr class="oddeven"><td colspan="3" class="opacitymedium">'.$langs->trans("None").'</td></tr>'."\n";
+    print '</table>'."\n";   
+    } elseif ($adht->family=='1' && $object->fk_parent>'0') {
+    print load_fiche_titre($langs->trans("SecondaryMembers"), '', '');      
     }
 
     

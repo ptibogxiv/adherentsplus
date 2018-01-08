@@ -94,6 +94,7 @@ class AdherentPlus extends CommonObject
     var $user_login;
 
     var $fk_soc;
+    var $fk_parent;
 
     // Fields loaded by fetch_subscriptions()
     var $first_subscription_date;
@@ -1075,7 +1076,7 @@ class AdherentPlus extends CommonObject
     {
         global $langs;
 
-        $sql = "SELECT d.rowid, d.ref_ext, d.civility as civility_id, d.firstname, d.lastname, d.societe as company, d.fk_soc, d.statut, d.public, d.address, d.zip, d.town, d.note_private,";
+        $sql = "SELECT d.rowid, d.ref_ext, d.civility as civility_id, d.firstname, d.lastname, d.societe as company, d.fk_soc, d.fk_parent, d.statut, d.public, d.address, d.zip, d.town, d.note_private,";
         $sql.= " d.note_public,";
         $sql.= " d.email, d.skype, d.phone, d.phone_perso, d.phone_mobile, d.login, d.pass, d.pass_crypted,";
         $sql.= " d.photo, d.fk_adherent_type, d.morphy, d.entity,";
@@ -1126,6 +1127,7 @@ class AdherentPlus extends CommonObject
                 $this->societe			= $obj->company;
                 $this->company			= $obj->company;
                 $this->fk_soc			= $obj->fk_soc;
+                $this->fk_parent			= $obj->fk_parent;                
                 $this->address			= $obj->address;
                 $this->zip				= $obj->zip;
                 $this->town				= $obj->town;
@@ -1264,7 +1266,6 @@ dol_include_once('/adherentsplus/class/subscription.class.php');
             return -1;
         }
     }
-
 
     /**
      *	Insert subscription into database and eventually add links to banks, mailman, etc...
