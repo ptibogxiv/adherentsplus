@@ -191,3 +191,5 @@ GroupSubscription=Adhésion de groupe
 SecondaryMembers=Adhérents secondaires
 NotPossible=Pas d'adhérent secondaire possible
 PrincipalMember=Adhérent principal
+PrincipalMember=Adhérent principal
+ConfirmDeleteParent=Etes-vous sûr de vouloir supprimer la liaison avec ce compte principal? Attention, ceci supprimera les adhésions de l'adhérent principal liées sur cet adhérent secondaire.

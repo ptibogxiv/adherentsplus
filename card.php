@@ -76,6 +76,7 @@ $id=GETPOST('id')?GETPOST('id','int'):$rowid;
 $typeid=GETPOST('typeid','int');
 $userid=GETPOST('userid','int');
 $socid=GETPOST('socid','int');
+$link=GETPOST('link','int');
 
 if (! empty($conf->mailmanspip->enabled))
 {
@@ -735,6 +736,20 @@ if (empty($reshook))
 		}
 	}
 
+  if ($action == 'confirm_deleteparent' && $confirm == 'yes' && $user->rights->adherent->creer)
+	{
+ 		$result=$object->delete_parent($link);
+		if ($result > 0)
+		{
+
+				header("Location: ".$dolibarr_main_url_root.dol_buildpath('/adherentsplus/card.php?rowid='.$rowid, 1));
+				exit;
+		}
+		else
+		{
+			$errmesg=$object->error;
+		}
+  }
 	// Actions to build doc
 	$upload_dir = $conf->adherent->dir_output;
 	$permissioncreate=$user->rights->adherent->creer;
@@ -1779,9 +1794,22 @@ else
 		$formactions = new FormActions($db);
 		$somethingshown = $formactions->showactions($object, 'member', $socid);
 		*/
-    if ($adht->family=='1' && $object->fk_parent=='0'){
-    print load_fiche_titre($langs->trans("SecondaryMembers"), '', ''); 
-    print '<table class="noborder" summary="listofdocumentstable" id="'.$modulepart.'_table" width="100%">'."\n";
+if ($adht->family=='1' && $action=='deleteparent' && $user->rights->adherent->creer){
+$form = new Form($db);
+$formconfirm=$form->formconfirm($_SERVER["PHP_SELF"].'?rowid='.$object->id.'&link='.$link, $langs->trans('Confirm'), $langs->trans('ConfirmDeleteParent'), 'confirm_deleteparent', '', 0, 1);
+print $formconfirm;	
+}
+if ($adht->family=='1' && $object->fk_parent>'0') {
+print load_fiche_titre($langs->trans("PrincipalMember"), '', '');
+print '<table class="noborder" summary="listofdocumentstable" id="'.$modulepart.'_table" width="100%">'."\n";
+$objp = new Adherentplus($db);
+$objp->fetch($object->fk_parent);
+print '<tr class="oddeven"><td align="left"><a href="'.$dolibarr_main_url_root.dol_buildpath('/adherentsplus/card.php?rowid='.$object->fk_parent, 1).'">'.img_picto('', 'object_user').' '.$objp->firstname.' '.$objp->lastname.'</a></td>';
+if ($user->rights->adherent->creer) {print '<td align="right"><a href="'. $_SERVER['PHP_SELF'] .'?action=deleteparent&rowid=' . $object->id . '&link=' . $object->id . '" class="deletefilelink">' . img_delete() . '</a></td>';}
+print '</tr></table>'."\n";     
+} elseif ($adht->family=='1'){
+print load_fiche_titre($langs->trans("SecondaryMembers"), '', ''); 
+print '<table class="noborder" summary="listofdocumentstable" id="'.$modulepart.'_table" width="100%">'."\n";
 $sql = "SELECT d.rowid, d.login, d.lastname, d.firstname, d.societe as company, d.fk_soc,";
 $sql.= " d.datefin, d.address, d.zip, d.town, d.state_id, d.country,";
 $sql.= " d.email, d.phone, d.phone_perso, d.phone_mobile, d.skype, d.birth, d.public, d.photo,";
@@ -1803,7 +1831,7 @@ print "<tr ".$bc[$var].">";
 print '<td>'.$objp->rowid;              
 print '</td>';
 print '<td align="left"><a href="'.$dolibarr_main_url_root.dol_buildpath('/adherentsplus/card.php?rowid='.$objp->rowid, 1).'">'.img_picto('', 'object_user').' '.$objp->firstname.' '.$objp->lastname.'</a></td>';
-print '<td align="right"></td>';
+if ($user->rights->adherent->creer) {print '<td align="right"><a href="'. $_SERVER['PHP_SELF'] .'?action=deleteparent&rowid=' . $object->id . '&link=' . $objp->rowid . '" class="deletefilelink">' . img_delete() . '</a></td>';}
 print "</tr>";
 $i++;
 }
@@ -1812,14 +1840,7 @@ print '<tr class="oddeven"><td colspan="3" class="opacitymedium">'.$langs->trans
 }
 }
 print '</table>'."\n";   
-} elseif ($adht->family=='1' && $object->fk_parent>'0') {
-print load_fiche_titre($langs->trans("PrincipalMember"), '', '');
-print '<table class="noborder" summary="listofdocumentstable" id="'.$modulepart.'_table" width="100%">'."\n";
-$objp = new Adherentplus($db);
-$objp->fetch($object->fk_parent);
-print '<tr class="oddeven"><td align="left"><a href="'.$dolibarr_main_url_root.dol_buildpath('/adherentsplus/card.php?rowid='.$object->fk_parent, 1).'">'.img_picto('', 'object_user').' '.$objp->firstname.' '.$objp->lastname.'</a></td></tr>';
-print '</table>'."\n";     
-} 
+}  
 		print '</div></div></div>';
 
 	}

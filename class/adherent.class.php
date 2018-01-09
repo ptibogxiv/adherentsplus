@@ -960,6 +960,30 @@ class AdherentPlus extends CommonObject
 
         return 1;
     }
+    
+    
+    /**
+     *    Set link to a user
+     *
+     *    @param     int	$userid        	Id of user to link to
+     *    @return    int					1=OK, -1=KO
+     */
+    function delete_parent($id)
+    {
+        global $conf, $langs;
+
+        $this->db->begin();
+
+        // If user is linked to this member, remove old link to this member
+        $sql = "UPDATE ".MAIN_DB_PREFIX."adherent SET fk_parent = NULL WHERE rowid = ".$id;
+        dol_syslog(get_class($this)."::deletememberparent", LOG_DEBUG);
+        $resql = $this->db->query($sql);
+        if (! $resql) { $this->error=$this->db->error(); $this->db->rollback(); return -1; }
+
+        $this->db->commit();
+
+        return 1;
+    }
 
 
     /**
