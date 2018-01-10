@@ -984,7 +984,7 @@ class AdherentPlus extends CommonObject
         // Search for last subscription id and end date
         $sql = "SELECT rowid, fk_type, datec as dateop, dateadh as datedeb, datef as datefin";
         $sql.= " FROM ".MAIN_DB_PREFIX."subscription";
-        $sql.= " WHERE fk_adherent=".$this->id;
+        $sql.= " WHERE fk_adherent=".$id;
         $sql.= " ORDER by dateadh DESC";	// Sort by start subscription date
 
         dol_syslog(get_class($this)."::update_end_date", LOG_DEBUG);
@@ -998,8 +998,8 @@ class AdherentPlus extends CommonObject
 
             $sql = "UPDATE ".MAIN_DB_PREFIX."adherent SET";
             $sql.= " datefin=".($datefin != '' ? "'".$this->db->idate($datefin)."'" : "null");
-            $sql.= " WHERE rowid = ".$this->id;
-            $sql.= " OR fk_parent = ".$this->id;
+            $sql.= " WHERE rowid = ".$id;
+            $sql.= " OR fk_parent = ".$id;
 
             dol_syslog(get_class($this)."::update_end_date", LOG_DEBUG);
             $resql=$this->db->query($sql);
@@ -1046,14 +1046,7 @@ class AdherentPlus extends CommonObject
         $objp->fetch($this->id);
 
         // If user is linked to this member, remove old link to this member
-        $sql = "UPDATE ".MAIN_DB_PREFIX."adherent SET fk_parent = ".$this->id." WHERE rowid = ".$id;
-        dol_syslog(get_class($this)."::deletememberparent", LOG_DEBUG);
-        $resql = $this->db->query($sql);
-        if (! $resql) { $this->error=$this->db->error(); $this->db->rollback(); return -1; }
-        else {
-        $this->db->commit();
-        // If user is linked to this member, remove old link to this member
-        $sql = "UPDATE ".MAIN_DB_PREFIX."adherent SET datefin=".($objp->datefin != '' ? "'".$this->db->idate($objp->datefin)."'" : "null")." WHERE rowid = ".$id;
+        $sql = "UPDATE ".MAIN_DB_PREFIX."adherent SET fk_parent = ".$this->id.", datefin=".($objp->datefin != '' ? "'".$this->db->idate($objp->datefin)."'" : "null")." WHERE rowid = ".$id;
         dol_syslog(get_class($this)."::deletememberparent", LOG_DEBUG);
         $resql = $this->db->query($sql);
         if (! $resql) { $this->error=$this->db->error(); $this->db->rollback(); return -1; }
@@ -1061,7 +1054,7 @@ class AdherentPlus extends CommonObject
         $this->db->commit();
 
         return 1;
-        }
+    
     }
     /**
      *    Set link to a third party
