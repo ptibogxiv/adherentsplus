@@ -1868,9 +1868,7 @@ print '</SELECT>';
 print '<input class="button buttongen" id="addsecondarymemeber" name="addsecondarymemeber" type="submit" value="'.$langs->trans('Add').'">';
 print '</FORM></TH></TR>';
 $sql = "SELECT d.rowid, d.login, d.lastname, d.firstname, d.societe as company, d.fk_soc,";
-$sql.= " d.datefin, d.address, d.zip, d.town, d.state_id, d.country,";
-$sql.= " d.email, d.phone, d.phone_perso, d.phone_mobile, d.skype, d.birth, d.public, d.photo,";
-$sql.= " d.fk_adherent_type as type_id, d.morphy, d.statut, d.datec as date_creation, d.tms as date_update";
+$sql.= " d.datefin, d.fk_adherent_type as type_id, d.morphy, d.statut, d.datec as date_creation, d.tms as date_update";
 $sql.= " FROM ".MAIN_DB_PREFIX."adherent as d";
 $sql.= " WHERE d.fk_parent = $id ";
         
