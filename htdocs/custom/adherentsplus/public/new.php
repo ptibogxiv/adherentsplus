@@ -82,7 +82,7 @@ $langs->load("install");
 $langs->load("other");
 
 // Security check
-if (empty($conf->adherent->enabled)) accessforbidden('',0,0,1);
+if (empty($conf->adherentsplus->enabled)) accessforbidden('',0,0,1);
 
 if (empty($conf->global->MEMBER_ENABLE_PUBLIC))
 {

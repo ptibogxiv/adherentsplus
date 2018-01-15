@@ -479,7 +479,7 @@ class AdherentsPlus extends DolibarrApi
     function _validate($data)
     {
         $member = array();
-        foreach (Members::$FIELDS as $field) {
+        foreach (AdherentsPlus::$FIELDS as $field) {
             if (!isset($data[$field]))
                 throw new RestException(400, "$field field missing");
             $member[$field] = $data[$field];

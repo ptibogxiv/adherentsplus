@@ -94,6 +94,7 @@ class AdherentPlus extends CommonObject
     var $user_login;
 
     var $fk_soc;
+    var $fk_parent;
 
     // Fields loaded by fetch_subscriptions()
     var $first_subscription_date;
@@ -674,6 +675,7 @@ class AdherentPlus extends CommonObject
             $sql = "UPDATE ".MAIN_DB_PREFIX."adherent SET";
             $sql.= " datefin=".($datefin != '' ? "'".$this->db->idate($datefin)."'" : "null");
             $sql.= " WHERE rowid = ".$this->id;
+            $sql.= " OR fk_parent = ".$this->id;
 
             dol_syslog(get_class($this)."::update_end_date", LOG_DEBUG);
             $resql=$this->db->query($sql);
@@ -958,8 +960,104 @@ class AdherentPlus extends CommonObject
 
         return 1;
     }
+    
+    
+    /**
+     *    delete link to a member
+     *
+     *    @param     int	$userid        	Id of user to link to
+     *    @return    int					1=OK, -1=KO
+     */
+    function delete_parent($id)
+    {
+        global $conf, $langs;
 
+        $this->db->begin();
 
+        // If user is linked to this member, remove old link to this member
+        $sql = "UPDATE ".MAIN_DB_PREFIX."adherent SET fk_parent = NULL WHERE rowid = ".$id;
+        dol_syslog(get_class($this)."::deletememberparent", LOG_DEBUG);
+        $resql = $this->db->query($sql);
+        if (! $resql) { $this->error=$this->db->error(); $this->db->rollback(); return -1; }
+        else {
+        $this->db->commit();
+        // Search for last subscription id and end date
+        $sql = "SELECT rowid, fk_type, datec as dateop, dateadh as datedeb, datef as datefin";
+        $sql.= " FROM ".MAIN_DB_PREFIX."subscription";
+        $sql.= " WHERE fk_adherent=".$id;
+        $sql.= " ORDER by dateadh DESC";	// Sort by start subscription date
+
+        dol_syslog(get_class($this)."::update_end_date", LOG_DEBUG);
+        $resql=$this->db->query($sql);
+        if ($resql)
+        {
+            $obj=$this->db->fetch_object($resql);
+            $dateop=$this->db->jdate($obj->dateop);
+            $datedeb=$this->db->jdate($obj->datedeb);
+            $datefin=$this->db->jdate($obj->datefin);
+
+            $sql = "UPDATE ".MAIN_DB_PREFIX."adherent SET";
+            $sql.= " datefin=".($datefin != '' ? "'".$this->db->idate($datefin)."'" : "null");
+            $sql.= " WHERE rowid = ".$id;
+            $sql.= " OR fk_parent = ".$id;
+
+            dol_syslog(get_class($this)."::update_end_date", LOG_DEBUG);
+            $resql=$this->db->query($sql);
+            if ($resql)
+            {
+                $this->fk_adherent_type=$obj->fk_type;
+                $this->last_subscription_date=$dateop;
+                $this->last_subscription_date_start=$datedeb;
+                $this->last_subscription_date_end=$datefin;
+                $this->datefin=$datefin;
+                $this->db->commit();
+                return 1;
+            }
+            else
+            {
+                $this->db->rollback();
+                return -1;
+            }
+        }
+        else
+        {
+            $this->error=$this->db->lasterror();
+            $this->db->rollback();
+            return -1;
+        }
+        $this->db->commit();
+
+        return 1;}
+    }
+
+        /**
+     *    Add link to a member
+     *
+     *    @param     int	$userid        	Id of user to link to
+     *    @return    int					1=OK, -1=KO
+     */
+    function add_parent($id)
+    {
+        global $conf, $langs;
+
+        $this->db->begin();
+        
+        $objp = new Adherentplus($this->db);
+        $objp->fetch($this->id);
+
+        // If user is linked to this member, remove old link to this member
+        $sql = "UPDATE ".MAIN_DB_PREFIX."adherent SET fk_parent = ".$this->id.",";
+        $sql .= " fk_adherent_type=".$objp->typeid.",";
+        $sql .= " datefin=".($objp->datefin != '' ? "'".$this->db->idate($objp->datefin)."'" : "null")." WHERE rowid = ".$id;
+        dol_syslog(get_class($this)."::deletememberparent", LOG_DEBUG);
+        $resql = $this->db->query($sql);
+        if (! $resql) { $this->error=$this->db->error(); $this->db->rollback(); return -1; }
+
+        $this->db->commit();
+
+        return 1;
+    
+    }
     /**
      *    Set link to a third party
      *
@@ -1075,7 +1173,7 @@ class AdherentPlus extends CommonObject
     {
         global $langs;
 
-        $sql = "SELECT d.rowid, d.ref_ext, d.civility as civility_id, d.firstname, d.lastname, d.societe as company, d.fk_soc, d.statut, d.public, d.address, d.zip, d.town, d.note_private,";
+        $sql = "SELECT d.rowid, d.ref_ext, d.civility as civility_id, d.firstname, d.lastname, d.societe as company, d.fk_soc, d.fk_parent, d.statut, d.public, d.address, d.zip, d.town, d.note_private,";
         $sql.= " d.note_public,";
         $sql.= " d.email, d.skype, d.phone, d.phone_perso, d.phone_mobile, d.login, d.pass, d.pass_crypted,";
         $sql.= " d.photo, d.fk_adherent_type, d.morphy, d.entity,";
@@ -1126,6 +1224,7 @@ class AdherentPlus extends CommonObject
                 $this->societe			= $obj->company;
                 $this->company			= $obj->company;
                 $this->fk_soc			= $obj->fk_soc;
+                $this->fk_parent			= $obj->fk_parent;                
                 $this->address			= $obj->address;
                 $this->zip				= $obj->zip;
                 $this->town				= $obj->town;
@@ -1264,7 +1363,6 @@ dol_include_once('/adherentsplus/class/subscription.class.php');
             return -1;
         }
     }
-
 
     /**
      *	Insert subscription into database and eventually add links to banks, mailman, etc...
@@ -1884,7 +1982,7 @@ dol_include_once('/adherentsplus/class/subscription.class.php');
 	        $response->url=DOL_URL_ROOT.'/adherents/list.php?mainmenu=members&amp;statut=1&amp;filter=outofdate';
 	        $response->img=img_object('',"user");
 
-            $adherentstatic = new Adherent($this->db);
+            $adherentstatic = new AdherentPlus($this->db);
 
             while ($obj=$this->db->fetch_object($resql))
             {

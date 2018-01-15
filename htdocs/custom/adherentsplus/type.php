@@ -77,6 +77,7 @@ if (! $sortfield) {  $sortfield="d.lastname"; }
 
 $label=GETPOST("label","alpha");
 $subscription=GETPOST("subscription","int");
+$family=GETPOST("family","int");
 $vote=GETPOST("vote","int");
 $comment=GETPOST("comment");
 $mail_valid=GETPOST("mail_valid");
@@ -117,7 +118,8 @@ if ($action == 'add' && $user->rights->adherent->configurer)
 
     $object->welcome     = trim($welcome);
     $object->price       = trim($price);
-    $object->automatic   = trim($automatic);
+    $object->automatic   = (boolean) trim($automatic);
+    $object->family   = (boolean) trim($family);
 		$object->label			= trim($label);
 		$object->subscription	= (int) trim($subscription);
 		$object->note			= trim($comment);
@@ -161,9 +163,10 @@ if ($action == 'update' && $user->rights->adherent->configurer)
 		$object->note           = trim($comment);
 		$object->mail_valid     = (boolean) trim($mail_valid);
 		$object->vote           = (boolean) trim($vote);
+    $object->family           = (boolean) trim($family);
     $object->welcome     = trim($welcome);
     $object->price       = trim($price);
-    $object->automatic   = trim($automatic);
+    $object->automatic   = (boolean) trim($automatic);
 		// Fill array 'array_options' with data from add form
 		$ret = $extrafields->setOptionalsFromPost($extralabels,$object);
 		if ($ret < 0) $error++;
@@ -198,7 +201,7 @@ if (! $rowid && $action != 'create' && $action != 'edit')
 {
 	//dol_fiche_head('');
 
-	$sql = "SELECT d.rowid, d.libelle as label, d.subscription, d.vote, d.welcome, d.price, d.vote, d.automatic";
+	$sql = "SELECT d.rowid, d.libelle as label, d.subscription, d.vote, d.welcome, d.price, d.vote, d.automatic, d.family";
 	$sql.= " FROM ".MAIN_DB_PREFIX."adherent_type as d";
 	$sql.= " WHERE d.entity IN (".getEntity('adherent').")";
 
@@ -231,9 +234,10 @@ if (! $rowid && $action != 'create' && $action != 'edit')
 		print '<tr class="liste_titre">';
 		print '<th>'.$langs->trans("Ref").'</th>';
 		print '<th>'.$langs->trans("Label").'</th>';
+    print '<th align="center">'.$langs->trans("GroupSubscription").'</th>';
 		print '<th align="center">'.$langs->trans("SubscriptionRequired").'</th>';
 		print '<th align="center">'.$langs->trans("VoteAllowed").'</th>';
-    print '<td align="center">'.$langs->trans("AutoSubscription").'</td>';
+    print '<th align="center">'.$langs->trans("AutoSubscription").'</th>';
 		print '<th>&nbsp;</th>';
 		print "</tr>\n";
 
@@ -243,6 +247,7 @@ if (! $rowid && $action != 'create' && $action != 'edit')
 			print '<tr class="oddeven">';
 			print '<td><a href="'.$_SERVER["PHP_SELF"].'?rowid='.$objp->rowid.'">'.img_object($langs->trans("ShowType"),'group').' '.$objp->rowid.'</a></td>';
 			print '<td>'.dol_escape_htmltag($objp->label).'</td>';
+      print '<td align="center">'.yn($objp->family).'</td>';
 			print '<td align="center">'.yn($objp->subscription).'</td>';
 			print '<td align="center">'.yn($objp->vote).'</td>';
       print '<td align="center">'.yn($objp->automatic).'</td>';
@@ -286,6 +291,10 @@ if ($action == 'create')
 	print '<tbody>';
 
 	print '<tr><td class="titlefieldcreate fieldrequired">'.$langs->trans("Label").'</td><td><input type="text" name="label" size="40"></td></tr>';
+
+  print '<tr><td>'.$langs->trans("GroupSubscription").'</td><td>';
+	print $form->selectyesno("family",0,1);
+	print '</td></tr>';
 
 	print '<tr><td>'.$langs->trans("SubscriptionRequired").'</td><td>';
 	print $form->selectyesno("subscription",1,1);
@@ -365,6 +374,10 @@ if ($rowid > 0)
 		print '<div class="underbanner clearboth"></div>';
 
 		print '<table class="border" width="100%">';
+
+    print '<tr><td class="titlefield">'.$langs->trans("GroupSubscription").'</td><td>';
+		print yn($object->family);
+		print '</tr>';
 
 		print '<tr><td class="titlefield">'.$langs->trans("SubscriptionRequired").'</td><td>';
 		print yn($object->subscription);
@@ -707,6 +720,10 @@ if ($rowid > 0)
 		print '<tr><td class="titlefield">'.$langs->trans("Ref").'</td><td>'.$object->id.'</td></tr>';
 
 		print '<tr><td class="fieldrequired">'.$langs->trans("Label").'</td><td><input type="text" name="label" size="40" value="'.dol_escape_htmltag($object->label).'"></td></tr>';
+
+    print '<tr><td>'.$langs->trans("GroupSubscription").'</td><td>';
+		print $form->selectyesno("family",$object->family,1);
+		print '</td></tr>';
 
 		print '<tr><td>'.$langs->trans("SubscriptionRequired").'</td><td>';
 		print $form->selectyesno("subscription",$object->subscription,1);

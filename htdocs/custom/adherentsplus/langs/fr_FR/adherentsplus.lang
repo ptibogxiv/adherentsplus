@@ -184,7 +184,14 @@ ADHERENT_SUBSCRIPTION_TRI=Prorata trimestriel
 ADHERENT_SUBSCRIPTION_MEN=Prorata mensuel
 monthbefore=mois avant la fin de validité
 AdherentMultiOneThirdparty=Mode multi adhérent par tiers
-AutoSubscription=Renouvellement/Adhésion automatique
+AutoSubscription=Adhésion automatique
 SubscriptionWelcome=Droit d'entrée
 SubscriptionPrice=Cotisation
-
+GroupSubscription=Adhésion de groupe
+SecondaryMembers=Adhérents secondaires
+NotPossible=Pas d'adhérent secondaire possible
+PrincipalMember=Adhérent principal
+PrincipalMember=Adhérent principal
+ConfirmAddParent=Etes-vous sûr de vouloir créer la liaison avec ce compte principal? La date de fin d'adhésion de l'adhérent secondaire sera modifiée si inférieure à celle de l'adhérent principal.
+ConfirmDeleteParent=Etes-vous sûr de vouloir supprimer la liaison avec ce compte principal? Attention, ceci supprimera les adhésions de l'adhérent principal liées sur cet adhérent secondaire et modifiera la date de fin d'adhésion.
+DeleteParentBefore=Supprimer la liaison à l'adhérent principal avant de créer une cotisation
