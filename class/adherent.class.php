@@ -199,7 +199,7 @@ class AdherentPlus extends CommonObject
 		$infos.= $langs->transnoentities("Town").": ".$this->town."\n";
 		$infos.= $langs->transnoentities("Country").": ".$this->country."\n";
 		$infos.= $langs->transnoentities("EMail").": ".$this->email."\n";
-		if (empty($conf->global->ADHERENT_LOGIN_NOT_REQUIRED))
+		if (!empty($conf->global->ADHERENT_LOGIN_NOT_REQUIRED))
 		{
 		    $infos.= $langs->transnoentities("Login").": ".$this->login."\n";
 		    $infos.= $langs->transnoentities("Password").": ".$this->pass."\n";
@@ -299,7 +299,7 @@ class AdherentPlus extends CommonObject
             return -1;
         }
         if (! $this->datec) $this->datec=$now;
-        if (empty($conf->global->ADHERENT_LOGIN_NOT_REQUIRED))
+        if (!empty($conf->global->ADHERENT_LOGIN_NOT_REQUIRED))
         {
             if (empty($this->login))
             {

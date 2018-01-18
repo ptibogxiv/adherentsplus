@@ -25,7 +25,7 @@ dol_include_once('/adherentsplus/class/subscription.class.php');
  * @access protected
  * @class  DolibarrApiAccess {@requires user,external}
  */
-class Subscriptions extends DolibarrApi
+class SubscriptionsPlus extends DolibarrApi
 {
     /**
      * @var array   $FIELDS     Mandatory fields, checked when create and update object
@@ -85,7 +85,7 @@ class Subscriptions extends DolibarrApi
      *
      * @throws RestException
      */
-    function index($sortfield = "dateadh", $sortorder = 'ASC', $limit = 0, $page = 0, $sqlfilters = '') {
+    function index($sortfield = "dateadh", $sortorder = 'ASC', $limit = 5, $page = 0, $sqlfilters = '') {
         global $db, $conf;
 
         $obj_ret = array();

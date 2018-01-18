@@ -6,7 +6,6 @@
  * Copyright (C) 2012      Marcos García        <marcosgdf@gmail.com>
  * Copyright (C) 2012-2016 Philippe Grand       <philippe.grand@atoo-net.com>
  * Copyright (C) 2015-2016 Alexandre Spangaro   <aspangaro.dolibarr@gmail.com>
- * Copyright (C) 2017      Ari Elbaz (elarifr)	<github@accedinfo.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,13 +22,11 @@
  */
 
 /**
- *       \file       htdocs/adherentsex/card.php
+ *       \file       htdocs/adherents/card.php
  *       \ingroup    member
  *       \brief      Page of member
  */
 
-// require '../../main.inc.php';
-// Dolibarr environment
 $res = 0;
 if (! $res && file_exists("../main.inc.php"))
 {
