@@ -495,7 +495,7 @@ class AdherentsPlus extends DolibarrApi
      */
     function _cleanObjectDatas($object) {
 
-        $object = parent::_cleanObjectDatas($object);
+    	$object = parent::_cleanObjectDatas($object);
 
         // Remove the subscriptions because they are handled as a subresource.
         unset($object->subscriptions);

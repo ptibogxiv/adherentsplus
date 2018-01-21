@@ -294,7 +294,7 @@ if (empty($reshook))
 			setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentities("Company")), null, 'errors');
 		}
 		// Test si le login existe deja
-		if (!empty($conf->global->ADHERENT_LOGIN_NOT_REQUIRED))
+		if (empty($conf->global->ADHERENT_LOGIN_NOT_REQUIRED))
 		{
 			if (empty($login)) {
 				$error++;
@@ -867,13 +867,13 @@ else
 		print '<TBODY>';
 
 		// Login
-		if (!empty($conf->global->ADHERENT_LOGIN_NOT_REQUIRED))
+		if (empty($conf->global->ADHERENT_LOGIN_NOT_REQUIRED))
 		{
 			print '<TR><TD><SPAN class="fieldrequired">'.$langs->trans("Login").' / '.$langs->trans("Id").'</SPAN></TD><TD><INPUT type="text" name="member_login" class="maxwidth200" value="'.(isset($_POST["member_login"])?GETPOST("member_login", 'alpha', 2):$object->login).'"></TD></TR>';
 		}
 
 		// Password
-		if (!empty($conf->global->ADHERENT_LOGIN_NOT_REQUIRED))
+		if (empty($conf->global->ADHERENT_LOGIN_NOT_REQUIRED))
 		{
 			require_once DOL_DOCUMENT_ROOT.'/core/lib/security2.lib.php';
 			$generated_password=getRandomPassword(false);
@@ -1098,13 +1098,13 @@ else
 		print '<TR><TD class="titlefieldcreate">'.$langs->trans("Ref").'</TD><TD class="valeur">'.$object->id.'</TD></TR>';
 
 		// Login
-		if (!empty($conf->global->ADHERENT_LOGIN_NOT_REQUIRED))
+		if (empty($conf->global->ADHERENT_LOGIN_NOT_REQUIRED))
 		{
 			print '<TR><TD><SPAN class="fieldrequired">'.$langs->trans("Login").' / '.$langs->trans("Id").'</SPAN></TD><TD><INPUT type="text" name="login" class="maxwidth200" value="'.(isset($_POST["login"])?GETPOST("login",'alpha',2):$object->login).'"></TD></TR>';
 		}
 
 	// Password
-		if (!empty($conf->global->ADHERENT_LOGIN_NOT_REQUIRED))
+		if (empty($conf->global->ADHERENT_LOGIN_NOT_REQUIRED))
 		{
 			print '<TR><TD class="fieldrequired">'.$langs->trans("Password").'</TD><TD><INPUT type="password" name="pass" class="maxwdith200" value="'.(isset($_POST["pass"])?GETPOST("pass",'',2):$object->pass).'"></TD></TR>';
 		}
@@ -1461,7 +1461,7 @@ else
 		print '<TABLE class="border centpercent">';
 
 		// Login
-		if (!empty($conf->global->ADHERENT_LOGIN_NOT_REQUIRED))
+		if (empty($conf->global->ADHERENT_LOGIN_NOT_REQUIRED))
 		{
 			print '<TR><TD class="titlefield">'.$langs->trans("Login").' / '.$langs->trans("Id").'</TD><TD class="valeur">'.$object->login.'&nbsp;</TD></TR>';
 		}
