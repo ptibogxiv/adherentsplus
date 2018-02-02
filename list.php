@@ -213,7 +213,7 @@ if (empty($reshook))
 
 $form=new Form($db);
 $formother=new FormOther($db);
-$membertypestatic=new AdherentTypeplus($db);
+$membertypestatic=new AdherentTypePlus($db);
 $memberstatic=new Adherentplus($db);
 
 $now=dol_now();
@@ -321,7 +321,7 @@ elseif ($action == 'search')
 
 if ($search_type > 0)
 {
-	$membertype=new AdherentTypeplus($db);
+	$membertype=new AdherentTypePlus($db);
 	$result=$membertype->fetch(GETPOST("type",'int'));
 	$titre.=" (".$membertype->label.")";
 }
