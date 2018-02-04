@@ -516,7 +516,7 @@ if (empty($reshook))
 			setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("Nature")), null, 'errors');
 		}
 		// Tests if the login already exists
-		if (!empty($conf->global->ADHERENT_LOGIN_NOT_REQUIRED))
+		if (empty($conf->global->ADHERENT_LOGIN_NOT_REQUIRED))
 		{
 			if (empty($login)) {
 				$error++;

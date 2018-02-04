@@ -101,7 +101,7 @@ if ($result)
 		$adhtype=new AdherentTypePlus($db);
 		$adhtype->id=$objp->rowid;
 		$adhtype->subscription=$objp->subscription;
-		$adhtype->libelle=$objp->libelle;
+		$adhtype->label=$objp->libelle;
 		$AdherentType[$objp->rowid]=$adhtype;
 
 		if ($objp->statut == -1) { $MemberToValidate[$objp->rowid]=$objp->somme; }
@@ -342,7 +342,7 @@ if ($resql)
 			}
 			$staticmember->ref=$staticmember->getFullName($langs);
 			$statictype->id=$obj->typeid;
-			$statictype->libelle=$obj->libelle;
+			$statictype->label=$obj->libelle;
 			print '<td>'.$staticmember->getNomUrl(1,32).'</td>';
 			print '<td>'.$statictype->getNomUrl(1,32).'</td>';
 			print '<td>'.dol_print_date($db->jdate($obj->datem),'dayhour').'</td>';
