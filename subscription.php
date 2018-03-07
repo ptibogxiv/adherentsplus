@@ -288,7 +288,7 @@ if ($user->rights->adherent->cotisation->creer && $action == 'subscription' && !
                 {
                     if (! $_POST["label"])     $errmsg=$langs->trans("ErrorFieldRequired",$langs->transnoentities("Label"));
                     if ($_POST["paymentsave"] != 'invoiceonly' && ! $_POST["operation"]) $errmsg=$langs->trans("ErrorFieldRequired",$langs->transnoentities("PaymentMode"));
-                    if ($_POST["paymentsave"] != 'invoiceonly' && ! $_POST["accountid"]) $errmsg=$langs->trans("ErrorFieldRequired",$langs->transnoentities("FinancialAccount"));
+                    if ($_POST["paymentsave"] != 'invoiceonly' && ! ($_POST["accountid"] > 0)) $errmsg=$langs->trans("ErrorFieldRequired",$langs->transnoentities("FinancialAccount"));
                 }
                 else
                 {
@@ -889,19 +889,20 @@ if ($rowid > 0)
         }
 
 
-        // Link for paypal payment
-        if (! empty($conf->paypal->enabled))
-        {
-            include_once DOL_DOCUMENT_ROOT.'/paypal/lib/paypal.lib.php';
-            print showPaypalPaymentUrl('membersubscription',$object->ref);
-        }
+    if (($action != 'addsubscription' && $action != 'create_thirdparty'))
+    {
+	    // Shon online payment link
+	    $useonlinepayment = (! empty($conf->paypal->enabled) || ! empty($conf->stripe->enabled) || ! empty($conf->paybox->enabled));
 
-        // Link for stripe payment
-        if (! empty($conf->stripe->enabled))
-        {
-            include_once DOL_DOCUMENT_ROOT.'/stripe/lib/stripe.lib.php';
-            print showStripePaymentUrl('membersubscription',$object->ref);
-        }
+	    if ($useonlinepayment)
+	    {
+	    	print '<br>';
+
+	    	require_once DOL_DOCUMENT_ROOT.'/core/lib/payments.lib.php';
+	    	print showOnlinePaymentUrl('membersubscription', $object->ref);
+	    	print '<br>';
+	    }
+    }
 
     }
 
