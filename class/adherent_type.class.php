@@ -310,7 +310,7 @@ class AdherentTypePlus extends CommonObject
 
         if ($withpicto) $result.=($link.img_object($label, $picto, 'class="classfortooltip"').$linkend);
         if ($withpicto && $withpicto != 2) $result.=' ';
-        $result.=$link.($maxlen?dol_trunc($this->libelle,$maxlen):$this->libelle).$linkend;
+        $result.=$link.($maxlen?dol_trunc($this->label,$maxlen):$this->label).$linkend;
         return $result;
     }
 

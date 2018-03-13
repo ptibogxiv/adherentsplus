@@ -1454,36 +1454,36 @@ else
 
 		dol_banner_tab($object, 'rowid', $linkback);
 
-        print '<DIV class="fichecenter">';
-        print '<DIV class="fichehalfleft">';
+        print '<div class="fichecenter">';
+        print '<div class="fichehalfleft">';
 
-        print '<DIV class="underbanner clearboth"></DIV>';
-		print '<TABLE class="border centpercent">';
+        print '<div class="underbanner clearboth"></div>';
+		print '<table class="border centpercent">';
 
 		// Login
 		if (empty($conf->global->ADHERENT_LOGIN_NOT_REQUIRED))
 		{
-			print '<TR><TD class="titlefield">'.$langs->trans("Login").' / '.$langs->trans("Id").'</TD><TD class="valeur">'.$object->login.'&nbsp;</TD></TR>';
+			print '<tr><td class="titlefield">'.$langs->trans("Login").' / '.$langs->trans("Id").'</td><td class="valeur">'.$object->login.'&nbsp;</td></tr>';
 		}
 
 		// Type
-		print '<TR><TD class="titlefield">'.$langs->trans("Type").'</TD><TD class="valeur">'.$adht->getNomUrl(1)."</TD></TR>\n";
+		print '<tr><td class="titlefield">'.$langs->trans("Type").'</td><td class="valeur">'.$adht->getNomUrl(1)."</td></tr>\n";
 
 		// Morphy
-		print '<TR><TD>'.$langs->trans("Nature").'</TD><TD class="valeur" >'.$object->getmorphylib().'</TD>';
-		print '</TR>';
+		print '<tr><td>'.$langs->trans("Nature").'</td><td class="valeur" >'.$object->getmorphylib().'</td>';
+		print '</tr>';
 
 		// Company
-		print '<TR><TD>'.$langs->trans("Company").'</TD><TD class="valeur">'.$object->societe.'</TD></TR>';
+		print '<tr><td>'.$langs->trans("Company").'</td><td class="valeur">'.$object->societe.'</td></tr>';
 
 		// Civility
-		print '<TR><TD>'.$langs->trans("UserTitle").'</TD><TD class="valeur">'.$object->getCivilityLabel().'&nbsp;</TD>';
-		print '</TR>';
+		print '<tr><td>'.$langs->trans("UserTitle").'</td><td class="valeur">'.$object->getCivilityLabel().'&nbsp;</td>';
+		print '</tr>';
 
 		// Password
-		if (!empty($conf->global->ADHERENT_LOGIN_NOT_REQUIRED))
+		if (empty($conf->global->ADHERENT_LOGIN_NOT_REQUIRED))
 		{
-			print '<TR><TD>'.$langs->trans("Password").'</TD><TD>'.preg_replace('/./i','*',$object->pass);
+			print '<tr><td>'.$langs->trans("Password").'</td><td>'.preg_replace('/./i','*',$object->pass);
 			if ($object->pass) print preg_replace('/./i','*',$object->pass);
 			else
 			{
@@ -1496,82 +1496,56 @@ else
 			    $htmltext=$langs->trans("WarningPasswordSetWithNoAccount");
 			    print ' '.$form->textwithpicto('', $htmltext,1,'warning');
 			}
-			print '</TD></TR>';
+			print '</td></tr>';
 		}
 
-        print '</TABLE>';
-
-        print '</DIV>';
-        print '<DIV class="fichehalfright"><DIV class="ficheaddleft">';
-
-        print '<DIV class="underbanner clearboth"></DIV>';
-        print '<TABLE class="border tableforfield" width="100%">';
-
-		// Birthday
-		print '<TR><TD class="titlefield">'.$langs->trans("Birthday").'</TD><TD class="valeur">'.dol_print_date($object->birth,'day').'</TD></TR>';
-
-		// Public
-		print '<TR><TD>'.$langs->trans("Public").'</TD><TD class="valeur">'.yn($object->public).'</TD></TR>';
-
-		// Categories
-		if (! empty($conf->categorie->enabled)  && ! empty($user->rights->categorie->lire))
+		// Date end subscription
+		print '<tr><td>'.$langs->trans("SubscriptionEndDate").'</td><td class="valeur">';
+		if ($object->datefin)
 		{
-			print '<TR><TD>' . $langs->trans("Categories") . '</TD>';
-			print '<TD colspan="2">';
-			print $form->showCategories($object->id, 'member', 1);
-			print '</TD></TR>';
+			print dol_print_date($object->datefin,'day');
+			if ($object->hasDelay()) {
+				print " ".img_warning($langs->trans("Late"));
+			}
 		}
-
-    	// Other attributes
-    	include DOL_DOCUMENT_ROOT . '/core/tpl/extrafields_view.tpl.php';
-
-        // Date end subscription
-        print '<TR><TD>'.$langs->trans("SubscriptionEndDate").'</TD><TD class="valeur">';
-        if ($object->datefin)
-        {
-            print dol_print_date($object->datefin,'day');
-            if ($object->hasDelay()) {
-                print " ".img_warning($langs->trans("Late"));
-            }
-        }
-        else
-        {
-	        if (! $adht->subscription)
-	        {
-	        	print $langs->trans("SubscriptionNotRecorded");
-		        if ($object->statut > 0) print " ".img_warning($langs->trans("Late")); // displays delay Pictogram only if not a draft and not terminated
-	        }
-	        else
-	        {
-	            print $langs->trans("SubscriptionNotReceived");
-	            if ($object->statut > 0) print " ".img_warning($langs->trans("Late")); // displays delay Pictogram only if not a draft and not terminated
-	        }
-        }
-        print '</TD></TR>';
+		else
+		{
+			if (! $adht->subscription)
+			{
+				print $langs->trans("SubscriptionNotRecorded");
+				if ($object->statut > 0) print " ".img_warning($langs->trans("Late")); // displays delay Pictogram only if not a draft and not terminated
+			}
+			else
+			{
+				print $langs->trans("SubscriptionNotReceived");
+				if ($object->statut > 0) print " ".img_warning($langs->trans("Late")); // displays delay Pictogram only if not a draft and not terminated
+			}
+		}
+		print '</td></tr>';
 
 		// Third party Dolibarr
 		if (! empty($conf->societe->enabled))
 		{
-			print '<TR><TD>';
-			print '<TABLE class="nobordernopadding" width="100%"><TR><TD>';
+			print '<tr><td>';
+			print '<table class="nobordernopadding" width="100%"><tr><td>';
 			print $langs->trans("LinkedToDolibarrThirdParty");
-			print '</TD>';
-			if ($action != 'editthirdparty' && $user->rights->adherent->creer) print '<TD align="right"><A href="'.$_SERVER["PHP_SELF"].'?action=editthirdparty&amp;rowid='.$object->id.'">'.img_edit($langs->trans('SetLinkToThirdParty'),1).'</A></TD>';
-			print '</TR></TABLE>';
-			print '</TD><TD colspan="2" class="valeur">';
+			print '</td>';
+			if ($action != 'editthirdparty' && $user->rights->adherent->creer) print '<td align="right"><a href="'.$_SERVER["PHP_SELF"].'?action=editthirdparty&amp;rowid='.$object->id.'">'.img_edit($langs->trans('SetLinkToThirdParty'),1).'</a></td>';
+			print '</tr></table>';
+			print '</td><td colspan="2" class="valeur">';
 			if ($action == 'editthirdparty')
 			{
 				$htmlname='socid';
-				print '<FORM method="POST" action="'.$_SERVER['PHP_SELF'].'" name="form'.$htmlname.'">';
-				print '<INPUT type="hidden" name="rowid" value="'.$object->id.'">';
-				print '<INPUT type="hidden" name="action" value="set'.$htmlname.'">';
-				print '<INPUT type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
-				print '<TABLE class="nobordernopadding" cellpadding="0" cellspacing="0">';
-				print '<TR><TD>';
+				print '<form method="POST" action="'.$_SERVER['PHP_SELF'].'" name="form'.$htmlname.'">';
+				print '<input type="hidden" name="rowid" value="'.$object->id.'">';
+				print '<input type="hidden" name="action" value="set'.$htmlname.'">';
+				print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
+				print '<table class="nobordernopadding" cellpadding="0" cellspacing="0">';
+				print '<tr><td>';
 				print $form->select_company($object->fk_soc,'socid','',1);
-				print '</TD>';
-				print '<TD align="left"><INPUT type="submit" class="button" value="'.$langs->trans("Modify").'"></TD>';
-				print '</TR></TABLE></FORM>';
+				print '</td>';
+				print '<td align="left"><input type="submit" class="button" value="'.$langs->trans("Modify").'"></td>';
+				print '</tr></table></form>';
 			}
 			else
 			{
@@ -1586,25 +1560,25 @@ else
 					print $langs->trans("NoThirdPartyAssociatedToMember");
 				}
 			}
-			print '</TD></TR>';
+			print '</td></tr>';
 		}
 
 		// Login Dolibarr
-		print '<TR><TD>';
-		print '<TABLE class="nobordernopadding" width="100%"><TR><TD>';
+		print '<tr><td>';
+		print '<table class="nobordernopadding" width="100%"><tr><td>';
 		print $langs->trans("LinkedToDolibarrUser");
-		print '</TD>';
+		print '</td>';
 		if ($action != 'editlogin' && $user->rights->adherent->creer)
 		{
-			print '<TD align="right">';
+			print '<td align="right">';
 			if ($user->rights->user->user->creer)
 			{
-				print '<A href="'.$_SERVER["PHP_SELF"].'?action=editlogin&amp;rowid='.$object->id.'">'.img_edit($langs->trans('SetLinkToUser'),1).'</A>';
+				print '<a href="'.$_SERVER["PHP_SELF"].'?action=editlogin&amp;rowid='.$object->id.'">'.img_edit($langs->trans('SetLinkToUser'),1).'</a>';
 			}
-			print '</TD>';
+			print '</td>';
 		}
-		print '</TR></TABLE>';
-		print '</TD><TD colspan="2" class="valeur">';
+		print '</tr></table>';
+		print '</td><td colspan="2" class="valeur">';
 		if ($action == 'editlogin')
 		{
 			$form->form_users($_SERVER['PHP_SELF'].'?rowid='.$object->id,$object->user_id,'userid','');
@@ -1617,14 +1591,45 @@ else
 			}
 			else print $langs->trans("NoDolibarrAccess");
 		}
-		print '</TD></TR>';
+		print '</td></tr>';
 
-		print "</TABLE>\n";
+        print '</table>';
 
-		print "</DIV></DIV></DIV>\n";
-        print '<DIV style="clear:both"></DIV>';
+        print '</div>';
+        print '<div class="fichehalfright"><div class="ficheaddleft">';
+
+        print '<div class="underbanner clearboth"></div>';
+        print '<table class="border tableforfield" width="100%">';
+
+		// Birthday
+		print '<tr><td class="titlefield">'.$langs->trans("Birthday").'</td><td class="valeur">'.dol_print_date($object->birth,'day').'</td></tr>';
+
+		// Public
+		print '<tr><td>'.$langs->trans("Public").'</td><td class="valeur">'.yn($object->public).'</td></tr>';
+
+		// Categories
+		if (! empty($conf->categorie->enabled)  && ! empty($user->rights->categorie->lire))
+		{
+			print '<tr><td>' . $langs->trans("Categories") . '</td>';
+			print '<td colspan="2">';
+			print $form->showCategories($object->id, 'member', 1);
+			print '</td></tr>';
+		}
+
+		// Other attributes
+		include DOL_DOCUMENT_ROOT . '/core/tpl/extrafields_view.tpl.php';
+
+		print "</table>\n";
+
+		print "</div></div></div>\n";
+        print '<div style="clear:both"></div>';
 
         dol_fiche_end();
+
+
+		/*
+		 * Hotbar
+		 */
 
 
 		/*
