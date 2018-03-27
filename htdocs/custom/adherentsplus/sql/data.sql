@@ -21,5 +21,8 @@ ALTER TABLE llx_adherent_type ADD price double(24,8) DEFAULT '0.00000000';
 ALTER TABLE llx_adherent_type ADD price_level int(11) DEFAULT NULL;
 ALTER TABLE llx_adherent_type ADD vote varchar(3) DEFAULT NULL;
 ALTER TABLE llx_adherent_type ADD automatic varchar(3) DEFAULT NULL;
+ALTER TABLE llx_adherent_type ADD family int(3) DEFAULT NULL;
+
+ALTER TABLE llx_adherent ADD fk_parent int(11) DEFAULT NULL,
 
 ALTER TABLE llx_subscription ADD fk_type int(11) DEFAULT NULL;
