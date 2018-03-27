@@ -299,11 +299,11 @@ $this->menu[$r]=array(	'fk_menu'=>0,			// Put 0 if this is a top menu
             'target' => '',
             'user' => 0);
         $r++;
-        
+
              $this->menu[$r] = array('fk_menu' => 'fk_mainmenu=adherentsplus,fk_leftmenu=adherentsplus',
             'type' => 'left',
             'titre' => 'NewMember',
-            'mainmenu' => 'adherentsplus',           
+            'mainmenu' => 'adherentsplus',
             'url' => '/adherentsplus/card.php?&action=create',
             'langs' => 'adherentsplus@adherentsplus',
             'position' => 111,
@@ -316,7 +316,7 @@ $this->menu[$r]=array(	'fk_menu'=>0,			// Put 0 if this is a top menu
             'type' => 'left',
             'titre' => 'MembersList',
             'mainmenu' => 'adherentsplus',
-            'leftmenu' => 'adherentsplusstatus',            
+            'leftmenu' => 'adherentsplusstatus',
             'url' => '/adherentsplus/list.php',
             'langs' => 'adherentsplus@adherentsplus',
             'position' => 112,
@@ -324,12 +324,12 @@ $this->menu[$r]=array(	'fk_menu'=>0,			// Put 0 if this is a top menu
             'perms' => '$user->rights->adherent->lire',
             'target' => '',
             'user' => 0);
-        $r++; 
-        
+        $r++;
+
             $this->menu[$r] = array('fk_menu' => 'fk_mainmenu=adherentsplus,fk_leftmenu=adherentsplusstatus',
             'type' => 'left',
             'titre' => 'MenuMembersToValidate',
-            'mainmenu' => 'adherentsplus',            
+            'mainmenu' => 'adherentsplus',
             'url' => '/adherentsplus/list.php?statut=-1',
             'langs' => 'adherentsplus@adherentsplus',
             'position' => 113,
@@ -337,12 +337,12 @@ $this->menu[$r]=array(	'fk_menu'=>0,			// Put 0 if this is a top menu
             'perms' => '$user->rights->adherent->lire',
             'target' => '',
             'user' => 0);
-        $r++; 
-        
+        $r++;
+
             $this->menu[$r] = array('fk_menu' => 'fk_mainmenu=adherentsplus,fk_leftmenu=adherentsplusstatus',
             'type' => 'left',
             'titre' => 'MenuMembersValidated',
-            'mainmenu' => 'adherentsplus',            
+            'mainmenu' => 'adherentsplus',
             'url' => '/adherentsplus/list.php?statut=1',
             'langs' => 'adherentsplus@adherentsplus',
             'position' => 114,
@@ -351,11 +351,11 @@ $this->menu[$r]=array(	'fk_menu'=>0,			// Put 0 if this is a top menu
             'target' => '',
             'user' => 0);
         $r++;
-        
+
             $this->menu[$r] = array('fk_menu' => 'fk_mainmenu=adherentsplus,fk_leftmenu=adherentsplusstatus',
             'type' => 'left',
             'titre' => 'MenuMembersUpToDate',
-            'mainmenu' => 'adherentsplus',            
+            'mainmenu' => 'adherentsplus',
             'url' => '/adherentsplus/list.php?statut=1&filter=uptodate',
             'langs' => 'adherentsplus@adherentsplus',
             'position' => 115,
@@ -363,12 +363,12 @@ $this->menu[$r]=array(	'fk_menu'=>0,			// Put 0 if this is a top menu
             'perms' => '$user->rights->adherent->lire',
             'target' => '',
             'user' => 0);
-        $r++; 
-        
+        $r++;
+
             $this->menu[$r] = array('fk_menu' => 'fk_mainmenu=adherentsplus,fk_leftmenu=adherentsplusstatus',
             'type' => 'left',
             'titre' => 'MenuMembersNotUpToDate',
-            'mainmenu' => 'adherentsplus',            
+            'mainmenu' => 'adherentsplus',
             'url' => '/adherentsplus/list.php?statut=1&filter=outofdate',
             'langs' => 'adherentsplus@adherentsplus',
             'position' => 116,
@@ -377,11 +377,11 @@ $this->menu[$r]=array(	'fk_menu'=>0,			// Put 0 if this is a top menu
             'target' => '',
             'user' => 0);
         $r++;
-        
+
             $this->menu[$r] = array('fk_menu' => 'fk_mainmenu=adherentsplus,fk_leftmenu=adherentsplusstatus',
             'type' => 'left',
             'titre' => 'MenuMembersResiliated',
-            'mainmenu' => 'adherentsplus',            
+            'mainmenu' => 'adherentsplus',
             'url' => '/adherentsplus/list.php?statut=0',
             'langs' => 'adherentsplus@adherentsplus',
             'position' => 117,
@@ -389,12 +389,12 @@ $this->menu[$r]=array(	'fk_menu'=>0,			// Put 0 if this is a top menu
             'perms' => '$user->rights->adherent->lire',
             'target' => '',
             'user' => 0);
-        $r++;                 
-        
+        $r++;
+
           $this->menu[$r] = array('fk_menu' => 'fk_mainmenu=adherentsplus,fk_leftmenu=adherentsplus',
             'type' => 'left',
             'titre' => 'MenuMembersStats',
-            'mainmenu' => 'adherentsplus',           
+            'mainmenu' => 'adherentsplus',
             'url' => '/adherentsplus/stats/index.php',
             'langs' => 'adherentsplus@adherentsplus',
             'position' => 118,
@@ -406,7 +406,7 @@ $this->menu[$r]=array(	'fk_menu'=>0,			// Put 0 if this is a top menu
             $this->menu[$r] = array('fk_menu' => 'fk_mainmenu=adherentsplus,fk_leftmenu=adherentsplus',
             'type' => 'left',
             'titre' => 'MembersCards',
-            'mainmenu' => 'adherentsplus',            
+            'mainmenu' => 'adherentsplus',
             'url' => '/adherentsplus/cartes/carte.php',
             'langs' => 'adherentsplus@adherentsplus',
             'position' => 119,
@@ -414,8 +414,8 @@ $this->menu[$r]=array(	'fk_menu'=>0,			// Put 0 if this is a top menu
             'perms' => '$user->rights->adherent->lire',
             'target' => '',
             'user' => 0);
-        $r++;         
-        
+        $r++;
+
             $this->menu[$r] = array('fk_menu' => 'fk_mainmenu=adherentsplus',
             'type' => 'left',
             'titre' => 'Subscriptions',
@@ -428,12 +428,12 @@ $this->menu[$r]=array(	'fk_menu'=>0,			// Put 0 if this is a top menu
             'perms' => '$user->rights->adherent->lire',
             'target' => '',
             'user' => 0);
-        $r++; 
-        
+        $r++;
+
                 $this->menu[$r] = array('fk_menu' => 'fk_mainmenu=adherentsplus,fk_leftmenu=subscriptions',
             'type' => 'left',
             'titre' => 'NewSubscription',
-            'mainmenu' => 'adherentsplus',           
+            'mainmenu' => 'adherentsplus',
             'url' => '/adherentsplus/list.php?&statut=-1,1',
             'langs' => 'adherentsplus@adherentsplus',
             'position' => 121,
@@ -445,7 +445,7 @@ $this->menu[$r]=array(	'fk_menu'=>0,			// Put 0 if this is a top menu
                 $this->menu[$r] = array('fk_menu' => 'fk_mainmenu=adherentsplus,fk_leftmenu=subscriptions',
             'type' => 'left',
             'titre' => 'ListOfSubscriptions',
-            'mainmenu' => 'adherentsplus',            
+            'mainmenu' => 'adherentsplus',
             'url' => '/adherentsplus/subscription/list.php',
             'langs' => 'adherentsplus@adherentsplus',
             'position' => 122,
@@ -457,7 +457,7 @@ $this->menu[$r]=array(	'fk_menu'=>0,			// Put 0 if this is a top menu
                 $this->menu[$r] = array('fk_menu' => 'fk_mainmenu=adherentsplus,fk_leftmenu=subscriptions',
             'type' => 'left',
             'titre' => 'MenuMembersStats',
-            'mainmenu' => 'adherentsplus',            
+            'mainmenu' => 'adherentsplus',
             'url' => '/adherentsplus/stats/index.php',
             'langs' => 'adherentsplus@adherentsplus',
             'position' => 123,
@@ -465,7 +465,7 @@ $this->menu[$r]=array(	'fk_menu'=>0,			// Put 0 if this is a top menu
             'perms' => '$user->rights->adherent->lire',
             'target' => '',
             'user' => 0);
-        $r++;      
+        $r++;
 
         $this->menu[$r] = array('fk_menu' => 'fk_mainmenu=adherentsplus',
             'type' => 'left',
@@ -483,7 +483,7 @@ $this->menu[$r]=array(	'fk_menu'=>0,			// Put 0 if this is a top menu
             $this->menu[$r] = array('fk_menu' => 'fk_mainmenu=adherentsplus,fk_leftmenu=adherentstypes',
             'type' => 'left',
             'titre' => 'NewMemberType',
-            'mainmenu' => 'adherentsplus',           
+            'mainmenu' => 'adherentsplus',
             'url' => '/adherentsplus/type.php?&action=create',
             'langs' => 'adherentsplus@adherentsplus',
             'position' => 141,
@@ -495,7 +495,7 @@ $this->menu[$r]=array(	'fk_menu'=>0,			// Put 0 if this is a top menu
             $this->menu[$r] = array('fk_menu' => 'fk_mainmenu=adherentsplus,fk_leftmenu=adherentstypes',
             'type' => 'left',
             'titre' => 'MembersTypesList',
-            'mainmenu' => 'adherentsplus',            
+            'mainmenu' => 'adherentsplus',
             'url' => '/adherentsplus/type.php',
             'langs' => 'adherentsplus@adherentsplus',
             'position' => 142,
@@ -503,7 +503,7 @@ $this->menu[$r]=array(	'fk_menu'=>0,			// Put 0 if this is a top menu
             'perms' => '$user->rights->adherent->lire',
             'target' => '',
             'user' => 0);
-        $r++;  
+        $r++;
 
         // Exports
         //--------
@@ -604,6 +604,7 @@ $this->menu[$r]=array(	'fk_menu'=>0,			// Put 0 if this is a top menu
             }
         }*/
 
+		$result=$this->_load_tables('/adherentsplus/sql/');
         $sql = array(
             "DELETE FROM ".MAIN_DB_PREFIX."document_model WHERE nom = '".$this->db->escape($this->const[0][2])."' AND type='member' AND entity = ".$conf->entity,
             "INSERT INTO ".MAIN_DB_PREFIX."document_model (nom, type, entity) VALUES('".$this->db->escape($this->const[0][2])."','member',".$conf->entity.")"
@@ -611,4 +612,17 @@ $this->menu[$r]=array(	'fk_menu'=>0,			// Put 0 if this is a top menu
 
         return $this->_init($sql,$options);
     }
+	/**
+	 * Create tables, keys and data required by module
+	 * Files llx_table1.sql, llx_table1.key.sql llx_data.sql with create table, create keys
+	 * and create data commands must be stored in directory /mymodule/sql/
+	 * This function is called by this->init
+	 *
+	 * 	@return		int		<=0 if KO, >0 if OK
+	 */
+	private function loadTables()
+	{
+		//return $this->_load_tables('/adherentsplus/sql/');
+	}
+
 }
