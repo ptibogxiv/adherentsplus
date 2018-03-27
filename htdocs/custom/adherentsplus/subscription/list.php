@@ -242,9 +242,6 @@ if ($result)
 	print '<input class="flat" type="text" name="search_lastname" value="'.dol_escape_htmltag($search_lastname).'" size="12"></td>';
 
 	print '<td class="liste_titre" align="left">';
-	print '<input class="flat" type="text" name="search_login" value="'.dol_escape_htmltag($search_login).'" size="7"></td>';
-
-	print '<td class="liste_titre" align="left">';
 	print '<input class="flat" type="text" name="search_note" value="'.dol_escape_htmltag($search_note).'" size="7"></td>';
 
     if (! empty($conf->banque->enabled))
@@ -275,7 +272,6 @@ if ($result)
 	print_liste_field_titre("Ref",$_SERVER["PHP_SELF"],"c.rowid",$param,"","",$sortfield,$sortorder);
   print_liste_field_titre("Type",$_SERVER["PHP_SELF"],"c.fk_type",$param,"","",$sortfield,$sortorder);
 	print_liste_field_titre("Name",$_SERVER["PHP_SELF"],"d.lastname",$param,"","",$sortfield,$sortorder);
-	print_liste_field_titre("Login",$_SERVER["PHP_SELF"],"d.login",$param,"","",$sortfield,$sortorder);
 	print_liste_field_titre("Label",$_SERVER["PHP_SELF"],"c.note",$param,"",'align="left"',$sortfield,$sortorder);
 	if (! empty($conf->banque->enabled))
 	{
@@ -324,9 +320,6 @@ if ($result)
         
         // Lastname
         print '<td>'.$adherent->getNomUrl(-1).'</td>';
-
-        // Login
-        print '<td>'.$adherent->login.'</td>';
 
         // Libelle
         print '<td>';

@@ -288,7 +288,7 @@ if ($user->rights->adherent->cotisation->creer && $action == 'subscription' && !
                 {
                     if (! $_POST["label"])     $errmsg=$langs->trans("ErrorFieldRequired",$langs->transnoentities("Label"));
                     if ($_POST["paymentsave"] != 'invoiceonly' && ! $_POST["operation"]) $errmsg=$langs->trans("ErrorFieldRequired",$langs->transnoentities("PaymentMode"));
-                    if ($_POST["paymentsave"] != 'invoiceonly' && ! $_POST["accountid"]) $errmsg=$langs->trans("ErrorFieldRequired",$langs->transnoentities("FinancialAccount"));
+                    if ($_POST["paymentsave"] != 'invoiceonly' && ! ($_POST["accountid"] > 0)) $errmsg=$langs->trans("ErrorFieldRequired",$langs->transnoentities("FinancialAccount"));
                 }
                 else
                 {
@@ -304,7 +304,7 @@ if ($user->rights->adherent->cotisation->creer && $action == 'subscription' && !
         $db->begin();
 
         // Create subscription
-        $crowid=$object->subscription($user,$datesubscription, $subscription, $accountid, $operation, $label, $num_chq, $emetteur_nom, $emetteur_banque, $datesubend);
+        $crowid=$object->subscription($datesubscription, $subscription, $accountid, $operation, $label, $num_chq, $emetteur_nom, $emetteur_banque, $datesubend);
         if ($crowid <= 0)
         {
             $error++;
@@ -889,19 +889,20 @@ if ($rowid > 0)
         }
 
 
-        // Link for paypal payment
-        if (! empty($conf->paypal->enabled))
-        {
-            include_once DOL_DOCUMENT_ROOT.'/paypal/lib/paypal.lib.php';
-            print showPaypalPaymentUrl('membersubscription',$object->ref);
-        }
+    if (($action != 'addsubscription' && $action != 'create_thirdparty'))
+    {
+	    // Shon online payment link
+	    $useonlinepayment = (! empty($conf->paypal->enabled) || ! empty($conf->stripe->enabled) || ! empty($conf->paybox->enabled));
 
-        // Link for stripe payment
-        if (! empty($conf->stripe->enabled))
-        {
-            include_once DOL_DOCUMENT_ROOT.'/stripe/lib/stripe.lib.php';
-            print showStripePaymentUrl('membersubscription',$object->ref);
-        }
+	    if ($useonlinepayment)
+	    {
+	    	print '<br>';
+
+	    	require_once DOL_DOCUMENT_ROOT.'/core/lib/payments.lib.php';
+	    	print showOnlinePaymentUrl('membersubscription', $object->ref);
+	    	print '<br>';
+	    }
+    }
 
     }
 
@@ -1003,9 +1004,72 @@ if ($rowid > 0)
         print '<tbody>';
 
 		$today=dol_now();
-        $datefrom=0;
-        $dateto=0;
-        $paymentdate=-1;
+    $datefrom=0;
+    $dateto=0;
+    $paymentdate=-1;
+
+$year = strftime("%Y",$today);
+$month = strftime("%m",$today);
+$day = strftime("%d",$today);
+
+if ($object->datefin== NULL){
+$datefin=dol_now()-86400;
+}else {
+$datefin=$object->datefin+86400;
+}
+
+$cotis1 = dol_mktime(00,00,00,$conf->global->SOCIETE_SUBSCRIBE_MONTH_START,'01',$year);
+$cotis0 = dol_time_plus_duree($cotis1,-1,'y');
+$cotis2 = dol_time_plus_duree($cotis1,+1,'y');
+
+$startcotis0 = dol_time_plus_duree($cotis0,-$conf->global->SOCIETE_SUBSCRIBE_MONTH_PRESTART,'m');
+$startcotis1 = dol_time_plus_duree($cotis1,-$conf->global->SOCIETE_SUBSCRIBE_MONTH_PRESTART,'m');
+$startcotis2 = dol_time_plus_duree($cotis2,-$conf->global->SOCIETE_SUBSCRIBE_MONTH_PRESTART,'m');
+
+if ($startcotis1>$today){
+if ($conf->global->ADHERENT_SUBSCRIPTION_PRORATA == '0') { 
+$next = dol_time_plus_duree($today,+$conf->global->SOCIETE_SUBSCRIBE_MONTH_PRESTART,'m');
+$date = $dateb = $today;
+}else{
+$next = $startcotis1;
+if ($cotis0>$today && $datefin<$today){$date=dol_now();}else{
+$date = $cotis0;}
+$dateb = $cotis0;}
+$dateto = strtotime(date("Y-m-d", $dateb) . " + 1 year - 1 day");  
+}else{
+if ($conf->global->ADHERENT_SUBSCRIPTION_PRORATA == '0') {
+$next = $startcotis2;
+$date = $dateb =$today;
+}else{ 
+$next = $startcotis2; 
+if ($cotis1>$today && $datefin<$today){$date=dol_now();}else{
+$date = $cotis1;}
+$dateb = $cotis1;} 
+$dateto = strtotime(date("Y-m-d", dol_time_plus_duree($cotis2,-1,'d')));
+} 
+
+if ($conf->global->ADHERENT_SUBSCRIPTION_PRORATA=='1' or $conf->global->ADHERENT_SUBSCRIPTION_PRORATA=='0'){$tx="1";}
+else {$tx=(ceil((($dateto-$today)/31558464)*$conf->global->ADHERENT_SUBSCRIPTION_PRORATA)/$conf->global->ADHERENT_SUBSCRIPTION_PRORATA);}
+$monthnb=12-(12*$tx);
+if ($object->datefin>$dateb) {$newdate=$datefin;}else{$newdate=$date;}
+$newy = strftime("%Y",$newdate);
+$newm = strftime("%m",$newdate);
+$newd = strftime("%d",$newdate);
+$renewadherent = strtotime("+ ".$conf->global->ADHERENT_WELCOME_MONTH." month",$newdate);
+$datefrom = strtotime(date("Y-m-d", dol_time_plus_duree($date,+$monthnb,'m'))); 
+
+$d = strftime("%Y",$datefrom);
+$f = strftime("%Y",$dateto);
+if ($d==$f) {
+$season=$d;
+}else{
+$season=$d."/".$f;
+}
+
+$debut = strftime("%d/%m/%Y",$datefrom);
+$fin = strftime("%d/%m/%Y",$dateto);
+$renew = strftime("%d/%m/%Y",$renewadherent);
+$nextdebut = strftime("%d/%m/%Y",$next);
 
         // Date payment
         if (GETPOST('paymentyear') && GETPOST('paymentmonth') && GETPOST('paymentday'))
@@ -1015,52 +1079,11 @@ if ($rowid > 0)
 
         // Date start subscription
         print '<tr><td width="30%" class="fieldrequired">'.$langs->trans("DateSubscription").'</td><td>';
-
-            if ($object->datefin > 0)
-            {
-            $year = strftime("%Y",$today);
-            $datefrom1=dol_mktime(0,0,0,$conf->global->SOCIETE_SUBSCRIBE_MONTH_START,1,$year);
-            $datefrom2=dol_time_plus_duree($object->datefin,1,'d');
-            if  ($datefrom2 < $datefrom1) {
-            $datefrom=$datefrom1;
-            }
-            else {
-            $datefrom=$datefrom2;
-              }
-            }
-            else
-			{
-        $datefrom=dol_now();
-            }
-
         print $form->select_date($datefrom,'','','','',"subscription",1,0,1);
         print "</td></tr>";
 
-// Date end subscription
-if (NULL == $object->datefin) {
-$datefin=$today;
-} else {
-$datefin=$object->datefin;
-}
-          $year = strftime("%Y",$datefrom);
-            if ($conf->global->ADHERENT_SUBSCRIPTION_PRORATA > '0') {
-          $dateto1=dol_mktime(0,0,0,$conf->global->SOCIETE_SUBSCRIBE_MONTH_START,1,$year);
-           if ($object->datefin > $today){
-           $dateto1=dol_mktime(0,0,0,$conf->global->SOCIETE_SUBSCRIBE_MONTH_START,1,$year+1);
-           }
-           elseif ($dateto1 > $today){
-           $dateto1=dol_mktime(0,0,0,$conf->global->SOCIETE_SUBSCRIBE_MONTH_START,1,$year);
-           }
-           else {
-           $dateto1=dol_mktime(0,0,0,$conf->global->SOCIETE_SUBSCRIBE_MONTH_START,1,$year+1);
-           }
-           $dateto=dol_time_plus_duree($dateto1,-1,'d');
-            }
-            else {
-            $dateto=dol_time_plus_duree($datefin,+1,'y'); //premiere fin adhesion
-            }
-            
-            		// By default, no date is suggested
+           //$dateto1=dol_mktime(0,0,0,$conf->global->SOCIETE_SUBSCRIBE_MONTH_START,1,$year+1);
+            //$dateto=dol_time_plus_duree($datefin,+1,'y'); //premiere fin adhesion
 
         print '<tr><td>'.$langs->trans("DateEndSubscription").'</td><td>';
         print $form->select_date($dateto,'end','','','',"subscription",1,0,1);
@@ -1072,7 +1095,7 @@ $datefin=$object->datefin;
         $montant=$adht->price;
         }
         else {     
-        $montant=(ceil((($dateto-$datefrom)/31558464)*$conf->global->ADHERENT_SUBSCRIPTION_PRORATA)/$conf->global->ADHERENT_SUBSCRIPTION_PRORATA)*$adht->price;
+        $montant=$tx*$adht->price;
         }
         if ($object->datefin > 0) {$amount=$montant;} else  {$amount=$montant+$adht->welcome;}
             // Amount
@@ -1081,7 +1104,7 @@ $datefin=$object->datefin;
             // Label
             print '<tr><td>'.$langs->trans("Label").'</td>';
             print '<td><input name="label" type="text" size="32" value="';
-            if (empty($conf->global->MEMBER_NO_DEFAULT_LABEL)) print $langs->trans("Subscription").' '.dol_print_date(($datefrom?$datefrom:time()),"%Y");
+            if (empty($conf->global->MEMBER_NO_DEFAULT_LABEL)) print $langs->trans("Subscription").' '.$season;
             print '"></td></tr>';
 
             // Complementary action
