@@ -10,8 +10,7 @@ Ce que fait déjà ce module:
 En cours de réalisation (fonctionement partiel)
 - adhésion de groupe/famille (adhérent principal qui sera facturé avec adhérents secondaires liés), 
 
-
-Les modifications de la mase de données seront prochainement incluses dans le plugin. En attendant...
+Les modifications de la base de données seront prochainement incluses dans le plugin. En attendant...
 
 For install / Pour installation
 
@@ -25,6 +24,7 @@ llx_adherent_type
   `vote` varchar(3) DEFAULT NULL,
   `automatic` varchar(3) DEFAULT NULL,
   `family` int(3) DEFAULT NULL,
+  `use_default` int(11) DEFAULT NULL,
   
 llx_adherent
   `fk_parent` int(11) DEFAULT NULL,
