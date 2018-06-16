@@ -374,6 +374,99 @@ class AdherentPlus extends CommonObject
 			return -1;
 		}
 	}
+  
+   /**
+	 *  Create a third party into database from a member object
+	 *
+	 *  @param	Adherent	$member		Object member
+	 * 	@param	string	$socname		Name of third party to force
+	 *	@param	string	$socalias	Alias name of third party to force
+	 *  @return int					<0 if KO, id of created account if OK
+	 */
+	function create_thirdparty_from_member(AdherentPlus $member, $socname='', $socalias='')
+	{
+		global $conf,$user,$langs;
+
+		$name = $socname?$socname:$member->societe;
+		if (empty($name)) $name=$member->getFullName($langs);
+
+		$alias = $socalias?$socalias:'';
+   	require_once DOL_DOCUMENT_ROOT.'/societe/class/societe.class.php';
+
+		dol_syslog(get_class($this)."::create a linked thirdparty");
+		$lthirdparty=new Societe($this->db);
+          
+		// Positionne parametres
+		$lthirdparty->nom=$name;				// TODO deprecated
+		$lthirdparty->name=$name;
+		$lthirdparty->name_alias=$alias;
+		$lthirdparty->address=$member->address;
+		$lthirdparty->zip=$member->zip;
+		$lthirdparty->town=$member->town;
+		$lthirdparty->country_code=$member->country_code;
+		$lthirdparty->country_id=$member->country_id;
+		$lthirdparty->phone=$member->phone;       // Prof phone
+		$lthirdparty->email=$member->email;
+		$lthirdparty->skype=$member->skype;
+
+		$lthirdparty->client = 1;				// A member is a customer by default
+		$lthirdparty->code_client = -1;
+		$lthirdparty->code_fournisseur = -1;
+
+		$lthirdparty->db->begin();
+
+		// Cree et positionne $this->id
+		$result=$lthirdparty->create($user);
+		if ($result >= 0)
+		{
+    
+    if (! empty($conf->global->PRODUIT_MULTIPRICES)) {
+    dol_include_once('/adherentsplus/class/adherent_type.class.php');
+    $adht = new AdherentTypePlus($this->db);
+		$adht->fetch($member->typeid);
+    $sql  = "UPDATE ".MAIN_DB_PREFIX."societe";
+		$sql .= " SET price_level = '2'";
+		$sql .= " WHERE rowid = " . $lthirdparty->id;
+			$resql=$this->db->query($sql);
+			if ($resql)
+			{
+				$this->db->commit();
+			}
+			else
+			{
+				$this->error=$this->db->error();
+				$this->db->rollback();
+			}
+    }
+    
+			$sql = "UPDATE ".MAIN_DB_PREFIX."adherent";
+			$sql.= " SET fk_soc=".$lthirdparty->id;
+			$sql.= " WHERE rowid=".$member->id;
+
+			dol_syslog(get_class($this)."::create_thirdparty_from_member", LOG_DEBUG);
+			$resql=$this->db->query($sql);
+			if ($resql)
+			{
+				$this->db->commit();
+				return $this->id;
+			}
+			else
+			{
+				$this->error=$this->db->error();
+
+				$this->db->rollback();
+				return -1;
+			}
+		}
+		else
+		{
+			// $this->error deja positionne
+			dol_syslog(get_class($this)."::create_from_member - 2 - ".$this->error." - ".join(',',$this->errors), LOG_ERR);
+
+			$this->db->rollback();
+			return $result;
+		}
+	}
 
 
 	/**

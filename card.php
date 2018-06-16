@@ -231,25 +231,20 @@ if (empty($reshook))
 	{
 		if ($result > 0)
 		{
-			// only fo compatility with native function
-require_once DOL_DOCUMENT_ROOT.'/adherents/class/adherent.class.php';
-$object_alt = new Adherent($db);   
-$object_alt->fetch($id); 
- 
-      // User creation
-			$company = new Societe($db);
-			$result=$company->create_from_member($object_alt, GETPOST('companyname', 'alpha'), GETPOST('companyalias', 'alpha'));
+
+      $object_alt = new AdherentPlus($db);   
+			$result=$object_alt->create_thirdparty_from_member($object, GETPOST('companyname', 'alpha'), GETPOST('companyalias', 'alpha'));
 
 			if ($result < 0)
 			{
 				$langs->load("errors");
-				setEventMessages($langs->trans($company->error), null, 'errors');
-				setEventMessages($company->error, $company->errors, 'errors');
+				setEventMessages($langs->trans($object_alt->error), null, 'errors');
+				setEventMessages($object_alt->error, $object_alt->errors, 'errors');
 			}
 		}
 		else
 		{
-			setEventMessages($object->error, $object->errors, 'errors');
+			setEventMessages($object_alt->error, $object_alt->errors, 'errors');
 		}
 	}
 
