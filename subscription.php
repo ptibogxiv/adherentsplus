@@ -815,7 +815,9 @@ if ($rowid > 0)
         $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."bank as b ON c.fk_bank = b.rowid";
         $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."bank_account as ba ON b.fk_account = ba.rowid";
         $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."adherent_type as t ON c.fk_type=t.rowid";
-        $sql.= " WHERE (d.rowid = c.fk_adherent AND d.rowid=".$rowid.") or (d.fk_parent = c.fk_adherent AND d.rowid=".$rowid.") ORDER BY c.dateadh DESC";
+        $sql.= " WHERE (d.rowid = c.fk_adherent AND d.rowid=".$rowid.")";
+        //$sql.= " or (d.fk_parent = c.fk_adherent AND d.rowid=".$rowid.")";
+        $sql.= " ORDER BY c.dateadh DESC";
 
         $result = $db->query($sql);
         if ($result)

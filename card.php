@@ -1848,7 +1848,7 @@ $objp = new Adherentplus($db);
 $objp->fetch($object->fk_parent);
 print '<TR class="oddeven"><TD align="left"><A href="'.$dolibarr_main_url_root.dol_buildpath('/adherentsplus/card.php?rowid='.$object->fk_parent, 1).'">'.img_picto('', 'object_user').' '.$objp->firstname.' '.$objp->lastname.'</A></TD>';
 if ($user->rights->adherent->creer) {print '<TD align="right"><A href="'. $_SERVER['PHP_SELF'] .'?action=deleteparent&rowid=' . $object->id . '&link=' . $object->id . '" class="deletefilelink">' . img_delete() . '</A></TD>';}
-print '</TR></TABLE>'."\n";     
+print '</TR></TABLE><BR>'."\n";     
 } elseif ($adht->family=='1'){
 print load_fiche_titre($langs->trans("SecondaryMembers"), '', ''); 
 print '<TABLE class="noborder" summary="listofdocumentstable" id="'.$modulepart.'_table" width="100%">'."\n";
@@ -1861,7 +1861,7 @@ print '<SELECT name="link">';
         $sql.= " FROM ".MAIN_DB_PREFIX."adherent as c";
         $sql.= " WHERE c.entity IN (" . getEntity('adherentsplus') . ") AND c.rowid!=$object->id AND ISNULL(c.fk_parent)";
         $sql.= " ORDER BY c.firstname ASC";
-        $sql.= " LIMIT 0,5";
+        //$sql.= " LIMIT 0,5";
         
         $result = $db->query($sql);
         if ($result)
@@ -1916,7 +1916,7 @@ if ($num=='0'){
 print '<TR class="oddeven"><TD colspan="3" class="opacitymedium">'.$langs->trans("None").'</TD></TR>'."\n";
 }
 }
-print '</TABLE>'."\n";   
+print '</TABLE><BR>'."\n";   
 }
 
   			$MAX = 10;
