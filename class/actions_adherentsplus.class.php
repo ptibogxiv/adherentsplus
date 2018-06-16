@@ -83,7 +83,6 @@ class Actionsadherentsplus
 				$this->resprints.= '<table width="100%" class="nobordernopadding"><tr><td>';
 				$this->resprints.= $langs->trans("LinkedToDolibarrMember");
 				$this->resprints.= '<td><td align="right">';
-				$this->resprints.= '<a href="'.$dolibarr_main_url_root.dol_buildpath('/adhrentsplus/card.php', 1).'">'.img_edit().'</a>';
 				$this->resprints.= '</td></tr></table>';
 				$this->resprints.= '</td>';
 				$this->resprints.= '<td colspan="3">';
