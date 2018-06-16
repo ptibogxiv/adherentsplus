@@ -425,18 +425,9 @@ class AdherentPlus extends CommonObject
     $adht = new AdherentTypePlus($this->db);
 		$adht->fetch($member->typeid);
     $sql  = "UPDATE ".MAIN_DB_PREFIX."societe";
-		$sql .= " SET price_level = '2'";
+		$sql .= " SET price_level = '".$this->db->escape($adht->price_level)."'";
 		$sql .= " WHERE rowid = " . $lthirdparty->id;
-			$resql=$this->db->query($sql);
-			if ($resql)
-			{
-				$this->db->commit();
-			}
-			else
-			{
-				$this->error=$this->db->error();
-				$this->db->rollback();
-			}
+    $this->db->query($sql);
     }
     
 			$sql = "UPDATE ".MAIN_DB_PREFIX."adherent";
