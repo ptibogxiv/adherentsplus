@@ -659,6 +659,17 @@ class AdherentPlus extends CommonObject
 
 					if ($result >= 0)
 					{
+          
+    if (! empty($conf->global->PRODUIT_MULTIPRICES)) {
+    dol_include_once('/adherentsplus/class/adherent_type.class.php');
+    $adht = new AdherentTypePlus($this->db);
+		$adht->fetch($this->typeid);
+    $sql  = "UPDATE ".MAIN_DB_PREFIX."societe";
+		$sql .= " SET price_level = '".$this->db->escape($adht->price_level)."'";
+		$sql .= " WHERE rowid = " . $this->fk_soc;
+    $this->db->query($sql);
+    }
+          
 						$lthirdparty->address=$this->address;
 						$lthirdparty->zip=$this->zip;
 						$lthirdparty->town=$this->town;
