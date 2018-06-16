@@ -794,7 +794,6 @@ if ($rowid > 0)
             print "<br>\n";
 
             print '</div>';
-            print '<br>';
         }
     }
 
