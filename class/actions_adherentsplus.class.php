@@ -72,10 +72,10 @@ class Actionsadherentsplus
 		{ 
 			if ($action == 'create' || $action == 'editparentwordpress')
 			{
-				$this->resprints.= '<tr><td>'.fieldLabel('LinkedToWordpress','linked_entity').'</td><td colspan="3" class="maxwidthonsmartphone">';
+//				$this->resprints.= '<tr><td>'.fieldLabel('LinkedToWordpress','linked_entity').'</td><td colspan="3" class="maxwidthonsmartphone">';
 //				$s = $this->select_entities('', 'linked_entity', '', 0, array($conf->entity), true);
-				$this->resprints.= $form->textwithpicto($s,$langs->trans("LinkedToDolibarrMember"),1);
-				$this->resprints.= '</td></tr>';
+//				$this->resprints.= $form->textwithpicto($s,$langs->trans("LinkedToDolibarrMember"),1);
+//				$this->resprints.= '</td></tr>';
 			}
 			else
 			{
