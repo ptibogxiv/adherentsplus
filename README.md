@@ -13,6 +13,7 @@ En cours de réalisation (fonctionement partiel)
 Les modifications de la base de données seront prochainement incluses dans le plugin. En attendant...
 
 For install / Pour installation
+download then unzip then copy in htdocs/custom folder
 
 Add the following fields in dolibarr database
 Il vous faut ajouter les champs suivants dans la base de données:
