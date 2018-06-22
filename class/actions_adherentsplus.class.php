@@ -81,7 +81,7 @@ class Actionsadherentsplus
 			{
 				$this->resprints.= '<tr><td>';
 				$this->resprints.= '<table width="100%" class="nobordernopadding"><tr><td>';
-				$this->resprints.= $langs->trans("LinkedToDolibarrMember");
+				$this->resprints.= $langs->trans("LinkedToDolibarrMember+");
 				$this->resprints.= '<td><td align="right">';
 				$this->resprints.= '</td></tr></table>';
 				$this->resprints.= '</td>';
