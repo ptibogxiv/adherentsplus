@@ -288,7 +288,7 @@ $this->menu[$r]=array(	'fk_menu'=>0,			// Put 0 if this is a top menu
 
         $this->menu[$r] = array('fk_menu' => 'fk_mainmenu=adherentsplus',
             'type' => 'left',
-            'titre' => 'Members',
+            'titre' => 'Members+',
             'mainmenu' => 'adherentsplus',
             'leftmenu' => 'adherentsplus',
             'url' => '/adherentsplus/index.php',
