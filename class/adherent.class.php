@@ -524,8 +524,8 @@ class AdherentPlus extends CommonObject
 		$sql.= ", note_public = ".($this->note_public?"'".$this->db->escape($this->note_public)."'":"null");
 		$sql.= ", photo = ".($this->photo?"'".$this->db->escape($this->photo)."'":"null");
 		$sql.= ", public = '".$this->db->escape($this->public)."'";
-		$sql.= ", statut = ".$this->statut;
-		$sql.= ", fk_adherent_type = ".$this->typeid;
+		$sql.= ", statut = ".$this->db->escape($this->statut);
+		$sql.= ", fk_adherent_type = ".$this->db->escape($this->typeid);
 		$sql.= ", morphy = '".$this->db->escape($this->morphy)."'";
 		$sql.= ", birth = ".($this->birth?"'".$this->db->idate($this->birth)."'":"null");
 		if ($this->datefin)   $sql.= ", datefin = '".$this->db->idate($this->datefin)."'";		// Must be modified only when deleting a subscription
@@ -695,14 +695,14 @@ class AdherentPlus extends CommonObject
 						$error++;
 					}
 				}
+}
 
-				if (! $error && ! $notrigger)
-				{
-					// Call trigger
-					$result=$this->call_trigger('MEMBER_MODIFY',$user);
-					if ($result < 0) { $error++; }
-					// End call triggers
-				}
+			if (! $error && ! $notrigger)
+			{
+				// Call trigger
+				$result=$this->call_trigger('MEMBER_MODIFY',$user);
+				if ($result < 0) { $error++; }
+				// End call triggers
 			}
 
 			if (! $error)
@@ -1300,7 +1300,7 @@ class AdherentPlus extends CommonObject
 				$this->societe			= $obj->company;
 				$this->company			= $obj->company;
 				$this->fk_soc			= $obj->fk_soc;
-        $this->fk_parent			= $obj->fk_parent;
+                $this->fk_parent			= $obj->fk_parent;
 				$this->address			= $obj->address;
 				$this->zip				= $obj->zip;
 				$this->town				= $obj->town;

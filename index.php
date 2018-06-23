@@ -20,7 +20,7 @@
  */
 
 /**
- *       \file       htdocs/adherentsex/index.php
+ *       \file       htdocs/adherentsplus/index.php
  *       \ingroup    member
  *       \brief      Page accueil module adherents
  */
@@ -85,7 +85,7 @@ $sql.= " FROM ".MAIN_DB_PREFIX."adherent_type as t";
 $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."adherent as d";
 $sql.= " ON t.rowid = d.fk_adherent_type";
 $sql.= " AND d.entity IN (".getEntity('adherent').")";
-$sql.= " WHERE t.entity IN (".getEntity('adherent').")";
+$sql.= " WHERE t.entity IN (".getEntity('member_type').")";
 $sql.= " GROUP BY t.rowid, t.libelle, t.subscription, d.statut";
 
 dol_syslog("index.php::select nb of members by type", LOG_DEBUG);
@@ -101,7 +101,7 @@ if ($result)
 		$adhtype=new AdherentTypePlus($db);
 		$adhtype->id=$objp->rowid;
 		$adhtype->subscription=$objp->subscription;
-		$adhtype->label=$objp->libelle;
+		$adhtype->label=$objp->label;
 		$AdherentType[$objp->rowid]=$adhtype;
 
 		if ($objp->statut == -1) { $MemberToValidate[$objp->rowid]=$objp->somme; }
@@ -266,6 +266,7 @@ if ($result)
     }
 }
 
+print '<div class="div-table-responsive-no-min">';
 print '<table class="noborder" width="100%">';
 print '<tr class="liste_titre">';
 print '<th>'.$langs->trans("Subscriptions").'</th>';
@@ -293,7 +294,8 @@ print "<td align=\"right\">".$numb."</td>";
 print '<td align="right">'.price($tot)."</td>";
 print "<td align=\"right\">".price(price2num($numb>0?($tot/$numb):0,'MT'))."</td>";
 print "</tr>\n";
-print "</table><br>\n";
+print "</table></div>";
+print "<br>\n";
 
 
 print '</div><div class="fichetwothirdright"><div class="ficheaddleft">';
@@ -305,7 +307,7 @@ $max=5;
 
 $sql = "SELECT a.rowid, a.statut, a.lastname, a.firstname, a.societe as company, a.fk_soc,";
 $sql.= " a.tms as datem, datefin as date_end_subscription,";
-$sql.= " ta.rowid as typeid, ta.libelle, ta.subscription";
+$sql.= " ta.rowid as typeid, ta.libelle as label, ta.subscription";
 $sql.= " FROM ".MAIN_DB_PREFIX."adherent as a, ".MAIN_DB_PREFIX."adherent_type as ta";
 $sql.= " WHERE a.entity IN (".getEntity('adherent').")";
 $sql.= " AND a.fk_adherent_type = ta.rowid";
@@ -315,6 +317,7 @@ $sql.= $db->plimit($max, 0);
 $resql=$db->query($sql);
 if ($resql)
 {
+	print '<div class="div-table-responsive-no-min">';
 	print '<table class="noborder" width="100%">';
 	print '<tr class="liste_titre">';
 	print '<th colspan="4">'.$langs->trans("LastMembersModified",$max).'</th></tr>';
@@ -342,7 +345,7 @@ if ($resql)
 			}
 			$staticmember->ref=$staticmember->getFullName($langs);
 			$statictype->id=$obj->typeid;
-			$statictype->label=$obj->libelle;
+			$statictype->label=$obj->label;
 			print '<td>'.$staticmember->getNomUrl(1,32).'</td>';
 			print '<td>'.$statictype->getNomUrl(1,32).'</td>';
 			print '<td>'.dol_print_date($db->jdate($obj->datem),'dayhour').'</td>';
@@ -351,7 +354,8 @@ if ($resql)
 			$i++;
 		}
 	}
-	print "</table><br>";
+	print "</table></div>";
+	print "<br>";
 }
 else
 {
@@ -376,6 +380,7 @@ $sql.= $db->plimit($max, 0);
 $resql=$db->query($sql);
 if ($resql)
 {
+	print '<div class="div-table-responsive-no-min">';
 	print '<table class="noborder" width="100%">';
 	print '<tr class="liste_titre">';
 	print '<th colspan="5">'.$langs->trans("LastSubscriptionsModified",$max).'</th></tr>';
@@ -411,7 +416,8 @@ if ($resql)
 			$i++;
 		}
 	}
-	print "</table><br>";
+	print "</table></div>";
+	print "<br>";
 }
 else
 {
@@ -420,6 +426,7 @@ else
 
 
 // Summary of members by type
+print '<div class="div-table-responsive-no-min">';
 print '<table class="noborder" width="100%">';
 print '<tr class="liste_titre">';
 print '<th>'.$langs->trans("MembersTypes").'</th>';
@@ -448,7 +455,7 @@ print '<td class="liste_total" align="right">'.$SommeD.' '.$staticmember->LibSta
 print '</tr>';
 
 print "</table>\n";
-
+print "</div>";
 
 print '</div></div></div>';
 
