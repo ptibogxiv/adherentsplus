@@ -316,7 +316,7 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
 
         $adherenttypes = array();
 
-        $sql = "SELECT rowid, libelle, welcome, price, automatic, use_default, note";
+        $sql = "SELECT rowid, libelle as label, welcome, price, automatic, use_default, note";
         $sql.= " FROM ".MAIN_DB_PREFIX."adherent_type";
 	      $sql.= " WHERE entity IN (".getEntity('adherent').")";
 
@@ -332,7 +332,7 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
                 {
                     $obj = $this->db->fetch_object($resql);
                     $adherenttypes[$obj->rowid][note] = $langs->trans($obj->note);
-                    $adherenttypes[$obj->rowid][label] = $langs->trans($obj->libelle);
+                    $adherenttypes[$obj->rowid][label] = $langs->trans($obj->label);
                     $adherenttypes[$obj->rowid][price] = $obj->price;
                     $adherenttypes[$obj->rowid][welcome] = $obj->welcome;
                     $adherenttypes[$obj->rowid][automatic] = $obj->automatic;
@@ -362,7 +362,7 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
         global $langs;
 
         $result='';
-        $label=$langs->trans("ShowTypeCard",$this->libelle);
+        $label=$langs->trans("ShowTypeCard",$this->label);
 
         $link = '<a href="'.dol_buildpath('/adherentsplus/type.php?rowid='.$this->id.'', 1).'" title="'.dol_escape_htmltag($label, 1).'" class="classfortooltip">';
         $linkend='</a>';

@@ -79,7 +79,7 @@ $AdherentsResilies=array();
 $AdherentType=array();
 
 // Liste les adherents
-$sql = "SELECT t.rowid, t.libelle, t.subscription,";
+$sql = "SELECT t.rowid, t.libelle as label, t.subscription,";
 $sql.= " d.statut, count(d.rowid) as somme";
 $sql.= " FROM ".MAIN_DB_PREFIX."adherent_type as t";
 $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."adherent as d";
