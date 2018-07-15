@@ -40,6 +40,7 @@ class SubscriptionPlus extends CommonObject
 	var $datef;				// Subscription end date
 	var $fk_adherent;
   var $fk_type;
+  var $fk_type_id;
 	var $amount;
 	var $fk_bank;
 
