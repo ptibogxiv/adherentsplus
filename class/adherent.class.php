@@ -81,6 +81,7 @@ class AdherentPlus extends CommonObject
 	var $datem;
 	var $datefin;
 	var $datevalid;
+  var $datecommitment;
 	var $birth;
 
 	var $note_public;
@@ -1334,6 +1335,7 @@ class AdherentPlus extends CommonObject
 				$this->datem			= $this->db->jdate($obj->datem);
 				$this->datefin			= $this->db->jdate($obj->datefin);
 				$this->datevalid		= $this->db->jdate($obj->datev);
+        $this->datecommitment			= $this->db->jdate($obj->datecommitment);
 				$this->birth			= $this->db->jdate($obj->birthday);
 
 				$this->note_private		= $obj->note_private;
