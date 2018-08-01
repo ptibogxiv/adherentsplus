@@ -170,7 +170,7 @@ class AdherentsPlus extends DolibarrApi
      */
     function type($sortfield = "t.rowid", $sortorder = 'ASC', $limit = 0, $page = 0, $sqlfilters = '') {
         global $db, $conf;
-
+        
         $obj_ret = array();
 
         if(! DolibarrApiAccess::$user->rights->adherent->lire) {
@@ -202,7 +202,7 @@ class AdherentsPlus extends DolibarrApi
 
             $sql.= $db->plimit($limit + 1, $offset);
         }
-
+       
         $result = $db->query($sql);
         if ($result)
         {
