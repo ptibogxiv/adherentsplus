@@ -48,7 +48,7 @@ class AdherentPlus extends CommonObject
 	var $mesgs;
 
 	var $login;
-
+	var $ref;
 	//! Clear password in memory
 	var $pass;
 	//! Clear password in database (defined if DATABASE_PWD_ENCRYPTED=0)
@@ -1250,7 +1250,7 @@ class AdherentPlus extends CommonObject
 	{
 		global $langs;
 
-		$sql = "SELECT d.rowid, d.ref_ext, d.civility as civility_id, d.firstname, d.lastname, d.societe as company, d.fk_soc, d.fk_parent, d.statut, d.public, d.address, d.zip, d.town, d.note_private,";
+		$sql = "SELECT d.rowid, d.ref, d.ref_ext, d.civility as civility_id, d.firstname, d.lastname, d.societe as company, d.fk_soc, d.fk_parent, d.statut, d.public, d.address, d.zip, d.town, d.note_private,";
 		$sql.= " d.note_public,";
 		$sql.= " d.email, d.skype, d.phone, d.phone_perso, d.phone_mobile, d.login, d.pass, d.pass_crypted,";
 		$sql.= " d.photo, d.fk_adherent_type, d.morphy, d.entity,";
@@ -1291,7 +1291,7 @@ class AdherentPlus extends CommonObject
 				$obj = $this->db->fetch_object($resql);
 
 				$this->entity			= $obj->entity;
-				$this->ref				= $obj->rowid;
+				$this->ref				= $obj->ref;
 				$this->id				= $obj->rowid;
 				$this->ref_ext			= $obj->ref_ext;
 				$this->civility_id		= $obj->civility_id;
