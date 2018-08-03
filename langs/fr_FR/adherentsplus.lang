@@ -197,3 +197,5 @@ PrincipalMember=Adhérent principal
 ConfirmAddParent=Etes-vous sûr de vouloir créer la liaison avec ce compte principal? La date de fin d'adhésion de l'adhérent secondaire sera modifiée si inférieure à celle de l'adhérent principal.
 ConfirmDeleteParent=Etes-vous sûr de vouloir supprimer la liaison avec ce compte principal? Attention, ceci supprimera les adhésions de l'adhérent principal liées sur cet adhérent secondaire et modifiera la date de fin d'adhésion.
 DeleteParentBefore=Supprimer la liaison à l'adhérent principal avant de créer une cotisation
+Commitment=Engagement
+Free=Libre

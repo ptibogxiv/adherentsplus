@@ -1257,6 +1257,7 @@ class AdherentPlus extends CommonObject
 		$sql.= " d.datec as datec,";
 		$sql.= " d.tms as datem,";
 		$sql.= " d.datefin as datefin,";
+    $sql.= " d.datecommitment as datecommitment,";
 		$sql.= " d.birth as birthday,";
 		$sql.= " d.datevalid as datev,";
 		$sql.= " d.country,";

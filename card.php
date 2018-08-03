@@ -6,6 +6,7 @@
  * Copyright (C) 2012      Marcos García        <marcosgdf@gmail.com>
  * Copyright (C) 2012-2016 Philippe Grand       <philippe.grand@atoo-net.com>
  * Copyright (C) 2015-2016 Alexandre Spangaro   <aspangaro.dolibarr@gmail.com>
+ * Copyright (C) 2018      Thibault FOUCART     <support@ptibogxiv.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1214,6 +1215,9 @@ else
 		print "<TR><TD>".$langs->trans("Public")."</TD><TD>\n";
 		print $form->selectyesno("public",(isset($_POST["public"])?GETPOST("public",'',2):$object->public),1);
 		print "</TD></TR>\n";
+    
+    // License
+		print "<TR><TD>".$langs->trans("License")."</TD><TD><INPUT type='text' name='ref' size='35' value='".(isset($_POST["ref"])?GETPOST("ref",'',2):$object->ref)."'></TD></TR>\n";
 
 		// Categories
 		if (! empty( $conf->categorie->enabled ) && !empty( $user->rights->categorie->lire ))
@@ -1614,6 +1618,32 @@ else
 		// Public
 		print '<tr><td>'.$langs->trans("Public").'</td><td class="valeur">'.yn($object->public).'</td></tr>';
 
+    // License
+		print '<tr><td>'.$langs->trans("License").'</td><td class="valeur">'.$object->ref.'</td></tr>';
+    
+    // Commitment
+		print '<tr><td class="titlefield">'.$langs->trans("Commitment").'</td><td class="valeur">';
+		if ($object->datecommitment)
+		{
+			print dol_print_date($object->datecommitment,'day');
+			if ($object->hasDelay()) {
+				print " ".img_warning($langs->trans("Late"));
+			}
+		}
+		else
+		{
+			if (! $adht->subscription)
+			{
+				print $langs->trans("SubscriptionNotRecorded");
+				if ($object->statut > 0) print " ".img_warning($langs->trans("Late")); // displays delay Pictogram only if not a draft and not terminated
+			}
+			else
+			{
+				print $langs->trans("Free");
+			}
+		}    
+		print '</td></tr>';
+    
 		// Categories
 		if (! empty($conf->categorie->enabled)  && ! empty($user->rights->categorie->lire))
 		{
