@@ -1591,11 +1591,10 @@ dol_include_once('/adherentsplus/class/subscription.class.php');
 		$now=dol_now();
 
 		// Check parameters
-        if ($this->statut == 1)
-        {
-            dol_syslog(get_class($this)."::validate statut of member does not allow this", LOG_WARNING);
-            return 0;
-        }
+        //if ($this->statut == 1)
+        ////    dol_syslog(get_class($this)."::validate statut of member does not allow this", LOG_WARNING);
+        //    return 0;
+        //}
 
         $this->db->begin();
 
