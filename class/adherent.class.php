@@ -623,7 +623,14 @@ class AdherentPlus extends CommonObject
 						$luser->lastname=$this->lastname;
 						$luser->pass=$this->pass;
 						$luser->societe_id=$this->societe;
-
+            
+            $luser->birth=$this->birth;
+            $luser->address=$this->address;
+            $luser->zip=$this->zip;
+            $luser->town=$this->town; 
+            $luser->country_id=$this->country_id; 
+            $luser->state_id=$this->state_id; 
+            
 						$luser->email=$this->email;
 						$luser->skype=$this->skype;
 						$luser->office_phone=$this->phone;
@@ -1840,10 +1847,10 @@ dol_include_once('/adherentsplus/class/subscription.class.php');
 			$label.= '<br><b>' . $langs->trans('Name') . ':</b> ' . $this->getFullName($langs);
 		$label.='</div>';
 
-		$url = dol_buildpath('/adherentsplus/card.php?rowid='.$this->id.'', 1);
+		$url = dol_buildpath('/adherentsplus/card.php?id='.$this->id.'', 1);
 		if ($option == 'subscription')
 		{
-			$url = dol_buildpath('/adherentsplus/subscription.php?rowid='.$this->id.'', 1);
+			$url = dol_buildpath('/adherentsplus/subscription.php?id='.$this->id.'', 1);
 		}
 
 		if ($option != 'nolink')
