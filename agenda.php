@@ -5,7 +5,6 @@
  * Copyright (C) 2006-2011 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2007      Patrick Raguin  		<patrick.raguin@gmail.com>
  * Copyright (C) 2010      Juanjo Menent        <jmenent@2byte.es>
- * Copyright (C) 2017      Ari Elbaz (elarifr)	<github@accedinfo.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,13 +21,11 @@
  */
 
 /**
- *  \file       htdocs/adherentsex/agenda.php
+ *  \file       htdocs/adherents/agenda.php
  *  \ingroup    member
  *  \brief      Page of members events
  */
 
-// require '../../main.inc.php';
-// Dolibarr environment
 $res = 0;
 if (! $res && file_exists("../main.inc.php"))
 {
@@ -46,11 +43,10 @@ if (! $res)
 {
 	die("Main include failed");
 }
-
 require_once DOL_DOCUMENT_ROOT.'/contact/class/contact.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
-dol_include_once('/adherentsplus/lib/member.lib.php');
 dol_include_once('/adherentsplus/class/adherent.class.php');
+dol_include_once('/adherentsplus/lib/member.lib.php');
+require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
 dol_include_once('/adherentsplus/class/adherent_type.class.php');
 
 $langs->load("companies");
@@ -58,10 +54,32 @@ $langs->load("members");
 
 $id = GETPOST('id','int')?GETPOST('id','int'):GETPOST('rowid','int');
 
+$limit = GETPOST('limit','int')?GETPOST('limit','int'):$conf->liste_limit;
+$sortfield = GETPOST("sortfield",'alpha');
+$sortorder = GETPOST("sortorder",'alpha');
+$page = GETPOST("page",'int');
+if (empty($page) || $page == -1) { $page = 0; }     // If $page is not defined, or '' or -1
+$offset = $limit * $page;
+$pageprev = $page - 1;
+$pagenext = $page + 1;
+if (! $sortfield) $sortfield='a.datep,a.id';
+if (! $sortorder) $sortorder='DESC';
+
+if (GETPOST('actioncode','array'))
+{
+	$actioncode=GETPOST('actioncode','array',3);
+	if (! count($actioncode)) $actioncode='0';
+}
+else
+{
+	$actioncode=GETPOST("actioncode","alpha",3)?GETPOST("actioncode","alpha",3):(GETPOST("actioncode")=='0'?'0':(empty($conf->global->AGENDA_DEFAULT_FILTER_TYPE_FOR_OBJECT)?'':$conf->global->AGENDA_DEFAULT_FILTER_TYPE_FOR_OBJECT));
+}
+$search_agenda_label=GETPOST('search_agenda_label');
+
 // Security check
 $result=restrictedArea($user,'adherent',$id);
 
-$object = new Adherentplus($db);
+$object = new AdherentPlus($db);
 $result=$object->fetch($id);
 if ($result > 0)
 {
@@ -76,7 +94,26 @@ if ($result > 0)
  *	Actions
  */
 
-// None
+$parameters=array('id'=>$id, 'objcanvas'=>$objcanvas);
+$reshook=$hookmanager->executeHooks('doActions',$parameters,$object,$action);    // Note that $action and $object may have been modified by some hooks
+if ($reshook < 0) setEventMessages($hookmanager->error, $hookmanager->errors, 'errors');
+
+if (empty($reshook))
+{
+    // Cancel
+    if (GETPOST('cancel','alpha') && ! empty($backtopage))
+    {
+        header("Location: ".$backtopage);
+        exit;
+    }
+
+    // Purge search criteria
+    if (GETPOST('button_removefilter_x','alpha') || GETPOST('button_removefilter.x','alpha') || GETPOST('button_removefilter','alpha')) // All test are required to be compatible with all browsers
+    {
+        $actioncode='';
+        $search_agenda_label='';
+    }
+}
 
 
 
@@ -107,7 +144,7 @@ if ($object->id > 0)
 
 	dol_fiche_head($head, 'agenda', $langs->trans("Member"), -1, 'user');
 
-	$linkback = '<a href="'.DOL_URL_ROOT.'/adherentsex/list.php">'.$langs->trans("BackToList").'</a>';
+	$linkback = '<a href="'.DOL_URL_ROOT.'/adherents/list.php?restore_lastsearch_values=1">'.$langs->trans("BackToList").'</a>';
 
 	dol_banner_tab($object, 'rowid', $linkback);
 
@@ -123,25 +160,35 @@ if ($object->id > 0)
 	dol_fiche_end();
 
 
-    /*
-     * Barre d'action
-     */
+    //print '<div class="tabsAction">';
+    //print '</div>';
 
-    print '<div class="tabsAction">';
 
+	$newcardbutton = '';
     if (! empty($conf->agenda->enabled))
     {
-        print '<div class="inline-block divButAction"><a class="butAction" href="'.DOL_URL_ROOT.'/comm/action/card.php?action=create&backtopage=1&origin=member&originid='.$id.'">'.$langs->trans("AddAction").'</a></div>';
+    	$newcardbutton.='<a class="butActionNew" href="'.DOL_URL_ROOT.'/comm/action/card.php?action=create&backtopage=1&origin=member&originid='.$id.'"><span class="valignmiddle">'.$langs->trans("AddAction").'</span>';
+    	$newcardbutton.= '<span class="fa fa-plus-circle valignmiddle"></span>';
+    	$newcardbutton.= '</a>';
     }
 
-    print '</div>';
+    if (! empty($conf->agenda->enabled) && (!empty($user->rights->agenda->myactions->read) || !empty($user->rights->agenda->allactions->read) ))
+    {
+    	print '<br>';
 
-    $out='';
+    	$param='&id='.$id;
+    	if (! empty($contextpage) && $contextpage != $_SERVER["PHP_SELF"]) $param.='&contextpage='.$contextpage;
+    	if ($limit > 0 && $limit != $conf->liste_limit) $param.='&limit='.$limit;
 
-    print load_fiche_titre($langs->trans("ActionsOnMember"),$out,'');
+    	print_barre_liste($langs->trans("ActionsOnMember"), 0, $_SERVER["PHP_SELF"], '', $sortfield, $sortorder, '', 0, -1, '', '', $newcardbutton, '', 0, 1, 1);
 
-    // List of actions
-    show_actions_done($conf,$langs,$db,$object,null,0,'','');
+    	// List of all actions
+    	$filters=array();
+    	$filters['search_agenda_label']=$search_agenda_label;
+
+    	// TODO Replace this with same code than into list.php
+    	show_actions_done($conf,$langs,$db,$object,null,0,$actioncode, '', $filters, $sortfield, $sortorder);
+    }
 }
 
 
