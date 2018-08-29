@@ -68,7 +68,8 @@ class modAdherentsPlus extends DolibarrModules
 
     		// Defined all module parts (triggers, login, substitutions, menus, css, etc...)
 		$this->module_parts = array(
-'hooks' => array('thirdpartycard'),
+    'models' => 1, 
+    'hooks' => array('thirdpartycard'),
 		);
         // Dependencies
         //------------
