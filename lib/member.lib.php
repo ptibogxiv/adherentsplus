@@ -61,9 +61,11 @@ function member_prepare_head(Adherentplus $object)
   
 	if (! empty($user->rights->adherent->cotisation->lire))
 	{
+		$nbSubscription = is_array($object->subscriptions)?count($object->subscriptions):0;
 		$head[$h][0] = dol_buildpath('/adherentsplus/subscription.php', 1) . '?id=' . $object->id;
 		$head[$h][1] = $langs->trans("Subscriptions");
 		$head[$h][2] = 'subscription';
+		if ($nbSubscription > 0) $head[$h][1].= ' <span class="badge">'.$nbSubscription.'</span>';
 		$h++;
 	}
 
