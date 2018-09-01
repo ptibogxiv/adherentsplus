@@ -82,6 +82,7 @@ class AdherentPlus extends CommonObject
 	var $datefin;
   var $daterenew;
 	var $datevalid;
+  var $daterevalid;
   var $datecommitment;
 	var $birth;
 
@@ -1344,6 +1345,7 @@ class AdherentPlus extends CommonObject
 				$this->datem			= $this->db->jdate($obj->datem);
 				$this->datefin			= $this->db->jdate($obj->datefin);
         $this->daterenew			= dol_time_plus_duree($this->db->jdate($obj->datefin), -$conf->global->SOCIETE_SUBSCRIBE_MONTH_PRESTART, m);
+        $this->daterevalid			= dol_time_plus_duree($this->db->jdate($obj->datefin), $conf->global->ADHERENT_WELCOME_MONTH, m);
 				$this->datevalid		= $this->db->jdate($obj->datev);
         $this->datecommitment			= $this->db->jdate($obj->datecommitment);
 				$this->birth			= $this->db->jdate($obj->birthday);
