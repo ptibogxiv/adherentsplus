@@ -80,6 +80,7 @@ class AdherentPlus extends CommonObject
 	var $datec;
 	var $datem;
 	var $datefin;
+  var $daterenew;
 	var $datevalid;
   var $datecommitment;
 	var $birth;
@@ -1255,7 +1256,7 @@ class AdherentPlus extends CommonObject
 	 */
 	function fetch($rowid,$ref='',$fk_soc='',$ref_ext='')
 	{
-		global $langs;
+		global $conf,$langs;
 
 		$sql = "SELECT d.rowid, d.ref, d.ref_ext, d.civility as civility_id, d.firstname, d.lastname, d.societe as company, d.fk_soc, d.fk_parent, d.statut, d.public, d.address, d.zip, d.town, d.note_private,";
 		$sql.= " d.note_public,";
@@ -1342,6 +1343,7 @@ class AdherentPlus extends CommonObject
 				$this->datec			= $this->db->jdate($obj->datec);
 				$this->datem			= $this->db->jdate($obj->datem);
 				$this->datefin			= $this->db->jdate($obj->datefin);
+        $this->daterenew			= dol_time_plus_duree($this->db->jdate($obj->datefin), -$conf->global->SOCIETE_SUBSCRIBE_MONTH_PRESTART, m);
 				$this->datevalid		= $this->db->jdate($obj->datev);
         $this->datecommitment			= $this->db->jdate($obj->datecommitment);
 				$this->birth			= $this->db->jdate($obj->birthday);
