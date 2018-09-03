@@ -1009,79 +1009,17 @@ if ($rowid > 0)
     $dateto=0;
     $paymentdate=-1;
 
-$year = strftime("%Y",$today);
-$month = strftime("%m",$today);
-$day = strftime("%d",$today);
-
-if ($object->datefin== NULL){
-$datefin=dol_now()-86400;
-}else {
-$datefin=dol_time_plus_duree($object->datefin,+1,'d');
-}
-
-$cotis1 = dol_get_first_day($year,$conf->global->SOCIETE_SUBSCRIBE_MONTH_START,false);//dol_mktime(00,00,00,$conf->global->SOCIETE_SUBSCRIBE_MONTH_START,'01',$year);
-$startcotispre1 = dol_time_plus_duree($cotis1,-$conf->global->SOCIETE_SUBSCRIBE_MONTH_PRESTART,'m');
-$startcotis1 = dol_time_plus_duree($cotis1,+1,'y');
-if ($startcotis1>$today && ($startcotis1-$today)<31536000) {
-$cotis1 = dol_time_plus_duree($cotis1,+2,'y');
-} else {
-$cotis1 = dol_time_plus_duree($cotis1,+1,'y');
-}
-
-$cotis0 = dol_time_plus_duree($cotis1,-1,'y');
-$cotis2 = dol_time_plus_duree($cotis1,+1,'y');
-
-$startcotis0 = dol_time_plus_duree($cotis0,-$conf->global->SOCIETE_SUBSCRIBE_MONTH_PRESTART,'m');
-$startcotis2 = dol_time_plus_duree($cotis2,-$conf->global->SOCIETE_SUBSCRIBE_MONTH_PRESTART,'m');
-
-if ($startcotis1>$today){
-if ($conf->global->ADHERENT_SUBSCRIPTION_PRORATA == '0') { 
-$next = dol_time_plus_duree($today,+$conf->global->SOCIETE_SUBSCRIBE_MONTH_PRESTART,'m');
-if ($object->datefin>$today) {
-$date = $dateb = dol_time_plus_duree($object->datefin,+1,'d');
-} else {
-$date = $dateb = $today;
-}
-}else{
-$next = $startcotis1;
-if ($cotis0>$today && $datefin<$today){$date=dol_now();}else{
-$date = $cotis0;}
-$dateb = $cotis0;}
-$dateto = strtotime(date("Y-m-d", $dateb) . " + 1 year - 1 day");  
-}else{
-if ($conf->global->ADHERENT_SUBSCRIPTION_PRORATA == '0') {
-$next = $startcotis2;
-$date = $dateb =$today;
-}else{ 
-$next = $startcotis2; 
-if ($cotis1>$today && $datefin<$today){$date=dol_now();}else{
-$date = $cotis1;}
-$dateb = $cotis1;} 
-$dateto = strtotime(date("Y-m-d", dol_time_plus_duree($cotis2,-1,'d')));
-} 
 
 if ($conf->global->ADHERENT_SUBSCRIPTION_PRORATA=='1' or $conf->global->ADHERENT_SUBSCRIPTION_PRORATA=='0'){$tx="1";}
-else {$tx=(ceil((($dateto-$today)/31558464)*$conf->global->ADHERENT_SUBSCRIPTION_PRORATA)/$conf->global->ADHERENT_SUBSCRIPTION_PRORATA);}
+else {$tx=(ceil((($object->next_subscription_date_end-$today)/31558464)*$conf->global->ADHERENT_SUBSCRIPTION_PRORATA)/$conf->global->ADHERENT_SUBSCRIPTION_PRORATA);}
 $monthnb=12-(12*$tx);
+
 if ($object->datefin>$dateb) {$newdate=$datefin;}else{$newdate=$date;}
 $newy = strftime("%Y",$newdate);
 $newm = strftime("%m",$newdate);
 $newd = strftime("%d",$newdate);
 $renewadherent = strtotime("+ ".$conf->global->ADHERENT_WELCOME_MONTH." month",$newdate);
 $datefrom = strtotime(date("Y-m-d", dol_time_plus_duree($date,+$monthnb,'m'))); 
-
-$d = strftime("%Y",$datefrom);
-$f = strftime("%Y",$dateto);
-if ($d==$f) {
-$season=$d;
-}else{
-$season=$d."/".$f;
-}
-
-$debut = strftime("%d/%m/%Y",$datefrom);
-$fin = strftime("%d/%m/%Y",$dateto);
-//$renew = strftime("%d/%m/%Y",$renewadherent);
-//$nextdebut = strftime("%d/%m/%Y",$next);
 
         // Date payment
         if (GETPOST('paymentyear') && GETPOST('paymentmonth') && GETPOST('paymentday'))
@@ -1091,14 +1029,14 @@ $fin = strftime("%d/%m/%Y",$dateto);
 
         // Date start subscription
         print '<tr><td width="30%" class="fieldrequired">'.$langs->trans("DateSubscription").'</td><td>';
-        print $form->select_date($datefrom,'','','','',"subscription",1,0,1);
+        print $form->select_date($object->next_subscription_date_start,'','','','',"subscription",1,0,1);
         print "</td></tr>";
 
            //$dateto1=dol_mktime(0,0,0,$conf->global->SOCIETE_SUBSCRIBE_MONTH_START,1,$year+1);
             //$dateto=dol_time_plus_duree($datefin,+1,'y'); //premiere fin adhesion
 
         print '<tr><td>'.$langs->trans("DateEndSubscription").'</td><td>';
-        print $form->select_date($dateto,'end','','','',"subscription",1,0,1);
+        print $form->select_date($object->next_subscription_date_end,'end','','','',"subscription",1,0,1);
         print "</td></tr>";
 
         if ($adht->subscription)
@@ -1116,7 +1054,7 @@ $fin = strftime("%d/%m/%Y",$dateto);
             // Label
             print '<tr><td>'.$langs->trans("Label").'</td>';
             print '<td><input name="label" type="text" size="32" value="';
-            if (empty($conf->global->MEMBER_NO_DEFAULT_LABEL)) print $langs->trans("Subscription").' '.$season;
+            if (empty($conf->global->MEMBER_NO_DEFAULT_LABEL)) print $langs->trans("Subscription").' '.$object->next_subscription_season;
             print '"></td></tr>';
 
             // Complementary action

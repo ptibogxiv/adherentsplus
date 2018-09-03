@@ -85,6 +85,10 @@ class AdherentPlus extends CommonObject
   var $daterevalid;
   var $datecommitment;
 	var $birth;
+  
+  var $next_subscription_date_start;
+  var $next_subscription_date_end;
+  var $next_subscription_season;
 
 	var $note_public;
 	var $note_private;
@@ -1343,13 +1347,89 @@ class AdherentPlus extends CommonObject
 
 				$this->datec			= $this->db->jdate($obj->datec);
 				$this->datem			= $this->db->jdate($obj->datem);
-				$this->datefin			= $this->db->jdate($obj->datefin);
+				$this->datefin			= $this->db->jdate($obj->datefin); 
         $this->daterenew			= dol_time_plus_duree($this->db->jdate($obj->datefin), -$conf->global->SOCIETE_SUBSCRIBE_MONTH_PRESTART, m);
         $this->daterevalid			= dol_time_plus_duree($this->db->jdate($obj->datefin), $conf->global->ADHERENT_WELCOME_MONTH, m);
 				$this->datevalid		= $this->db->jdate($obj->datev);
         $this->datecommitment			= $this->db->jdate($obj->datecommitment);
 				$this->birth			= $this->db->jdate($obj->birthday);
+        
+ 		$today=dol_now();
+    $datefrom=0;
+    $dateto=0;
 
+$year = strftime("%Y",$today);
+$month = strftime("%m",$today);
+$day = strftime("%d",$today);
+
+if ($obj->datefin == null){
+$datefin=dol_now();
+}else {
+$datefin=$this->db->jdate($obj->datefin);
+}
+
+$cotis1 = dol_get_first_day($year,$conf->global->SOCIETE_SUBSCRIBE_MONTH_START,false);//dol_mktime(00,00,00,$conf->global->SOCIETE_SUBSCRIBE_MONTH_START,'01',$year);
+$startcotispre1 = dol_time_plus_duree($cotis1,-$conf->global->SOCIETE_SUBSCRIBE_MONTH_PRESTART,'m');
+$startcotis1 = dol_time_plus_duree($cotis1,+1,'y');
+if ($startcotis1>$today && ($startcotis1-$today)<31536000) {
+$cotis1 = dol_time_plus_duree($cotis1,+2,'y');
+} else {
+$cotis1 = dol_time_plus_duree($cotis1,+1,'y');
+}
+
+$cotis0 = dol_time_plus_duree($cotis1,-1,'y');
+$cotis2 = dol_time_plus_duree($cotis1,+1,'y');
+
+$startcotis0 = dol_time_plus_duree($cotis0,-$conf->global->SOCIETE_SUBSCRIBE_MONTH_PRESTART,'m');
+$startcotis2 = dol_time_plus_duree($cotis2,-$conf->global->SOCIETE_SUBSCRIBE_MONTH_PRESTART,'m');
+
+if ($startcotis1>$today){
+if ($conf->global->ADHERENT_SUBSCRIPTION_PRORATA == '0') { 
+$next = dol_time_plus_duree($today,+$conf->global->SOCIETE_SUBSCRIBE_MONTH_PRESTART,'m');
+if ($datefin>$today) {
+$date = $dateb = dol_time_plus_duree($datefin,+1,'d');
+} else {
+$date = $dateb = $today;
+}
+} else {
+$next = $startcotis1;
+if ($cotis0>$today && $datefin<$today){$date=dol_now();}else{
+$date = $cotis0;
+}
+$dateb = $cotis0;
+}
+$dateto = strtotime(date("Y-m-d", $dateb) . " + 1 year - 1 day");  
+} else {
+if ($conf->global->ADHERENT_SUBSCRIPTION_PRORATA == '0') {
+$next = $startcotis2;
+$date = $dateb =$today;
+}else{ 
+$next = $startcotis2; 
+if ($cotis1>$today && $datefin<$today){$date=dol_now();}else{
+$date = $cotis1;}
+$dateb = $cotis1;} 
+$dateto = strtotime(date("Y-m-d", dol_time_plus_duree($cotis2,-1,'d')));
+} 
+
+if ($conf->global->ADHERENT_SUBSCRIPTION_PRORATA=='1' or $conf->global->ADHERENT_SUBSCRIPTION_PRORATA=='0'){$tx="1";}
+else {$tx=(ceil((($dateto-$today)/31558464)*$conf->global->ADHERENT_SUBSCRIPTION_PRORATA)/$conf->global->ADHERENT_SUBSCRIPTION_PRORATA);}
+$monthnb=12-(12*$tx);
+if ($obj->datefin>$dateb) {$newdate=$datefin;}else{$newdate=$date;}
+$renewadherent = strtotime("+ ".$conf->global->ADHERENT_WELCOME_MONTH." month",$newdate);
+$datefrom = strtotime(date("Y-m-d", dol_time_plus_duree($date,+$monthnb,'m'))); 
+
+$d = strftime("%Y",$datefrom);
+$f = strftime("%Y",$dateto);
+if ($d==$f) {
+$season=$d;
+}else{
+$season=$d."/".$f;
+}       
+        
+				$this->next_subscription_date_start			= $datefrom;
+        $this->next_subscription_date_end			= $dateto;
+        $this->next_subscription_season			= $season;
+                 
 				$this->note_private		= $obj->note_private;
 				$this->note_public		= $obj->note_public;
 				$this->morphy			= $obj->morphy;
