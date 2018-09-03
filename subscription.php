@@ -1016,14 +1016,16 @@ $day = strftime("%d",$today);
 if ($object->datefin== NULL){
 $datefin=dol_now()-86400;
 }else {
-$datefin=$object->datefin+86400;
+$datefin=dol_time_plus_duree($object->datefin,+1,'d');
 }
 
 $cotis1 = dol_get_first_day($year,$conf->global->SOCIETE_SUBSCRIBE_MONTH_START,false);//dol_mktime(00,00,00,$conf->global->SOCIETE_SUBSCRIBE_MONTH_START,'01',$year);
 $startcotispre1 = dol_time_plus_duree($cotis1,-$conf->global->SOCIETE_SUBSCRIBE_MONTH_PRESTART,'m');
 $startcotis1 = dol_time_plus_duree($cotis1,+1,'y');
-if ($startcotis1>$today) {
+if ($startcotis1>$today && ($startcotis1-$today)<31536000) {
 $cotis1 = dol_time_plus_duree($cotis1,+2,'y');
+} else {
+$cotis1 = dol_time_plus_duree($cotis1,+1,'y');
 }
 
 $cotis0 = dol_time_plus_duree($cotis1,-1,'y');
@@ -1035,7 +1037,11 @@ $startcotis2 = dol_time_plus_duree($cotis2,-$conf->global->SOCIETE_SUBSCRIBE_MON
 if ($startcotis1>$today){
 if ($conf->global->ADHERENT_SUBSCRIPTION_PRORATA == '0') { 
 $next = dol_time_plus_duree($today,+$conf->global->SOCIETE_SUBSCRIBE_MONTH_PRESTART,'m');
+if ($object->datefin>$today) {
+$date = $dateb = dol_time_plus_duree($object->datefin,+1,'d');
+} else {
 $date = $dateb = $today;
+}
 }else{
 $next = $startcotis1;
 if ($cotis0>$today && $datefin<$today){$date=dol_now();}else{
@@ -1074,8 +1080,8 @@ $season=$d."/".$f;
 
 $debut = strftime("%d/%m/%Y",$datefrom);
 $fin = strftime("%d/%m/%Y",$dateto);
-$renew = strftime("%d/%m/%Y",$renewadherent);
-$nextdebut = strftime("%d/%m/%Y",$next);
+//$renew = strftime("%d/%m/%Y",$renewadherent);
+//$nextdebut = strftime("%d/%m/%Y",$next);
 
         // Date payment
         if (GETPOST('paymentyear') && GETPOST('paymentmonth') && GETPOST('paymentday'))
