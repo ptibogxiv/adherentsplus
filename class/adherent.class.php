@@ -1363,7 +1363,7 @@ $month = strftime("%m",$today);
 $day = strftime("%d",$today);
 
 if ($obj->datefin == null){
-$datefin=dol_now();
+$datefin=dol_time_plus_duree(dol_now(),-1,'d');
 }else {
 $datefin=$this->db->jdate($obj->datefin);
 }
@@ -1374,7 +1374,7 @@ $startcotis1 = dol_time_plus_duree($cotis1,+1,'y');
 if ($startcotis1>$today && ($startcotis1-$today)<31536000) {
 $cotis1 = dol_time_plus_duree($cotis1,+2,'y');
 } else {
-$cotis1 = dol_time_plus_duree($cotis1,+1,'y');
+$cotis1 = dol_time_plus_duree($cotis1,+1,'y'); 
 }
 
 $cotis0 = dol_time_plus_duree($cotis1,-1,'y');
@@ -1393,7 +1393,9 @@ $date = $dateb = $today;
 }
 } else {
 $next = $startcotis1;
-if ($cotis0>$today && $datefin<$today){$date=dol_now();}else{
+if ($cotis0>$today && $datefin<$today){
+$date=dol_now();
+} else {
 $date = $cotis0;
 }
 $dateb = $cotis0;
@@ -1403,9 +1405,9 @@ $dateto = strtotime(date("Y-m-d", $dateb) . " + 1 year - 1 day");
 if ($conf->global->ADHERENT_SUBSCRIPTION_PRORATA == '0') {
 $next = $startcotis2;
 $date = $dateb =$today;
-}else{ 
+} else { 
 $next = $startcotis2; 
-if ($cotis1>$today && $datefin<$today){$date=dol_now();}else{
+if ($cotis1>$today && $datefin<$today){$date=dol_now();} else {
 $date = $cotis1;}
 $dateb = $cotis1;} 
 $dateto = strtotime(date("Y-m-d", dol_time_plus_duree($cotis2,-1,'d')));
