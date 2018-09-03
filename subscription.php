@@ -702,7 +702,7 @@ if ($rowid > 0)
 		print '<table class="nobordernopadding" width="100%"><tr><td>';
 		print $langs->trans("LinkedToDolibarrThirdParty");
 		print '</td>';
-		if ($action != 'editthirdparty' && $user->rights->adherent->creer) print '<td align="right"><a href="'.$_SERVER["PHP_SELF"].'?action=editthirdparty&amp;rowid='.$object->id.'">'.img_edit($langs->trans('SetLinkToThirdParty'),1).'</a></td>';
+		if ($action != 'editthirdparty' && $user->rights->adherent->creer) print '<td align="right"><a href="'.$_SERVER["PHP_SELF"].'?action=editthirdparty&amp;id='.$object->id.'">'.img_edit($langs->trans('SetLinkToThirdParty'),1).'</a></td>';
 		print '</tr></table>';
 		print '</td><td colspan="2" class="valeur">';
 		if ($action == 'editthirdparty')
@@ -745,7 +745,7 @@ if ($rowid > 0)
 		print '<td align="right">';
 		if ($user->rights->user->user->creer)
 		{
-			print '<a href="'.$_SERVER["PHP_SELF"].'?action=editlogin&amp;rowid='.$object->id.'">'.img_edit($langs->trans('SetLinkToUser'),1).'</a>';
+			print '<a href="'.$_SERVER["PHP_SELF"].'?action=editlogin&amp;id='.$object->id.'">'.img_edit($langs->trans('SetLinkToUser'),1).'</a>';
 		}
 		print '</td>';
 	}
@@ -753,13 +753,13 @@ if ($rowid > 0)
 	print '</td><td colspan="2" class="valeur">';
 	if ($action == 'editlogin')
 	{
-		$form->form_users($_SERVER['PHP_SELF'].'?rowid='.$object->id,$object->user_id,'userid','');
+		$form->form_users($_SERVER['PHP_SELF'].'?id='.$object->id,$object->user_id,'userid','');
 	}
 	else
 	{
 		if ($object->user_id)
 		{
-			$form->form_users($_SERVER['PHP_SELF'].'?rowid='.$object->id,$object->user_id,'none');
+			$form->form_users($_SERVER['PHP_SELF'].'?id='.$object->id,$object->user_id,'none');
 		}
 		else print $langs->trans("NoDolibarrAccess");
 	}
@@ -786,8 +786,8 @@ if ($rowid > 0)
         {
             print '<div class="tabsAction">';
 
-            if ($object->statut > 0 && $object->fk_parent== NULL) {
-            print '<div class="inline-block divButAction"><a class="butAction" href="'.$_SERVER["PHP_SELF"].'?rowid='.$rowid.'&action=addsubscription">'.$langs->trans("AddSubscription")."</a></div>";}
+            if ($object->statut > 0 && $object->fk_parent== NULL && $object->daterenew<$now) {
+            print '<div class="inline-block divButAction"><a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$rowid.'&action=addsubscription">'.$langs->trans("AddSubscription")."</a></div>";}
             elseif ($object->statut > 0 && $object->fk_parent!= NULL){print '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="'.dol_escape_htmltag($langs->trans("DeleteParentBefore")).'">'.$langs->trans("AddSubscription").'</a></div>';}
             else {print '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="'.dol_escape_htmltag($langs->trans("ValidateBefore")).'">'.$langs->trans("AddSubscription").'</a></div>';}
 
@@ -1019,12 +1019,17 @@ $datefin=dol_now()-86400;
 $datefin=$object->datefin+86400;
 }
 
-$cotis1 = dol_mktime(00,00,00,$conf->global->SOCIETE_SUBSCRIBE_MONTH_START,'01',$year);
+$cotis1 = dol_get_first_day($year,$conf->global->SOCIETE_SUBSCRIBE_MONTH_START,false);//dol_mktime(00,00,00,$conf->global->SOCIETE_SUBSCRIBE_MONTH_START,'01',$year);
+$startcotispre1 = dol_time_plus_duree($cotis1,-$conf->global->SOCIETE_SUBSCRIBE_MONTH_PRESTART,'m');
+$startcotis1 = dol_time_plus_duree($cotis1,+1,'y');
+if ($startcotis1>$today) {
+$cotis1 = dol_time_plus_duree($cotis1,+2,'y');
+}
+
 $cotis0 = dol_time_plus_duree($cotis1,-1,'y');
 $cotis2 = dol_time_plus_duree($cotis1,+1,'y');
 
 $startcotis0 = dol_time_plus_duree($cotis0,-$conf->global->SOCIETE_SUBSCRIBE_MONTH_PRESTART,'m');
-$startcotis1 = dol_time_plus_duree($cotis1,-$conf->global->SOCIETE_SUBSCRIBE_MONTH_PRESTART,'m');
 $startcotis2 = dol_time_plus_duree($cotis2,-$conf->global->SOCIETE_SUBSCRIBE_MONTH_PRESTART,'m');
 
 if ($startcotis1>$today){
