@@ -995,7 +995,7 @@ if ($rowid > 0)
         print '<form name="subscription" method="POST" action="'.$_SERVER["PHP_SELF"].'">';
         print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
         print '<input type="hidden" name="action" value="subscription">';
-        print '<input type="hidden" name="rowid" value="'.$rowid.'">';
+        print '<input type="hidden" name="id" value="'.$rowid.'">';
         print '<input type="hidden" name="memberlabel" id="memberlabel" value="'.dol_escape_htmltag($object->getFullName($langs)).'">';
         print '<input type="hidden" name="thirdpartylabel" id="thirdpartylabel" value="'.dol_escape_htmltag($object->societe).'">';
 
@@ -1009,17 +1009,9 @@ if ($rowid > 0)
     $dateto=0;
     $paymentdate=-1;
 
-
 if ($conf->global->ADHERENT_SUBSCRIPTION_PRORATA=='1' or $conf->global->ADHERENT_SUBSCRIPTION_PRORATA=='0'){$tx="1";}
 else {$tx=(ceil((($object->next_subscription_date_end-$today)/31558464)*$conf->global->ADHERENT_SUBSCRIPTION_PRORATA)/$conf->global->ADHERENT_SUBSCRIPTION_PRORATA);}
-$monthnb=12-(12*$tx);
-
-if ($object->datefin>$dateb) {$newdate=$datefin;}else{$newdate=$date;}
-$newy = strftime("%Y",$newdate);
-$newm = strftime("%m",$newdate);
-$newd = strftime("%d",$newdate);
-$renewadherent = strtotime("+ ".$conf->global->ADHERENT_WELCOME_MONTH." month",$newdate);
-$datefrom = strtotime(date("Y-m-d", dol_time_plus_duree($date,+$monthnb,'m'))); 
+$monthnb=12-(12*$tx); 
 
         // Date payment
         if (GETPOST('paymentyear') && GETPOST('paymentmonth') && GETPOST('paymentday'))
