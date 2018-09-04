@@ -315,7 +315,7 @@ $this->menu[$r]=array(	'fk_menu'=>0,			// Put 0 if this is a top menu
         $r++;
             $this->menu[$r] = array('fk_menu' => 'fk_mainmenu=adherentsplus,fk_leftmenu=adherentsplus',
             'type' => 'left',
-            'titre' => 'MembersList',
+            'titre' => 'List',
             'mainmenu' => 'adherentsplus',
             'leftmenu' => 'adherentsplusstatus',            
             'url' => '/adherentsplus/list.php',
@@ -495,7 +495,7 @@ $this->menu[$r]=array(	'fk_menu'=>0,			// Put 0 if this is a top menu
         $r++;
             $this->menu[$r] = array('fk_menu' => 'fk_mainmenu=adherentsplus,fk_leftmenu=adherentstypes',
             'type' => 'left',
-            'titre' => 'MembersTypesList',
+            'titre' => 'List',
             'mainmenu' => 'adherentsplus',            
             'url' => '/adherentsplus/type.php',
             'langs' => 'adherentsplus@adherentsplus',
