@@ -80,7 +80,7 @@ class AdherentPlus extends CommonObject
 	var $datec;
 	var $datem;
 	var $datefin;
-  var $daterenew;
+
 	var $datevalid;
 
   var $datecommitment;
@@ -90,6 +90,7 @@ class AdherentPlus extends CommonObject
   var $next_subscription_date_end;
   var $next_subscription_season;
   var $next_subscription_valid;
+  var $next_subscription_renew;
   
 	var $note_public;
 	var $note_private;
@@ -1421,12 +1422,12 @@ $season=$d;
 }else{
 $season=$d."/".$f;
 }       
-        $this->daterenew			= dol_time_plus_duree($this->db->jdate($obj->datefin), -$conf->global->SOCIETE_SUBSCRIBE_MONTH_PRESTART, m);
-        $this->next_subscription_valid			= dol_time_plus_duree($this->db->jdate($obj->datefin), $conf->global->ADHERENT_WELCOME_MONTH, m);
+        $this->next_subscription_renew			= dol_time_plus_duree($this->db->jdate($obj->datefin), -$conf->global->SOCIETE_SUBSCRIBE_MONTH_PRESTART, m); 
 				$this->next_subscription_date_start			= $datefrom;
         $this->next_subscription_date_end			= $dateto;
         $this->next_subscription_season			= $season;
-                 
+        $this->next_subscription_valid			= dol_time_plus_duree($this->db->jdate($obj->datefin), $conf->global->ADHERENT_WELCOME_MONTH, m); 
+                
 				$this->note_private		= $obj->note_private;
 				$this->note_public		= $obj->note_public;
 				$this->morphy			= $obj->morphy;
