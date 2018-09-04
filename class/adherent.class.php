@@ -1307,7 +1307,7 @@ class AdherentPlus extends CommonObject
 				$obj = $this->db->fetch_object($resql);
 
 				$this->entity			= $obj->entity;
-				$this->ref				= $obj->ref;
+				$this->ref				= $obj->ref?$obj->ref:$obj->rowid;
 				$this->id				= $obj->rowid;
 				$this->ref_ext			= $obj->ref_ext;
 				$this->civility_id		= $obj->civility_id;
