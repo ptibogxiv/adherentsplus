@@ -56,12 +56,7 @@ require_once DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php';
 require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 require_once DOL_DOCUMENT_ROOT.'/accountancy/class/accountingjournal.class.php';
 
-$langs->load("companies");
-$langs->load("bills");
-$langs->load("members");
-$langs->load("users");
-$langs->load("mails");
-$langs->load('other');
+$langs->loadLangs(array("companies","bills","members","users","mails",'other'));
 
 $action=GETPOST('action','alpha');
 $confirm=GETPOST('confirm','alpha');
@@ -786,9 +781,10 @@ if ($rowid > 0)
         {
             print '<div class="tabsAction">';
 
-            if ($object->statut > 0 && $object->fk_parent== NULL && $object->daterenew<$now) {
+            if ($object->statut > 0 && $object->fk_parent== NULL && $object->next_subscription_renew<=$now) {
             print '<div class="inline-block divButAction"><a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$rowid.'&action=addsubscription">'.$langs->trans("AddSubscription")."</a></div>";}
             elseif ($object->statut > 0 && $object->fk_parent!= NULL){print '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="'.dol_escape_htmltag($langs->trans("DeleteParentBefore")).'">'.$langs->trans("AddSubscription").'</a></div>';}
+            elseif ($object->next_subscription_renew>$now){print '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="'.dol_escape_htmltag($langs->trans("NextSubscription")." ".dol_print_date($object->next_subscription_renew,'day')).'">'.$langs->trans("AddSubscription").'</a></div>';}
             else {print '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="'.dol_escape_htmltag($langs->trans("ValidateBefore")).'">'.$langs->trans("AddSubscription").'</a></div>';}
 
             print "<br>\n";

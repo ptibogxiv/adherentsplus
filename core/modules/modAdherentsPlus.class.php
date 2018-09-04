@@ -445,7 +445,7 @@ $this->menu[$r]=array(	'fk_menu'=>0,			// Put 0 if this is a top menu
         $r++;
                 $this->menu[$r] = array('fk_menu' => 'fk_mainmenu=adherentsplus,fk_leftmenu=subscriptions',
             'type' => 'left',
-            'titre' => 'ListOfSubscriptions',
+            'titre' => 'List',
             'mainmenu' => 'adherentsplus',            
             'url' => '/adherentsplus/subscription/list.php',
             'langs' => 'adherentsplus@adherentsplus',
