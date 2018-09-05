@@ -5,6 +5,7 @@ SubscriptionCard=Fiche cotisation
 Member=Adhérent
 Members=Adhérents
 Members+=Adhérents+
+License=Licence
 LinkedToDolibarrMember+=Lien adhérent+
 ShowMember=Afficher fiche adhérent
 UserNotLinkedToMember=Utilisateur non lié à un adhérent
