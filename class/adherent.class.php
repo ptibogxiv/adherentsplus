@@ -1354,26 +1354,29 @@ class AdherentPlus extends CommonObject
         $this->datecommitment			= $this->db->jdate($obj->datecommitment);
 				$this->birth			= $this->db->jdate($obj->birthday);
         
- 		$today=dol_now();
-
+$today=dol_now();
 $year = strftime("%Y",$today);
-
+if ($conf->global->SOCIETE_SUBSCRIBE_MONTH_START>0){
+$month = $conf->global->SOCIETE_SUBSCRIBE_MONTH_START;
+} else { 
+$month = strftime("%m",$today);
+}
 //if ($obj->datefin == null){
 //$datefin=dol_time_plus_duree(dol_now(),-1,'d');
 //}else {
 $datefin=$this->db->jdate($obj->datefin);
 //}
 
-$cotis1 = dol_get_first_day($year,$conf->global->SOCIETE_SUBSCRIBE_MONTH_START,false);//dol_mktime(00,00,00,$conf->global->SOCIETE_SUBSCRIBE_MONTH_START,'01',$year);
-$startcotispre1 = dol_time_plus_duree(strtotime($cotis1),-$conf->global->SOCIETE_SUBSCRIBE_MONTH_PRESTART,'m');
-$startcotis1 = dol_time_plus_duree(strtotime($cotis1),+1,'y');
+$cotis1 = dol_get_first_day($year,$month,false);//dol_mktime(00,00,00,$conf->global->SOCIETE_SUBSCRIBE_MONTH_START,'01',$year);
+$startcotispre1 = dol_time_plus_duree($cotis1,-$conf->global->SOCIETE_SUBSCRIBE_MONTH_PRESTART,'m');
+$startcotis1 = dol_time_plus_duree($cotis1,+1,'y');
 if ($startcotis1>$today && ($startcotis1-$today)<31536000) {
-$cotis1 = dol_time_plus_duree(strtotime($cotis1),+2,'y');
+$cotis1 = dol_time_plus_duree($cotis1,+2,'y');
 } else {
-$cotis1 = dol_time_plus_duree(strtotime($cotis1),+1,'y'); 
+$cotis1 = dol_time_plus_duree($cotis1,+1,'y'); 
 }
 
-$cotis2 = dol_time_plus_duree(strtotime($cotis1),+1,'y');
+$cotis2 = dol_time_plus_duree($cotis1,+1,'y');
 $startcotis2 = dol_time_plus_duree($cotis2,-$conf->global->SOCIETE_SUBSCRIBE_MONTH_PRESTART,'m');
 //$startcotis0 = dol_time_plus_duree($cotis0,-$conf->global->SOCIETE_SUBSCRIBE_MONTH_PRESTART,'m');
 
@@ -1381,13 +1384,13 @@ if ($startcotis1>$today){
 if ($conf->global->ADHERENT_SUBSCRIPTION_PRORATA == '0') { 
 //$next = dol_time_plus_duree($today,+$conf->global->SOCIETE_SUBSCRIBE_MONTH_PRESTART,'m');
 if ($datefin>$today) {
-$date = $dateb = dol_time_plus_duree(strtotime($datefin),+1,'d');
+$date = $dateb = dol_time_plus_duree($datefin,+1,'d');
 } else {
 $date = $dateb = $today;
 }
 } else {
 //$next = $startcotis1;
-$cotis0 = dol_time_plus_duree(strtotime($cotis1),-1,'y');
+$cotis0 = dol_time_plus_duree($cotis1,-1,'y');
 if ($cotis0>$today && $datefin<$today){
 $date=$today;
 } else {
