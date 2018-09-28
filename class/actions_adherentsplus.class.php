@@ -103,5 +103,29 @@ $this->resprints.= '<span class="opacitymedium">'.$langs->trans("ThirdpartyNotLi
 
 		return 0;
 	}
+  
+  	/**
+	 * addMoreActionsButtons
+	 *
+	 * @param arra	 	$parameters	Parameters
+	 * @param Object	$object		Object
+	 * @param string	$action		action
+	 * @return int					0
+	 */
+	function addMoreActionsButtons($parameters, &$object, &$action)
+	{
+		global $db,$conf,$user,$langs,$form;
+		if (is_object($object) && $object->element == 'societe'){
+
+    $adh=new AdherentPlus($db);
+    $result=$adh->fetch('','',$object->id);
+    if (!$result && $object->client==1)
+{
+		print '<a class="butAction" href="#" title="'.dol_escape_htmltag($langs->trans("NotEnoughPermissions")).'">'.$langs->trans("CreateMember").'</a>';
+}    
+    
+	}
+  return 0;
+  }
 
 }
