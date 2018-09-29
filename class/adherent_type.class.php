@@ -151,8 +151,7 @@ class AdherentTypePlus extends CommonObject
 if (! empty($conf->global->PRODUIT_MULTIPRICES)){  
       $sql  = "UPDATE ".MAIN_DB_PREFIX."societe as s";
 			$sql .= " SET s.price_level = '".$this->price_level."'";
-			$sql .= " WHERE s.rowid IN (SELECT a.fk_soc FROM ".MAIN_DB_PREFIX."adherent as a
-      WHERE a.fk_adherent_type =".$this->id.")";
+			$sql .= " WHERE s.rowid IN (SELECT a.fk_soc FROM ".MAIN_DB_PREFIX."adherent as a WHERE a.fk_adherent_type =".$this->id.")";
 
 			if (! $this->db->query($sql))
 			{
