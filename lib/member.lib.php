@@ -51,7 +51,7 @@ function member_prepare_head(Adherentplus $object)
 		$h++;
 	}
   
-	if (! empty($user->rights->adherent->cotisation->lire))
+	if (! empty($user->rights->adherent->cotisation->lire) && $conf->global->MAIN_MODULE_ADHERENTSPLUS_CONSUMPTION)
 	{
 		$head[$h][0] = dol_buildpath('/adherentsplus/consumption.php', 1) . '?id=' . $object->id;
 		$head[$h][1] = $langs->trans("Consumptions");
