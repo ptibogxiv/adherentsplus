@@ -1370,7 +1370,7 @@ $datefin=$this->db->jdate($obj->datefin);
 $cotis1 = dol_get_first_day($year,$month,false);//dol_mktime(00,00,00,$conf->global->SOCIETE_SUBSCRIBE_MONTH_START,'01',$year);
 $startcotispre1 = dol_time_plus_duree($cotis1,-$conf->global->SOCIETE_SUBSCRIBE_MONTH_PRESTART,'m');
 $startcotis1 = dol_time_plus_duree($cotis1,+1,'y');
-if ($startcotis1>$today && ($startcotis1-$today)<31536000) {
+if ($startcotis1>$today && ($startcotis1-$today)<31536000 && (($today-$startcotispre1)>31536000)) {
 $cotis1 = dol_time_plus_duree($cotis1,+2,'y');
 } else {
 $cotis1 = dol_time_plus_duree($cotis1,+1,'y'); 
@@ -1383,7 +1383,7 @@ $startcotis2 = dol_time_plus_duree($cotis2,-$conf->global->SOCIETE_SUBSCRIBE_MON
 if ($startcotis1>$today){
 if ($conf->global->ADHERENT_SUBSCRIPTION_PRORATA == '0') { 
 //$next = dol_time_plus_duree($today,+$conf->global->SOCIETE_SUBSCRIBE_MONTH_PRESTART,'m');
-if ($datefin>$today) {
+if ($datefin>$today || ($today-$datefin)<31536000) {
 $date = $dateb = dol_time_plus_duree($datefin,+1,'d');
 } else {
 $date = $dateb = $today;
@@ -1411,7 +1411,7 @@ $dateb = $cotis1;}
 $dateto = strtotime(date("Y-m-d", dol_time_plus_duree($cotis2,-1,'d')));
 } 
 
-if ($conf->global->ADHERENT_SUBSCRIPTION_PRORATA=='1' or $conf->global->ADHERENT_SUBSCRIPTION_PRORATA=='0'){$tx="1";}
+if ($conf->global->ADHERENT_SUBSCRIPTION_PRORATA=='1' || $conf->global->ADHERENT_SUBSCRIPTION_PRORATA=='0'){$tx="1";}
 else {$tx=(ceil((($dateto-$today)/31558464)*$conf->global->ADHERENT_SUBSCRIPTION_PRORATA)/$conf->global->ADHERENT_SUBSCRIPTION_PRORATA);}
 $monthnb=12-(12*$tx);
 if ($obj->datefin>$dateb) {$newdate=$datefin;}else{$newdate=$date;}

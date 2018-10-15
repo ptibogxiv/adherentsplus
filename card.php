@@ -1816,7 +1816,7 @@ else
 			print '<a name="builddoc"></a>'; // ancre
 
 			// Documents generes
-			$filename = dol_sanitizeFileName($object->ref);
+			$filename = dol_sanitizeFileName($object->id);
 			//$filename =  'tmp_cards.php';
 			//$filedir = $conf->adherent->dir_output . '/' . get_exdir($object->id, 2, 0, 0, $object, 'member') . dol_sanitizeFileName($object->ref);
 			$filedir = $conf->adherent->dir_output . '/' . get_exdir(0, 0, 0, 0, $object, 'member');
@@ -1844,7 +1844,7 @@ else
 				print '<br>';
 
 				require_once DOL_DOCUMENT_ROOT.'/core/lib/payments.lib.php';
-				print showOnlinePaymentUrl('membersubscription', $object->ref);
+				print showOnlinePaymentUrl('membersubscription', $object->id);
 			}
 
 		print '</DIV><DIV class="fichehalfright"><DIV class="ficheaddleft">';
