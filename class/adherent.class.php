@@ -89,6 +89,7 @@ class AdherentPlus extends CommonObject
   var $next_subscription_date_start;
   var $next_subscription_date_end;
   var $next_subscription_season;
+  var $next_subscription_prorata;
   var $next_subscription_valid;
   var $next_subscription_renew;
   
@@ -1424,11 +1425,16 @@ if ($d==$f) {
 $season=$d;
 }else{
 $season=$d."/".$f;
-}       
+}
+
+if ($conf->global->ADHERENT_SUBSCRIPTION_PRORATA <= '1'){$tx="1";}
+else {$tx=(ceil((($dateto-$today)/31558464)*$conf->global->ADHERENT_SUBSCRIPTION_PRORATA)/$conf->global->ADHERENT_SUBSCRIPTION_PRORATA);}
+       
         $this->next_subscription_renew			= dol_time_plus_duree(strtotime($obj->datefin), -$conf->global->SOCIETE_SUBSCRIBE_MONTH_PRESTART, 'm'); 
 				$this->next_subscription_date_start			= $datefrom;
         $this->next_subscription_date_end			= $dateto;
         $this->next_subscription_season			= $season;
+        $this->next_subscription_prorata			= $tx;
         $this->next_subscription_valid			= dol_time_plus_duree(strtotime($obj->datefin), $conf->global->ADHERENT_WELCOME_MONTH, 'm'); 
                 
 				$this->note_private		= $obj->note_private;
