@@ -1003,11 +1003,7 @@ if ($rowid > 0)
 		$today=dol_now();
     $datefrom=0;
     $dateto=0;
-    $paymentdate=-1;
-
-if ($conf->global->ADHERENT_SUBSCRIPTION_PRORATA=='1' or $conf->global->ADHERENT_SUBSCRIPTION_PRORATA=='0'){$tx="1";}
-else {$tx=(ceil((($object->next_subscription_date_end-$today)/31558464)*$conf->global->ADHERENT_SUBSCRIPTION_PRORATA)/$conf->global->ADHERENT_SUBSCRIPTION_PRORATA);}
-$monthnb=12-(12*$tx); 
+    $paymentdate=-1; 
 
         // Date payment
         if (GETPOST('paymentyear') && GETPOST('paymentmonth') && GETPOST('paymentday'))
@@ -1033,7 +1029,7 @@ $monthnb=12-(12*$tx);
         $montant=$adht->price;
         }
         else {     
-        $montant=$tx*$adht->price;
+        $montant=$object->next_subscription_prorata*$adht->price;
         }
         if ($object->datefin > 0) {$amount=$montant;} else  {$amount=$montant+$adht->welcome;}
             // Amount
