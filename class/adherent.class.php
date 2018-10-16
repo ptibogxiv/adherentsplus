@@ -1415,9 +1415,12 @@ $dateto = strtotime(date("Y-m-d", dol_time_plus_duree($cotis2,-1,'d')));
 if ($conf->global->ADHERENT_SUBSCRIPTION_PRORATA=='1' || $conf->global->ADHERENT_SUBSCRIPTION_PRORATA=='0'){$tx="1";}
 else {$tx=(ceil((($dateto-$today)/31558464)*$conf->global->ADHERENT_SUBSCRIPTION_PRORATA)/$conf->global->ADHERENT_SUBSCRIPTION_PRORATA);}
 $monthnb=12-(12*$tx);
-if ($obj->datefin>$dateb) {$newdate=$datefin;}else{$newdate=$date;}
-//$renewadherent = strtotime("+ ".$conf->global->ADHERENT_WELCOME_MONTH." month",$newdate);
+
 $datefrom = strtotime(date("Y-m-d", dol_time_plus_duree($date,+$monthnb,'m'))); 
+
+if ($datefrom<$datefin) {
+$datefrom = $date;
+}
 
 $d = strftime("%Y",$datefrom);
 $f = strftime("%Y",$dateto);
