@@ -34,7 +34,7 @@
 require_once DOL_DOCUMENT_ROOT.'/core/class/commonobject.class.php';
 require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
 require_once DOL_DOCUMENT_ROOT . '/categories/class/categorie.class.php';
-
+require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 
 /**
  *		Class to manage members of a foundation
@@ -1566,46 +1566,31 @@ dol_include_once('/adherentsplus/class/subscription.class.php');
 
 dol_include_once('/adherentsplus/class/subscription.class.php');
 
-		$sql = "SELECT c.rowid, c.fk_adherent, c.subscription, c.note, c.fk_bank, c.fk_type,";
-		$sql.= " c.tms as datem,";
-		$sql.= " c.datec as datec,";
-		$sql.= " c.dateadh as dateh,";
-		$sql.= " c.datef as datef, ";
-    $sql.= " t.rowid, t.libelle ";
-		$sql.= " FROM ".MAIN_DB_PREFIX."subscription as c ";
-    $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."adherent_type as t ON c.fk_type=t.rowid ";
-		$sql.= " WHERE c.fk_adherent = ".$this->id;
-		$sql.= " ORDER BY c.dateadh DESC";
+    $sql = "SELECT c.rowid,c.entity,c.date_creation,c.fk_member,c.fk_product,c.qty";    
+    $sql.= " FROM ".MAIN_DB_PREFIX."adherent_consumption as c";
+    $sql.= " WHERE c.fk_member=".$this->id; 
+		$sql.= " ORDER BY c.rowid DESC";
 		dol_syslog(get_class($this)."::fetch_consumptions", LOG_DEBUG);
 
-		$resql=$this->db->query($sql);
-		if ($resql)
-		{
+        $resql = $this->db->query($sql);
+        if ($resql)
+        {
+
+      $num = $this->db->num_rows($result);
+      $i = 0;
 			$this->consumptions=array();
 
-			$i=0;
             while ($obj = $this->db->fetch_object($resql))
             {
-                if ($i==0)
-                {
-                    $this->first_subscription_date=$obj->dateh;
-                    $this->first_subscription_amount=$obj->subscription;
-                }
-                $this->last_subscription_date=$obj->dateh;
-                $this->last_subscription_amount=$obj->subscription;
 
-                $consumption=new SubscriptionPlus($this->db);
                 $consumption->id=$obj->rowid;
-                $consumption->fk_adherent=$obj->fk_adherent;
-                $consumption->fk_type=$obj->fk_type;
-                $consumption->label=$obj->libelle;
-                $consumption->amount=$obj->subscription;
-                $consumption->note=$obj->note;
-                $consumption->fk_bank=$obj->fk_bank;
-                $consumption->datem=$this->db->jdate($obj->datem);
-                $consumption->datec=$this->db->jdate($obj->datec);
-                $consumption->dateh=$this->db->jdate($obj->dateh);
-                $consumption->datef=$this->db->jdate($obj->datef);
+                $consumption->date_creation=$this->db->jdate($obj->date_creation);
+                $consumption->fk_product=$obj->fk_product;
+                $prodtmp=new Product($this->db);
+                $prodtmp->fetch($obj->fk_product);
+                $consumption->product_label=$prodtmp->label;
+                $consumption->qty=$obj->qty;
+                $consumption->fk_invoice=$obj->fk_invoice;
 
                 $this->consumptions[]=$consumption;
 

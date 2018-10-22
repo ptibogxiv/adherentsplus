@@ -216,7 +216,7 @@ if ($id)
                 print ' - '.$prodtmp->label.'</td>';
                 print '<td align="center">'.$objp->qty."</td>\n";              
                 
-                print '<td align="right">'.$objp->fk_facture.'</td>';
+                print '<td align="right">'.$objp->fk_invoice.'</td>';
                 print '<td align="right">'.dol_print_date($db->jdate($objp->date_validation),'day').'</td>';
                 print "</tr>";
                 $i++;
