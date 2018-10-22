@@ -114,7 +114,8 @@ class AdherentPlus extends CommonObject
 	var $last_subscription_date_end;
 	var $last_subscription_amount;
 	var $subscriptions=array();
-
+  var $consumptions=array();
+    
 	var $oldcopy;		// To contains a clone of this when we need to save old properties of object
 
 	public $entity;
@@ -1463,6 +1464,9 @@ else {$tx=(ceil((($dateto-$today)/31558464)*$conf->global->ADHERENT_SUBSCRIPTION
 				// Load other properties
 				$result=$this->fetch_subscriptions();
 
+        // Load other properties
+				$result=$this->fetch_consumptions();
+
 				return $this->id;
 			}
 			else
@@ -1547,6 +1551,74 @@ dol_include_once('/adherentsplus/class/subscription.class.php');
 		}
 	}
 
+  	/**
+	 *	Fonction qui recupere pour un adherent les parametres
+	 *				first_subscription_date
+	 *				first_subscription_amount
+	 *				last_subscription_date
+	 *				last_subscription_amount
+	 *
+	 *	@return		int			<0 si KO, >0 si OK
+	 */
+	function fetch_consumptions()
+	{
+		global $langs;
+
+dol_include_once('/adherentsplus/class/subscription.class.php');
+
+		$sql = "SELECT c.rowid, c.fk_adherent, c.subscription, c.note, c.fk_bank, c.fk_type,";
+		$sql.= " c.tms as datem,";
+		$sql.= " c.datec as datec,";
+		$sql.= " c.dateadh as dateh,";
+		$sql.= " c.datef as datef, ";
+    $sql.= " t.rowid, t.libelle ";
+		$sql.= " FROM ".MAIN_DB_PREFIX."subscription as c ";
+    $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."adherent_type as t ON c.fk_type=t.rowid ";
+		$sql.= " WHERE c.fk_adherent = ".$this->id;
+		$sql.= " ORDER BY c.dateadh DESC";
+		dol_syslog(get_class($this)."::fetch_consumptions", LOG_DEBUG);
+
+		$resql=$this->db->query($sql);
+		if ($resql)
+		{
+			$this->consumptions=array();
+
+			$i=0;
+            while ($obj = $this->db->fetch_object($resql))
+            {
+                if ($i==0)
+                {
+                    $this->first_subscription_date=$obj->dateh;
+                    $this->first_subscription_amount=$obj->subscription;
+                }
+                $this->last_subscription_date=$obj->dateh;
+                $this->last_subscription_amount=$obj->subscription;
+
+                $consumption=new SubscriptionPlus($this->db);
+                $consumption->id=$obj->rowid;
+                $consumption->fk_adherent=$obj->fk_adherent;
+                $consumption->fk_type=$obj->fk_type;
+                $consumption->label=$obj->libelle;
+                $consumption->amount=$obj->subscription;
+                $consumption->note=$obj->note;
+                $consumption->fk_bank=$obj->fk_bank;
+                $consumption->datem=$this->db->jdate($obj->datem);
+                $consumption->datec=$this->db->jdate($obj->datec);
+                $consumption->dateh=$this->db->jdate($obj->dateh);
+                $consumption->datef=$this->db->jdate($obj->datef);
+
+                $this->consumptions[]=$consumption;
+
+                $i++;
+            }
+            return 1;
+		}
+		else
+		{
+			$this->error=$this->db->error().' sql='.$sql;
+			return -1;
+		}
+	}
 
 	/**
 	 *	Insert subscription into database and eventually add links to banks, mailman, etc...
