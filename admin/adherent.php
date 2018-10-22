@@ -86,6 +86,7 @@ if ($action == 'updateall')
     $res11=dolibarr_set_const($db, 'SOCIETE_SUBSCRIBE_MONTH_PRESTART', GETPOST('SOCIETE_SUBSCRIBE_MONTH_PRESTART', 'alpha'), 'chaine', 0, '', $conf->entity);
     $res12=dolibarr_set_const($db, 'ADHERENT_WELCOME_MONTH', GETPOST('ADHERENT_WELCOME_MONTH', 'alpha'), 'chaine', 0, '', $conf->entity);
     $res13=dolibarr_set_const($db, 'ADHERENT_MEMBER_CATEGORY', implode(",", GETPOST('ADHERENT_MEMBER_CATEGORY', 'array')), 'chaine', 0, '', $conf->entity);
+    $res14=dolibarr_set_const($db, 'ADHERENT_CONSUMPTION', GETPOST('ADHERENT_CONSUMPTION', 'alpha'), 'chaine', 0, '', $conf->entity);
     // Use vat for invoice creation
     if ($conf->facture->enabled)
     {
@@ -96,7 +97,7 @@ if ($action == 'updateall')
             $res7=dolibarr_set_const($db, 'ADHERENT_PRODUCT_ID_FOR_SUBSCRIPTIONS', GETPOST('ADHERENT_PRODUCT_ID_FOR_SUBSCRIPTIONS', 'alpha'), 'chaine', 0, '', $conf->entity);
         }
     }
-    if ($res1 < 0 || $res2 < 0 || $res3 < 0 || $res4 < 0 || $res5 < 0 || $res6 < 0 || $res7 < 0 || $res8 < 0 || $res9 < 0 || $res10 < 0 || $res11 < 0 || $res12 < 0 || $res13 < 0)
+    if ($res1 < 0 || $res2 < 0 || $res3 < 0 || $res4 < 0 || $res5 < 0 || $res6 < 0 || $res7 < 0 || $res8 < 0 || $res9 < 0 || $res10 < 0 || $res11 < 0 || $res12 < 0 || $res13 < 0 || $res14 < 0)
     {
         setEventMessages('ErrorFailedToSaveDate', null, 'errors');
         $db->rollback();
@@ -296,6 +297,11 @@ print "</tr>\n";
 					print $form->multiselectarray('ADHERENT_MEMBER_CATEGORY', $cate_arbo, array($conf->global->ADHERENT_MEMBER_CATEGORY), '', 0, '', 0, '90%');
 					print "</td></tr>";
 				}
+        
+// Consumption for members
+print '<tr class="oddeven"><td>'.$langs->trans("AdherentConsumption").'</td><td>';
+print $form->selectyesno('ADHERENT_CONSUMPTION', (! empty($conf->global->ADHERENT_CONSUMPTION)?$conf->global->ADHERENT_CONSUMPTION:0), 1);
+print "</td></tr>\n";        
 
 print '</table>';
 
