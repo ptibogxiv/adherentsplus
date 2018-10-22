@@ -46,6 +46,7 @@ if (! $res)
 dol_include_once('/adherentsplus/lib/member.lib.php');
 dol_include_once('/adherentsplus/class/adherent.class.php');
 dol_include_once('/adherentsplus/class/adherent_type.class.php');
+require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 
 $langs->load("companies");
 $langs->load("members");
@@ -193,7 +194,7 @@ if ($id)
             print '<tr class="liste_titre">';
             print '<td>'.$langs->trans("Ref").'</td>';
             print '<td align="center">'.$langs->trans("Date").'</td>';
-            print '<td align="center">'.$langs->trans("Product").'</td>';
+            print '<td align="center">'.$langs->trans("Product/Service").'</td>';
             print '<td align="center">'.$langs->trans("Quantity").'</td>';
             print '<td align="right">'.$langs->trans("Invoice").'</td>';
             print "</tr>\n";
@@ -206,11 +207,15 @@ if ($id)
                 print "<tr ".$bc[$var].">";
 
                 print '<td>'.$objp->rowid.'</td>';
-                print '<td align="center">'.dol_print_date($db->jdate($objp->date_creation),'dayhour')."</td>\n"; 
-                print '<td align="center">'.dol_print_date($db->jdate($objp->datep),'dayhour')."</td>\n";
+                print '<td align="center">'.dol_print_date($db->jdate($objp->date_creation),'dayhour')."</td>\n";
+                print '<td align="center">';
+                $prodtmp=new Product($db);
+                $prodtmp->fetch($objp->fk_product);
+                print $prodtmp->getNomUrl(1);	// must use noentitiesnoconv to avoid to encode html into getNomUrl of product
+                print '</td>';
                 print '<td align="center">'.$objp->qty."</td>\n";              
                 
-                print '<td align="right">'.$percent.'% </td>';
+                print '<td align="right">'.$objp->fk_facture.'</td>';
                 print "</tr>";
                 $i++;
             }
