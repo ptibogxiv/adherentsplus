@@ -167,11 +167,59 @@ if ($id)
     $permission = $user->rights->adherent->creer;  // Used by the include of notes.tpl.php
     //include DOL_DOCUMENT_ROOT.'/core/tpl/notes.tpl.php';
 
-
     dol_fiche_end();
 
 }
 
+    /*
+     * List of consumptions
+     */
+
+        $sql = "SELECT c.rowid,c.entity,c.date_creation,c.fk_member,c.fk_product,c.qty";    
+        $sql.= " FROM ".MAIN_DB_PREFIX."adherent_consumption as c";
+        $sql.= " WHERE c.fk_member=".$object->id;
+        //$sql.= " AND c.entity IN (" . getEntity('adherentsplus') . ") ";
+        $sql.= " ORDER BY c.rowid DESC LIMIT 60";
+        
+        $result = $db->query($sql);
+        if ($result)
+        {
+
+            $num = $db->num_rows($result);
+            $i = 0;
+
+            print '<table class="noborder" width="100%">'."\n";
+
+            print '<tr class="liste_titre">';
+            print '<td>'.$langs->trans("Ref").'</td>';
+            print '<td align="center">'.$langs->trans("Date").'</td>';
+            print '<td align="center">'.$langs->trans("Product").'</td>';
+            print '<td align="center">'.$langs->trans("Quantity").'</td>';
+            print '<td align="right">'.$langs->trans("Invoice").'</td>';
+            print "</tr>\n";
+
+            $var=True;
+            while ($i < $num)
+            {
+                $objp = $db->fetch_object($result);
+                $var=!$var;
+                print "<tr ".$bc[$var].">";
+
+                print '<td>'.$objp->rowid.'</td>';
+                print '<td align="center">'.dol_print_date($db->jdate($objp->date_creation),'dayhour')."</td>\n"; 
+                print '<td align="center">'.dol_print_date($db->jdate($objp->datep),'dayhour')."</td>\n";
+                print '<td align="center">'.$objp->qty."</td>\n";              
+                
+                print '<td align="right">'.$percent.'% </td>';
+                print "</tr>";
+                $i++;
+            }
+            print "</table>";
+        }
+        else
+        {
+            dol_print_error($db);
+        }
 
 llxFooter();
 $db->close();
