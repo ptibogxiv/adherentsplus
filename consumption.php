@@ -214,7 +214,7 @@ if ($id)
                 print ' - '.$prodtmp->label.'</td>';
                 print '<td align="center">'; 
                              
-                if ($prodtmp->isService())
+                if ($prodtmp->isService() && $prodtmp->duration_value> 0)
             {
                 print $objp->qty*$prodtmp->duration_value." "; 
                 if ($prodtmp->duration_value > 1)
