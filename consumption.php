@@ -108,21 +108,54 @@ if ($id)
         print '<tr><td class="titlefield">'.$langs->trans("Login").' / '.$langs->trans("Id").'</td><td class="valeur">'.$object->login.'&nbsp;</td></tr>';
     }
 
-    // Type
-    print '<tr><td>'.$langs->trans("Type").'</td><td class="valeur">'.$adht->getNomUrl(1)."</td></tr>\n";
-
-    // Morphy
-    print '<tr><td class="titlefield">'.$langs->trans("Nature").'</td><td class="valeur" >'.$object->getmorphylib().'</td>';
-    /*print '<td rowspan="'.$rowspan.'" align="center" valign="middle" width="25%">';
-    print $form->showphoto('memberphoto',$member);
-    print '</td>';*/
-    print '</tr>';
+		// Third party Dolibarr
+		if (! empty($conf->societe->enabled))
+		{
+			print '<tr><td>';
+			print '<table class="nobordernopadding" width="100%"><tr><td>';
+			print $langs->trans("LinkedToDolibarrThirdParty");
+			print '</td>';
+			if ($action != 'editthirdparty' && $user->rights->adherent->creer) print '<td align="right"></td>';
+			print '</tr></table>';
+			print '</td><td colspan="2" class="valeur">';
+				if ($object->fk_soc)
+				{
+					$company=new Societe($db);
+					$result=$company->fetch($object->fk_soc);
+					print $company->getNomUrl(1);
+				}
+				else
+				{
+					print $langs->trans("NoThirdPartyAssociatedToMember");
+				}
+			print '</td></tr>';
+		}
 
     // Company
-    print '<tr><td>'.$langs->trans("Company").'</td><td class="valeur">'.$object->societe.'</td></tr>';
+    print '<tr><td>'.$langs->trans("NextBilling").'</td><td class="valeur">'.dol_print_date($object->datebilling,'day').'</td></tr>';
 
     // Civility
-    print '<tr><td>'.$langs->trans("UserTitle").'</td><td class="valeur">'.$object->getCivilityLabel().'&nbsp;</td>';
+    print '<tr><td>'.$langs->trans("Commitment").'</td><td class="valeur">';
+		if ($object->datecommitment)
+		{
+			print dol_print_date($object->datecommitment,'day');
+			if ($object->hasDelay()) {
+				print " ".img_warning($langs->trans("Late"));
+			}
+		}
+		else
+		{
+			if (! $adht->subscription)
+			{
+				print $langs->trans("SubscriptionNotRecorded");
+				if ($object->statut > 0) print " ".img_warning($langs->trans("Late")); // displays delay Pictogram only if not a draft and not terminated
+			}
+			else
+			{
+				print $langs->trans("Free");
+			}
+		}     
+    print '</td>';
     print '</tr>';
 
     print "</table>";
