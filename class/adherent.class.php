@@ -1497,12 +1497,12 @@ else {$tx=(ceil((($dateto-$today)/31558464)*$conf->global->ADHERENT_SUBSCRIPTION
 
 dol_include_once('/adherentsplus/class/subscription.class.php');
 
-		$sql = "SELECT c.rowid, c.fk_adherent, c.subscription, c.note, c.fk_bank, c.fk_type,";
+		$sql = "SELECT c.rowid as crowid, c.fk_adherent, c.subscription, c.note, c.fk_bank, c.fk_type,";
 		$sql.= " c.tms as datem,";
 		$sql.= " c.datec as datec,";
 		$sql.= " c.dateadh as dateh,";
 		$sql.= " c.datef as datef, ";
-    $sql.= " t.rowid, t.libelle ";
+    $sql.= " t.rowid as trowid, t.libelle ";
 		$sql.= " FROM ".MAIN_DB_PREFIX."subscription as c ";
     $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."adherent_type as t ON c.fk_type=t.rowid ";
 		$sql.= " WHERE c.fk_adherent = ".$this->id;
@@ -1526,7 +1526,7 @@ dol_include_once('/adherentsplus/class/subscription.class.php');
                 $this->last_subscription_amount=$obj->subscription;
 
                 $subscription=new SubscriptionPlus($this->db);
-                $subscription->id=$obj->rowid;
+                $subscription->id=$obj->crowid;
                 $subscription->fk_adherent=$obj->fk_adherent;
                 $subscription->fk_type=$obj->fk_type;
                 $subscription->label=$obj->libelle;
