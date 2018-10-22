@@ -48,9 +48,7 @@ dol_include_once('/adherentsplus/class/adherent.class.php');
 dol_include_once('/adherentsplus/class/adherent_type.class.php');
 require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 
-$langs->load("companies");
-$langs->load("members");
-$langs->load("bills");
+$langs->loadLangs(array('products', 'companies', 'members', 'bills', 'other'));
 
 $action=GETPOST('action','alpha');
 $id=GETPOST('rowid','int');
@@ -214,8 +212,24 @@ if ($id)
                 $prodtmp->fetch($objp->fk_product);
                 print $prodtmp->getNomUrl(1);	// must use noentitiesnoconv to avoid to encode html into getNomUrl of product
                 print ' - '.$prodtmp->label.'</td>';
-                print '<td align="center">'.$objp->qty."</td>\n";              
-                
+                print '<td align="center">'; 
+                             
+                if ($prodtmp->isService())
+            {
+                print $objp->qty*$prodtmp->duration_value." "; 
+                if ($prodtmp->duration_value > 1)
+                {
+                    $dur=array("i"=>$langs->trans("Minute"),"h"=>$langs->trans("Hours"),"d"=>$langs->trans("Days"),"w"=>$langs->trans("Weeks"),"m"=>$langs->trans("Months"),"y"=>$langs->trans("Years"));
+                }
+                else if ($prodtmp->duration_value > 0)
+                {
+                    $dur=array("i"=>$langs->trans("Minute"),"h"=>$langs->trans("Hour"),"d"=>$langs->trans("Day"),"w"=>$langs->trans("Week"),"m"=>$langs->trans("Month"),"y"=>$langs->trans("Year"));
+                }
+                print (! empty($prodtmp->duration_unit) && isset($dur[$prodtmp->duration_unit]) ? $langs->trans($dur[$prodtmp->duration_unit]) : '')."</td>\n";                  
+            } else {
+                print $objp->qty." </td>\n";  
+            }   
+        
                 print '<td align="right">'.$objp->fk_invoice.'</td>';
                 print '<td align="right">'.dol_print_date($db->jdate($objp->date_validation),'day').'</td>';
                 print "</tr>";

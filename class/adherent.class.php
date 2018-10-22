@@ -1585,7 +1585,8 @@ require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
                 $prodtmp=new Product($this->db);
                 $prodtmp->fetch($obj->fk_product);
                 $consumption->label=$prodtmp->label;
-                $consumption->datem=$this->db->jdate($obj->datem);
+                $consumption->qty=$obj->qty;
+                $consumption->fk_invoice=$obj->fk_invoice;
                 $consumption->date_creation=$this->db->jdate($obj->date_creation);
 
                 $this->consumptions[]=$consumption;
