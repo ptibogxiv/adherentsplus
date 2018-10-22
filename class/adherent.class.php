@@ -1465,7 +1465,7 @@ else {$tx=(ceil((($dateto-$today)/31558464)*$conf->global->ADHERENT_SUBSCRIPTION
 				$result=$this->fetch_subscriptions();
 
         // Load other properties
-				$result=$this->fetch_consumptions();
+				$this->fetch_consumptions();
 
 				return $this->id;
 			}
@@ -1553,10 +1553,6 @@ dol_include_once('/adherentsplus/class/subscription.class.php');
 
   	/**
 	 *	Fonction qui recupere pour un adherent les parametres
-	 *				first_subscription_date
-	 *				first_subscription_amount
-	 *				last_subscription_date
-	 *				last_subscription_amount
 	 *
 	 *	@return		int			<0 si KO, >0 si OK
 	 */
@@ -1564,33 +1560,33 @@ dol_include_once('/adherentsplus/class/subscription.class.php');
 	{
 		global $langs;
 
-dol_include_once('/adherentsplus/class/subscription.class.php');
+dol_include_once('/adherentsplus/class/consumption.class.php');
+require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 
     $sql = "SELECT c.rowid,c.entity,c.date_creation,c.fk_member,c.fk_product,c.qty";    
     $sql.= " FROM ".MAIN_DB_PREFIX."adherent_consumption as c";
-    $sql.= " WHERE c.fk_member=".$this->id; 
+    $sql.= " WHERE c.fk_member=".$this->id;
 		$sql.= " ORDER BY c.rowid DESC";
 		dol_syslog(get_class($this)."::fetch_consumptions", LOG_DEBUG);
 
-        $resql = $this->db->query($sql);
-        if ($resql)
-        {
-
-      $num = $this->db->num_rows($result);
-      $i = 0;
+		$resql=$this->db->query($sql);
+		if ($resql)
+		{
 			$this->consumptions=array();
 
+			$i=0;
             while ($obj = $this->db->fetch_object($resql))
             {
 
+                $consumption=new Consumption($this->db);
                 $consumption->id=$obj->rowid;
-                $consumption->date_creation=$this->db->jdate($obj->date_creation);
+                $consumption->fk_member=$obj->fk_member;
                 $consumption->fk_product=$obj->fk_product;
                 $prodtmp=new Product($this->db);
                 $prodtmp->fetch($obj->fk_product);
-                $consumption->product_label=$prodtmp->label;
-                $consumption->qty=$obj->qty;
-                $consumption->fk_invoice=$obj->fk_invoice;
+                $consumption->label=$prodtmp->label;
+                $consumption->datem=$this->db->jdate($obj->datem);
+                $consumption->date_creation=$this->db->jdate($obj->date_creation);
 
                 $this->consumptions[]=$consumption;
 

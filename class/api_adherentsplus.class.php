@@ -590,8 +590,8 @@ class AdherentsPlus extends DolibarrApi
         }
 
         $obj_ret = array();
-        foreach ($member->consumptions as $subscription) {
-            $obj_ret[] = $this->_cleanObjectDatas($subscription);
+        foreach ($member->consumptions as $consumption) {
+            $obj_ret[] = $this->_cleanObjectDatas($consumption);
         }
         return $obj_ret;
     }    

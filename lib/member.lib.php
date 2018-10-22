@@ -50,15 +50,7 @@ function member_prepare_head(Adherentplus $object)
 		$head[$h][2] = 'ldap';
 		$h++;
 	}
-  
-	if (! empty($user->rights->adherent->cotisation->lire) && $conf->global->ADHERENT_CONSUMPTION)
-	{
-		$head[$h][0] = dol_buildpath('/adherentsplus/consumption.php', 1) . '?rowid=' . $object->id;
-		$head[$h][1] = $langs->trans("Consumptions");
-		$head[$h][2] = 'consumption';
-		$h++;
-	}
-  
+
 	if (! empty($user->rights->adherent->cotisation->lire))
 	{
 		$nbSubscription = is_array($object->subscriptions)?count($object->subscriptions):0;
@@ -69,6 +61,15 @@ function member_prepare_head(Adherentplus $object)
 		$h++;
 	}
 
+ 	if (! empty($user->rights->adherent->cotisation->lire) && $conf->global->ADHERENT_CONSUMPTION)
+	{
+		$nbConsumption = is_array($object->consumptions)?count($object->consumptions):0;
+		$head[$h][0] = dol_buildpath('/adherentsplus/consumption.php', 1) . '?rowid=' . $object->id;
+		$head[$h][1] = $langs->trans("Consumptions");
+		$head[$h][2] = 'consumption';
+		if ($nbConsumption > 0) $head[$h][1].= ' <span class="badge">'.$nbConsumption.'</span>';
+		$h++;
+	}
     // Show more tabs from modules
     // Entries must be declared in modules descriptor with line
     // $this->tabs = array('entity:+tabname:Title:@mymodule:/mymodule/mypage.php?id=__ID__');   to add new tab

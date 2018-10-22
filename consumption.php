@@ -173,8 +173,8 @@ if ($id)
 }
 
     /*
-     * List of consumptions
-     */
+    * List of consumptions
+    */
 
         $sql = "SELECT c.rowid,c.entity,c.date_creation,c.fk_member,c.fk_product,c.qty";    
         $sql.= " FROM ".MAIN_DB_PREFIX."adherent_consumption as c";
@@ -183,7 +183,7 @@ if ($id)
         $sql.= " ORDER BY c.rowid DESC LIMIT 60";
         
         $result = $db->query($sql);
-        if ($result)
+        if ($object->consumptions)
         {
 
             $num = $db->num_rows($result);
