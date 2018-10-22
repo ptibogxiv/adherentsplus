@@ -174,19 +174,6 @@ if ($id)
     * List of consumptions
     */
 
-        $sql = "SELECT c.rowid,c.entity,c.date_creation,c.fk_member,c.fk_product,c.qty";    
-        $sql.= " FROM ".MAIN_DB_PREFIX."adherent_consumption as c";
-        $sql.= " WHERE c.fk_member=".$object->id;
-        //$sql.= " AND c.entity IN (" . getEntity('adherentsplus') . ") ";
-        $sql.= " ORDER BY c.rowid DESC LIMIT 60";
-        
-        $result = $db->query($sql);
-        if ($object->consumptions)
-        {
-
-            $num = $db->num_rows($result);
-            $i = 0;
-
             print '<table class="noborder" width="100%">'."\n";
 
             print '<tr class="liste_titre">';
@@ -198,25 +185,23 @@ if ($id)
             print '<td align="right">'.$langs->trans('DateInvoice').'</td>';
             print "</tr>\n";
 
-            $var=True;
-            while ($i < $num)
+            foreach ($object->consumptions as $consumption)
             {
-                $objp = $db->fetch_object($result);
-                $var=!$var;
+
                 print "<tr ".$bc[$var].">";
 
-                print '<td>'.$objp->rowid.'</td>';
-                print '<td align="center">'.dol_print_date($db->jdate($objp->date_creation),'dayhour')."</td>\n";
+                print '<td>'.$consumption->id.'</td>';
+                print '<td align="center">'.dol_print_date($consumption->date_creation,'dayhour')."</td>\n";
                 print '<td align="center">';
                 $prodtmp=new Product($db);
-                $prodtmp->fetch($objp->fk_product);
+                $prodtmp->fetch($consumption->fk_product);
                 print $prodtmp->getNomUrl(1);	// must use noentitiesnoconv to avoid to encode html into getNomUrl of product
                 print ' - '.$prodtmp->label.'</td>';
                 print '<td align="center">'; 
                              
                 if ($prodtmp->isService() && $prodtmp->duration_value> 0)
             {
-                print $objp->qty*$prodtmp->duration_value." "; 
+                print $consumption->qty*$prodtmp->duration_value." "; 
                 if ($prodtmp->duration_value > 1)
                 {
                     $dur=array("i"=>$langs->trans("Minute"),"h"=>$langs->trans("Hours"),"d"=>$langs->trans("Days"),"w"=>$langs->trans("Weeks"),"m"=>$langs->trans("Months"),"y"=>$langs->trans("Years"));
@@ -227,20 +212,15 @@ if ($id)
                 }
                 print (! empty($prodtmp->duration_unit) && isset($dur[$prodtmp->duration_unit]) ? $langs->trans($dur[$prodtmp->duration_unit]) : '')."</td>\n";                  
             } else {
-                print $objp->qty." </td>\n";  
+                print $consumption->qty." </td>\n";  
             }   
         
-                print '<td align="right">'.$objp->fk_invoice.'</td>';
-                print '<td align="right">'.dol_print_date($db->jdate($objp->date_validation),'day').'</td>';
+                print '<td align="right">'.$consumption->fk_invoice.'</td>';
+                print '<td align="right">'.dol_print_date($consumption->date_validation,'day').'</td>';
                 print "</tr>";
-                $i++;
+
             }
             print "</table>";
-        }
-        else
-        {
-            dol_print_error($db);
-        }
 
 llxFooter();
 $db->close();
