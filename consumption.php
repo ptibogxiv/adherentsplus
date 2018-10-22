@@ -132,7 +132,7 @@ if ($id)
 
     $cssclass='titlefield';
     $permission = $user->rights->adherent->creer;  // Used by the include of notes.tpl.php
-    include DOL_DOCUMENT_ROOT.'/core/tpl/notes.tpl.php';
+    //include DOL_DOCUMENT_ROOT.'/core/tpl/notes.tpl.php';
 
 
     dol_fiche_end();
