@@ -836,15 +836,7 @@ if ($rowid > 0)
 					{ 
             $accountline->fetch($subscription->fk_bank);
 						$accountstatic->fetch($accountline->fk_account);
-
-						if (! empty($conf->accounting->enabled))
-						{
-							//$accountingjournal = new AccountingJournal($db);
-							//$accountingjournal->fetch($accountstatic->fk_accountancy_journal);
-
-							//$accountstatic->accountancy_journal = $accountingjournal->getNomUrl(0,1,1,'',1);
-						}
-                        print $accountstatic->getNomUrl(1);
+            print $accountstatic->getNomUrl(1);
                     }
                     else
                     {
