@@ -562,5 +562,38 @@ class AdherentsPlus extends DolibarrApi
 
         return $member->subscription($start_date, $amount, 0, '', $label, '', '', '', $end_date);
     }
+    
+    /**
+     * List consumptions of a member
+     *
+     * Get a list of consumptions
+     *
+     * @param int $id ID of member
+     * @return array Array of consumption objects
+     *
+     * @throws RestException
+     *
+     * @url GET {id}/consumptions
+     */
+    function getConsumptions($id)
+    {
+        $obj_ret = array();
+
+        if(! DolibarrApiAccess::$user->rights->adherent->cotisation->lire) {
+            throw new RestException(401);
+        }
+
+        $member = new AdherentPlus($this->db);
+        $result = $member->fetch($id);
+        if( ! $result ) {
+            throw new RestException(404, 'member not found');
+        }
+
+        $obj_ret = array();
+        foreach ($member->consumptions as $subscription) {
+            $obj_ret[] = $this->_cleanObjectDatas($subscription);
+        }
+        return $obj_ret;
+    }    
 
 }

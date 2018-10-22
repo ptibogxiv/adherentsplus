@@ -213,7 +213,7 @@ if ($id)
                 $prodtmp=new Product($db);
                 $prodtmp->fetch($objp->fk_product);
                 print $prodtmp->getNomUrl(1);	// must use noentitiesnoconv to avoid to encode html into getNomUrl of product
-                print '</td>';
+                print ' - '.$prodtmp->label.'</td>';
                 print '<td align="center">'.$objp->qty."</td>\n";              
                 
                 print '<td align="right">'.$objp->fk_facture.'</td>';
