@@ -53,7 +53,7 @@ $langs->load("members");
 $langs->load("bills");
 
 $action=GETPOST('action','alpha');
-$id=GETPOST('id','int');
+$id=GETPOST('rowid','int');
 
 // Security check
 $result=restrictedArea($user,'adherent',$id);
@@ -133,7 +133,7 @@ if ($id)
 		}
 
     // Company
-    print '<tr><td>'.$langs->trans("NextBilling").'</td><td class="valeur">'.dol_print_date($object->datebilling,'day').'</td></tr>';
+    print '<tr><td>'.$langs->trans("NextInvoice").'</td><td class="valeur">'.dol_print_date($object->nextinvoice,'day').'</td></tr>';
 
     // Civility
     print '<tr><td>'.$langs->trans("Commitment").'</td><td class="valeur">';
@@ -197,6 +197,7 @@ if ($id)
             print '<td align="center">'.$langs->trans("Product/Service").'</td>';
             print '<td align="center">'.$langs->trans("Quantity").'</td>';
             print '<td align="right">'.$langs->trans("Invoice").'</td>';
+            print '<td align="right">'.$langs->trans('DateInvoice').'</td>';
             print "</tr>\n";
 
             $var=True;
@@ -216,6 +217,7 @@ if ($id)
                 print '<td align="center">'.$objp->qty."</td>\n";              
                 
                 print '<td align="right">'.$objp->fk_facture.'</td>';
+                print '<td align="right">'.dol_print_date($db->jdate($objp->date_validation),'day').'</td>';
                 print "</tr>";
                 $i++;
             }
