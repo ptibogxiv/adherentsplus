@@ -181,7 +181,7 @@ if ($id)
             print '<td align="center">'.$langs->trans("Date").'</td>';
             print '<td align="center">'.$langs->trans("Product/Service").'</td>';
             print '<td align="center">'.$langs->trans("Quantity").'</td>';
-            print '<td align="right">'.$langs->trans("Invoice").'</td>';
+            print '<td align="right">'.$langs->trans("Price").'</td>';
             print '<td align="right">'.$langs->trans('DateInvoice').'</td>';
             print "</tr>\n";
 
@@ -215,7 +215,7 @@ if ($id)
                 print $consumption->qty." </td>\n";  
             }   
         
-                print '<td align="right">'.$consumption->fk_invoice.'</td>';
+                print '<td align="right">'.$consumption->price.'</td>';
                 print '<td align="right">'.dol_print_date($consumption->date_validation,'day').'</td>';
                 print "</tr>";
 

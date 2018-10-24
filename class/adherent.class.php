@@ -1595,7 +1595,11 @@ require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
     } else {
     
     }
-
+		if ($prodtmp->price_base_type == 'TTC') {
+                $consumption->price           =price($prodtmp->price_ttc*$obj->qty);
+		} else {
+                $consumption->price           =price($prodtmp->price*$obj->qty);
+		}
                 $this->consumptions[]=$consumption;
 
                 $i++;
