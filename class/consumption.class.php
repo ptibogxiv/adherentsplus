@@ -39,6 +39,8 @@ class Consumption extends CommonObject
 	var $fk_product;				// Subscription end date
 	var $fk_adherent;
   var $qty;
+  var $value;
+  var $unit;
 
 
 	/**
@@ -128,7 +130,6 @@ dol_include_once('/adherentsplus/class/adherent.class.php');
         $prodtmp->fetch($obj->fk_product);
         $this->label          = $obj->label;
         $this->qty            = $obj->qty;
-        $this->unit            = $prodtmp->duration_unit;
 
 				return 1;
 			}

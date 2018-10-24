@@ -1588,6 +1588,13 @@ require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
                 $consumption->qty=$obj->qty;
                 $consumption->fk_invoice=$obj->fk_invoice;
                 $consumption->date_creation=$this->db->jdate($obj->date_creation);
+    if ($prodtmp->isService() && $prodtmp->duration_value > 0)
+    {        
+                $consumption->value          = $obj->qty*$prodtmp->duration_value;
+                $consumption->unit           = $prodtmp->duration_unit;
+    } else {
+    
+    }
 
                 $this->consumptions[]=$consumption;
 

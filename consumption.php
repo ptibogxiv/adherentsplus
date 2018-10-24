@@ -201,7 +201,7 @@ if ($id)
                              
                 if ($prodtmp->isService() && $prodtmp->duration_value> 0)
             {
-                print $consumption->qty*$prodtmp->duration_value." "; 
+                print $consumption->value." "; 
                 if ($prodtmp->duration_value > 1)
                 {
                     $dur=array("i"=>$langs->trans("Minute"),"h"=>$langs->trans("Hours"),"d"=>$langs->trans("Days"),"w"=>$langs->trans("Weeks"),"m"=>$langs->trans("Months"),"y"=>$langs->trans("Years"));
