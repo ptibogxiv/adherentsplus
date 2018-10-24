@@ -127,7 +127,8 @@ dol_include_once('/adherentsplus/class/adherent.class.php');
         $prodtmp=new Product($this->db);
         $prodtmp->fetch($obj->fk_product);
         $this->label          = $obj->label;
-				$this->qty            = $obj->qty;
+        $this->qty            = $obj->qty;
+        $this->unit            = $prodtmp->duration_unit;
 
 				return 1;
 			}
