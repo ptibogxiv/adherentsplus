@@ -194,55 +194,13 @@ dol_include_once('/adherentsplus/class/adherent.class.php');
 	 */
 	function delete($user)
 	{
-		// It subscription is linked to a bank transaction, we get it
-		if ($this->fk_bank > 0)
-		{
-			require_once DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php';
-			$accountline=new AccountLine($this->db);
-			$result=$accountline->fetch($this->fk_bank);
-		}
-
 		$this->db->begin();
 
-		$sql = "DELETE FROM ".MAIN_DB_PREFIX."subscription WHERE rowid = ".$this->id;
+		$sql = "DELETE FROM ".MAIN_DB_PREFIX."consumption WHERE rowid = ".$this->id;
 		dol_syslog(get_class($this)."::delete", LOG_DEBUG);
 		$resql=$this->db->query($sql);
 		if ($resql)
 		{
-			$num=$this->db->affected_rows($resql);
-			if ($num)
-			{
-				require_once DOL_DOCUMENT_ROOT.'/adherents/class/adherent.class.php';
-				$member=new AdherentPlus($this->db);
-				$result=$member->fetch($this->fk_adherent);
-				$result=$member->update_end_date($user);
-
-				if (is_object($accountline) && $accountline->id > 0)						// If we found bank account line (this means this->fk_bank defined)
-				{
-					$result=$accountline->delete($user);		// Return false if refused because line is conciliated
-					if ($result > 0)
-					{
-						$this->db->commit();
-						return 1;
-					}
-					else
-					{
-						$this->error=$accountline->error;
-						$this->db->rollback();
-						return -1;
-					}
-				}
-				else
-				{
-					$this->db->commit();
-					return 1;
-				}
-			}
-			else
-			{
-				$this->db->commit();
-				return 0;
-			}
 		}
 		else
 		{
