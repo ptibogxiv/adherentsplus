@@ -51,7 +51,7 @@ require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 $langs->loadLangs(array('products', 'companies', 'members', 'bills', 'other'));
 
 $action=GETPOST('action','alpha');
-$id=GETPOST('rowid','int');
+$id=GETPOST('id','int');
 
 // Security check
 $result=restrictedArea($user,'adherent',$id);

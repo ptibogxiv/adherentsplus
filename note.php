@@ -52,7 +52,7 @@ $langs->load("members");
 $langs->load("bills");
 
 $action=GETPOST('action','alpha');
-$id=GETPOST('rowid','int');
+$id=GETPOST('id','int');
 
 // Security check
 $result=restrictedArea($user,'adherent',$id);

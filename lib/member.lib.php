@@ -37,7 +37,7 @@ function member_prepare_head(Adherentplus $object)
 	$h = 0;
 	$head = array();
 
-	$head[$h][0] = dol_buildpath('/adherentsplus/card.php', 1) . '?rowid=' . $object->id;
+	$head[$h][0] = dol_buildpath('/adherentsplus/card.php', 1) . '?id=' . $object->id;
 	$head[$h][1] = $langs->trans("Card");
 	$head[$h][2] = 'general';
 	$h++;
@@ -45,7 +45,7 @@ function member_prepare_head(Adherentplus $object)
   	if (! empty($conf->ldap->enabled) && ! empty($conf->global->LDAP_MEMBER_ACTIVE))
 	{
 		$langs->load("ldap");                                     
-		$head[$h][0] = dol_buildpath('/adherentsplus/ldap.php?rowid='.$object->id.'');
+		$head[$h][0] = dol_buildpath('/adherentsplus/ldap.php?id='.$object->id.'');
 		$head[$h][1] = $langs->trans("LDAPCard");
 		$head[$h][2] = 'ldap';
 		$h++;
@@ -54,7 +54,7 @@ function member_prepare_head(Adherentplus $object)
 	if (! empty($user->rights->adherent->cotisation->lire))
 	{
 		$nbSubscription = is_array($object->subscriptions)?count($object->subscriptions):0;
-		$head[$h][0] = dol_buildpath('/adherentsplus/subscription.php', 1) . '?rowid=' . $object->id;
+		$head[$h][0] = dol_buildpath('/adherentsplus/subscription.php', 1) . '?id=' . $object->id;
 		$head[$h][1] = $langs->trans("Subscriptions");
 		$head[$h][2] = 'subscription';
 		if ($nbSubscription > 0) $head[$h][1].= ' <span class="badge">'.$nbSubscription.'</span>';
@@ -64,7 +64,7 @@ function member_prepare_head(Adherentplus $object)
  	if (! empty($user->rights->adherent->cotisation->lire) && $conf->global->ADHERENT_CONSUMPTION)
 	{
 		$nbConsumption = is_array($object->consumptions)?count($object->consumptions):0;
-		$head[$h][0] = dol_buildpath('/adherentsplus/consumption.php', 1) . '?rowid=' . $object->id;
+		$head[$h][0] = dol_buildpath('/adherentsplus/consumption.php', 1) . '?id=' . $object->id;
 		$head[$h][1] = $langs->trans("Consumptions");
 		$head[$h][2] = 'consumption';
 		if ($nbConsumption > 0) $head[$h][1].= ' <span class="badge">'.$nbConsumption.'</span>';
@@ -80,7 +80,7 @@ function member_prepare_head(Adherentplus $object)
     if(!empty($object->note)) $nbNote++;
     if(!empty($object->note_private)) $nbNote++;
     if(!empty($object->note_public)) $nbNote++;
-    $head[$h][0] = dol_buildpath('/adherentsplus/note.php', 1) . '?rowid=' . $object->id;
+    $head[$h][0] = dol_buildpath('/adherentsplus/note.php', 1) . '?id=' . $object->id;
 	$head[$h][1] = $langs->trans("Note");
 	$head[$h][2] = 'note';
     if ($nbNote > 0) $head[$h][1].= ' <span class="badge">'.$nbNote.'</span>';
@@ -92,7 +92,7 @@ function member_prepare_head(Adherentplus $object)
     $upload_dir = $conf->adherent->multidir_output[$object->entity].'/'.get_exdir(0,0,0,1,$object,'member');
     $nbFiles = count(dol_dir_list($upload_dir,'files',0,'','(\.meta|_preview.*\.png)$'));
     $nbLinks=Link::count($db, $object->element, $object->id);
-    $head[$h][0] = dol_buildpath('/adherentsplus/document.php', 1) . '?rowid=' . $object->id;
+    $head[$h][0] = dol_buildpath('/adherentsplus/document.php', 1) . '?id=' . $object->id;
     $head[$h][1] = $langs->trans('Documents');
     if (($nbFiles+$nbLinks) > 0) $head[$h][1].= ' <span class="badge">'.($nbFiles+$nbLinks).'</span>';
     $head[$h][2] = 'document';
@@ -101,7 +101,7 @@ function member_prepare_head(Adherentplus $object)
 	// Show agenda tab
 	if (! empty($conf->agenda->enabled))
 	{
-	    $head[$h][0] = dol_buildpath('/adherentsplus/agenda.php', 1) . '?rowid=' . $object->id;
+	    $head[$h][0] = dol_buildpath('/adherentsplus/agenda.php', 1) . '?id=' . $object->id;
 	    $head[$h][1] = $langs->trans("Events");
 	    if (! empty($conf->agenda->enabled) && (!empty($user->rights->agenda->myactions->read) || !empty($user->rights->agenda->allactions->read) ))
 	    {
@@ -130,7 +130,7 @@ function member_type_prepare_head(AdherentTypePlus $object)
 	$h=0;
 	$head = array();
 
-	$head[$h][0] = dol_buildpath('/adherentsplus/type.php?rowid='.$object->id.'', 1);
+	$head[$h][0] = dol_buildpath('/adherentsplus/type.php?id='.$object->id.'', 1);
 	$head[$h][1] = $langs->trans("Card");
 	$head[$h][2] = 'card';
 	$h++;

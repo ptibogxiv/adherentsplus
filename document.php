@@ -57,7 +57,7 @@ $langs->load("members");
 $langs->load("companies");
 $langs->load('other');
 
-$id=GETPOST('rowid','int');
+$id=GETPOST('id','int');
 $action=GETPOST('action','alpha');
 $confirm=GETPOST('confirm','alpha');
 

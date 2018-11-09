@@ -60,7 +60,7 @@ $langs->loadLangs(array("companies","bills","members","users","mails",'other'));
 
 $action=GETPOST('action','alpha');
 $confirm=GETPOST('confirm','alpha');
-$rowid=GETPOST('rowid','int');
+$rowid=GETPOST('id','int');
 $typeid=GETPOST('typeid','int');
 
 // Security check
