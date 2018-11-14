@@ -1394,7 +1394,7 @@ $date = $dateb = $today;
 //$next = $startcotis1;
 $cotis0 = dol_time_plus_duree($cotis1,-1,'y');
 if ($cotis0>$today && $datefin<$today){
-$date=$today;
+$date=$cotis0; // $today;
 } else {
 $date = $cotis0;
 }
