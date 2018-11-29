@@ -83,7 +83,7 @@ $comment=GETPOST("comment");
 $mail_valid=GETPOST("mail_valid");
 $welcome=GETPOST("welcome","alpha");
 $price=GETPOST("price","alpha");
-$price_level=GETPOST("price_level","alpha");
+$price_level=GETPOST("price_level","int");
 $automatic=GETPOST("automatic","int");
 // Security check
 $result=restrictedArea($user,'adherent',$rowid,'adherent_type');
@@ -117,9 +117,9 @@ if ($action == 'add' && $user->rights->adherent->configurer)
 	{
 		$object = new AdherentTypePlus($db);
 
-    $object->welcome     = trim($welcome);
-    $object->price       = trim($price);
-    $object->price_level       = trim($price_level);
+    $object->welcome     = price2num($welcome);
+    $object->price       = price2num($price);
+    $object->price_level       = trim($price_level?$price_level:'1');
     $object->automatic   = (boolean) trim($automatic);
     $object->family   = (boolean) trim($family);
 		$object->label			= trim($label);
@@ -166,9 +166,9 @@ if ($action == 'update' && $user->rights->adherent->configurer)
 		$object->mail_valid     = (boolean) trim($mail_valid);
 		$object->vote           = (boolean) trim($vote);
     $object->family           = (boolean) trim($family);
-    $object->welcome     = trim($welcome);
-    $object->price       = trim($price);
-    $object->price_level       = trim($price_level);
+    $object->welcome     = price2num($welcome);
+    $object->price       = price2num($price);
+    $object->price_level       = trim($price_level?$price_level:'1');
     $object->automatic   = (boolean) trim($automatic);
 		// Fill array 'array_options' with data from add form
 		$ret = $extrafields->setOptionalsFromPost($extralabels,$object);
