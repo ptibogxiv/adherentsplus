@@ -781,7 +781,7 @@ if ($rowid > 0)
         {
             print '<div class="tabsAction">';
 
-            if ($object->statut > 0 && $object->fk_parent== NULL && $object->next_subscription_renew<=$now) {
+            if ($object->statut > 0 && $object->fk_parent== NULL ) { //&& $object->next_subscription_renew<=$now
             print '<div class="inline-block divButAction"><a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$rowid.'&action=addsubscription">'.$langs->trans("AddSubscription")."</a></div>";}
             elseif ($object->statut > 0 && $object->fk_parent!= NULL){print '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="'.dol_escape_htmltag($langs->trans("DeleteParentBefore")).'">'.$langs->trans("AddSubscription").'</a></div>';}
             elseif ($object->next_subscription_renew>$now){print '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="'.dol_escape_htmltag($langs->trans("NextSubscription")." ".dol_print_date($object->next_subscription_renew,'day')).'">'.$langs->trans("AddSubscription").'</a></div>';}
@@ -824,7 +824,11 @@ if ($rowid > 0)
                 print '<tr class="oddeven">';
                 $subscriptionstatic->fetch($subscription->id);
                 print '<td>'.$subscriptionstatic->getNomUrl(1).'</td>';
-                print '<td align="center"><a href="'.dol_buildpath('/adherentsplus/type.php?rowid='.$subscription->fk_type.'', 1).'">'.img_object($langs->trans("ShowType"),'group').' '.dol_escape_htmltag($subscription->label)."</a></td>";
+                print '<td align="center">';
+                if ( ! empty($subscription->fk_type)) {
+                print '<a href="'.dol_buildpath('/adherentsplus/type.php?rowid='.$subscription->fk_type.'', 1).'">'.img_object($langs->trans("ShowType"),'group').' '.dol_escape_htmltag($subscription->label)."</a>";
+                }
+                print '</td>';
                 print '<td align="center">'.dol_print_date($subscription->datec,'dayhour')."</td>\n";
                 print '<td align="center">'.dol_print_date($subscription->dateh,'day')."</td>\n";
                 print '<td align="center">'.dol_print_date($subscription->datef,'day')."</td>\n";
