@@ -66,6 +66,7 @@ class AdherentTypePlus extends CommonObject
 	public $price;
   public $price_level;
 	public $automatic;
+  public $automatic_renew;
 	public $family;
     /**
 	 *	Constructor
@@ -140,6 +141,7 @@ class AdherentTypePlus extends CommonObject
         $sql.= "note = '".$this->db->escape($this->note)."',";
         $sql.= "vote = '".$this->vote."',";
         $sql.= "automatic = '".$this->automatic."',";
+        $sql.= "automatic_renew = '".$this->automatic_renew."',";
         $sql.= "family = '".$this->family."',";
         $sql.= "mail_valid = '".$this->db->escape($this->mail_valid)."'";
         $sql.= " WHERE rowid =".$this->id;
@@ -225,7 +227,7 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
      */
     function fetch($rowid)
     {
-        $sql = "SELECT d.rowid, d.libelle as label, d.statut, d.subscription, d.welcome, d.price, d.price_level, d.automatic, d.family, d.mail_valid, d.note, d.vote";
+        $sql = "SELECT d.rowid, d.libelle as label, d.statut, d.subscription, d.welcome, d.price, d.price_level, d.automatic, d.automatic_renew, d.family, d.mail_valid, d.note, d.vote";
         $sql .= " FROM ".MAIN_DB_PREFIX."adherent_type as d";
         $sql .= " WHERE d.rowid = ".$rowid;
 
@@ -248,6 +250,7 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
                 $this->statut         = $obj->statut;
                 $this->subscription   = $obj->subscription;
                 $this->automatic      = $obj->automatic;
+                $this->automatic_renew= $obj->automatic_renew;
                 $this->family         = $obj->family;
                 $this->mail_valid     = $obj->mail_valid;
                 $this->note           = $obj->note;
@@ -315,7 +318,7 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
 
         $adherenttypes = array();
 
-        $sql = "SELECT rowid, libelle as label, welcome, price, automatic, use_default, note";
+        $sql = "SELECT rowid, libelle as label, welcome, price, automatic, automatic_renew, use_default, note";
         $sql.= " FROM ".MAIN_DB_PREFIX."adherent_type";
 	      $sql.= " WHERE entity IN (".getEntity('adherent').")";
 
@@ -335,6 +338,7 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
                     $adherenttypes[$obj->rowid][price] = $obj->price;
                     $adherenttypes[$obj->rowid][welcome] = $obj->welcome;
                     $adherenttypes[$obj->rowid][automatic] = $obj->automatic;
+                    $adherenttypes[$obj->rowid][automatic_renew] = $obj->automatic_renew;
                     $adherenttypes[$obj->rowid][use_default] = $obj->use_default;
                     $adherenttypes[$obj->rowid][rowid] = $obj->rowid;
                     $i++;

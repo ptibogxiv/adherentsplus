@@ -85,6 +85,7 @@ $welcome=GETPOST("welcome","alpha");
 $price=GETPOST("price","alpha");
 $price_level=GETPOST("price_level","int");
 $automatic=GETPOST("automatic","int");
+$automatic_renew=GETPOST("automatic_renew","int");
 // Security check
 $result=restrictedArea($user,'adherent',$rowid,'adherent_type');
 
@@ -121,6 +122,7 @@ if ($action == 'add' && $user->rights->adherent->configurer)
     $object->price       = price2num($price);
     $object->price_level       = trim($price_level?$price_level:'1');
     $object->automatic   = (boolean) trim($automatic);
+    $object->automatic_renew   = (boolean) trim($automatic_renew);
     $object->family   = (boolean) trim($family);
 		$object->label			= trim($label);
 		$object->subscription	= (int) trim($subscription);
@@ -170,6 +172,7 @@ if ($action == 'update' && $user->rights->adherent->configurer)
     $object->price       = price2num($price);
     $object->price_level       = trim($price_level?$price_level:'1');
     $object->automatic   = (boolean) trim($automatic);
+    $object->automatic_renew   = (boolean) trim($automatic_renew);
 		// Fill array 'array_options' with data from add form
 		$ret = $extrafields->setOptionalsFromPost($extralabels,$object);
 		if ($ret < 0) $error++;
@@ -425,6 +428,10 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
 
     print '<tr><td>'.$langs->trans("AutoSubscription").'</td><td>';
 		print yn($object->automatic);
+		print '</tr>';
+    
+    print '<tr><td>'.$langs->trans("AutoRenew").'</td><td>';
+		print yn($object->automatic_renew);
 		print '</tr>';
 
 		print '<tr><td class="tdtop">'.$langs->trans("Description").'</td><td>';
@@ -786,6 +793,10 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
     
     print '<tr><td>'.$langs->trans("AutoSubscription").'</td><td>';
 		print $form->selectyesno("automatic",$object->automatic,1);
+		print '</td></tr>';
+    
+    print '<tr><td>'.$langs->trans("AutoRenew").'</td><td>';
+		print $form->selectyesno("automatic",$object->automatic_renew,1);
 		print '</td></tr>';
 
 		print '<tr><td class="tdtop">'.$langs->trans("Description").'</td><td>';
