@@ -316,7 +316,9 @@ if ($result)
         print '<td>'.$subscription->getNomUrl(1).'</td>';
         
         // Ref
-        print '<td>'.$adht->getNomUrl(1).'</td>';
+        print '<td>';
+        if (!empty($obj->fk_type)) print $adht->getNomUrl(1);
+        print '</td>';
         
         // Lastname
         print '<td>'.$adherent->getNomUrl(-1).'</td>';
