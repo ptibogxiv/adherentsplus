@@ -317,7 +317,7 @@ if ($result)
         
         // Ref
         print '<td>';
-        if (!empty($obj->fk_type)) print $adht->getNomUrl(1);
+        if ( ! empty($obj->fk_type) ) print $adht->getNomUrl(1);
         print '</td>';
         
         // Lastname
