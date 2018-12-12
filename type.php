@@ -796,7 +796,7 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
 		print '</td></tr>';
     
     print '<tr><td>'.$langs->trans("AutoRenew").'</td><td>';
-		print $form->selectyesno("automatic",$object->automatic_renew,1);
+		print $form->selectyesno("automatic_renew",$object->automatic_renew,1);
 		print '</td></tr>';
 
 		print '<tr><td class="tdtop">'.$langs->trans("Description").'</td><td>';
