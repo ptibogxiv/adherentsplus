@@ -121,7 +121,7 @@ $this->resprints.= '<span class="opacitymedium">'.$langs->trans("ThirdpartyNotLi
     $result=$adh->fetch('','',$object->id);
     if (!$result && $object->client==1)
 {
-		print '<a class="butAction" href="#" title="'.dol_escape_htmltag($langs->trans("NotEnoughPermissions")).'">'.$langs->trans("CreateMember").'</a>';
+		print '<a class="butAction" href="'.dol_buildpath('/adherentsplus/card.php?&action=create', 1) . '&email=' . $object->email.'" title="'.dol_escape_htmltag($langs->trans("CreateMember")).'">'.$langs->trans("CreateMember").'</a>';
 }    
     
 	}
