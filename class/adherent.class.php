@@ -1385,7 +1385,7 @@ $startcotis2 = dol_time_plus_duree($cotis2,-$conf->global->SOCIETE_SUBSCRIBE_MON
 if ($startcotis1>$today){
 if ($conf->global->ADHERENT_SUBSCRIPTION_PRORATA == '0') { 
 //$next = dol_time_plus_duree($today,+$conf->global->SOCIETE_SUBSCRIBE_MONTH_PRESTART,'m');
-if ($datefin>$today || ($today-$datefin)<31536000) {
+if ($datefin>$today ) {  //|| ($today-$datefin)<31536000
 $date = $dateb = dol_time_plus_duree($datefin,+1,'d');
 } else {
 $date = $dateb = $today;
