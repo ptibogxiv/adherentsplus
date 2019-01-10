@@ -24,6 +24,7 @@ llx_adherent_type
   `price_level` int(11) DEFAULT NULL,
   `vote` varchar(3) DEFAULT NULL,
   `automatic` varchar(3) DEFAULT NULL,
+  `automatic_renew` varchar(3) DEFAULT NULL,
   `family` int(3) DEFAULT NULL,
   `use_default` int(11) DEFAULT NULL,
   
