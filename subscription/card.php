@@ -55,12 +55,13 @@ $langs->load("members");
 $langs->load("users");
 
 $adh = new AdherentPlus($db);
+$adht = new AdherentTypePlus($db);
 $object = new SubscriptionPlus($db);
 $errmsg='';
 
 $action=GETPOST("action",'alpha');
 $rowid=GETPOST("rowid","int")?GETPOST("rowid","int"):GETPOST("id","int");
-$typeid=GETPOST("typeid","int");
+$fk_type=GETPOST("fk_type","int");
 $cancel=GETPOST('cancel');
 $confirm=GETPOST('confirm');
 
@@ -125,6 +126,7 @@ if ($user->rights->adherent->cotisation->creer && $action == 'update' && ! $canc
 			$object->datef=dol_mktime($_POST['datesubendhour'], $_POST['datesubendmin'], 0, $_POST['datesubendmonth'], $_POST['datesubendday'], $_POST['datesubendyear']);
 			$object->note=$_POST["note"];
 			$object->amount=$_POST["amount"];
+      $object->fk_type=$_POST["fk_type"];
 			//print 'datef='.$object->datef.' '.$_POST['datesubendday'];
 
 			$result=$object->update($user);
@@ -226,7 +228,8 @@ if ($user->rights->adherent->cotisation->creer && $action == 'edit')
     // Type
     print '<tr>';
 	print '<td>'.$langs->trans("Type").'</td><td class="valeur" colspan="3">';
-  print '<input type="text" class="flat" size="10" name="amount" value="'.$object->fk_type.'"></td></tr>'; 
+  print $form->selectarray("fk_type", $adht->liste_array(), (isset($_POST["fk_type"])?$_POST["fk_type"]:$object->fk_type));
+  print'</td></tr>'; 
 
     // Member
 	$adh->ref=$adh->getFullName($langs);
@@ -331,7 +334,6 @@ if ($rowid && $action != 'edit')
     print '<td class="titlefield">'.$langs->trans("Type").'</td>';
     print '<td class="valeur">';
       if (  ! empty($object->fk_type) ) { 
-      $adht = new AdherentTypePlus($db);
       $adht->fetch($object->fk_type); 
     print $adht->getNomUrl(1);
       } else {

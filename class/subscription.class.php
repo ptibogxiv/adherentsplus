@@ -166,6 +166,7 @@ dol_include_once('/adherentsplus/class/adherent.class.php');
 		$this->db->begin();
 
 		$sql = "UPDATE ".MAIN_DB_PREFIX."subscription SET ";
+    $sql .= " fk_type = ".$this->fk_type.",";
 		$sql .= " fk_adherent = ".$this->fk_adherent.",";
 		$sql .= " note=".($this->note ? "'".$this->db->escape($this->note)."'" : 'null').",";
 		$sql .= " subscription = '".price2num($this->amount)."',";
