@@ -223,6 +223,11 @@ if ($user->rights->adherent->cotisation->creer && $action == 'edit')
 	print $form->showrefnav($object, 'rowid', $linkback, 1);
 	print '</td></tr>';
 
+    // Type
+    print '<tr>';
+	print '<td>'.$langs->trans("Type").'</td><td class="valeur" colspan="3">';
+  print '<input type="text" class="flat" size="10" name="amount" value="'.$object->fk_type.'"></td></tr>'; 
+
     // Member
 	$adh->ref=$adh->getFullName($langs);
     print '<tr>';
