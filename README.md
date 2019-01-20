@@ -18,18 +18,19 @@ download then unzip then copy in htdocs/custom folder
 Add the following fields in dolibarr database
 Il vous faut ajouter les champs suivants dans la base de données:
 
-llx_adherent_type
-  `welcome` double(24,8) DEFAULT '0.00000000',
-  `price` double(24,8) DEFAULT '0.00000000',
-  `price_level` int(11) DEFAULT NULL,
-  `vote` varchar(3) DEFAULT NULL,
-  `automatic` varchar(3) DEFAULT NULL,
-  `automatic_renew` varchar(3) DEFAULT NULL,
-  `family` int(3) DEFAULT NULL,
-  `use_default` int(11) DEFAULT NULL,
-  
-llx_adherent
-  `fk_parent` int(11) DEFAULT NULL,
+Pour les versions avant la V10/develop (inclus dans la V10)
+ALTER TABLE llx_subscription ADD COLUMN fk_type int(11) DEFAULT NULL;
 
-llx_subscription
-  `fk_type` int(11) DEFAULT NULL,
+pour toutes versions de Dolibarr
+ALTER TABLE llx_adherent_type ADD COLUMN welcome double(24,8) DEFAULT 0.00000000;
+ALTER TABLE llx_adherent_type ADD COLUMN price double(24,8) DEFAULT 0.00000000;
+ALTER TABLE llx_adherent_type ADD COLUMN price_level int(11) DEFAULT NULL;
+#ALTER TABLE llx_adherent_type ADD COLUMN vote varchar(3) DEFAULT NULL;
+ALTER TABLE llx_adherent_type ADD COLUMN automatic varchar(3) DEFAULT NULL;
+ALTER TABLE llx_adherent_type ADD COLUMN automatic_renew varchar(3) DEFAULT NULL;
+ALTER TABLE llx_adherent_type ADD COLUMN family int(3)   DEFAULT NULL;
+ALTER TABLE llx_adherent_type ADD COLUMN use_default int(11)   DEFAULT NULL;
+ALTER TABLE llx_adherent ADD COLUMN fk_parent int(11)   DEFAULT NULL;
+
+ALTER TABLE `llx_adherent` ADD COLUMN `datecommitment` DATE NOT NULL ;
+ALTER TABLE `llx_adherent` ADD COLUMN `ref` int(11);
