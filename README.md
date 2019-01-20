@@ -46,4 +46,4 @@ pour toutes versions de Dolibarr:
 
  ALTER TABLE `llx_adherent` ADD COLUMN `datecommitment` DATE NOT NULL ;
 
- ALTER TABLE `llx_adherent` ADD COLUMN 'ref` varchar(30);
+ ALTER TABLE `llx_adherent` ADD COLUMN `ref` varchar(30);
