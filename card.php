@@ -1870,7 +1870,7 @@ print load_fiche_titre($langs->trans("PrincipalMember"), '', '');
 print '<TABLE class="noborder" summary="listofdocumentstable" id="'.$modulepart.'_table" width="100%">'."\n";
 $objp = new Adherentplus($db);
 $objp->fetch($object->fk_parent);
-print '<TR class="oddeven"><TD align="left"><A href="'.$dolibarr_main_url_root.dol_buildpath('/adherentsplus/card.php?rowid='.$object->fk_parent, 1).'">'.img_picto('', 'object_user').' '.$objp->firstname.' '.$objp->lastname.'</A></TD>';
+print '<TR class="oddeven"><TD align="left"><A href="'.$dolibarr_main_url_root.dol_buildpath('/adherentsplus/card.php?rowid='.$object->fk_parent, 1).'">'.img_picto('', 'object_user').' '.$objp->firstname.' '.$objp->lastname.' '.$objp->company.'</A></TD>';
 if ($user->rights->adherent->creer) {print '<TD align="right"><A href="'. $_SERVER['PHP_SELF'] .'?action=deleteparent&rowid=' . $object->id . '&link=' . $object->id . '" class="deletefilelink">' . img_delete() . '</A></TD>';}
 print '</TR></TABLE><BR>'."\n";     
 } elseif ($adht->family=='1'){
