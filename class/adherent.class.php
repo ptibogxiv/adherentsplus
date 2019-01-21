@@ -115,7 +115,8 @@ class AdherentPlus extends CommonObject
 	var $last_subscription_amount;
 	var $subscriptions=array();
   var $consumptions=array();
-    
+  var $linkedmembers=array();
+      
 	var $oldcopy;		// To contains a clone of this when we need to save old properties of object
 
 	public $entity;
@@ -1465,7 +1466,10 @@ else {$tx=(ceil((($dateto-$today)/31558464)*$conf->global->ADHERENT_SUBSCRIPTION
 				$result=$this->fetch_subscriptions();
 
         // Load other properties
-				$this->fetch_consumptions();
+				$this->fetch_consumptions();   
+        
+        // Load other properties
+				$this->fetch_linkedmembers();
 
 				return $this->id;
 			}
@@ -1601,6 +1605,51 @@ require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
                 $consumption->amount           =price($prodtmp->price*$obj->qty);
 		}
                 $this->consumptions[]=$consumption;
+
+                $i++;
+            }
+            return 1;
+		}
+		else
+		{
+			$this->error=$this->db->error().' sql='.$sql;
+			return -1;
+		}
+	}
+  
+  	/**
+	 *	Fonction qui recupere pour un adherent les parametres
+	 *
+	 *	@return		int			<0 si KO, >0 si OK
+	 */
+	function fetch_linkedmembers()
+	{
+		global $langs;
+
+    $sql = "SELECT d.rowid, d.login, d.lastname, d.firstname, d.email, d.societe, d.fk_soc,";
+    $sql.= " d.datefin, d.fk_adherent_type as type_id, d.morphy, d.statut, d.datec as date_creation, d.tms as date_update";
+    $sql.= " FROM ".MAIN_DB_PREFIX."adherent as d";
+    $sql.= " WHERE d.fk_parent = ".$this->id;
+		$sql.= " ORDER BY d.rowid ASC";
+		dol_syslog(get_class($this)."::fetch_consumptions", LOG_DEBUG);
+
+		$resql=$this->db->query($sql);
+		if ($resql)
+		{
+			$this->linkedmembers=array();
+
+			$i=0;
+            while ($obj = $this->db->fetch_object($resql))
+            {
+
+                $linkedmember=new AdherentPlus($this->db);
+                $linkedmember->rowid=$obj->rowid;
+                $linkedmember->firstname=$obj->firstname;
+                $linkedmember->lastname=$obj->lastname;
+                $linkedmember->societe=$obj->societe;
+                $linkedmember->email=$obj->email;
+
+                $this->linkedmembers[]=$linkedmember;
 
                 $i++;
             }

@@ -63,11 +63,11 @@ function member_prepare_head(Adherentplus $object)
   
   if (! empty($user->rights->adherent->cotisation->lire) && $conf->global->ADHERENT_LINKEDMEMBER && empty($object->fk_parent) )
 	{
-		$nbConsumption = 100;
-		$head[$h][0] = dol_buildpath('/adherentsplus/linkedmembers.php', 1) . '?id=' . $object->id;
+		$nbLinkedmembers = is_array($object-> linkedmembers)?count($object-> linkedmembers):0; 
+		$head[$h][0] = dol_buildpath('/adherentsplus/linkedmember.php', 1) . '?id=' . $object->id;
 		$head[$h][1] = $langs->trans("LinkedMembers");
-		$head[$h][2] = 'linKmember';
-		if ($nbConsumption > 0) $head[$h][1].= ' <span class="badge">'.$nbConsumption.'</span>';
+		$head[$h][2] = 'linkedmember';
+		if ($nbLinkedmembers > 0) $head[$h][1].= ' <span class="badge">'.$nbLinkedmembers.'</span>';
 		$h++;
 	}
 
