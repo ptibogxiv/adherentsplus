@@ -46,13 +46,17 @@ if (! $res)
 dol_include_once('/adherentsplus/lib/member.lib.php');
 dol_include_once('/adherentsplus/class/adherent.class.php');
 dol_include_once('/adherentsplus/class/adherent_type.class.php');
-require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/class/html.formcompany.class.php';
 require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
 
 $langs->loadLangs(array('products', 'companies', 'members', 'bills', 'other'));
 
 $action=GETPOST('action','alpha');
+$cancel=GETPOST('cancel','alpha');
+$backtopage=GETPOST('backtopage','alpha');
+$confirm=GETPOST('confirm','alpha');
 $id=GETPOST('rowid','int');
+$link=GETPOST('link','int');
 
 // Security check
 $result=restrictedArea($user,'adherent',$id);
@@ -65,13 +69,34 @@ if ($result > 0)
     $result=$adht->fetch($object->typeid);
 }
 
+// Get object canvas (By default, this is not defined, so standard usage of dolibarr)
+$object->getCanvas($id);
+$canvas = $object->canvas?$object->canvas:GETPOST("canvas");
+$objcanvas=null;
+if (! empty($canvas))
+{
+	require_once DOL_DOCUMENT_ROOT.'/core/class/canvas.class.php';
+	$objcanvas = new Canvas($db, $action);
+	$objcanvas->getCanvas('adherent', 'membercard', $canvas);
+}
+
 $permissionnote=$user->rights->adherent->creer;  // Used by the include of actions_setnotes.inc.php
 
-if ($conf->global->ADHERENT_LINKEDMEMBER && $action=='deleteparent' && $user->rights->adherent->creer) {
-$form = new Form($db);
-$formconfirm=$form->formconfirm($_SERVER["PHP_SELF"].'?rowid='.$object->id.'&link='.$link, $langs->trans('Confirm'), $langs->trans('ConfirmDeleteParent'), 'confirm_deleteparent', '', 0, 1);
-print $formconfirm;	
-}
+
+  if ($action == 'confirm_deleteparent' && $confirm == 'yes' && $user->rights->adherent->creer)
+	{
+ 		$result=$object->delete_parent($link);
+		if ($result > 0)
+		{
+
+				header("Location: ".$dolibarr_main_url_root.dol_buildpath('/adherentsplus/linkedmember.php?rowid='.$id, 1));
+				exit;
+		}
+		else
+		{
+			$errmesg=$object->error;
+		}
+  }
 
 /*
  * View
@@ -81,6 +106,12 @@ $helpurl="EN:Module_Foundations|FR:Module_Adh&eacute;rents|ES:M&oacute;dulo_Miem
 llxHeader("",$title,$helpurl);
 
 $form = new Form($db);
+
+if ($conf->global->ADHERENT_LINKEDMEMBER && $action=='deleteparent' && $user->rights->adherent->creer) {
+$form = new Form($db);
+$formconfirm=$form->formconfirm($_SERVER["PHP_SELF"].'?rowid='.$object->id.'&link='.$link, $langs->trans('Confirm'), $langs->trans('ConfirmDeleteParent'), 'confirm_deleteparent', '', 0, 1);
+print $formconfirm;	
+}
 
 if ($id)
 {
