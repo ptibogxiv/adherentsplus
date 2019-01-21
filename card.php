@@ -1949,33 +1949,7 @@ print '<SELECT name="link">';
 print '</SELECT>';
 print '<input class="button buttongen" id="addsecondarymemeber" name="addsecondarymemeber" type="submit" value="'.$langs->trans('Add').'">';
 print '</FORM></TH></TR>';
-$sql = "SELECT d.rowid, d.login, d.lastname, d.firstname, d.societe as company, d.fk_soc,";
-$sql.= " d.datefin, d.fk_adherent_type as type_id, d.morphy, d.statut, d.datec as date_creation, d.tms as date_update";
-$sql.= " FROM ".MAIN_DB_PREFIX."adherent as d";
-$sql.= " WHERE d.fk_parent = $id ";
-        
-$result = $db->query($sql);
-if ($result){
-$num = $db->num_rows($result);
-$i = 0;
 
-$var=True;
-while ($i < $num){            
-$objp = $db->fetch_object($result);
-$var=!$var;
-                      
-print "<TR ".$bc[$var].">";
-print '<TD><A href="'.$dolibarr_main_url_root.dol_buildpath('/adherentsplus/card.php?rowid='.$objp->rowid, 1).'">'.$objp->rowid.'</a>';              
-print '</TD>';
-print '<TD align="left"><A href="'.$dolibarr_main_url_root.dol_buildpath('/adherentsplus/card.php?rowid='.$objp->rowid, 1).'">'.img_picto('', 'object_user').' '.$objp->firstname.' '.$objp->lastname.'</A></TD>';
-if ($user->rights->adherent->creer) {print '<TD align="right"><A href="'. $_SERVER['PHP_SELF'] .'?action=deleteparent&rowid=' . $object->id . '&link=' . $objp->rowid . '" class="deletefilelink">' . img_delete() . '</A></TD>';}
-print "</TR>";
-$i++;
-}
-if ($num=='0'){
-print '<TR class="oddeven"><TD colspan="3" class="opacitymedium">'.$langs->trans("None").'</TD></TR>'."\n";
-}
-}
 print '</TABLE><BR>'."\n";   
 }
 
