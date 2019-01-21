@@ -1597,6 +1597,42 @@ else
 			else print $langs->trans("NoDolibarrAccess");
 		}
 		print '</td></tr>';
+    
+if ( $conf->global->ADHERENT_LINKMEMBER ) {
+    // Link member
+		print '<tr><td>';
+		print '<table class="nobordernopadding" width="100%"><tr><td>';
+		print $langs->trans("LinkToPrincipalMember");
+		print '</td>';
+		if ($action != 'editprincipalmember' && $user->rights->adherent->creer)
+		{
+			print '<td align="right">';
+			if ($user->rights->user->user->creer)
+			{
+				print '<a href="'.$_SERVER["PHP_SELF"].'?action=editprincipalmember&amp;rowid='.$object->id.'">'.img_edit($langs->trans('SetLinkToMember'),1).'</a>';
+			}
+			print '</td>';
+		}
+		print '</tr></table>';
+		print '</td><td colspan="2" class="valeur">';
+		if ($action == 'editprincipalmember')
+		{
+			$form->form_users($_SERVER['PHP_SELF'].'?rowid='.$object->id,$object->user_id,'userid','');
+		}
+		else
+		{
+    
+if ($object->fk_parent > 0) {
+$objp = new Adherentplus($db);
+$objp->fetch($object->fk_parent);
+print '<a href="'.$dolibarr_main_url_root.dol_buildpath('/adherentsplus/card.php?rowid='.$object->fk_parent, 1).'">'.img_picto('', 'object_user').' '.$objp->firstname.' '.$objp->lastname.' '.$objp->company.'</a>';
+//if ($user->rights->adherent->creer) {print '<A href="'. $_SERVER['PHP_SELF'] .'?action=deleteparent&rowid=' . $object->id . '&link=' . $object->id . '" class="deletefilelink">' . img_delete() . '</A>';}   
+} 
+else print $langs->trans("NoPrincipalMember");
+
+		}
+		print '</td></tr>';
+}
 
         print '</table>';
 
@@ -1873,7 +1909,7 @@ $objp->fetch($object->fk_parent);
 print '<TR class="oddeven"><TD align="left"><A href="'.$dolibarr_main_url_root.dol_buildpath('/adherentsplus/card.php?rowid='.$object->fk_parent, 1).'">'.img_picto('', 'object_user').' '.$objp->firstname.' '.$objp->lastname.' '.$objp->company.'</A></TD>';
 if ($user->rights->adherent->creer) {print '<TD align="right"><A href="'. $_SERVER['PHP_SELF'] .'?action=deleteparent&rowid=' . $object->id . '&link=' . $object->id . '" class="deletefilelink">' . img_delete() . '</A></TD>';}
 print '</TR></TABLE><BR>'."\n";     
-} elseif ($adht->family=='1'){
+} elseif ( $adht->family=='1' ) {
 print load_fiche_titre($langs->trans("SecondaryMembers"), '', ''); 
 print '<TABLE class="noborder" summary="listofdocumentstable" id="'.$modulepart.'_table" width="100%">'."\n";
 print '<TR class="liste_titre">';
@@ -1929,7 +1965,7 @@ $objp = $db->fetch_object($result);
 $var=!$var;
                       
 print "<TR ".$bc[$var].">";
-print '<TD>'.$objp->rowid;              
+print '<TD><A href="'.$dolibarr_main_url_root.dol_buildpath('/adherentsplus/card.php?rowid='.$objp->rowid, 1).'">'.$objp->rowid.'</a>';              
 print '</TD>';
 print '<TD align="left"><A href="'.$dolibarr_main_url_root.dol_buildpath('/adherentsplus/card.php?rowid='.$objp->rowid, 1).'">'.img_picto('', 'object_user').' '.$objp->firstname.' '.$objp->lastname.'</A></TD>';
 if ($user->rights->adherent->creer) {print '<TD align="right"><A href="'. $_SERVER['PHP_SELF'] .'?action=deleteparent&rowid=' . $object->id . '&link=' . $objp->rowid . '" class="deletefilelink">' . img_delete() . '</A></TD>';}
