@@ -47,11 +47,12 @@ dol_include_once('/adherentsplus/lib/member.lib.php');
 dol_include_once('/adherentsplus/class/adherent.class.php');
 dol_include_once('/adherentsplus/class/adherent_type.class.php');
 require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
 
 $langs->loadLangs(array('products', 'companies', 'members', 'bills', 'other'));
 
 $action=GETPOST('action','alpha');
-$id=GETPOST('id','int');
+$id=GETPOST('rowid','int');
 
 // Security check
 $result=restrictedArea($user,'adherent',$id);
@@ -65,6 +66,12 @@ if ($result > 0)
 }
 
 $permissionnote=$user->rights->adherent->creer;  // Used by the include of actions_setnotes.inc.php
+
+if ($conf->global->ADHERENT_LINKEDMEMBER && $action=='deleteparent' && $user->rights->adherent->creer) {
+$form = new Form($db);
+$formconfirm=$form->formconfirm($_SERVER["PHP_SELF"].'?rowid='.$object->id.'&link='.$link, $langs->trans('Confirm'), $langs->trans('ConfirmDeleteParent'), 'confirm_deleteparent', '', 0, 1);
+print $formconfirm;	
+}
 
 /*
  * View
@@ -229,7 +236,7 @@ if ($id)
 			        }
 		            print '</td>';
 		        }                
-                print '<td align="right">'.dol_print_date($linkedmember->date_validation,'day').'</td>';
+                print '<td align="right"><a href="'. $_SERVER['PHP_SELF'] .'?action=deleteparent&rowid=' . $object->id . '&link=' . $linkedmember->rowid . '" class="deletefilelink">' . img_delete() . '</a></td>';
                 print "</tr>";
 
             }

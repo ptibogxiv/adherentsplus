@@ -54,7 +54,7 @@ function member_prepare_head(Adherentplus $object)
 	if (! empty($user->rights->adherent->cotisation->lire))
 	{
 		$nbSubscription = is_array($object->subscriptions)?count($object->subscriptions):0;
-		$head[$h][0] = dol_buildpath('/adherentsplus/subscription.php', 1) . '?id=' . $object->id;
+		$head[$h][0] = dol_buildpath('/adherentsplus/subscription.php', 1) . '?rowid=' . $object->id;
 		$head[$h][1] = $langs->trans("Subscriptions");
 		$head[$h][2] = 'subscription';
 		if ($nbSubscription > 0) $head[$h][1].= ' <span class="badge">'.$nbSubscription.'</span>';
@@ -64,7 +64,7 @@ function member_prepare_head(Adherentplus $object)
   if (! empty($user->rights->adherent->cotisation->lire) && $conf->global->ADHERENT_LINKEDMEMBER && empty($object->fk_parent) )
 	{
 		$nbLinkedmembers = is_array($object-> linkedmembers)?count($object-> linkedmembers):0; 
-		$head[$h][0] = dol_buildpath('/adherentsplus/linkedmember.php', 1) . '?id=' . $object->id;
+		$head[$h][0] = dol_buildpath('/adherentsplus/linkedmember.php', 1) . '?rowid=' . $object->id;
 		$head[$h][1] = $langs->trans("LinkedMembers");
 		$head[$h][2] = 'linkedmember';
 		if ($nbLinkedmembers > 0) $head[$h][1].= ' <span class="badge">'.$nbLinkedmembers.'</span>';
@@ -74,7 +74,7 @@ function member_prepare_head(Adherentplus $object)
  	if (! empty($user->rights->adherent->cotisation->lire) && $conf->global->ADHERENT_CONSUMPTION)
 	{
 		$nbConsumption = is_array($object->consumptions)?count($object->consumptions):0;
-		$head[$h][0] = dol_buildpath('/adherentsplus/consumption.php', 1) . '?id=' . $object->id;
+		$head[$h][0] = dol_buildpath('/adherentsplus/consumption.php', 1) . '?rowid=' . $object->id;
 		$head[$h][1] = $langs->trans("Consumptions");
 		$head[$h][2] = 'consumption';
 		if ($nbConsumption > 0) $head[$h][1].= ' <span class="badge">'.$nbConsumption.'</span>';

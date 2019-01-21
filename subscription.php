@@ -60,7 +60,7 @@ $langs->loadLangs(array("companies","bills","members","users","mails",'other'));
 
 $action=GETPOST('action','alpha');
 $confirm=GETPOST('confirm','alpha');
-$rowid=GETPOST('id','int');
+$rowid=GETPOST('rowid','int');
 $typeid=GETPOST('typeid','int');
 
 // Security check
@@ -748,13 +748,13 @@ if ($rowid > 0)
 	print '</td><td colspan="2" class="valeur">';
 	if ($action == 'editlogin')
 	{
-		$form->form_users($_SERVER['PHP_SELF'].'?id='.$object->id,$object->user_id,'userid','');
+		$form->form_users($_SERVER['PHP_SELF'].'?rowid='.$object->id,$object->user_id,'userid','');
 	}
 	else
 	{
 		if ($object->user_id)
 		{
-			$form->form_users($_SERVER['PHP_SELF'].'?id='.$object->id,$object->user_id,'none');
+			$form->form_users($_SERVER['PHP_SELF'].'?rowid='.$object->id,$object->user_id,'none');
 		}
 		else print $langs->trans("NoDolibarrAccess");
 	}
@@ -782,7 +782,7 @@ if ($rowid > 0)
             print '<div class="tabsAction">';
 
             if ($object->statut > 0 && $object->fk_parent== NULL ) { //&& $object->next_subscription_renew<=$now
-            print '<div class="inline-block divButAction"><a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$rowid.'&action=addsubscription">'.$langs->trans("AddSubscription")."</a></div>";}
+            print '<div class="inline-block divButAction"><a class="butAction" href="'.$_SERVER["PHP_SELF"].'?rowid='.$rowid.'&action=addsubscription">'.$langs->trans("AddSubscription")."</a></div>";}
             elseif ($object->statut > 0 && $object->fk_parent!= NULL){print '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="'.dol_escape_htmltag($langs->trans("DeleteParentBefore")).'">'.$langs->trans("AddSubscription").'</a></div>';}
             elseif ($object->next_subscription_renew>$now){print '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="'.dol_escape_htmltag($langs->trans("NextSubscription")." ".dol_print_date($object->next_subscription_renew,'day')).'">'.$langs->trans("AddSubscription").'</a></div>';}
             else {print '<div class="inline-block divButAction"><a class="butActionRefused" href="#" title="'.dol_escape_htmltag($langs->trans("ValidateBefore")).'">'.$langs->trans("AddSubscription").'</a></div>';}
