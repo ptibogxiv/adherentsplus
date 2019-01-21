@@ -1647,6 +1647,9 @@ require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
                 $linkedmember->firstname=$obj->firstname;
                 $linkedmember->lastname=$obj->lastname;
                 $linkedmember->societe=$obj->societe;
+                $linkedmember->login=$obj->login;
+                $linkedmember->morphy=$obj->morphy;
+                $linkedmember->statut=$obj->statut;
                 $linkedmember->email=$obj->email;
 
                 $this->linkedmembers[]=$linkedmember;

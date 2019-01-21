@@ -170,12 +170,18 @@ if ($id)
 
             print '<tr class="liste_titre">';
             print '<td>'.$langs->trans("Name")." / ".$langs->trans("Company").'</td>';
-            print '<td align="center">'.$langs->trans("email").'</td>';
+            print '<td align="left">'.$langs->trans("Login").'</td>';
+            print '<td align="left">'.$langs->trans("Nature").'</td>';
+            print '<td align="left">'.$langs->trans("Email").'</td>';
+            print '<td align="left">'.$langs->trans("Status").'</td>';
+            print '<td align="left">'.$langs->trans("EndSubscription").'</td>';
             print '<td align="right">'.$langs->trans('Invoice').'</td>';
             print "</tr>\n";
 
             foreach ($object->linkedmembers as $linkedmember)
             {
+
+            $datefin=$db->jdate($linkedmember->datefin);
 
 		        $adh=new AdherentPlus($db);
 		        $adh->lastname=$linkedmember->lastname;
@@ -191,10 +197,39 @@ if ($id)
 		        {
 		            print '<td><a href="card.php?rowid='.$linkedmember->rowid.'">'.img_object($langs->trans("ShowMember"),"user").' '.$adh->getFullName($langs,0,-1,32).'</a></td>'."\n";
 		        }
-                print '<td align="center">'.$linkedmember->company.'</td>';    
-        
-                print '<td align="right">'.dol_print_email($linkedmember->email,0,0,1).'</td>';
-                print '<td align="right">'.dol_print_date($consumption->date_validation,'day').'</td>';
+                print '<td align="left">'.$linkedmember->login.'</td>';    
+                print '<td align="left">'.$adh->getmorphylib($linkedmember->morphy).'</td>';        
+                print '<td align="left">'.dol_print_email($linkedmember->email,0,0,1).'</td>';
+                print '<td align="left">'.$adh->LibStatut($linkedmember->statut,$linkedmember->subscription,$datefin,2).'</td>';
+		        // Date end subscription
+		        if ($datefin)
+		        {
+			        print '<td align="center" class="nowrap">';
+		            if ($datefin < dol_now() && $linkedmember->statut > 0)
+		            {
+		                print dol_print_date($datefin,'day')." ".img_warning($langs->trans("SubscriptionLate"));
+		            }
+		            else
+		            {
+		                print dol_print_date($datefin,'day');
+		            }
+		            print '</td>';
+		        }
+		        else
+		        {
+			        print '<td align="left" class="nowrap">';
+			        if ($linkedmember->subscription == 'yes')
+			        {
+		                print $langs->trans("SubscriptionNotReceived");
+		                if ($linkedmember->statut > 0) print " ".img_warning();
+			        }
+			        else
+			        {
+			            print $langs->trans("SubscriptionNotReceived");
+			        }
+		            print '</td>';
+		        }                
+                print '<td align="right">'.dol_print_date($linkedmember->date_validation,'day').'</td>';
                 print "</tr>";
 
             }
