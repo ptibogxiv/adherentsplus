@@ -175,7 +175,7 @@ if ($id)
             print '<td align="left">'.$langs->trans("Email").'</td>';
             print '<td align="left">'.$langs->trans("Status").'</td>';
             print '<td align="left">'.$langs->trans("EndSubscription").'</td>';
-            print '<td align="right">'.$langs->trans('Invoice').'</td>';
+            print '<td align="right">'.$langs->trans('Action').'</td>';
             print "</tr>\n";
 
             foreach ($object->linkedmembers as $linkedmember)
