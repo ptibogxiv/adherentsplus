@@ -1598,7 +1598,7 @@ else
 		}
 		print '</td></tr>';
     
-if ( $conf->global->ADHERENT_LINKMEMBER ) {
+if ( $conf->global->ADHERENT_LINKEDMEMBER ) {
     // Link member
 		print '<tr><td>';
 		print '<table class="nobordernopadding" width="100%"><tr><td>';

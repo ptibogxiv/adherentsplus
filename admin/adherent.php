@@ -79,7 +79,7 @@ if ($action == 'updateall')
     $res1=dolibarr_set_const($db, 'ADHERENT_LOGIN_NOT_REQUIRED', GETPOST('ADHERENT_LOGIN_NOT_REQUIRED', 'alpha')?0:1, 'chaine', 0, '', $conf->entity);
     $res2=dolibarr_set_const($db, 'ADHERENT_MAIL_REQUIRED', GETPOST('ADHERENT_MAIL_REQUIRED', 'alpha'), 'chaine', 0, '', $conf->entity);
     $res3=dolibarr_set_const($db, 'ADHERENT_DEFAULT_SENDINFOBYMAIL', GETPOST('ADHERENT_DEFAULT_SENDINFOBYMAIL', 'alpha'), 'chaine', 0, '', $conf->entity);
-    $res4=dolibarr_set_const($db, 'ADHERENT_LINKMEMBER', GETPOST('ADHERENT_LINKMEMBER', 'alpha'), 'chaine', 0, '', $conf->entity);
+    $res4=dolibarr_set_const($db, 'ADHERENT_LINKEDMEMBER', GETPOST('ADHERENT_LINKEDMEMBER', 'alpha'), 'chaine', 0, '', $conf->entity);
     $res8=dolibarr_set_const($db, 'ADHERENT_BANK_USE', GETPOST('ADHERENT_BANK_USE', 'alpha'), 'chaine', 0, '', $conf->entity);
     $res9=dolibarr_set_const($db, 'ADHERENT_SUBSCRIPTION_PRORATA', GETPOST('ADHERENT_SUBSCRIPTION_PRORATA', 'alpha'), 'chaine', 0, '', $conf->entity);
     $res10=dolibarr_set_const($db, 'SOCIETE_SUBSCRIBE_MONTH_START', GETPOST('SOCIETE_SUBSCRIBE_MONTH_START', 'alpha'), 'chaine', 0, '', $conf->entity);
@@ -208,8 +208,8 @@ print $form->selectyesno('ADHERENT_DEFAULT_SENDINFOBYMAIL',(! empty($conf->globa
 print "</td></tr>\n";
 
 // multimembers for one thirdparty
-print '<tr class="oddeven"><td>'.$langs->trans("AdherentLinkMember").'</td><td>';
-print $form->selectyesno('ADHERENT_LINKMEMBER',(! empty($conf->global->ADHERENT_LINKMEMBER)?$conf->global->ADHERENT_LINKMEMBER:0),1);
+print '<tr class="oddeven"><td>'.$langs->trans("AdherentLinkedMember").'</td><td>';
+print $form->selectyesno('ADHERENT_LINKEDMEMBER',(! empty($conf->global->ADHERENT_LINKEDMEMBER)?$conf->global->ADHERENT_LINKEDMEMBER:0),1);
 print "</td></tr>\n";
 
 // Insert subscription into bank account
