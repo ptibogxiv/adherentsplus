@@ -161,7 +161,28 @@ if ($id)
 		}
 
     // Company
-    print '<tr><td>'.$langs->trans("NextInvoice").'</td><td class="valeur">'.dol_print_date($object->nextinvoice,'day').'</td></tr>';
+    print '<tr><td>'.$langs->trans("SubscriptionEndDate").'</td><td class="valeur">';
+    if ($object->datefin)
+		{
+			print dol_print_date($object->datefin,'day');
+			if ($object->hasDelay()) {
+				print " ".img_warning($langs->trans("Late"));
+			}
+		}
+		else
+		{
+			if (! $adht->subscription)
+			{
+				print $langs->trans("SubscriptionNotRecorded");
+				if ($object->statut > 0) print " ".img_warning($langs->trans("Late")); // displays delay Pictogram only if not a draft and not terminated
+			}
+			else
+			{
+				print $langs->trans("SubscriptionNotReceived");
+				if ($object->statut > 0) print " ".img_warning($langs->trans("Late")); // displays delay Pictogram only if not a draft and not terminated
+			}
+		}
+    print'</td></tr>';
 
     // Civility
     print '<tr><td>'.$langs->trans("Commitment").'</td><td class="valeur">';

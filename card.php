@@ -1607,7 +1607,8 @@ if ( $conf->global->ADHERENT_LINKEDMEMBER ) {
 		if ($action != 'editprincipalmember' && $user->rights->adherent->creer)
 		{
 			print '<td align="right">';
-			if ($user->rights->user->user->creer)
+$nbLinkedmembers = is_array($object-> linkedmembers)?count($object-> linkedmembers):0;       
+			if ( empty($nbLinkedmembers) &&  $user->rights->user->user->creer)
 			{
 				print '<a href="'.$_SERVER["PHP_SELF"].'?action=editprincipalmember&amp;rowid='.$object->id.'">'.img_edit($langs->trans('SetLinkToMember'),1).'</a>';
 			}
