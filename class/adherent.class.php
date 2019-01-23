@@ -1644,6 +1644,7 @@ require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 
                 $linkedmember=new AdherentPlus($this->db);
                 $linkedmember->rowid=$obj->rowid;
+                $linkedmember->id=$obj->id;
                 $linkedmember->firstname=$obj->firstname;
                 $linkedmember->lastname=$obj->lastname;
                 $linkedmember->societe=$obj->societe;
