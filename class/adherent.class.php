@@ -1414,8 +1414,8 @@ $dateb = $cotis1;}
 $dateto = strtotime(date("Y-m-d", dol_time_plus_duree($cotis2,-1,'d')));
 } 
 
-if ($conf->global->ADHERENT_SUBSCRIPTION_PRORATA=='1' || $conf->global->ADHERENT_SUBSCRIPTION_PRORATA=='0'){$tx="1";}
-else {$tx=(ceil((($dateto-$today)/31558464)*$conf->global->ADHERENT_SUBSCRIPTION_PRORATA)/$conf->global->ADHERENT_SUBSCRIPTION_PRORATA);}
+if ( $conf->global->ADHERENT_SUBSCRIPTION_PRORATA == '1' || empty($conf->global->ADHERENT_SUBSCRIPTION_PRORATA) ) { $tx="1"; }
+else { $tx=(ceil((($dateto-$today)/31558464)*$conf->global->ADHERENT_SUBSCRIPTION_PRORATA)/$conf->global->ADHERENT_SUBSCRIPTION_PRORATA); }
 $monthnb=12-(12*$tx);
 
 $datefrom = strtotime(date("Y-m-d", dol_time_plus_duree($date,+$monthnb,'m'))); 
