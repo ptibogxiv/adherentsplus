@@ -1373,9 +1373,9 @@ $datefin=$this->db->jdate($obj->datefin);
 $cotis1 = dol_get_first_day($year,$month,false);//dol_mktime(00,00,00,$conf->global->SOCIETE_SUBSCRIBE_MONTH_START,'01',$year);
 $startcotispre1 = dol_time_plus_duree($cotis1,-$conf->global->SOCIETE_SUBSCRIBE_MONTH_PRESTART,'m');
 $startcotis1 = dol_time_plus_duree($cotis1,+1,'y');
-if ($startcotis1>$today && ($startcotis1-$today)<31536000 && (($today-$startcotispre1)>31536000)) {
+if ( $startcotis1>$today && ($startcotis1-$today)<31536000 && (($today-$startcotispre1)>31536000) ) {
 $cotis1 = dol_time_plus_duree($cotis1,+2,'y');
-} else {
+} elseif ( $startcotis1>$today && ($startcotis1-$today)<31536000 ) {
 $cotis1 = dol_time_plus_duree($cotis1,+1,'y'); 
 }
 
