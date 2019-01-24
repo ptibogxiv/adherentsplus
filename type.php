@@ -207,7 +207,7 @@ if (! $rowid && $action != 'create' && $action != 'edit')
 {
 	//dol_fiche_head('');
 
-	$sql = "SELECT d.rowid, d.libelle as label, d.subscription, d.vote, d.welcome, d.price, d.vote, d.automatic, d.automatic_renew, d.family";
+	$sql = "SELECT d.rowid, d.libelle as label, d.subscription, d.vote, d.welcome, d.price, d.vote, d.automatic, d.automatic_renew, d.family, d.statut";
 	$sql.= " FROM ".MAIN_DB_PREFIX."adherent_type as d";
 	$sql.= " WHERE d.entity IN (".getEntity('adherent').")";
 
@@ -245,6 +245,7 @@ if (! $rowid && $action != 'create' && $action != 'edit')
 		print '<th align="center">'.$langs->trans("VoteAllowed").'</th>';
     print '<th align="center">'.$langs->trans("AutoSubscription").'</th>';
     print '<th align="center">'.$langs->trans("AutoRenew").'</th>';
+    print '<th align="center">'.$langs->trans("Status").'</th>';
 		print '<th>&nbsp;</th>';
 		print "</tr>\n";
 
@@ -259,6 +260,10 @@ if (! $rowid && $action != 'create' && $action != 'edit')
 			print '<td align="center">'.yn($objp->vote).'</td>';
       print '<td align="center">'.yn($objp->automatic).'</td>';
       print '<td align="center">'.yn($objp->automatic_renew).'</td>';
+      print '<td align="center">';
+if ( !empty($objp->statut) ) print img_picto($langs->trans('TypeStatusActive'),'statut4');
+else print img_picto($langs->trans('TypeStatusInctive'),'statut5');     
+      print '</td>';
 			if ($user->rights->adherent->configurer)
 				print '<td align="right"><a href="'.$_SERVER["PHP_SELF"].'?action=edit&rowid='.$objp->rowid.'">'.img_edit().'</a></td>';
 			else

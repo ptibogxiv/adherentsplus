@@ -384,10 +384,10 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
      *
      *     @return string     Return status of a type of member
      */
-    function getLibStatut()
-    {
-    	return '';
-    }
+	function getLibStatut($mode=0)
+	{
+		return $this->LibStatut($this->statut,$mode);
+	}
 
     /**
      *     getMailOnValid
