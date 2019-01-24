@@ -261,8 +261,8 @@ if (! $rowid && $action != 'create' && $action != 'edit')
       print '<td align="center">'.yn($objp->automatic).'</td>';
       print '<td align="center">'.yn($objp->automatic_renew).'</td>';
       print '<td align="center">';
-if ( !empty($objp->statut) ) print img_picto($langs->trans('TypeStatusActive'),'statut4');
-else print img_picto($langs->trans('TypeStatusInctive'),'statut5');     
+if ( !empty($objp->statut) ) print img_picto($langs->trans("InActivity"),'statut4');
+else print img_picto($langs->trans("ActivityCeased"),'statut5');     
       print '</td>';
 			if ($user->rights->adherent->configurer)
 				print '<td align="right"><a href="'.$_SERVER["PHP_SELF"].'?action=edit&rowid='.$objp->rowid.'">'.img_edit().'</a></td>';
@@ -403,6 +403,11 @@ if ($rowid > 0)
 		print '<div class="underbanner clearboth"></div>';
 
 		print '<table class="border" width="100%">';
+
+    print '<tr><td class="titlefield">'.$langs->trans("Status").'</td><td>';
+if ( !empty($object->statut) ) print img_picto($langs->trans('TypeStatusActive'),'statut4').' '.$langs->trans("InActivity");
+else print img_picto($langs->trans('TypeStatusInactive'),'statut5').' '.$langs->trans("ActivityCeased");   
+		print '</tr>';
 
     print '<tr><td class="titlefield">'.$langs->trans("GroupSubscription").'</td><td>';
 		print yn($object->family);
