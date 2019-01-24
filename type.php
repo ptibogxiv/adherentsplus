@@ -472,8 +472,13 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
 		}
 
 		// Add
+    if ($user->rights->adherent->configurer && !empty($object->statut) )
+		{
 		print '<div class="inline-block divButAction"><a class="butAction" href="card.php?action=create&typeid='.$object->id.'">'.$langs->trans("AddMember").'</a></div>';
-
+    } else {
+		print '<div class="inline-block divButAction"><a class="butActionDelete" href="#">'.$langs->trans("AddMember").'</a></div>';    
+    }
+    
 		// Delete
 		if ($user->rights->adherent->configurer)
 		{
