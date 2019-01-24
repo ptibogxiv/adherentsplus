@@ -76,7 +76,7 @@ class AdherentTypePlus extends CommonObject
     function __construct($db)
     {
         $this->db = $db;
-        $this->statut = 1;
+        //$this->statut = 1;
     }
 
 

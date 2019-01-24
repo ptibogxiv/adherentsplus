@@ -125,6 +125,7 @@ if ($action == 'add' && $user->rights->adherent->configurer)
     $object->automatic_renew   = (boolean) trim($automatic_renew);
     $object->family   = (boolean) trim($family);
 		$object->label			= trim($label);
+    $object->statut         = (boolean) trim(statut);
 		$object->subscription	= (int) trim($subscription);
 		$object->note			= trim($comment);
 		$object->mail_valid		= (boolean) trim($mail_valid);
@@ -163,6 +164,7 @@ if ($action == 'update' && $user->rights->adherent->configurer)
 		$object = new AdherentTypePlus($db);
 		$object->id             = $rowid;
 		$object->label        = trim($label);
+    $object->statut         = (boolean) trim(statut);
 		$object->subscription   = (int) trim($subscription);
 		$object->note           = trim($comment);
 		$object->mail_valid     = (boolean) trim($mail_valid);
@@ -305,10 +307,14 @@ if ($action == 'create')
 
 	print '<tr><td class="titlefieldcreate fieldrequired">'.$langs->trans("Label").'</td><td><input type="text" name="label" size="40"></td></tr>';
 
+  print '<tr><td>'.$langs->trans("Status").'</td><td>';
+  print $form->selectarray('statut', array('0'=>$langs->trans('ActivityCeased'),'1'=>$langs->trans('InActivity')),1);
+  print '</td></tr>';
+  
   print '<tr><td>'.$langs->trans("GroupSubscription").'</td><td>';
 	print $form->selectyesno("family",0,1);
-	print '</td></tr>';
-
+  print '</td></tr>';
+	
 	print '<tr><td>'.$langs->trans("SubscriptionRequired").'</td><td>';
 	print $form->selectyesno("subscription",1,1);
 	print '</td></tr>';
@@ -768,6 +774,10 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
 
 		print '<tr><td class="fieldrequired">'.$langs->trans("Label").'</td><td><input type="text" name="label" size="40" value="'.dol_escape_htmltag($object->label).'"></td></tr>';
 
+    print '<tr><td>'.$langs->trans("Status").'</td><td>';
+    print $form->selectarray('statut', array('0'=>$langs->trans('ActivityCeased'),'1'=>$langs->trans('InActivity')),1);
+    print '</td></tr>';
+  
     print '<tr><td>'.$langs->trans("GroupSubscription").'</td><td>';
 		print $form->selectyesno("family",$object->family,1);
 		print '</td></tr>';
