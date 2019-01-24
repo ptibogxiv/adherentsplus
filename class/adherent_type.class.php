@@ -387,7 +387,7 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
      */
 	function getLibStatut($mode=0)
 	{
-		return $this->LibStatut($this->statut,$mode);
+		return '';//$this->LibStatut($this->statut,$mode);
 	}
 
     /**
