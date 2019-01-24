@@ -68,6 +68,7 @@ class AdherentTypePlus extends CommonObject
 	public $automatic;
   public $automatic_renew;
 	public $family;
+  public $statut;
     /**
 	 *	Constructor
 	 *
@@ -90,7 +91,7 @@ class AdherentTypePlus extends CommonObject
     {
         global $conf;
 
-        $this->statut=(int) $this->statut;
+        //$this->statut=(int) $this->statut;
         $this->label=(!empty($this->libelle)?trim($this->libelle):trim($this->label));
 
         $sql = "INSERT INTO ".MAIN_DB_PREFIX."adherent_type (";

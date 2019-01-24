@@ -76,6 +76,7 @@ if (! $sortorder) {  $sortorder="DESC"; }
 if (! $sortfield) {  $sortfield="d.lastname"; }
 
 $label=GETPOST("label","alpha");
+$statut=GETPOST("statut","int");
 $subscription=GETPOST("subscription","int");
 $family=GETPOST("family","int");
 $vote=GETPOST("vote","int");
@@ -775,7 +776,7 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
 		print '<tr><td class="fieldrequired">'.$langs->trans("Label").'</td><td><input type="text" name="label" size="40" value="'.dol_escape_htmltag($object->label).'"></td></tr>';
 
     print '<tr><td>'.$langs->trans("Status").'</td><td>';
-    print $form->selectarray('statut', array('0'=>$langs->trans('ActivityCeased'),'1'=>$langs->trans('InActivity')),1);
+    print $form->selectarray('statut', array('0'=>$langs->trans('ActivityCeased'),'1'=>$langs->trans('InActivity')), $object->statut);
     print '</td></tr>';
   
     print '<tr><td>'.$langs->trans("GroupSubscription").'</td><td>';
