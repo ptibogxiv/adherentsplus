@@ -125,7 +125,7 @@ if ($action == 'add' && $user->rights->adherent->configurer)
     $object->automatic_renew   = (boolean) trim($automatic_renew);
     $object->family   = (boolean) trim($family);
 		$object->label			= trim($label);
-    $object->statut         = (boolean) trim(statut);
+    $object->statut         = (boolean) trim($statut);
 		$object->subscription	= (int) trim($subscription);
 		$object->note			= trim($comment);
 		$object->mail_valid		= (boolean) trim($mail_valid);
@@ -164,7 +164,7 @@ if ($action == 'update' && $user->rights->adherent->configurer)
 		$object = new AdherentTypePlus($db);
 		$object->id             = $rowid;
 		$object->label        = trim($label);
-    $object->statut         = (boolean) trim(statut);
+    $object->statut         = (boolean) trim($statut);
 		$object->subscription   = (int) trim($subscription);
 		$object->note           = trim($comment);
 		$object->mail_valid     = (boolean) trim($mail_valid);
