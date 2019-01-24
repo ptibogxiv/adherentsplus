@@ -255,6 +255,7 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
                 $this->mail_valid     = $obj->mail_valid;
                 $this->note           = $obj->note;
                 $this->vote           = $obj->vote;
+                $this->status         = $obj->status;
                 
 	if (! empty($conf->global->PRODUIT_MULTIPRICES) && empty($this->price_level)) $this->price_level=1;
                  
