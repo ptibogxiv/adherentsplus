@@ -40,6 +40,8 @@ pour toutes versions de Dolibarr:
  
  ALTER TABLE `llx_adherent_type` ADD COLUMN `use_default` int(11)   DEFAULT NULL;
  
+ ALTER TABLE `llx_adherent_type` ADD COLUMN `status` tinyint(4)   DEFAULT 1;
+ 
  ALTER TABLE `llx_adherent` ADD COLUMN `fk_parent` int(11)   DEFAULT NULL;
  
  ALTER TABLE `llx_subscription` ADD COLUMN `fk_type` int(11)   DEFAULT NULL;
