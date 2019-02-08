@@ -226,6 +226,55 @@ $form = new Form($db);
 $formconfirm=$form->formconfirm($_SERVER["PHP_SELF"].'?rowid='.$object->id.'&link='.$link, $langs->trans('Confirm'), $langs->trans('ConfirmDeleteParent'), 'confirm_deleteparent', '', 0, 1);
 print $formconfirm;	
 }
+if ($action=='addparent' && $user->rights->adherent->creer){
+$form = new Form($db);
+$formconfirm=$form->formconfirm($_SERVER["PHP_SELF"].'?rowid='.$object->id.'&link='.$link, $langs->trans('Confirm'), $langs->trans('ConfirmAddParent'), 'confirm_addparent', '', 0, 1);
+print $formconfirm;	
+}
+if ( $conf->global->ADHERENT_LINKEDMEMBER && empty($object->fk_parent) ) {
+print load_fiche_titre($langs->trans("SecondaryMembers"), '', ''); 
+print '<TABLE class="noborder" summary="listofdocumentstable" id="'.$modulepart.'_table" width="100%">'."\n";
+print '<TR class="liste_titre">';
+print '<TH align="center" colspan="'.(3+($addcolumforpicto?'2':'1')).'" class="formdoc liste_titre maxwidthonsmartphone">';
+print '<form action="'. $_SERVER['PHP_SELF'] .'?action=addparent&rowid=' . $object->id . '" id="'.$forname.'_form" method="post">';
+print '<SELECT name="link">';  
+        
+        $sql = "SELECT c.rowid, c.firstname, c.lastname";               
+        $sql.= " FROM ".MAIN_DB_PREFIX."adherent as c";
+        $sql.= " WHERE c.entity IN (" . getEntity('adherentsplus') . ") AND c.rowid!=$object->id AND ISNULL(c.fk_parent)";
+        $sql.= " ORDER BY c.firstname, c.lastname ASC";
+        //$sql.= " LIMIT 0,5";
+        
+        $result = $db->query($sql);
+        if ($result)
+        {
+            $num = $db->num_rows($result);
+            $i = 0;
+
+            $var=True;
+            print '<OPTION value="" disabled selected>'.$langs->trans('Members').'</OPTION>';  
+            while ($i < $num)
+            {            
+                $objp = $db->fetch_object($result);
+                $var=!$var;               
+             
+                print '<OPTION value="'.$objp->rowid.'">'.$objp->firstname.' '.$objp->lastname.'</OPTION>';   
+                            
+                $i++;
+            }
+        }
+        else
+        {
+            dol_print_error($db);
+        }
+
+print '</SELECT>';
+print '<input class="button buttongen" id="addsecondarymemeber" name="addsecondarymemeber" type="submit" value="'.$langs->trans('Add').'">';
+print '</FORM></TH></TR>';
+
+print '</TABLE><BR>'."\n";   
+}
+
     /*
     * List of linked members
     */

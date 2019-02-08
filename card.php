@@ -1892,64 +1892,7 @@ else print $langs->trans("NoPrincipalMember");
 		$formactions = new FormActions($db);
 		$somethingshown = $formactions->showactions($object, 'member', $socid);
 		*/
-if ($action=='addparent' && $user->rights->adherent->creer){
-$form = new Form($db);
-$formconfirm=$form->formconfirm($_SERVER["PHP_SELF"].'?rowid='.$object->id.'&link='.$link, $langs->trans('Confirm'), $langs->trans('ConfirmAddParent'), 'confirm_addparent', '', 0, 1);
-print $formconfirm;	
-}
-if ($conf->global->ADHERENT_LINKEDMEMBER  && $object->fk_parent>'0') {
-print load_fiche_titre($langs->trans("PrincipalMember"), '', '');
-print '<TABLE class="noborder" summary="listofdocumentstable" id="'.$modulepart.'_table" width="100%">'."\n";
-$objp = new Adherentplus($db);
-$objp->fetch($object->fk_parent);
-print '<TR class="oddeven"><TD align="left"><A href="'.$dolibarr_main_url_root.dol_buildpath('/adherentsplus/card.php?rowid='.$object->fk_parent, 1).'">'.img_picto('', 'object_user').' '.$objp->firstname.' '.$objp->lastname.' '.$objp->company.'</A></TD>';
-if ($user->rights->adherent->creer) {print '<TD align="right"><A href="'. $_SERVER['PHP_SELF'] .'?action=deleteparent&rowid=' . $object->id . '&link=' . $object->id . '" class="deletefilelink">' . img_delete() . '</A></TD>';}
-print '</TR></TABLE><BR>'."\n";     
-} elseif ( $conf->global->ADHERENT_LINKEDMEMBER  ) {
-print load_fiche_titre($langs->trans("SecondaryMembers"), '', ''); 
-print '<TABLE class="noborder" summary="listofdocumentstable" id="'.$modulepart.'_table" width="100%">'."\n";
-print '<TR class="liste_titre">';
-print '<TH align="center" colspan="'.(3+($addcolumforpicto?'2':'1')).'" class="formdoc liste_titre maxwidthonsmartphone">';
-print '<form action="'. $_SERVER['PHP_SELF'] .'?action=addparent&rowid=' . $object->id . '" id="'.$forname.'_form" method="post">';
-print '<SELECT name="link">';  
-        
-        $sql = "SELECT c.rowid, c.firstname, c.lastname";               
-        $sql.= " FROM ".MAIN_DB_PREFIX."adherent as c";
-        $sql.= " WHERE c.entity IN (" . getEntity('adherentsplus') . ") AND c.rowid!=$object->id AND ISNULL(c.fk_parent)";
-        $sql.= " ORDER BY c.firstname, c.lastname ASC";
-        //$sql.= " LIMIT 0,5";
-        
-        $result = $db->query($sql);
-        if ($result)
-        {
-            $num = $db->num_rows($result);
-            $i = 0;
-
-            $var=True;
-            print '<OPTION value="" disabled selected>'.$langs->trans('Members').'</OPTION>';  
-            while ($i < $num)
-            {            
-                $objp = $db->fetch_object($result);
-                $var=!$var;               
-             
-                print '<OPTION value="'.$objp->rowid.'">'.$objp->firstname.' '.$objp->lastname.'</OPTION>';   
-                            
-                $i++;
-            }
-        }
-        else
-        {
-            dol_print_error($db);
-        }
-
-print '</SELECT>';
-print '<input class="button buttongen" id="addsecondarymemeber" name="addsecondarymemeber" type="submit" value="'.$langs->trans('Add').'">';
-print '</FORM></TH></TR>';
-
-print '</TABLE><BR>'."\n";   
-}
-
-  			$MAX = 10;
+  		$MAX = 10;
 
 			$morehtmlright = '<a href="'.DOL_URL_ROOT.'/adherents/agenda.php?id='.$object->id.'">';
 			$morehtmlright.= $langs->trans("SeeAll");
