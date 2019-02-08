@@ -731,35 +731,6 @@ if (empty($reshook))
 		}
 	}
 
-  if ($action == 'confirm_deleteparent' && $confirm == 'yes' && $user->rights->adherent->creer)
-	{
- 		$result=$object->delete_parent($link);
-		if ($result > 0)
-		{
-
-				header("Location: ".$dolibarr_main_url_root.dol_buildpath('/adherentsplus/card.php?rowid='.$rowid, 1));
-				exit;
-		}
-		else
-		{
-			$errmesg=$object->error;
-		}
-  }
-  
-    if ($action == 'confirm_addparent' && $confirm == 'yes' && $user->rights->adherent->creer)
-	{
- 		$result=$object->add_parent($link);
-		if ($result > 0)
-		{
-
-				header("Location: ".$dolibarr_main_url_root.dol_buildpath('/adherentsplus/card.php?rowid='.$rowid, 1));
-				exit;
-		}
-		else
-		{
-			$errmesg=$object->error;
-		}
-  }
 	// Actions to build doc
 	$upload_dir = $conf->adherent->dir_output;
 	$permissioncreate=$user->rights->adherent->creer;
@@ -1892,7 +1863,7 @@ else print $langs->trans("NoPrincipalMember");
 		$formactions = new FormActions($db);
 		$somethingshown = $formactions->showactions($object, 'member', $socid);
 		*/
-  		$MAX = 10;
+  	$MAX = 10;
 
 			$morehtmlright = '<a href="'.DOL_URL_ROOT.'/adherents/agenda.php?id='.$object->id.'">';
 			$morehtmlright.= $langs->trans("SeeAll");

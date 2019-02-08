@@ -97,6 +97,21 @@ $permissionnote=$user->rights->adherent->creer;  // Used by the include of actio
 			$errmesg=$object->error;
 		}
   }
+  
+    if ($action == 'confirm_addparent' && $confirm == 'yes' && $user->rights->adherent->creer)
+	{
+ 		$result=$object->add_parent($link);
+		if ($result > 0)
+		{
+
+				header("Location: ".$dolibarr_main_url_root.dol_buildpath('/adherentsplus/linkedmember.php?rowid='.$id, 1));
+				exit;
+		}
+		else
+		{
+			$errmesg=$object->error;
+		}
+  }
 
 /*
  * View
@@ -226,11 +241,13 @@ $form = new Form($db);
 $formconfirm=$form->formconfirm($_SERVER["PHP_SELF"].'?rowid='.$object->id.'&link='.$link, $langs->trans('Confirm'), $langs->trans('ConfirmDeleteParent'), 'confirm_deleteparent', '', 0, 1);
 print $formconfirm;	
 }
+
 if ($action=='addparent' && $user->rights->adherent->creer){
 $form = new Form($db);
 $formconfirm=$form->formconfirm($_SERVER["PHP_SELF"].'?rowid='.$object->id.'&link='.$link, $langs->trans('Confirm'), $langs->trans('ConfirmAddParent'), 'confirm_addparent', '', 0, 1);
 print $formconfirm;	
 }
+
 if ( $conf->global->ADHERENT_LINKEDMEMBER && empty($object->fk_parent) ) {
 print load_fiche_titre($langs->trans("SecondaryMembers"), '', ''); 
 print '<TABLE class="noborder" summary="listofdocumentstable" id="'.$modulepart.'_table" width="100%">'."\n";
@@ -241,7 +258,7 @@ print '<SELECT name="link">';
         
         $sql = "SELECT c.rowid, c.firstname, c.lastname";               
         $sql.= " FROM ".MAIN_DB_PREFIX."adherent as c";
-        $sql.= " WHERE c.entity IN (" . getEntity('adherentsplus') . ") AND c.rowid!=$object->id AND ISNULL(c.fk_parent)";
+        $sql.= " WHERE c.entity IN (" . getEntity('adherentsplus') . ") AND c.rowid!=".$object->id." AND ISNULL(c.fk_parent)";
         $sql.= " ORDER BY c.firstname, c.lastname ASC";
         //$sql.= " LIMIT 0,5";
         
