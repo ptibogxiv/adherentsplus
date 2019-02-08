@@ -1892,12 +1892,7 @@ else print $langs->trans("NoPrincipalMember");
 		$formactions = new FormActions($db);
 		$somethingshown = $formactions->showactions($object, 'member', $socid);
 		*/
-if ($adht->family=='1' && $action=='deleteparent' && $user->rights->adherent->creer){
-$form = new Form($db);
-$formconfirm=$form->formconfirm($_SERVER["PHP_SELF"].'?rowid='.$object->id.'&link='.$link, $langs->trans('Confirm'), $langs->trans('ConfirmDeleteParent'), 'confirm_deleteparent', '', 0, 1);
-print $formconfirm;	
-}
-if ($adht->family=='1' && $action=='addparent' && $user->rights->adherent->creer){
+if ($action=='addparent' && $user->rights->adherent->creer){
 $form = new Form($db);
 $formconfirm=$form->formconfirm($_SERVER["PHP_SELF"].'?rowid='.$object->id.'&link='.$link, $langs->trans('Confirm'), $langs->trans('ConfirmAddParent'), 'confirm_addparent', '', 0, 1);
 print $formconfirm;	

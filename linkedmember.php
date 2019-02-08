@@ -221,8 +221,13 @@ if ($id)
 
 }
 
+if ($action=='deleteparent' && $user->rights->adherent->creer){
+$form = new Form($db);
+$formconfirm=$form->formconfirm($_SERVER["PHP_SELF"].'?rowid='.$object->id.'&link='.$link, $langs->trans('Confirm'), $langs->trans('ConfirmDeleteParent'), 'confirm_deleteparent', '', 0, 1);
+print $formconfirm;	
+}
     /*
-    * List of consumptions
+    * List of linked members
     */
 
             print '<table class="noborder" width="100%">'."\n";
