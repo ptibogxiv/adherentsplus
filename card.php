@@ -1569,7 +1569,7 @@ else
 		}
 		print '</td></tr>';
     
-if ( $conf->global->ADHERENT_LINKEDMEMBER ) {
+if ( $conf->global->ADHERENT_LINKEDMEMBER && empty($object->linkedmembers) ) {
     // Link member
 		print '<tr><td>';
 		print '<table class="nobordernopadding" width="100%"><tr><td>';
@@ -1578,7 +1578,7 @@ if ( $conf->global->ADHERENT_LINKEDMEMBER ) {
 		if ($action != 'editprincipalmember' && $user->rights->adherent->creer)
 		{
 			print '<td align="right">';
-$nbLinkedmembers = is_array($object-> linkedmembers)?count($object-> linkedmembers):0;       
+$nbLinkedmembers = is_array($object->linkedmembers)?count($object->linkedmembers):0;       
 			if ( empty($nbLinkedmembers) &&  $user->rights->user->user->creer)
 			{
 				print '<a href="'.$_SERVER["PHP_SELF"].'?action=editprincipalmember&amp;rowid='.$object->id.'">'.img_edit($langs->trans('SetLinkToMember'),1).'</a>';

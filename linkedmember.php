@@ -266,7 +266,7 @@ $listmember='<SELECT name="link">';
                 $objp = $db->fetch_object($result);
                 $var=!$var;               
              
-                print '<OPTION value="'.$objp->rowid.'">'.$objp->firstname.' '.$objp->lastname.'</OPTION>';   
+                $listmember.='<OPTION value="'.$objp->rowid.'">'.$objp->firstname.' '.$objp->lastname.'</OPTION>';   
                             
                 $i++;
             }
