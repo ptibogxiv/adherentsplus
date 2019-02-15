@@ -2059,10 +2059,10 @@ dol_include_once('/adherentsplus/class/subscription.class.php');
 			$label.= '<br><b>' . $langs->trans('Name') . ':</b> ' . $this->getFullName($langs);
 		$label.='</div>';
 
-		$url = dol_buildpath('/adherentsplus/card.php?id='.$this->id.'', 1);
+		$url = dol_buildpath('/adherentsplus/card.php?rowid='.$this->id.'', 1);
 		if ($option == 'subscription')
 		{
-			$url = dol_buildpath('/adherentsplus/subscription.php?id='.$this->id.'', 1);
+			$url = dol_buildpath('/adherentsplus/subscription.php?rowid='.$this->id.'', 1);
 		}
 
 		if ($option != 'nolink')

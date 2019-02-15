@@ -287,11 +287,11 @@ $listmember.='</SELECT>';
 }
 
 if ( $conf->global->ADHERENT_LINKEDMEMBER && empty($object->fk_parent) ) {
-print load_fiche_titre($langs->trans("SecondaryMembers"), '', ''); 
+print load_fiche_titre($langs->trans("LinkMember"), '', ''); 
 print '<TABLE class="noborder" summary="listofdocumentstable" id="'.$modulepart.'_table" width="100%">'."\n";
 print '<TR class="liste_titre">';
 print '<TH align="center" colspan="'.(3+($addcolumforpicto?'2':'1')).'" class="formdoc liste_titre maxwidthonsmartphone">';
-print '<form action="'. $_SERVER['PHP_SELF'] .'?rowid=' . $object->id . '&action=addparent" id="'.$forname.'_form" method="post">';
+print '<form action="'. $_SERVER['PHP_SELF'] .'?rowid=' . $object->id . '&action=addlinkedmember" id="'.$forname.'_form" method="post">';
 print '<SELECT name="link">';  
         
         $sql = "SELECT c.rowid, c.firstname, c.lastname";               
