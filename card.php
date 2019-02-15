@@ -1064,7 +1064,7 @@ else
 		print '<TABLE class="border" width="100%">';
 
 		// Ref
-		print '<TR><TD class="titlefieldcreate">'.$langs->trans("License").'</TD><TD class="valeur"><INPUT type="text" name="ref" size="35" value="'.(isset($_POST["ref"])?GETPOST("ref",'',2):$object->ref).'"></TD></TR>';
+		print '<TR><TD class="titlefieldcreate">'.$langs->trans("Ref").'</TD><TD class="valeur">'.$object->ref.'</TD></TR>';
 
 		// Login
 		if (empty($conf->global->ADHERENT_LOGIN_NOT_REQUIRED))
