@@ -47,9 +47,8 @@ dol_include_once('/adherentsplus/lib/member.lib.php');
 dol_include_once('/adherentsplus/class/adherent.class.php');
 dol_include_once('/adherentsplus/class/adherent_type.class.php');
 
-$langs->load("companies");
-$langs->load("members");
-$langs->load("bills");
+// Load translation files required by the page
+$langs->loadLangs(array("companies","members","bills"));
 
 $action=GETPOST('action','alpha');
 $id=GETPOST('id','int');
