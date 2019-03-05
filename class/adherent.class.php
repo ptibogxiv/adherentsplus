@@ -67,21 +67,59 @@ class AdherentPlus extends CommonObject
 	var $state;                 // Label of department
 
 	var $email;
-	var $skype;
-	var $phone;
-	var $phone_perso;
-	var $phone_mobile;
+    /**
+     * @var string skype account
+     */
+    public $skype;
 
-	var $morphy;
-	var $public;
-	var $statut;			// -1:brouillon, 0:resilie, >=1:valide,paye
-	var $photo;
+    /**
+     * @var string twitter account
+     */
+    public $twitter;
 
-	var $datec;
-	var $datem;
+    /**
+     * @var string facebook account
+     */
+	public $facebook;
+    /**
+     * @var string Phone number
+     */
+	public $phone;
+
+    /**
+     * @var string Private Phone number
+     */
+	public $phone_perso;
+
+    /**
+     * @var string Mobile phone number
+     */
+	public $phone_mobile;
+
+    /**
+     * @var string Fax number
+     */
+    public $fax;
+
+    /**
+     * @var string Function
+     */
+    public $poste;
+
+	public $morphy;
+	public $public;
+
+    // -1:brouillon, 0:resilie, >=1:valide,paye
+    // def in common object
+    //public $statut;
+
+    public $photo;
+
+	public $datec;
+	public $datem;
+	public $datevalid;
+  
 	var $datefin;
-
-	var $datevalid;
 
   var $datecommitment;
 	var $birth;
@@ -529,6 +567,8 @@ class AdherentPlus extends CommonObject
 		$sql.= ", state_id = ".($this->state_id>0?$this->db->escape($this->state_id):"null");
 		$sql.= ", email = '".$this->db->escape($this->email)."'";
 		$sql.= ", skype = '".$this->db->escape($this->skype)."'";
+		$sql.= ", twitter = '".$this->db->escape($this->twitter)."'";
+		$sql.= ", facebook = '".$this->db->escape($this->facebook)."'";
 		$sql.= ", phone = ".($this->phone?"'".$this->db->escape($this->phone)."'":"null");
 		$sql.= ", phone_perso = ".($this->phone_perso?"'".$this->db->escape($this->phone_perso)."'":"null");
 		$sql.= ", phone_mobile = ".($this->phone_mobile?"'".$this->db->escape($this->phone_mobile)."'":"null");
@@ -644,6 +684,8 @@ class AdherentPlus extends CommonObject
             
 						$luser->email=$this->email;
 						$luser->skype=$this->skype;
+						$luser->twitter=$this->twitter;
+						$luser->facebook=$this->facebook;
 						$luser->office_phone=$this->phone;
 						$luser->user_mobile=$this->phone_mobile;
 
@@ -694,6 +736,8 @@ class AdherentPlus extends CommonObject
 						$lthirdparty->town=$this->town;
 						$lthirdparty->email=$this->email;
 						$lthirdparty->skype=$this->skype;
+						$lthirdparty->twitter=$this->twitter;
+						$lthirdparty->facebook=$this->facebook;
 						$lthirdparty->phone=$this->phone;
 						$lthirdparty->state_id=$this->state_id;
 						$lthirdparty->country_id=$this->country_id;
@@ -1270,7 +1314,7 @@ class AdherentPlus extends CommonObject
 
 		$sql = "SELECT d.rowid, d.ref, d.ref_ext, d.civility as civility_id, d.firstname, d.lastname, d.societe as company, d.fk_soc, d.fk_parent, d.statut, d.public, d.address, d.zip, d.town, d.note_private,";
 		$sql.= " d.note_public,";
-		$sql.= " d.email, d.skype, d.phone, d.phone_perso, d.phone_mobile, d.login, d.pass, d.pass_crypted,";
+		$sql.= " d.email, d.skype, d.twitter, d.facebook, d.phone, d.phone_perso, d.phone_mobile, d.login, d.pass, d.pass_crypted,";
 		$sql.= " d.photo, d.fk_adherent_type, d.morphy, d.entity,";
 		$sql.= " d.datec as datec,";
 		$sql.= " d.tms as datem,";
@@ -1344,7 +1388,10 @@ class AdherentPlus extends CommonObject
 				$this->phone_perso		= $obj->phone_perso;
 				$this->phone_mobile		= $obj->phone_mobile;
 				$this->email			= $obj->email;
+        
 				$this->skype			= $obj->skype;
+				$this->twitter			= $obj->twitter;
+				$this->facebook			= $obj->facebook;
 
 				$this->photo			= $obj->photo;
 				$this->statut			= $obj->statut;

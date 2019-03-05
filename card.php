@@ -305,38 +305,40 @@ if (empty($reshook))
 			$object->oldcopy = clone $object;
 
 			// Change values
-			$object->civility_id = trim($_POST["civility_id"]);
-			$object->firstname   = trim($_POST["firstname"]);
-			$object->lastname    = trim($_POST["lastname"]);
-			$object->login       = trim($_POST["login"]);
-			$object->pass        = trim($_POST["pass"]);
+			$object->civility_id = trim(GETPOST("civility_id",'alpha'));
+			$object->firstname   = trim(GETPOST("firstname",'alpha'));
+			$object->lastname    = trim(GETPOST("lastname",'alpha'));
+			$object->login       = trim(GETPOST("login",'alpha'));
+			$object->pass        = trim(GETPOST("pass",'alpha'));
 
-			$object->societe     = trim($_POST["societe"]);
-			$object->company     = trim($_POST["societe"]);
+			$object->societe     = trim(GETPOST("societe",'alpha'));
+			$object->company     = trim(GETPOST("societe",'alpha'));
 
-			$object->address     = trim($_POST["address"]);
-			$object->zip         = trim($_POST["zipcode"]);
-			$object->town        = trim($_POST["town"]);
-			$object->state_id    = $_POST["state_id"];
-			$object->country_id  = $_POST["country_id"];
+			$object->address     = trim(GETPOST("address",'alpha'));
+			$object->zip         = trim(GETPOST("zipcode",'alpha'));
+			$object->town        = trim(GETPOST("town",'alpha'));
+			$object->state_id    = GETPOST("state_id",'int');
+			$object->country_id  = GETPOST("country_id",'int');
 
-			$object->phone       = trim($_POST["phone"]);
-			$object->phone_perso = trim($_POST["phone_perso"]);
-			$object->phone_mobile= trim($_POST["phone_mobile"]);
-			$object->email       = trim($_POST["member_email"]);
-			$object->skype       = trim($_POST["skype"]);
+			$object->phone       = trim(GETPOST("phone",'alpha'));
+			$object->phone_perso = trim(GETPOST("phone_perso",'alpha'));
+			$object->phone_mobile= trim(GETPOST("phone_mobile",'alpha'));
+			$object->email       = preg_replace('/\s+/', '', GETPOST("member_email",'alpha'));
+			$object->skype       = trim(GETPOST("skype",'alpha'));
+			$object->twitter     = trim(GETPOST("twitter",'alpha'));
+			$object->facebook    = trim(GETPOST("facebook",'alpha'));
 			$object->birth       = $birthdate;
 
-			$object->typeid      = $_POST["typeid"];
-			//$object->note        = trim($_POST["comment"]);
-			$object->morphy      = $_POST["morphy"];
+			$object->typeid      = GETPOST("typeid",'int');
+			//$object->note        = trim(GETPOST("comment","alpha"));
+			$object->morphy      = GETPOST("morphy",'alpha');
 
 			if (GETPOST('deletephoto')) $object->photo='';
 			elseif (! empty($_FILES['photo']['name'])) $object->photo  = dol_sanitizeFileName($_FILES['photo']['name']);
 
 			// Get status and public property
-			$object->statut      = $_POST["statut"];
-			$object->public      = $_POST["public"];
+			$object->statut      = GETPOST("statut",'alpha');
+			$object->public      = GETPOST("public",'alpha');
 
 			// Fill array 'array_options' with data from add form
 			$ret = $extrafields->setOptionalsFromPost($extralabels,$object);
@@ -452,32 +454,34 @@ if (empty($reshook))
 			$datesubscription=dol_mktime(12, 0, 0, $_POST["remonth"], $_POST["reday"], $_POST["reyear"]);
 		}
 
-		$typeid=$_POST["typeid"];
-		$civility_id=$_POST["civility_id"];
-		$lastname=$_POST["lastname"];
-		$firstname=$_POST["firstname"];
-		$societe=$_POST["societe"];
-		$address=$_POST["address"];
-		$zip=$_POST["zipcode"];
-		$town=$_POST["town"];
-		$state_id=$_POST["state_id"];
-		$country_id=$_POST["country_id"];
+		$typeid=GETPOST("typeid",'int');
+		$civility_id=GETPOST("civility_id",'alpha');
+		$lastname=GETPOST("lastname",'alpha');
+		$firstname=GETPOST("firstname",'alpha');
+		$societe=GETPOST("societe",'alpha');
+		$address=GETPOST("address",'alpha');
+		$zip=GETPOST("zipcode",'alpha');
+		$town=GETPOST("town",'alpha');
+		$state_id=GETPOST("state_id",'int');
+		$country_id=GETPOST("country_id",'int');
 
-		$phone=$_POST["phone"];
-		$phone_perso=$_POST["phone_perso"];
-		$phone_mobile=$_POST["phone_mobile"];
-		$skype=$_POST["member_skype"];
-		$email=$_POST["member_email"];
-		$login=$_POST["member_login"];
-		$pass=$_POST["password"];
-		$photo=$_POST["photo"];
-		//$comment=$_POST["comment"];
-		$morphy=$_POST["morphy"];
-		$subscription=$_POST["subscription"];
-		$public=$_POST["public"];
+		$phone=GETPOST("phone",'alpha');
+		$phone_perso=GETPOST("phone_perso",'alpha');
+		$phone_mobile=GETPOST("phone_mobile",'alpha');
+		$skype=GETPOST("member_skype",'alpha');
+		$twitter=GETPOST("member_twitter",'alpha');
+		$facebook=GETPOST("member_facebook",'alpha');
+		$email=preg_replace('/\s+/', '', GETPOST("member_email",'alpha'));
+		$login=GETPOST("member_login",'alpha');
+		$pass=GETPOST("password",'alpha');
+		$photo=GETPOST("photo",'alpha');
+		//$comment=GETPOST("comment",'none');
+		$morphy=GETPOST("morphy",'alpha');
+		$subscription=GETPOST("subscription",'alpha');
+		$public=GETPOST("public",'alpha');
 
-		$userid=$_POST["userid"];
-		$socid=$_POST["socid"];
+		$userid=GETPOST("userid",'int');
+		$socid=GETPOST("socid",'int');
 
 		$object->civility_id = $civility_id;
 		$object->firstname   = $firstname;
@@ -491,7 +495,11 @@ if (empty($reshook))
 		$object->phone       = $phone;
 		$object->phone_perso = $phone_perso;
 		$object->phone_mobile= $phone_mobile;
+
 		$object->skype       = $skype;
+		$object->twitter     = $twitter;
+		$object->facebook    = $facebook;
+
 		$object->email       = $email;
 		$object->login       = $login;
 		$object->pass        = $pass;
@@ -932,9 +940,21 @@ else
 		print '<TR><TD>'.$langs->trans("PhoneMobile").'</TD><TD><INPUT type="text" name="phone_mobile" size="20" value="'.(GETPOST('phone_mobile','alpha')?GETPOST('phone_mobile','alpha'):$object->phone_mobile).'"></TD></TR>';
 
 	    // Skype
-	    if (! empty($conf->skype->enabled))
+	    if (! empty($conf->socialnetworks->enabled))
 	    {
-			print '<TR><TD>'.$langs->trans("Skype").'</TD><TD><INPUT type="text" name="member_skype" size="40" value="'.(GETPOST('member_skype','alpha')?GETPOST('member_skype','alpha'):$object->skype).'"></TD></TR>';
+			print '<tr><td>'.$langs->trans("Skype").'</td><td><input type="text" name="member_skype" size="40" value="'.(GETPOST('member_skype','alpha')?GETPOST('member_skype','alpha'):$object->skype).'"></td></tr>';
+	    }
+
+	    // Twitter
+	    if (! empty($conf->socialnetworks->enabled))
+	    {
+	    	print '<tr><td>'.$langs->trans("Twitter").'</td><td><input type="text" name="member_twitter" size="40" value="'.(GETPOST('member_twitter','alpha')?GETPOST('member_twitter','alpha'):$object->twitter).'"></td></tr>';
+	    }
+
+	    // Facebook
+	    if (! empty($conf->socialnetworks->enabled))
+	    {
+	    	print '<tr><td>'.$langs->trans("Facebook").'</td><td><input type="text" name="member_facebook" size="40" value="'.(GETPOST('member_facebook','alpha')?GETPOST('member_facebook','alpha'):$object->facebook).'"></td></tr>';
 	    }
 
 		// Birthday
@@ -1064,7 +1084,7 @@ else
 		print '<TABLE class="border" width="100%">';
 
 		// Ref
-		print '<TR><TD class="titlefieldcreate">'.$langs->trans("License").'</TD><TD class="valeur"><INPUT type="text" name="ref" size="35" value="'.(isset($_POST["ref"])?GETPOST("ref",'',2):$object->ref).'"></TD></TR>';
+		print '<TR><TD class="titlefieldcreate">'.$langs->trans("Ref").'</TD><TD class="valeur">'.$object->ref.'</TD></TR>';
 
 		// Login
 		if (empty($conf->global->ADHERENT_LOGIN_NOT_REQUIRED))
@@ -1169,9 +1189,21 @@ else
 		print '<TR><TD>'.$langs->trans("PhoneMobile").'</TD><TD><INPUT type="text" name="phone_mobile" size="20" value="'.(isset($_POST["phone_mobile"])?GETPOST("phone_mobile"):$object->phone_mobile).'"></TD></TR>';
 
 	    // Skype
-	    if (! empty($conf->skype->enabled))
+	    if (! empty($conf->socialnetworks->enabled))
 	    {
-			    print '<TR><TD>'.$langs->trans("Skype").'</TD><TD><INPUT type="text" name="skype" class="minwidth100" value="'.(isset($_POST["skype"])?GETPOST("skype"):$object->skype).'"></TD></TR>';
+			print '<tr><td>'.$langs->trans("Skype").'</td><td><input type="text" name="skype" class="minwidth100" value="'.(isset($_POST["skype"])?GETPOST("skype"):$object->skype).'"></td></tr>';
+	    }
+
+	    // Twitter
+	    if (! empty($conf->socialnetworks->enabled))
+	    {
+	    	print '<tr><td>'.$langs->trans("Twitter").'</td><td><input type="text" name="twitter" class="minwidth100" value="'.(isset($_POST["twitter"])?GETPOST("twitter"):$object->twitter).'"></td></tr>';
+	    }
+
+	    // Facebook
+	    if (! empty($conf->socialnetworks->enabled))
+	    {
+	    	print '<tr><td>'.$langs->trans("Facebook").'</td><td><input type="text" name="facebook" class="minwidth100" value="'.(isset($_POST["facebook"])?GETPOST("facebook"):$object->facebook).'"></td></tr>';
 	    }
 
 		// Birthday
