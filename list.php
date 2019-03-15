@@ -59,23 +59,24 @@ $toselect = GETPOST('toselect', 'array');
 // Security check
 $result=restrictedArea($user,'adherent');
 
-$filter=GETPOST("filter");
-$statut=GETPOST("statut");
-$search=GETPOST("search");
-$search_ref=GETPOST("search_ref");
-$search_lastname=GETPOST("search_lastname");
-$search_firstname=GETPOST("search_firstname");
-$search_login=GETPOST("search_login");
-$search_address=GETPOST("search_address");
-$search_zip=GETPOST("search_zip");
-$search_town=GETPOST("search_town");
-$search_state=GETPOST("search_state");
-$search_country=GETPOST("search_country");
-$search_phone=GETPOST("search_phone");
-$search_phone_perso=GETPOST("search_phone_perso");
-$search_phone_mobile=GETPOST("search_phone_mobile");
-$search_type=GETPOST("search_type");
-$search_email=GETPOST("search_email");
+$filter=GETPOST("filter",'alpha');
+$statut=GETPOST("statut",'intcomma');
+$search=GETPOST("search",'alpha');
+$search_ref=GETPOST("search_ref",'alpha');
+$search_lastname=GETPOST("search_lastname",'alpha');
+$search_firstname=GETPOST("search_firstname",'alpha');
+$search_civility=GETPOST("search_civility",'alpha');
+$search_login=GETPOST("search_login",'alpha');
+$search_address=GETPOST("search_address",'alpha');
+$search_zip=GETPOST("search_zip",'alpha');
+$search_town=GETPOST("search_town",'alpha');
+$search_state=GETPOST("search_state",'alpha');
+$search_country=GETPOST("search_country",'alpha');
+$search_phone=GETPOST("search_phone",'alpha');
+$search_phone_perso=GETPOST("search_phone_perso",'alpha');
+$search_phone_mobile=GETPOST("search_phone_mobile",'alpha');
+$search_type=GETPOST("search_type",'alpha');
+$search_email=GETPOST("search_email",'alpha');
 $search_categ = GETPOST("search_categ",'int');
 $catid        = GETPOST("catid",'int');
 $optioncss = GETPOST('optioncss','alpha');
@@ -95,13 +96,15 @@ $pagenext = $page + 1;
 if (! $sortorder) { $sortorder=($filter=='outofdate'?"DESC":"ASC"); }
 if (! $sortfield) { $sortfield=($filter=='outofdate'?"d.datefin":"d.lastname"); }
 
+$object = new AdherentPlus($db);
+
 // Initialize technical object to manage hooks of page. Note that conf->hooks_modules contains array of hook context
 $hookmanager->initHooks(array('memberlist'));
 $extrafields = new ExtraFields($db);
 
 // fetch optionals attributes and labels
 $extralabels = $extrafields->fetch_name_optionals_label('adherent');
-$search_array_options=$extrafields->getOptionalsFromPost($extralabels,'','search_');
+$search_array_options=$extrafields->getOptionalsFromPost($object->table_element,'','search_');
 
 // List of fields to search into when doing a "search in all"
 $fieldstosearchall = array(
@@ -121,6 +124,7 @@ $fieldstosearchall = array(
 if($db->type == 'pgsql') unset($fieldstosearchall['d.rowid']);
 $arrayfields=array(
 	'd.ref'=>array('label'=>$langs->trans("Ref"), 'checked'=>1),
+	'd.civility'=>array('label'=>$langs->trans("Civility"), 'checked'=>0),
 	'd.lastname'=>array('label'=>$langs->trans("Lastname"), 'checked'=>1),
 	'd.firstname'=>array('label'=>$langs->trans("Firstname"), 'checked'=>1),
 	'd.company'=>array('label'=>$langs->trans("Company"), 'checked'=>1),
@@ -137,7 +141,7 @@ $arrayfields=array(
 	'state.nom'=>array('label'=>$langs->trans("State"), 'checked'=>0),
 	'country.code_iso'=>array('label'=>$langs->trans("Country"), 'checked'=>0),
 	/*'d.note_public'=>array('label'=>$langs->trans("NotePublic"), 'checked'=>0),
-    'd.note_private'=>array('label'=>$langs->trans("NotePrivate"), 'checked'=>0),*/
+	'd.note_private'=>array('label'=>$langs->trans("NotePrivate"), 'checked'=>0),*/
 	'd.datefin'=>array('label'=>$langs->trans("EndSubscription"), 'checked'=>1, 'position'=>500),
 	'd.datec'=>array('label'=>$langs->trans("DateCreation"), 'checked'=>0, 'position'=>500),
 	'd.tms'=>array('label'=>$langs->trans("DateModificationShort"), 'checked'=>0, 'position'=>500),
@@ -176,6 +180,7 @@ if (empty($reshook))
 		$search_ref="";
 		$search_lastname="";
 		$search_firstname="";
+		$search_civility="";
 		$search_login="";
 		$search_company="";
 		$search_type="";
@@ -214,12 +219,12 @@ if (empty($reshook))
 $form=new Form($db);
 $formother=new FormOther($db);
 $membertypestatic=new AdherentTypePlus($db);
-$memberstatic=new Adherentplus($db);
+$memberstatic=new AdherentPlus($db);
 
 $now=dol_now();
 
 $sql = "SELECT d.rowid, d.login, d.lastname, d.firstname, d.societe as company, d.fk_soc,";
-$sql.= " d.datefin, d.address, d.zip, d.town, d.state_id, d.country,";
+$sql.= " d.civility, d.datefin, d.address, d.zip, d.town, d.state_id, d.country,";
 $sql.= " d.email, d.phone, d.phone_perso, d.phone_mobile, d.skype, d.birth, d.public, d.photo,";
 $sql.= " d.fk_adherent_type as type_id, d.morphy, d.statut, d.datec as date_creation, d.tms as date_update,";
 $sql.= " t.libelle as type, t.subscription,";
@@ -250,6 +255,7 @@ if ($search_ref)
 	if (is_numeric($search_ref)) $sql.= " AND (d.rowid = ".$db->escape($search_ref).")";
 	else $sql.=" AND 1 = 2";    // Always wrong
 }
+if ($search_civility) $sql.= natural_search("d.civility", $search_civility);
 if ($search_firstname) $sql.= natural_search("d.firstname", $search_firstname);
 if ($search_lastname) $sql.= natural_search(array("d.firstname", "d.lastname", "d.societe"), $search_lastname);
 if ($search_login) $sql.= natural_search("d.login", $search_login);
@@ -278,6 +284,11 @@ if (empty($conf->global->MAIN_DISABLE_FULL_SCANLIST))
 	$resql = $db->query($sql);
 	if ($resql) $nbtotalofrecords = $db->num_rows($resql);
 	else dol_print_error($db);
+	if (($page * $limit) > $nbtotalofrecords)	// if total resultset is smaller then paging size (filtering), goto and load page 0
+	{
+		$page = 0;
+		$offset = 0;
+	}
 }
 // Add limit
 $sql.= $db->plimit($limit+1, $offset);
@@ -305,7 +316,7 @@ if ($num == 1 && ! empty($conf->global->MAIN_SEARCH_DIRECT_OPEN_IF_ONLY_ONE) && 
 llxHeader('',$langs->trans("Member"),'EN:Module_Foundations|FR:Module_Adh&eacute;rents|ES:M&oacute;dulo_Miembros');
 
 $titre=$langs->trans("MembersList");
-if (isset($_GET["statut"]))
+if (GETPOSTISSET("statut"))
 {
 	if ($statut == '-1,1') { $titre=$langs->trans("MembersListQualified"); }
 	if ($statut == '-1')   { $titre=$langs->trans("MembersListToValid"); }
@@ -333,6 +344,7 @@ if ($sall != "") $param.="&sall=".urlencode($sall);
 if ($statut != "") $param.="&statut=".urlencode($statut);
 if ($search_ref)   $param.="&search_ref=".urlencode($search_ref);
 if ($search_nom)   $param.="&search_nom=".urlencode($search_nom);
+if ($search_civility) $param.="&search_civility=".urlencode($search_civility);
 if ($search_firstname) $param.="&search_firstname=".urlencode($search_firstname);
 if ($search_lastname)  $param.="&search_lastname=".urlencode($search_lastname);
 if ($search_login)   $param.="&search_login=".urlencode($search_login);
@@ -354,12 +366,20 @@ include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_search_param.tpl.php';
 
 // List of mass actions available
 $arrayofmassactions =  array(
-//    'presend'=>$langs->trans("SendByMail"),
-//    'builddoc'=>$langs->trans("PDFMerge"),
+	//'presend'=>$langs->trans("SendByMail"),
+	//'builddoc'=>$langs->trans("PDFMerge"),
 );
 if ($user->rights->adherent->supprimer) $arrayofmassactions['predelete']=$langs->trans("Delete");
 if (in_array($massaction, array('presend','predelete'))) $arrayofmassactions=array();
 $massactionbutton=$form->selectMassAction('', $arrayofmassactions);
+
+$newcardbutton='';
+if ($user->rights->adherent->creer)
+{
+	$newcardbutton='<a class="butActionNew" href="'.DOL_URL_ROOT.'/adherents/card.php?action=create"><span class="valignmiddle">'.$langs->trans('NewMember').'</span>';
+	$newcardbutton.= '<span class="fa fa-plus-circle valignmiddle"></span>';
+	$newcardbutton.= '</a>';
+}
 
 print '<form method="POST" id="searchFormList" action="'.$_SERVER["PHP_SELF"].'">';
 if ($optioncss != '') print '<input type="hidden" name="optioncss" value="'.$optioncss.'">';
@@ -371,18 +391,18 @@ print '<input type="hidden" name="sortorder" value="'.$sortorder.'">';
 print '<input type="hidden" name="page" value="'.$page.'">';
 print '<input type="hidden" name="contextpage" value="'.$contextpage.'">';
 
-print_barre_liste($titre, $page, $_SERVER["PHP_SELF"], $param, $sortfield, $sortorder, $massactionbutton, $num, $nbtotalofrecords, 'title_generic.png', 0, '', '', $limit);
+print_barre_liste($titre, $page, $_SERVER["PHP_SELF"], $param, $sortfield, $sortorder, $massactionbutton, $num, $nbtotalofrecords, 'title_generic.png', 0, $newcardbutton, '', $limit);
 
 $topicmail="Information";
 $modelmail="member";
-$objecttmp=new Adherentplus($db);
+$objecttmp=new AdherentPlus($db);
 $trackid='mem'.$object->id;
 include DOL_DOCUMENT_ROOT.'/core/tpl/massactions_pre.tpl.php';
 
 if ($sall)
 {
 	foreach($fieldstosearchall as $key => $val) $fieldstosearchall[$key]=$langs->trans($val);
-	print $langs->trans("FilterOnInto", $sall) . implode(', ',$fieldstosearchall);
+	print '<div class="divsearchfieldfilter">'.$langs->trans("FilterOnInto", $sall) . join(', ',$fieldstosearchall).'</div>';
 }
 
 // Filter on categories
@@ -430,37 +450,36 @@ if (! empty($arrayfields['d.ref']['checked']))
 	print '<input class="flat maxwidth50" type="text" name="search_ref" value="'.dol_escape_htmltag($search_ref).'">';
 	print '</td>';
 }
-
+if (! empty($arrayfields['d.civility']['checked']))
+{
+	print '<td class="liste_titre" align="left">';
+	print '<input class="flat maxwidth25" type="text" name="search_civility" value="'.dol_escape_htmltag($search_civility).'"></td>';
+}
 if (! empty($arrayfields['d.firstname']['checked']))
 {
 	print '<td class="liste_titre" align="left">';
 	print '<input class="flat maxwidth50" type="text" name="search_firstname" value="'.dol_escape_htmltag($search_firstname).'"></td>';
 }
-
 if (! empty($arrayfields['d.lastname']['checked']))
 {
 	print '<td class="liste_titre" align="left">';
 	print '<input class="flat maxwidth50" type="text" name="search_lastname" value="'.dol_escape_htmltag($search_lastname).'"></td>';
 }
-
 if (! empty($arrayfields['d.company']['checked']))
 {
 	print '<td class="liste_titre" align="left">';
 	print '<input class="flat maxwidth50" type="text" name="search_company" value="'.dol_escape_htmltag($search_company).'"></td>';
 }
-
 if (! empty($arrayfields['d.login']['checked']))
 {
 	print '<td class="liste_titre" align="left">';
 	print '<input class="flat maxwidth50" type="text" name="search_login" value="'.dol_escape_htmltag($search_login).'"></td>';
 }
-
 if (! empty($arrayfields['d.morphy']['checked']))
 {
 	print '<td class="liste_titre" align="left">';
 	print '</td>';
 }
-
 if (! empty($arrayfields['t.libelle']['checked']))
 {
 	print '<td class="liste_titre">';
@@ -571,6 +590,7 @@ print "</tr>\n";
 print '<tr class="liste_titre">';
 if (! empty($conf->global->MAIN_SHOW_TECHNICAL_ID))       print_liste_field_titre("ID",$_SERVER["PHP_SELF"],'','',$param,'align="center"',$sortfield,$sortorder);
 if (! empty($arrayfields['d.ref']['checked']))            print_liste_field_titre($arrayfields['d.ref']['label'],$_SERVER["PHP_SELF"],'d.rowid','',$param,'',$sortfield,$sortorder);
+if (! empty($arrayfields['d.civility']['checked']))       print_liste_field_titre($arrayfields['d.civility']['label'],$_SERVER["PHP_SELF"],'d.civility','',$param,'',$sortfield,$sortorder);
 if (! empty($arrayfields['d.firstname']['checked']))      print_liste_field_titre($arrayfields['d.firstname']['label'],$_SERVER["PHP_SELF"],'d.firstname','',$param,'',$sortfield,$sortorder);
 if (! empty($arrayfields['d.lastname']['checked']))       print_liste_field_titre($arrayfields['d.lastname']['label'],$_SERVER["PHP_SELF"],'d.lastname','',$param,'',$sortfield,$sortorder);
 if (! empty($arrayfields['d.company']['checked']))        print_liste_field_titre($arrayfields['d.company']['label'],$_SERVER["PHP_SELF"],'d.societe','',$param,'',$sortfield,$sortorder);
@@ -580,7 +600,7 @@ if (! empty($arrayfields['t.libelle']['checked']))        print_liste_field_titr
 if (! empty($arrayfields['d.address']['checked']))        print_liste_field_titre($arrayfields['d.address']['label'],$_SERVER["PHP_SELF"],'d.address','',$param,'',$sortfield,$sortorder);
 if (! empty($arrayfields['d.zip']['checked']))            print_liste_field_titre($arrayfields['d.zip']['label'],$_SERVER["PHP_SELF"],'d.zip','',$param,'',$sortfield,$sortorder);
 if (! empty($arrayfields['d.town']['checked']))           print_liste_field_titre($arrayfields['d.town']['label'],$_SERVER["PHP_SELF"],'d.town','',$param,'',$sortfield,$sortorder);
-if (! empty($arrayfields['state.nom']['checked']))        print_liste_field_titre($arrayfields['state.town']['label'],$_SERVER["PHP_SELF"],"state.nom","",$param,'',$sortfield,$sortorder);
+if (! empty($arrayfields['state.nom']['checked']))        print_liste_field_titre($arrayfields['state.nom']['label'],$_SERVER["PHP_SELF"],"state.nom","",$param,'',$sortfield,$sortorder);
 if (! empty($arrayfields['country.code_iso']['checked'])) print_liste_field_titre($arrayfields['country.code_iso']['label'],$_SERVER["PHP_SELF"],"country.code_iso","",$param,'align="center"',$sortfield,$sortorder);
 if (! empty($arrayfields['d.phone']['checked']))          print_liste_field_titre($arrayfields['d.phone']['label'],$_SERVER["PHP_SELF"],'d.phone','',$param,'',$sortfield,$sortorder);
 if (! empty($arrayfields['d.phone_perso']['checked']))    print_liste_field_titre($arrayfields['d.phone_perso']['label'],$_SERVER["PHP_SELF"],'d.phone_perso','',$param,'',$sortfield,$sortorder);
@@ -591,7 +611,7 @@ if (! empty($arrayfields['d.datefin']['checked']))        print_liste_field_titr
 include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_search_title.tpl.php';
 
 // Hook fields
-$parameters=array('arrayfields'=>$arrayfields);
+$parameters=array('arrayfields'=>$arrayfields,'param'=>$param,'sortfield'=>$sortfield,'sortorder'=>$sortorder);
 $reshook=$hookmanager->executeHooks('printFieldListTitle',$parameters);    // Note that $action and $object may have been modified by hook
 print $hookmanager->resPrint;
 if (! empty($arrayfields['d.datec']['checked']))     print_liste_field_titre($arrayfields['d.datec']['label'],$_SERVER["PHP_SELF"],"d.datec","",$param,'align="center" class="nowrap"',$sortfield,$sortorder);
@@ -601,6 +621,7 @@ print_liste_field_titre($selectedfields, $_SERVER["PHP_SELF"],"",'','','align="c
 print "</tr>\n";
 
 $i = 0;
+$totalarray=array();
 while ($i < min($num, $limit))
 {
 	$obj = $db->fetch_object($resql);
@@ -608,9 +629,9 @@ while ($i < min($num, $limit))
 	$datefin=$db->jdate($obj->datefin);
 	$memberstatic->id=$obj->rowid;
 	$memberstatic->ref=$obj->rowid;
+	$memberstatic->civility_id=$obj->civility;
 	$memberstatic->lastname=$obj->lastname;
 	$memberstatic->firstname=$obj->firstname;
-	$memberstatic->societe=$obj->company;
 	$memberstatic->statut=$obj->statut;
 	$memberstatic->datefin= $datefin;
 	$memberstatic->socid = $obj->fk_soc;
@@ -622,20 +643,31 @@ while ($i < min($num, $limit))
 	} else {
 		$companyname=$obj->company;
 	}
+	$memberstatic->societe = $companyname;
 
 	print '<tr class="oddeven">';
 
 	if (! empty($conf->global->MAIN_SHOW_TECHNICAL_ID))
 	{
 		print '<td align="center">'.$obj->rowid.'</td>';
+		if (! $i) $totalarray['nbfield']++;
 	}
 
 	// Ref
 	if (! empty($arrayfields['d.ref']['checked']))
 	{
-   		print "<td>";
+		print "<td>";
 		print $memberstatic->getNomUrl(-1, 0, 'card', 'ref');
 		print "</td>\n";
+		if (! $i) $totalarray['nbfield']++;
+	}
+	// Civility
+	if (! empty($arrayfields['d.civility']['checked']))
+	{
+		print "<td>";
+		print $obj->civility;
+		print "</td>\n";
+		if (! $i) $totalarray['nbfield']++;
 	}
 	// Firstname
 	if (! empty($arrayfields['d.firstname']['checked']))
@@ -643,6 +675,7 @@ while ($i < min($num, $limit))
 		print "<td>";
 		print $obj->firstname;
 		print "</td>\n";
+		if (! $i) $totalarray['nbfield']++;
 	}
 	// Lastname
 	if (! empty($arrayfields['d.lastname']['checked']))
@@ -650,6 +683,7 @@ while ($i < min($num, $limit))
 		print "<td>";
 		print $obj->lastname;
 		print "</td>\n";
+		if (! $i) $totalarray['nbfield']++;
 	}
 	// Company
 	if (! empty($arrayfields['d.company']['checked']))
@@ -661,12 +695,14 @@ while ($i < min($num, $limit))
 	// Login
 	if (! empty($arrayfields['d.login']['checked']))
 	{
-	   print "<td>".$obj->login."</td>\n";
+		print "<td>".$obj->login."</td>\n";
+		if (! $i) $totalarray['nbfield']++;
 	}
 	// Moral/Physique
 	if (! empty($arrayfields['d.morphy']['checked']))
 	{
-	   print "<td>".$memberstatic->getmorphylib($obj->morphy)."</td>\n";
+		print "<td>".$memberstatic->getmorphylib($obj->morphy)."</td>\n";
+		if (! $i) $totalarray['nbfield']++;
 	}
 	// Type label
 	if (! empty($arrayfields['t.libelle']['checked']))
@@ -676,6 +712,7 @@ while ($i < min($num, $limit))
 		print '<td class="nowrap">';
 		print $membertypestatic->getNomUrl(1,32);
 		print '</td>';
+		if (! $i) $totalarray['nbfield']++;
 	}
 	// Address
 	if (! empty($arrayfields['d.address']['checked']))
@@ -683,6 +720,7 @@ while ($i < min($num, $limit))
 		print '<td class="nocellnopadd">';
 		print $obj->address;
 		print '</td>';
+		if (! $i) $totalarray['nbfield']++;
 	}
 	// Zip
 	if (! empty($arrayfields['d.zip']['checked']))
@@ -818,6 +856,36 @@ while ($i < min($num, $limit))
 	$i++;
 }
 
+// Show total line
+if (isset($totalarray['pos']))
+{
+	print '<tr class="liste_total">';
+	$i=0;
+	while ($i < $totalarray['nbfield'])
+	{
+		$i++;
+		if (! empty($totalarray['pos'][$i]))  print '<td align="right">'.price($totalarray['val'][$totalarray['pos'][$i]]).'</td>';
+		else
+		{
+			if ($i == 1)
+			{
+				if ($num < $limit) print '<td align="left">'.$langs->trans("Total").'</td>';
+				else print '<td align="left">'.$langs->trans("Totalforthispage").'</td>';
+			}
+			else print '<td></td>';
+		}
+	}
+	print '</tr>';
+}
+
+// If no record found
+if ($num == 0)
+{
+	$colspan=1;
+	foreach($arrayfields as $key => $val) { if (! empty($val['checked'])) $colspan++; }
+	print '<tr><td colspan="'.$colspan.'" class="opacitymedium">'.$langs->trans("NoRecordFound").'</td></tr>';
+}
+
 $db->free($resql);
 
 $parameters=array('sql' => $sql);
@@ -830,6 +898,6 @@ print '</form>';
 
 if ($num > $limit || $page) print_barre_liste('', $page, $_SERVER["PHP_SELF"], $param, $sortfield, $sortorder, '', $num, $nbtotalofrecords, 'title_generic.png', 0, '', '', $limit, 1);
 
-
+// End of page
 llxFooter();
 $db->close();
