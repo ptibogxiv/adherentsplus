@@ -69,6 +69,7 @@ class AdherentTypePlus extends CommonObject
   public $automatic_renew;
 	public $family;
   public $statut;
+  public $morphy;
     /**
 	 *	Constructor
 	 *
@@ -134,6 +135,7 @@ class AdherentTypePlus extends CommonObject
         $sql = "UPDATE ".MAIN_DB_PREFIX."adherent_type ";
         $sql.= "SET ";
         $sql.= "statut = ".$this->statut.",";
+        $sql.= "morphy = '".$this->db->escape($this->morphy) ."',";
         $sql.= "libelle = '".$this->db->escape($this->label) ."',";
         $sql.= "subscription = '".$this->subscription."',";
         $sql.= "welcome = '".$this->welcome."',";
@@ -228,7 +230,7 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
      */
     function fetch($rowid)
     {
-        $sql = "SELECT d.rowid, d.libelle as label, d.statut, d.subscription, d.welcome, d.price, d.price_level, d.automatic, d.automatic_renew, d.family, d.mail_valid, d.note, d.vote";
+        $sql = "SELECT d.rowid, d.libelle as label, d.statut, d.morphy, d.subscription, d.welcome, d.price, d.price_level, d.automatic, d.automatic_renew, d.family, d.mail_valid, d.note, d.vote";
         $sql .= " FROM ".MAIN_DB_PREFIX."adherent_type as d";
         $sql .= " WHERE d.rowid = ".$rowid;
 
@@ -249,6 +251,7 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
                 $this->label          = $obj->label;
                 $this->libelle        = $obj->label;	// For backward compatibility
                 $this->statut         = $obj->statut;
+                $this->morphy         = $obj->morphy;
                 $this->subscription   = $obj->subscription;
                 $this->automatic      = $obj->automatic;
                 $this->automatic_renew= $obj->automatic_renew;
@@ -320,7 +323,7 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
 
         $adherenttypes = array();
 
-        $sql = "SELECT rowid, libelle as label, welcome, price, automatic, automatic_renew, use_default, note";
+        $sql = "SELECT rowid, libelle as label, welcome, price, morphy, automatic, automatic_renew, use_default, note";
         $sql.= " FROM ".MAIN_DB_PREFIX."adherent_type";
 	      $sql.= " WHERE entity IN (".getEntity('adherent').")";
 
@@ -338,6 +341,7 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
                     $adherenttypes[$obj->rowid][note] = $langs->trans($obj->note);
                     $adherenttypes[$obj->rowid][label] = $langs->trans($obj->label);
                     $adherenttypes[$obj->rowid][price] = $obj->price;
+                    $adherenttypes[$obj->rowid][morphy] = $obj->morphy;
                     $adherenttypes[$obj->rowid][welcome] = $obj->welcome;
                     $adherenttypes[$obj->rowid][automatic] = $obj->automatic;
                     $adherenttypes[$obj->rowid][automatic_renew] = $obj->automatic_renew;
@@ -409,6 +413,21 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
             return $conf->global->ADHERENT_MAIL_VALID;
         }
     }
+    
+	/**
+	 *	Return translated label by the nature of a adherent (physical or moral)
+	 *
+	 *	@param	string		$morphy		Nature of the adherent (physical or moral)
+	 *	@return	string					Label
+	 */
+	function getmorphylib($morphy='')
+	{
+		global $langs;
+		if ($morphy == 'phy') { return $langs->trans("Physical"); }
+		elseif ($morphy == 'mor') { return $langs->trans("Moral"); } 
+    else return $langs->trans("Physical & Morale");
+		//return $morphy;
+	}    
 
     /**
      *     getMailOnSubscription

@@ -77,6 +77,7 @@ if (! $sortfield) {  $sortfield="d.lastname"; }
 
 $label=GETPOST("label","alpha");
 $statut=GETPOST("statut","int");
+$morphy=GETPOST("morphy","alpha");
 $subscription=GETPOST("subscription","int");
 $family=GETPOST("family","int");
 $vote=GETPOST("vote","int");
@@ -127,6 +128,7 @@ if ($action == 'add' && $user->rights->adherent->configurer)
     $object->family   = (boolean) trim($family);
 		$object->label			= trim($label);
     $object->statut         = trim($statut);
+    $object->morphy         = trim($morphy);
 		$object->subscription	= (int) trim($subscription);
 		$object->note			= trim($comment);
 		$object->mail_valid		= (boolean) trim($mail_valid);
@@ -166,6 +168,7 @@ if ($action == 'update' && $user->rights->adherent->configurer)
 		$object->id             = $rowid;
 		$object->label        = trim($label);
     $object->statut         = trim($statut);
+    $object->morphy         = trim($morphy);
 		$object->subscription   = (int) trim($subscription);
 		$object->note           = trim($comment);
 		$object->mail_valid     = (boolean) trim($mail_valid);
@@ -210,7 +213,7 @@ if (! $rowid && $action != 'create' && $action != 'edit')
 {
 	//dol_fiche_head('');
 
-	$sql = "SELECT d.rowid, d.libelle as label, d.subscription, d.vote, d.welcome, d.price, d.vote, d.automatic, d.automatic_renew, d.family, d.statut";
+	$sql = "SELECT d.rowid, d.libelle as label, d.subscription, d.vote, d.welcome, d.price, d.vote, d.automatic, d.automatic_renew, d.family, d.statut, d.morphy";
 	$sql.= " FROM ".MAIN_DB_PREFIX."adherent_type as d";
 	$sql.= " WHERE d.entity IN (".getEntity('adherent').")";
 
@@ -243,6 +246,7 @@ if (! $rowid && $action != 'create' && $action != 'edit')
 		print '<tr class="liste_titre">';
 		print '<th>'.$langs->trans("Ref").'</th>';
 		print '<th>'.$langs->trans("Label").'</th>';
+    print '<th align="center">'.$langs->trans("Nature").'</th>';
     print '<th align="center">'.$langs->trans("GroupSubscription").'</th>';
 		print '<th align="center">'.$langs->trans("SubscriptionRequired").'</th>';
 		print '<th align="center">'.$langs->trans("VoteAllowed").'</th>';
@@ -258,6 +262,11 @@ if (! $rowid && $action != 'create' && $action != 'edit')
 			print '<tr class="oddeven">';
 			print '<td><a href="'.$_SERVER["PHP_SELF"].'?rowid='.$objp->rowid.'">'.img_object($langs->trans("ShowType"),'group').' '.$objp->rowid.'</a></td>';
 			print '<td><a href="'.$_SERVER["PHP_SELF"].'?rowid='.$objp->rowid.'">'.dol_escape_htmltag($objp->label).'</a></td>';
+      print '<td align="center">';
+		if ($objp->morphy == 'phy') { print $langs->trans("Physical"); }
+		elseif ($objp->morphy == 'mor') { print $langs->trans("Moral"); } 
+    else print $langs->trans("Physical & Morale");    
+      print '</td>'; //'.$objp->getmorphylib($objp->morphy).'
       print '<td align="center">'.yn($objp->family).'</td>';
 			print '<td align="center">'.yn($objp->subscription).'</td>';
 			print '<td align="center">'.yn($objp->vote).'</td>';
@@ -311,6 +320,14 @@ if ($action == 'create')
   print '<tr><td>'.$langs->trans("Status").'</td><td>';
   print $form->selectarray('statut', array('0'=>$langs->trans('ActivityCeased'),'1'=>$langs->trans('InActivity')),1);
   print '</td></tr>';
+  
+  // Morphy
+  $morphys[""] = $langs->trans("Physical & Morale");
+  $morphys["phy"] = $langs->trans("Physical");
+	$morphys["mor"] = $langs->trans("Morale");
+	print '<tr><td><span>'.$langs->trans("Nature").'</span></td><td>';
+	print $form->selectarray("morphy", $morphys, isset($_POST["morphy"])?$_POST["morphy"]:$object->morphy);
+	print "</td></tr>";
   
   print '<tr><td>'.$langs->trans("GroupSubscription").'</td><td>';
 	print $form->selectyesno("family",0,1);
@@ -402,7 +419,7 @@ if ($rowid > 0)
 
 		dol_fiche_head($head, 'card', $langs->trans("MemberType"), -1, 'group');
 
-		$linkback = '<a href="'.DOL_URL_ROOT.'/adherents/type.php">'.$langs->trans("BackToList").'</a>';
+		$linkback = '<a href="'.dol_buildpath('/adherentsplus/type.php', 1).'">'.$langs->trans("BackToList").'</a>';
 
 		dol_banner_tab($object, 'rowid', $linkback);
 
@@ -414,6 +431,10 @@ if ($rowid > 0)
     print '<tr><td class="titlefield">'.$langs->trans("Status").'</td><td>';
 if ( !empty($object->statut) ) print img_picto($langs->trans('TypeStatusActive'),'statut4').' '.$langs->trans("InActivity");
 else print img_picto($langs->trans('TypeStatusInactive'),'statut5').' '.$langs->trans("ActivityCeased");   
+		print '</tr>';
+    
+    // Morphy
+		print '<tr><td>'.$langs->trans("Nature").'</td><td class="valeur" >'.$object->getmorphylib($object->morphy).'</td>';
 		print '</tr>';
 
     print '<tr><td class="titlefield">'.$langs->trans("GroupSubscription").'</td><td>';
@@ -778,6 +799,14 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
     print '<tr><td>'.$langs->trans("Status").'</td><td>';
     print $form->selectarray('statut', array('0'=>$langs->trans('ActivityCeased'),'1'=>$langs->trans('InActivity')), $object->statut);
     print '</td></tr>';
+    
+    // Morphy
+    $morphys[""] = $langs->trans("Physical & Morale");
+    $morphys["phy"] = $langs->trans("Physical");
+    $morphys["mor"] = $langs->trans("Morale");
+    print '<tr><td><span>'.$langs->trans("Nature").'</span></td><td>';
+    print $form->selectarray("morphy", $morphys, isset($_POST["morphy"])?$_POST["morphy"]:$object->morphy);
+    print "</td></tr>";
   
     print '<tr><td>'.$langs->trans("GroupSubscription").'</td><td>';
 		print $form->selectyesno("family",$object->family,1);
