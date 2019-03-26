@@ -24,6 +24,8 @@ Pour les versions avant la V10/develop (inclus dans la V10):
 
 pour toutes versions de Dolibarr:
 
+ ALTER TABLE `llx_adherent_type` ADD COLUMN `morphy` varchar(3)   DEFAULT NULL;
+
  ALTER TABLE `llx_adherent_type` ADD COLUMN `welcome` double(24,8)   DEFAULT 0.00000000;
  
  ALTER TABLE `llx_adherent_type` ADD COLUMN `price` double(24,8)   DEFAULT 0.00000000;
