@@ -20,7 +20,7 @@ Il vous faut ajouter les champs suivants dans la base de données:
 
 Pour les versions avant la V10/develop (inclus dans la V10):
 
- ALTER TABLE llx_subscription ADD COLUMN fk_type int(11) DEFAULT NULL;
+ ALTER TABLE `llx_subscription` ADD COLUMN `fk_type` int(11) DEFAULT NULL;
 
 pour toutes versions de Dolibarr:
 
