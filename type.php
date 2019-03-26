@@ -250,8 +250,8 @@ if (! $rowid && $action != 'create' && $action != 'edit')
     print '<th align="center">'.$langs->trans("GroupSubscription").'</th>';
 		print '<th align="center">'.$langs->trans("SubscriptionRequired").'</th>';
 		print '<th align="center">'.$langs->trans("VoteAllowed").'</th>';
-    print '<th align="center">'.$langs->trans("AutoSubscription").'</th>';
-    print '<th align="center">'.$langs->trans("AutoRenew").'</th>';
+    print '<th align="center">'.$langs->trans("Validation").'</th>';
+    print '<th align="center">'.$langs->trans("Renewal").'</th>';
     print '<th align="center">'.$langs->trans("Status").'</th>';
 		print '<th>&nbsp;</th>';
 		print "</tr>\n";
@@ -270,8 +270,8 @@ if (! $rowid && $action != 'create' && $action != 'edit')
       print '<td align="center">'.yn($objp->family).'</td>';
 			print '<td align="center">'.yn($objp->subscription).'</td>';
 			print '<td align="center">'.yn($objp->vote).'</td>';
-      print '<td align="center">'.yn($objp->automatic).'</td>';
-      print '<td align="center">'.yn($objp->automatic_renew).'</td>';
+      print '<td align="center">'.am($objp->automatic).'</td>';
+      print '<td align="center">'.am($objp->automatic_renew).'</td>';
       print '<td align="center">';
 if ( !empty($objp->statut) ) print img_picto($langs->trans("InActivity"),'statut4');
 else print img_picto($langs->trans("ActivityCeased"),'statut5');     
