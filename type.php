@@ -246,13 +246,13 @@ if (! $rowid && $action != 'create' && $action != 'edit')
 		print '<tr class="liste_titre">';
 		print '<th>'.$langs->trans("Ref").'</th>';
 		print '<th>'.$langs->trans("Label").'</th>';
-    print '<th align="center">'.$langs->trans("Nature").'</th>';
-    print '<th align="center">'.$langs->trans("GroupSubscription").'</th>';
-		print '<th align="center">'.$langs->trans("SubscriptionRequired").'</th>';
-		print '<th align="center">'.$langs->trans("VoteAllowed").'</th>';
-    print '<th align="center">'.$langs->trans("Validation").'</th>';
-    print '<th align="center">'.$langs->trans("Renewal").'</th>';
-    print '<th align="center">'.$langs->trans("Status").'</th>';
+    print '<th class="center">'.$langs->trans("Nature").'</th>';
+    print '<th class="center">'.$langs->trans("GroupSubscription").'</th>';
+		print '<th class="center">'.$langs->trans("SubscriptionRequired").'</th>';
+		print '<th class="center">'.$langs->trans("VoteAllowed").'</th>';
+    print '<th class="center">'.$langs->trans("Validation").'</th>';
+    print '<th class="center">'.$langs->trans("Renewal").'</th>';
+    print '<th class="center">'.$langs->trans("Status").'</th>';
 		print '<th>&nbsp;</th>';
 		print "</tr>\n";
 
@@ -267,19 +267,19 @@ if (! $rowid && $action != 'create' && $action != 'edit')
 		elseif ($objp->morphy == 'mor') { print $langs->trans("Moral"); } 
     else print $langs->trans("Physical & Morale");    
       print '</td>'; //'.$objp->getmorphylib($objp->morphy).'
-      print '<td align="center">'.yn($objp->family).'</td>';
-			print '<td align="center">'.yn($objp->subscription).'</td>';
-			print '<td align="center">'.yn($objp->vote).'</td>';
-      print '<td align="center">'.am($objp->automatic).'</td>';
-      print '<td align="center">'.am($objp->automatic_renew).'</td>';
-      print '<td align="center">';
+      print '<td class="center">'.yn($objp->family).'</td>';
+			print '<td class="center">'.yn($objp->subscription).'</td>';
+			print '<td class="center">'.yn($objp->vote).'</td>';
+      print '<td class="center">'.am($objp->automatic).'</td>';
+      print '<td class="center">'.am($objp->automatic_renew).'</td>';
+      print '<td class="center">';
 if ( !empty($objp->statut) ) print img_picto($langs->trans("InActivity"),'statut4');
 else print img_picto($langs->trans("ActivityCeased"),'statut5');     
       print '</td>';
 			if ($user->rights->adherent->configurer)
-				print '<td align="right"><a href="'.$_SERVER["PHP_SELF"].'?action=edit&rowid='.$objp->rowid.'">'.img_edit().'</a></td>';
+				print '<td class="right"><a href="'.$_SERVER["PHP_SELF"].'?action=edit&rowid='.$objp->rowid.'">'.img_edit().'</a></td>';
 			else
-				print '<td align="right">&nbsp;</td>';
+				print '<td class="right">&nbsp;</td>';
 			print "</tr>";
 			$i++;
 		}
@@ -434,7 +434,7 @@ else print img_picto($langs->trans('TypeStatusInactive'),'statut5').' '.$langs->
 		print '</tr>';
     
     // Morphy
-		print '<tr><td>'.$langs->trans("Nature").'</td><td class="valeur" >'.$object->getmorphylib($object->morphy).'</td>';
+		print '<tr><td>'.$langs->trans("Nature").'</td><td class="valeur" >'.$object->getmorphylib().'</td>';
 		print '</tr>';
 
     print '<tr><td class="titlefield">'.$langs->trans("GroupSubscription").'</td><td>';
@@ -464,12 +464,12 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
 		print yn($object->vote);
 		print '</tr>';
 
-    print '<tr><td>'.$langs->trans("AutoSubscription").'</td><td>';
-		print yn($object->automatic);
+    print '<tr><td>'.$langs->trans("Validation").'</td><td>';
+		print am($object->automatic);
 		print '</tr>';
     
-    print '<tr><td>'.$langs->trans("AutoRenew").'</td><td>';
-		print yn($object->automatic_renew);
+    print '<tr><td>'.$langs->trans("Renewal").'</td><td>';
+		print am($object->automatic_renew);
 		print '</tr>';
 
 		print '<tr><td class="tdtop">'.$langs->trans("Description").'</td><td>';
@@ -846,12 +846,12 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
 		print $form->selectyesno("vote",$object->vote,1);
 		print '</td></tr>';
     
-    print '<tr><td>'.$langs->trans("AutoSubscription").'</td><td>';
-		print $form->selectyesno("automatic",$object->automatic,1);
+    print '<tr><td>'.$langs->trans("Validation").'</td><td>';
+		print $form->selectautomanual("automatic",$object->automatic,1);
 		print '</td></tr>';
     
-    print '<tr><td>'.$langs->trans("AutoRenew").'</td><td>';
-		print $form->selectyesno("automatic_renew",$object->automatic_renew,1);
+    print '<tr><td>'.$langs->trans("Renewal").'</td><td>';
+		print $form->selectautomanual("automatic_renew",$object->automatic_renew,1);
 		print '</td></tr>';
 
 		print '<tr><td class="tdtop">'.$langs->trans("Description").'</td><td>';
