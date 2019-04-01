@@ -370,10 +370,6 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
 	print $form->selectyesno("vote",0,1);
 	print '</td></tr>';
   
-  print '<tr><td>'.$langs->trans("AutoSubscription").'</td><td>';
-	print $form->selectyesno("automatic",1,1);
-	print '</td></tr>';
-  
   print '<tr><td>'.$langs->trans("Validation").'</td><td>';
 	print $formother->selectAutoManual("automatic",$object->automatic,1);
 	print '</td></tr>';
