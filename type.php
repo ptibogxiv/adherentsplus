@@ -51,6 +51,8 @@ dol_include_once('/adherentsplus/lib/member.lib.php');
 dol_include_once('/adherentsplus/class/adherent.class.php');
 dol_include_once('/adherentsplus/class/adherent_type.class.php');
 require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';    
+require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
 
 $langs->load("adherentsplus@adherentsplus");
 
@@ -206,6 +208,7 @@ if ($action == 'delete' && $user->rights->adherent->configurer)
 llxHeader('',$langs->trans("MembersTypeSetup"),'EN:Module_Foundations|FR:Module_Adh&eacute;rents|ES:M&oacute;dulo_Miembros');
 
 $form=new Form($db);
+$formother=new FormOther($db);
 
 
 // List of members type
@@ -270,8 +273,8 @@ if (! $rowid && $action != 'create' && $action != 'edit')
       print '<td class="center">'.yn($objp->family).'</td>';
 			print '<td class="center">'.yn($objp->subscription).'</td>';
 			print '<td class="center">'.yn($objp->vote).'</td>';
-      print '<td class="center">'.am($objp->automatic).'</td>';
-      print '<td class="center">'.am($objp->automatic_renew).'</td>';
+      print '<td class="center">'.autoOrManual($objp->automatic).'</td>';
+      print '<td class="center">'.autoOrManual($objp->automatic_renew).'</td>';
       print '<td class="center">';
 if ( !empty($objp->statut) ) print img_picto($langs->trans("InActivity"),'statut4');
 else print img_picto($langs->trans("ActivityCeased"),'statut5');     
@@ -370,6 +373,14 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
   print '<tr><td>'.$langs->trans("AutoSubscription").'</td><td>';
 	print $form->selectyesno("automatic",1,1);
 	print '</td></tr>';
+  
+  print '<tr><td>'.$langs->trans("Validation").'</td><td>';
+	print $formother->selectAutoManual("automatic",$object->automatic,1);
+	print '</td></tr>';
+    
+  print '<tr><td>'.$langs->trans("Renewal").'</td><td>';
+	print $formother->selectAutoManual("automatic_renew",$object->automatic_renew,1);
+	print '</td></tr>';
 
 	print '<tr><td class="tdtop">'.$langs->trans("Description").'</td><td>';
 	print '<textarea name="comment" wrap="soft" class="centpercent" rows="3"></textarea></td></tr>';
@@ -465,11 +476,11 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
 		print '</tr>';
 
     print '<tr><td>'.$langs->trans("Validation").'</td><td>';
-		print am($object->automatic);
+		print autoOrManual($object->automatic);
 		print '</tr>';
     
     print '<tr><td>'.$langs->trans("Renewal").'</td><td>';
-		print am($object->automatic_renew);
+		print autoOrManual($object->automatic_renew);
 		print '</tr>';
 
 		print '<tr><td class="tdtop">'.$langs->trans("Description").'</td><td>';
@@ -847,11 +858,11 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
 		print '</td></tr>';
     
     print '<tr><td>'.$langs->trans("Validation").'</td><td>';
-		print $form->selectautomanual("automatic",$object->automatic,1);
+		print $formother->selectAutoManual("automatic",$object->automatic,1);
 		print '</td></tr>';
     
     print '<tr><td>'.$langs->trans("Renewal").'</td><td>';
-		print $form->selectautomanual("automatic_renew",$object->automatic_renew,1);
+		print $formother->selectAutoManual("automatic_renew",$object->automatic_renew,1);
 		print '</td></tr>';
 
 		print '<tr><td class="tdtop">'.$langs->trans("Description").'</td><td>';
