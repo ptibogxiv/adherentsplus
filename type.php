@@ -325,7 +325,7 @@ if ($action == 'create')
   print '</td></tr>';
   
   // Morphy
-  $morphys[""] = $langs->trans("Physical & Morale");
+  $morphys[] = $langs->trans("Physical & Morale");
   $morphys["phy"] = $langs->trans("Physical");
 	$morphys["mor"] = $langs->trans("Morale");
 	print '<tr><td><span>'.$langs->trans("Nature").'</span></td><td>';
@@ -808,7 +808,7 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
     print '</td></tr>';
     
     // Morphy
-    $morphys[""] = $langs->trans("Physical & Morale");
+    $morphys[] = $langs->trans("Physical & Morale");
     $morphys["phy"] = $langs->trans("Physical");
     $morphys["mor"] = $langs->trans("Morale");
     print '<tr><td><span>'.$langs->trans("Nature").'</span></td><td>';
