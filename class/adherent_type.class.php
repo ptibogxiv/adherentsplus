@@ -131,11 +131,11 @@ class AdherentTypePlus extends CommonObject
     	$error=0;
 
     	$this->label=(!empty($this->libelle)?trim($this->libelle):trim($this->label));
-
+      
         $sql = "UPDATE ".MAIN_DB_PREFIX."adherent_type ";
         $sql.= "SET ";
         $sql.= "statut = ".$this->statut.",";
-        $sql.= "morphy = '".$this->db->escape($this->morphy) ."',";
+        $sql.= "morphy = '".$this->morphy."',";
         $sql.= "libelle = '".$this->db->escape($this->label) ."',";
         $sql.= "subscription = '".$this->subscription."',";
         $sql.= "welcome = '".$this->welcome."',";

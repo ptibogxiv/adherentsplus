@@ -441,7 +441,7 @@ else print img_picto($langs->trans('TypeStatusInactive'),'statut5').' '.$langs->
 		print '</tr>';
     
     // Morphy
-		print '<tr><td>'.$langs->trans("Nature").'</td><td class="valeur" >'.$object->getmorphylib().'</td>';
+		print '<tr><td>'.$langs->trans("Nature").'</td><td class="valeur" >'.$object->getmorphylib($object->morphy).'</td>';
 		print '</tr>';
 
     print '<tr><td class="titlefield">'.$langs->trans("GroupSubscription").'</td><td>';
@@ -808,7 +808,7 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
     print '</td></tr>';
     
     // Morphy
-    $morphys[] = $langs->trans("Physical & Morale");
+    $morphys[null] = $langs->trans("Physical & Morale");
     $morphys["phy"] = $langs->trans("Physical");
     $morphys["mor"] = $langs->trans("Morale");
     print '<tr><td><span>'.$langs->trans("Nature").'</span></td><td>';
