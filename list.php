@@ -203,7 +203,7 @@ if (empty($reshook))
 	}
 
 	// Mass actions
-	$objectclass='Adherent';
+	$objectclass='AdherentPlus';
 	$objectlabel='Members';
 	$permtoread = $user->rights->adherent->lire;
 	$permtodelete = $user->rights->adherent->supprimer;
