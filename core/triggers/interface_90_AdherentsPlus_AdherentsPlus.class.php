@@ -171,7 +171,56 @@ $db->commit();
 $invoice = new Facture($db);
 $invoice->fetch($object->id);
 $invoice->add_object_linked('subscription', $idcot); 
-}                              
+} 
+
+			// Send confirmation email (according to parameters of member type. Otherwise generic)
+			if ($member->email && $idcot>0)
+			{
+				$subject = '';
+				$msg= '';
+
+				// Send subscription email
+				include_once DOL_DOCUMENT_ROOT.'/core/class/html.formmail.class.php';
+				$formmail=new FormMail($db);
+				// Set output language
+				$outputlangs = new Translate('', $conf);
+				$outputlangs->setDefaultLang(empty($object->thirdparty->default_lang) ? $mysoc->default_lang : $object->thirdparty->default_lang);
+				// Load traductions files requiredby by page
+				$outputlangs->loadLangs(array("main", "members"));
+				// Get email content from template
+				$arraydefaultmessage=null;
+				$labeltouse = $conf->global->ADHERENT_EMAIL_TEMPLATE_MEMBER_VALIDATION;
+
+				if (! empty($labeltouse)) $arraydefaultmessage=$formmail->getEMailTemplate($db, 'member', $user, $outputlangs, 0, 1, $labeltouse);
+
+				if (! empty($labeltouse) && is_object($arraydefaultmessage) && $arraydefaultmessage->id > 0)
+				{
+					$subject = $arraydefaultmessage->topic;
+					$msg     = $arraydefaultmessage->content;
+				}
+
+				if (empty($labeltouse) || (int) $labeltouse === -1) {
+					//fallback on the old configuration.
+					setEventMessages('WarningMandatorySetupNotComplete', [], 'errors');
+					$error++;
+				}
+				else {
+					$substitutionarray=getCommonSubstitutionArray($outputlangs, 0, null, $object);
+					complete_substitutions_array($substitutionarray, $outputlangs, $object);
+					$subjecttosend = make_substitutions($subject, $substitutionarray, $outputlangs);
+					$texttosend = make_substitutions(dol_concatdesc($msg, $adht->getMailOnValid()), $substitutionarray, $outputlangs);
+
+					$moreinheader='X-Dolibarr-Info: send_an_email by adherents/card.php'."\r\n";
+
+					$result=$object->send_an_email($texttosend, $subjecttosend, array(), array(), array(), "", "", 0, -1, '', $moreinheader);
+					if ($result < 0)
+					{
+						$error++;
+						setEventMessages($object->error, $object->errors, 'errors');
+					}
+				}
+			}
+                             
 }                    
             } 
 $i++;
