@@ -605,6 +605,8 @@ $this->menu[$r]=array(	'fk_menu'=>0,			// Put 0 if this is a top menu
                 return 0;
             }
         }*/
+        
+        
 
         $sql = array(
             "DELETE FROM ".MAIN_DB_PREFIX."document_model WHERE nom = '".$this->db->escape($this->const[0][2])."' AND type='member' AND entity = ".$conf->entity,
@@ -613,4 +615,9 @@ $this->menu[$r]=array(	'fk_menu'=>0,			// Put 0 if this is a top menu
 
         return $this->_init($sql,$options);
     }
+    
+    private function loadTables()
+	{
+		return $this->_load_tables('/adherentsplus/sql/');
+}
 }
