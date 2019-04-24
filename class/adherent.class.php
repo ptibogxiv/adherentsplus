@@ -1672,14 +1672,19 @@ require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 	 *
 	 *	@return		int			<0 si KO, >0 si OK
 	 */
-	function fetch_linkedmembers()
+	function fetch_linkedmembers($link=1)
 	{
 		global $langs;
 
     $sql = "SELECT d.rowid, d.login, d.lastname, d.firstname, d.email, d.societe, d.fk_soc,";
     $sql.= " d.datefin, d.fk_adherent_type as type_id, d.morphy, d.statut, d.datec as date_creation, d.tms as date_update";
     $sql.= " FROM ".MAIN_DB_PREFIX."adherent as d";
+    if ( !empty($link) ) {
     $sql.= " WHERE d.fk_parent = ".$this->id;
+    } else {
+    $sql.= " WHERE ISNULL(d.fk_parent) ";
+    }
+    
 		$sql.= " ORDER BY d.rowid ASC";
 		dol_syslog(get_class($this)."::fetch_consumptions", LOG_DEBUG);
 

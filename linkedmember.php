@@ -315,7 +315,7 @@ print '</TABLE><BR>'."\n";
             print '<td align="left">'.$langs->trans("EndSubscription").'</td>';
             print '<td align="right">'.$langs->trans('Action').'</td>';
             print "</tr>\n";
-
+            
             foreach ($object->linkedmembers as $linkedmember)
             {
 
