@@ -85,7 +85,7 @@ $permissionnote=$user->rights->adherent->creer;  // Used by the include of actio
 
   if ($action == 'confirm_deletelinkedmember' && $confirm == 'yes' && $user->rights->adherent->creer)
 	{
- 		$result=$object->delete_parent($link);
+ 		$result=$object->unlinkMember($link);
 		if ($result > 0)
 		{
 
@@ -417,7 +417,9 @@ print '</TABLE><BR>'."\n";
 			        }
 		            print '</td>';
 		        }                
-                print '<td align="right"><a href="'. $_SERVER['PHP_SELF'] .'?action=deletelinkedmember&rowid=' . $object->id . '&link=' . $linkedmember->rowid . '" class="deletefilelink">' . img_delete() . '</a></td>';
+                print '<td align="right"><a href="'. $_SERVER['PHP_SELF'] .'?action=deletelinkedmember&rowid=' . $object->id . '&link=' . $linkedmember->rowid . '" class="deletefilelink">';
+                print img_picto($langs->transnoentitiesnoconv("RemoveLink"), 'unlink');
+                print '</a></td>';
                 print "</tr>";
 
             }
