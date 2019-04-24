@@ -1114,6 +1114,7 @@ class AdherentPlus extends CommonObject
 
         // If user is linked to this member, remove old link to this member
         $sql = "UPDATE ".MAIN_DB_PREFIX."adherent SET fk_parent = null WHERE rowid = '".$id."' ";
+        
         dol_syslog(get_class($this)."::deletememberparent", LOG_DEBUG);
         $resql = $this->db->query($sql);
         if (! $resql) { $this->error=$this->db->error(); $this->db->rollback(); return -1; }
@@ -1184,9 +1185,11 @@ class AdherentPlus extends CommonObject
         $objp->fetch($this->id);
 
         // If user is linked to this member, remove old link to this member
-        $sql = "UPDATE ".MAIN_DB_PREFIX."adherent SET fk_parent = ".$this->id.",";
+        $sql = "UPDATE ".MAIN_DB_PREFIX."adherent SET fk_parent = '".$this->id."' ,";
         $sql .= " fk_adherent_type=".$objp->typeid.",";
-        $sql .= " datefin=".($objp->datefin != '' ? "'".$this->db->idate($objp->datefin)."'" : "null")." WHERE rowid = ".$id;
+        $sql .= " datefin=".($objp->datefin != '' ? "'".$this->db->idate($objp->datefin)."'" : "null");
+        $sql .= " WHERE rowid = '".$id."'";
+        
         dol_syslog(get_class($this)."::deletememberparent", LOG_DEBUG);
         $resql = $this->db->query($sql);
         if (! $resql) { $this->error=$this->db->error(); $this->db->rollback(); return -1; }

@@ -236,7 +236,7 @@ if ($id)
 
 }
 
-if ($action=='deleteparent' && $user->rights->adherent->creer){
+if ($action=='deletelinkedmember' && $user->rights->adherent->creer){
 $form = new Form($db);
 $formconfirm=$form->formconfirm($_SERVER["PHP_SELF"].'?rowid='.$object->id.'&link='.$link, $langs->trans('Confirm'), $langs->trans('ConfirmDeleteParent'), 'confirm_deletelinkedmember', '', 0, 1);
 print $formconfirm;	
