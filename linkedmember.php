@@ -122,12 +122,6 @@ llxHeader("",$title,$helpurl);
 
 $form = new Form($db);
 
-if ($conf->global->ADHERENT_LINKEDMEMBER && $action=='deleteparent' && $user->rights->adherent->creer) {
-$form = new Form($db);
-$formconfirm=$form->formconfirm($_SERVER["PHP_SELF"].'?rowid='.$object->id.'&link='.$link, $langs->trans('Confirm'), $langs->trans('ConfirmDeleteParent'), 'confirm_deleteparent', '', 0, 1);
-print $formconfirm;	
-}
-
 if ($id)
 {
 	$head = member_prepare_head($object);
@@ -143,7 +137,7 @@ if ($id)
     
     print '<div class="fichecenter">';
     
-    print '<div class="underbanner clearboth"></div>';
+  print '<div class="underbanner clearboth"></div>';
 	print '<table class="border centpercent">';
 
     // Login
@@ -238,52 +232,8 @@ if ($id)
 
 if ($action=='deletelinkedmember' && $user->rights->adherent->creer) {
 $form = new Form($db);
-$formconfirm=$form->formconfirm($_SERVER["PHP_SELF"].'?rowid='.$object->id.'&link='.$link, $langs->trans('Confirm'), $langs->trans('ConfirmDeleteParent'), 'confirm_deletelinkedmember', '', 0, 1);
+$formconfirm=$form->formconfirm($_SERVER["PHP_SELF"].'?rowid='.$object->id.'&link='.$link, $langs->trans('Confirm'), $langs->trans('ConfirmLinkedMember'), 'confirm_deletelinkedmember', '', 0, 1);
 print $formconfirm;	
-}
-
-if ($action=='addlinkedmember' && $user->rights->adherent->creer) {
-$form = new Form($db);
-
-$listmember='<SELECT name="link">';  
-        
-        $sql = "SELECT c.rowid, c.firstname, c.lastname";               
-        $sql.= " FROM ".MAIN_DB_PREFIX."adherent as c";
-        $sql.= " WHERE c.entity IN (" . getEntity('adherentsplus') . ") AND c.rowid!=".$object->id." AND ISNULL(c.fk_parent)";
-        $sql.= " ORDER BY c.firstname, c.lastname ASC";
-        //$sql.= " LIMIT 0,5";
-        
-        $result = $db->query($sql);
-        if ($result)
-        {
-            $num = $db->num_rows($result);
-            $i = 0;
-
-            $var=True;
-            $listmember.='<OPTION value="" disabled selected>'.$langs->trans('Members').'</OPTION>';  
-            while ($i < $num)
-            {            
-                $objp = $db->fetch_object($result);
-                $var=!$var;               
-             
-                $listmember.='<OPTION value="'.$objp->rowid.'">'.$objp->firstname.' '.$objp->lastname.'</OPTION>';   
-                            
-                $i++;
-            }
-        }
-        else
-        {
-            dol_print_error($db);
-        }
-
-$listmember.='</SELECT>';
-
-			// Create an array
-			$formquestion=array();
-			if ($object->email) $formquestion[]=array('type' => 'checkbox', 'name' => 'send_mail', 'label' => $label, 'value' => (! empty($conf->global->ADHERENT_DEFAULT_SENDINFOBYMAIL)?'true':'false'));
-			if ($backtopage)    $formquestion[]=array('type' => 'hidden', 'name' => 'backtopage', 'value' => ($backtopage != '1' ? $backtopage : $_SERVER["HTTP_REFERER"]));
-      
-	print $form->formconfirm($_SERVER["PHP_SELF"].'?rowid='.$object->id.'&link='.$link, $langs->trans('Confirm'), $langs->trans('ConfirmAddParent'), 'confirm_addlinkedmember', '', 0, 1);
 }
 
 if ( $conf->global->ADHERENT_LINKEDMEMBER && empty($object->fk_parent) ) {
@@ -291,7 +241,7 @@ print load_fiche_titre($langs->trans("LinkMember"), '', '');
 print '<TABLE class="noborder" summary="listofdocumentstable" id="'.$modulepart.'_table" width="100%">'."\n";
 print '<TR class="liste_titre">';
 print '<TH align="center" colspan="'.(3+($addcolumforpicto?'2':'1')).'" class="formdoc liste_titre maxwidthonsmartphone">';
-print '<form action="'. $_SERVER['PHP_SELF'] .'?rowid=' . $object->id . '&action=addlinkedmember" id="'.$forname.'_form" method="post">';
+print '<form href="' . $_SERVER["PHP_SELF"] . '?rowid=' . $object->id . '&action=confirm_addlinkedmember" id="'.$forname.'_form" method="post">';
 print '<SELECT name="link">';  
         
         $sql = "SELECT c.rowid, c.firstname, c.lastname";               
@@ -325,7 +275,7 @@ print '<SELECT name="link">';
 
 print '</SELECT>';
 print '<input class="button buttongen" id="addsecondarymember" name="addsecondarymember" type="submit" value="'.$langs->trans('Add').'">';
-print '</FORM></TH></TR>';
+print '</form></TH></TR>';
 
 print '</TABLE><BR>'."\n";   
 }
