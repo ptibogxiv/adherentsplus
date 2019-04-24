@@ -100,7 +100,7 @@ $permissionnote=$user->rights->adherent->creer;  // Used by the include of actio
   
     if ($action == 'confirm_addlinkedmember' && $confirm == 'yes' && $user->rights->adherent->creer)
 	{
- 		$result=$object->add_parent($link);
+ 		$result=$object->linkMember($link);
 		if ($result > 0)
 		{
 
@@ -236,13 +236,13 @@ if ($id)
 
 }
 
-if ($action=='deletelinkedmember' && $user->rights->adherent->creer){
+if ($action=='deletelinkedmember' && $user->rights->adherent->creer) {
 $form = new Form($db);
 $formconfirm=$form->formconfirm($_SERVER["PHP_SELF"].'?rowid='.$object->id.'&link='.$link, $langs->trans('Confirm'), $langs->trans('ConfirmDeleteParent'), 'confirm_deletelinkedmember', '', 0, 1);
 print $formconfirm;	
 }
 
-if ($action=='addlinkedmember' && $user->rights->adherent->creer){
+if ($action=='addlinkedmember' && $user->rights->adherent->creer) {
 $form = new Form($db);
 
 $listmember='<SELECT name="link">';  
@@ -324,7 +324,7 @@ print '<SELECT name="link">';
         }
 
 print '</SELECT>';
-print '<input class="button buttongen" id="addsecondarymemeber" name="addsecondarymemeber" type="submit" value="'.$langs->trans('Add').'">';
+print '<input class="button buttongen" id="addsecondarymember" name="addsecondarymember" type="submit" value="'.$langs->trans('Add').'">';
 print '</FORM></TH></TR>';
 
 print '</TABLE><BR>'."\n";   

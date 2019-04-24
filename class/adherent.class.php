@@ -1170,12 +1170,12 @@ class AdherentPlus extends CommonObject
     }
 
         /**
-     *    Add link to a member
+     *    Add linked member to another member
      *
      *    @param     int	$userid        	Id of user to link to
      *    @return    int					1=OK, -1=KO
      */
-    function add_parent($id)
+    function linkMember($id)
     {
         global $conf, $langs;
 
