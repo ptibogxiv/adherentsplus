@@ -1676,7 +1676,7 @@ require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 	{
 		global $langs;
 
-		$sql = "SELECT d.rowid, d.ref, d.ref_ext, d.fk_adherent_type, d.fk_parent, d.civility as civility_id, d.firstname, d.lastname, d.societe as company, d.fk_soc, d.fk_parent, d.statut, d.public, d.address, d.zip, d.town, d.note_private,";
+		$sql = "SELECT d.rowid as id, d.ref, d.ref_ext, d.fk_adherent_type, d.fk_parent, d.civility as civility_id, d.firstname, d.lastname, d.societe as company, d.fk_soc, d.fk_parent, d.statut, d.public, d.address, d.zip, d.town, d.note_private,";
 		$sql.= " d.note_public,";
 		$sql.= " d.email, d.skype, d.twitter, d.facebook, d.phone, d.phone_perso, d.phone_mobile, d.login, d.pass, d.pass_crypted,";
 		$sql.= " d.photo, d.fk_adherent_type, d.morphy, d.entity,";
@@ -1717,10 +1717,10 @@ require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
             {
 
                 $linkedmember=new AdherentPlus($this->db);
-                $linkedmember->rowid=$obj->rowid;
                 
-                $linkedmember->ref				= $obj->ref?$obj->ref:$obj->rowid;
-                $linkedmember->id				= $obj->rowid;
+                $linkedmember->ref				= $obj->ref?$obj->ref:$obj->id;
+                $linkedmember->id				= $obj->id;
+                $linkedmember->rowid				= $obj->id;
                 $linkedmember->ref_ext			= $obj->ref_ext;
                 $linkedmember->civility_id		= $obj->civility_id;
                 $linkedmember->firstname		= $obj->firstname;
