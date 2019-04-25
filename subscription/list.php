@@ -228,7 +228,7 @@ if ($num == 1 && ! empty($conf->global->MAIN_SEARCH_DIRECT_OPEN_IF_ONLY_ONE) && 
 {
 	$obj = $db->fetch_object($resql);
 	$id = $obj->rowid;
-	header("Location: ".DOL_URL_ROOT.'/adherents/subscription/card.php?id='.$id);
+	header("Location: ".dol_buildpath('/adherentsplus/subscription/card.php?id='.$id.'', 1));
 	exit;
 }
 
@@ -265,7 +265,7 @@ $massactionbutton=$form->selectMassAction('', $arrayofmassactions);
 $newcardbutton='';
 if ($user->rights->adherent->cotisation->creer)
 {
-	$newcardbutton='<a class="butActionNew" href="'.DOL_URL_ROOT.'/adherents/list.php?status=-1,1"><span class="valignmiddle text-plus-circle">'.$langs->trans('NewSubscription').'</span>';
+	$newcardbutton='<a class="butActionNew" href="'.dol_buildpath('/adherentsplus/list.php?status=-1,1', 1).'"><span class="valignmiddle text-plus-circle">'.$langs->trans('NewSubscription').'</span>';
 	$newcardbutton.= '<span class="fa fa-plus-circle valignmiddle"></span>';
 	$newcardbutton.= '</a>';
 }
