@@ -582,9 +582,9 @@ class AdherentsPlus extends DolibarrApi
      *
      * @throws RestException
      *
-     * @url DELETE {id}/linkedmember/{linkedmember}
+     * @url DELETE {id}/linkedmember/{linkedmemberid}
      */
-    function deleteLinkedmember($id, $linkedmember)
+    function deleteLinkedmember($id, $linkedmemberid)
     {
         if (! DolibarrApiAccess::$user->rights->adherent->configurer) {
             throw new RestException(401);
@@ -599,7 +599,7 @@ class AdherentsPlus extends DolibarrApi
             throw new RestException(401, 'Access not allowed for login '.DolibarrApiAccess::$user->login);
         }
 
-        if (! $member->unlinkMember($linkedmember)) {
+        if (! $member->unlinkMember($linkedmemberid)) {
             throw new RestException(401,'error when deleting member type');
         }
 
