@@ -1676,9 +1676,28 @@ require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 	{
 		global $langs;
 
-    $sql = "SELECT d.rowid, d.login, d.lastname, d.firstname, d.email, d.societe, d.fk_soc,";
-    $sql.= " d.datefin, d.fk_adherent_type as type_id, d.morphy, d.statut, d.datec as date_creation, d.tms as date_update";
-    $sql.= " FROM ".MAIN_DB_PREFIX."adherent as d";
+		$sql = "SELECT d.rowid, d.ref, d.ref_ext, d.fk_adherent_type, d.fk_parent, d.civility as civility_id, d.firstname, d.lastname, d.societe as company, d.fk_soc, d.fk_parent, d.statut, d.public, d.address, d.zip, d.town, d.note_private,";
+		$sql.= " d.note_public,";
+		$sql.= " d.email, d.skype, d.twitter, d.facebook, d.phone, d.phone_perso, d.phone_mobile, d.login, d.pass, d.pass_crypted,";
+		$sql.= " d.photo, d.fk_adherent_type, d.morphy, d.entity,";
+		$sql.= " d.datec as datec,";
+		$sql.= " d.tms as datem,";
+		$sql.= " d.datefin as datefin,";
+    $sql.= " d.datecommitment as datecommitment,";
+		$sql.= " d.birth as birthday,";
+		$sql.= " d.datevalid as datev,";
+		$sql.= " d.country,";
+		$sql.= " d.state_id,";
+		$sql.= " d.model_pdf,";
+		$sql.= " c.rowid as country_id, c.code as country_code, c.label as country,";
+		$sql.= " dep.nom as state, dep.code_departement as state_code,";
+		$sql.= " t.rowid, t.libelle as type, t.subscription as subscription,";
+		$sql.= " u.rowid as user_id, u.login as user_login";
+		$sql.= " FROM ".MAIN_DB_PREFIX."adherent as d";
+		$sql.= " LEFT JOIN ".MAIN_DB_PREFIX."adherent_type as t ON d.fk_adherent_type = t.rowid";
+		$sql.= " LEFT JOIN ".MAIN_DB_PREFIX."c_country as c ON d.country = c.rowid";
+		$sql.= " LEFT JOIN ".MAIN_DB_PREFIX."c_departements as dep ON d.state_id = dep.rowid";
+		$sql.= " LEFT JOIN ".MAIN_DB_PREFIX."user as u ON d.rowid = u.fk_member";
     if ( !empty($link) ) {
     $sql.= " WHERE d.fk_parent = ".$this->id;
     } else {
@@ -1686,7 +1705,7 @@ require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
     }
     
 		$sql.= " ORDER BY d.rowid ASC";
-		dol_syslog(get_class($this)."::fetch_consumptions", LOG_DEBUG);
+		dol_syslog(get_class($this)."::fetch_linkedmembers", LOG_DEBUG);
 
 		$resql=$this->db->query($sql);
 		if ($resql)
@@ -1699,14 +1718,55 @@ require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 
                 $linkedmember=new AdherentPlus($this->db);
                 $linkedmember->rowid=$obj->rowid;
-                $linkedmember->id=$obj->id;
-                $linkedmember->firstname=$obj->firstname;
-                $linkedmember->lastname=$obj->lastname;
-                $linkedmember->societe=$obj->societe;
+                
+                $linkedmember->ref				= $obj->ref?$obj->ref:$obj->rowid;
+                $linkedmember->id				= $obj->rowid;
+                $linkedmember->ref_ext			= $obj->ref_ext;
+                $linkedmember->civility_id		= $obj->civility_id;
+                $linkedmember->firstname		= $obj->firstname;
+                $linkedmember->lastname			= $obj->lastname;
+                $linkedmember->login			= $obj->login;
+                $linkedmember->societe			= $obj->company;
+                $linkedmember->company			= $obj->company;
+                $linkedmember->fk_soc			= $obj->fk_soc;
+                $linkedmember->address			= $obj->address;
+                $linkedmember->zip				= $obj->zip;
+                $linkedmember->town				= $obj->town;
+
+                $linkedmember->state_id			= $obj->state_id;
+                $linkedmember->state_code		= $obj->state_id?$obj->state_code:'';
+                $linkedmember->state			= $obj->state_id?$obj->state:'';
+
+                $linkedmember->country_id		= $obj->country_id;
+                $linkedmember->country_code		= $obj->country_code;
+				if ($langs->trans("Country".$obj->country_code) != "Country".$obj->country_code)
+                $linkedmember->country = $langs->transnoentitiesnoconv("Country".$obj->country_code);
+				else
+                $linkedmember->country=$obj->country;
+
+                $linkedmember->phone			= $obj->phone;
+                $linkedmember->phone_perso		= $obj->phone_perso;
+                $linkedmember->phone_mobile		= $obj->phone_mobile;
+                $linkedmember->email			= $obj->email;
+        
+                $linkedmember->skype			= $obj->skype;
+                $linkedmember->twitter			= $obj->twitter;
+                $linkedmember->facebook			= $obj->facebook;
+
+                $linkedmember->photo			= $obj->photo;
+                $linkedmember->statut			= $obj->statut;
+                $linkedmember->public			= $obj->public;
+
+                $linkedmember->datec			= $this->db->jdate($obj->datec);
+                $linkedmember->datem			= $this->db->jdate($obj->datem);
+                $linkedmember->datefin			= $this->db->jdate($obj->datefin); 
+                $linkedmember->datevalid		= $this->db->jdate($obj->datev);
+                $linkedmember->datecommitment			= $this->db->jdate($obj->datecommitment);
+                $linkedmember->birth			= $this->db->jdate($obj->birthday);
+                
                 $linkedmember->login=$obj->login;
                 $linkedmember->morphy=$obj->morphy;
-                $linkedmember->statut=$obj->statut;
-                $linkedmember->email=$obj->email;
+                $linkedmember->statut=$obj->statut;              
 
                 $this->linkedmembers[]=$linkedmember;
 
