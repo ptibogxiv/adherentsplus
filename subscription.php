@@ -819,7 +819,7 @@ if ($rowid > 0)
 
             print '<tr class="liste_titre">';
             print '<td>'.$langs->trans("Ref").'</td>';
-            print '<td align="center">'.$langs->trans("MemberType").'</td>';
+            print '<td align="center">'.$langs->trans("Type").'</td>';
             print '<td align="center">'.$langs->trans("DateCreation").'</td>';
             print '<td align="center">'.$langs->trans("DateStart").'</td>';
             print '<td align="center">'.$langs->trans("DateEnd").'</td>';
