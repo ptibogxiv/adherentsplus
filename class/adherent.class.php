@@ -81,6 +81,7 @@ class AdherentPlus extends CommonObject
      * @var string facebook account
      */
 	public $facebook;
+  public $linkedin;
     /**
      * @var string Phone number
      */
@@ -569,6 +570,7 @@ class AdherentPlus extends CommonObject
 		$sql.= ", skype = '".$this->db->escape($this->skype)."'";
 		$sql.= ", twitter = '".$this->db->escape($this->twitter)."'";
 		$sql.= ", facebook = '".$this->db->escape($this->facebook)."'";
+		$sql.= ", linkedin = '".$this->db->escape($this->linkedin)."'";
 		$sql.= ", phone = ".($this->phone?"'".$this->db->escape($this->phone)."'":"null");
 		$sql.= ", phone_perso = ".($this->phone_perso?"'".$this->db->escape($this->phone_perso)."'":"null");
 		$sql.= ", phone_mobile = ".($this->phone_mobile?"'".$this->db->escape($this->phone_mobile)."'":"null");
@@ -686,6 +688,7 @@ class AdherentPlus extends CommonObject
 						$luser->skype=$this->skype;
 						$luser->twitter=$this->twitter;
 						$luser->facebook=$this->facebook;
+            $luser->linkedin=$this->linkedin;
 						$luser->office_phone=$this->phone;
 						$luser->user_mobile=$this->phone_mobile;
 
@@ -1317,7 +1320,7 @@ class AdherentPlus extends CommonObject
 
 		$sql = "SELECT d.rowid, d.ref, d.ref_ext, d.civility as civility_id, d.firstname, d.lastname, d.societe as company, d.fk_soc, d.fk_parent, d.statut, d.public, d.address, d.zip, d.town, d.note_private,";
 		$sql.= " d.note_public,";
-		$sql.= " d.email, d.skype, d.twitter, d.facebook, d.phone, d.phone_perso, d.phone_mobile, d.login, d.pass, d.pass_crypted,";
+		$sql.= " d.email, d.skype, d.twitter, d.facebook, d.linkedin, d.phone, d.phone_perso, d.phone_mobile, d.login, d.pass, d.pass_crypted,";
 		$sql.= " d.photo, d.fk_adherent_type, d.morphy, d.entity,";
 		$sql.= " d.datec as datec,";
 		$sql.= " d.tms as datem,";
@@ -1395,6 +1398,7 @@ class AdherentPlus extends CommonObject
 				$this->skype			= $obj->skype;
 				$this->twitter			= $obj->twitter;
 				$this->facebook			= $obj->facebook;
+				$this->linkedin			= $obj->linkedin;
 
 				$this->photo			= $obj->photo;
 				$this->statut			= $obj->statut;
