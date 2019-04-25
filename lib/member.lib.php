@@ -61,7 +61,7 @@ function member_prepare_head(Adherentplus $object)
 		$h++;
 	}
   
-  if (! empty($user->rights->adherent->cotisation->lire) && !empty($conf->global->ADHERENT_LINKEDMEMBER) && empty($object->fk_parent) )
+  if (! empty($user->rights->adherent->cotisation->lire) && !empty($conf->global->ADHERENT_LINKEDMEMBER))
 	{
 		$nbLinkedmembers = is_array($object-> linkedmembers)?count($object-> linkedmembers):0; 
 		$head[$h][0] = dol_buildpath('/adherentsplus/linkedmember.php', 1) . '?rowid=' . $object->id;
