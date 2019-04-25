@@ -741,9 +741,9 @@ class AdherentPlus extends CommonObject
 						$lthirdparty->skype=$this->skype;
 						$lthirdparty->twitter=$this->twitter;
 						$lthirdparty->facebook=$this->facebook;
+						$lthirdparty->linkedin=$this->linkedin;
 						$lthirdparty->phone=$this->phone;
 						$lthirdparty->state_id=$this->state_id;
-						$lthirdparty->country_id=$this->country_id;
 						$lthirdparty->country_id=$this->country_id;
 						//$lthirdparty->phone_mobile=$this->phone_mobile;
 
