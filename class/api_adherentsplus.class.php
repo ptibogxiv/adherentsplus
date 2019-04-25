@@ -479,41 +479,6 @@ class AdherentsPlus extends DolibarrApi
     }    
 
     /**
-     * Validate fields before creating an object
-     *
-     * @param array|null    $data   Data to validate
-     * @return array
-     *
-     * @throws RestException
-     */
-    function _validate($data)
-    {
-        $member = array();
-        foreach (AdherentsPlus::$FIELDS as $field) {
-            if (!isset($data[$field]))
-                throw new RestException(400, "$field field missing");
-            $member[$field] = $data[$field];
-        }
-        return $member;
-    }
-
-    /**
-     * Clean sensible object datas
-     *
-     * @param   object  $object    Object to clean
-     * @return    array    Array of cleaned object properties
-     */
-    function _cleanObjectDatas($object) {
-
-    	$object = parent::_cleanObjectDatas($object);
-
-        // Remove the subscriptions because they are handled as a subresource.
-        unset($object->subscriptions);
-
-        return $object;
-    }
-
-    /**
      * List subscriptions of a member
      *
      * Get a list of subscriptions
@@ -604,7 +569,47 @@ class AdherentsPlus extends DolibarrApi
             $obj_ret[] = $this->_cleanObjectDatas($consumption);
         }
         return $obj_ret;
-    }    
+    } 
+    
+    /**
+     * Delete
+     *
+     * Detach a linked member of a parent
+     *
+     * @param int $id ID of member
+     * @param int $linkedmember ID of linked member
+     * @return array Array of consumption objects
+     *
+     * @throws RestException
+     *
+     * @url DELETE {id}/linkedmember/{linkedmember}
+     */
+    function deleteLinkedmember($id, $linkedmember)
+    {
+        if (! DolibarrApiAccess::$user->rights->adherent->configurer) {
+            throw new RestException(401);
+        }
+        $member = new AdherentPlus($this->db);
+        $result = $member->fetch($id);
+        if( ! $result ) {
+            throw new RestException(404, 'member type not found');
+        }
+
+        if ( ! DolibarrApi::_checkAccessToResource('member',$member->id,'adherent')) {
+            throw new RestException(401, 'Access not allowed for login '.DolibarrApiAccess::$user->login);
+        }
+
+        if (! $member->unlinkMember($linkedmember)) {
+            throw new RestException(401,'error when deleting member type');
+        }
+
+        return array(
+            'success' => array(
+                'code' => 200,
+                'message' => 'member unlink'
+            )
+        );
+    }        
  
     /**
      * List consumptions of a member
@@ -637,6 +642,41 @@ class AdherentsPlus extends DolibarrApi
             $obj_ret[] = $this->_cleanObjectDatas($consumption);
         }
         return $obj_ret;
-    }    
+    }     
+    
+    /**
+     * Validate fields before creating an object
+     *
+     * @param array|null    $data   Data to validate
+     * @return array
+     *
+     * @throws RestException
+     */
+    function _validate($data)
+    {
+        $member = array();
+        foreach (AdherentsPlus::$FIELDS as $field) {
+            if (!isset($data[$field]))
+                throw new RestException(400, "$field field missing");
+            $member[$field] = $data[$field];
+        }
+        return $member;
+    }
+
+    /**
+     * Clean sensible object datas
+     *
+     * @param   object  $object    Object to clean
+     * @return    array    Array of cleaned object properties
+     */
+    function _cleanObjectDatas($object) {
+
+    	$object = parent::_cleanObjectDatas($object);
+
+        // Remove the subscriptions because they are handled as a subresource.
+        unset($object->subscriptions);
+
+        return $object;
+    }     
 
 }
