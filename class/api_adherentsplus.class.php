@@ -574,12 +574,12 @@ class AdherentsPlus extends DolibarrApi
     }
 
     /**
-     * List of linkedmember
+     * List of linked members
      *
-     * Get a list of linkedmember
+     * Get a list of linked members
      *
      * @param int $id ID of member
-     * @return array Array of linkedmember
+     * @return array Array of linked members
      *
      * @throws RestException
      *
