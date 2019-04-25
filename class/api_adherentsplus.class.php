@@ -572,9 +572,9 @@ class AdherentsPlus extends DolibarrApi
     } 
     
     /**
-     * Delete
+     * Delete linked member
      *
-     * Detach a linked member of a parent
+     * Detach linked member of a parent member
      *
      * @param int $id ID of member
      * @param int $linkedmember ID of linked member
