@@ -819,8 +819,8 @@ if ($rowid > 0)
 
             print '<tr class="liste_titre">';
             print '<td>'.$langs->trans("Ref").'</td>';
-            print '<td align="center">'.$langs->trans("Type").'</td>';
             print '<td align="center">'.$langs->trans("DateCreation").'</td>';
+            print '<td align="center">'.$langs->trans("Type").'</td>';
             print '<td align="center">'.$langs->trans("DateStart").'</td>';
             print '<td align="center">'.$langs->trans("DateEnd").'</td>';
             print '<td align="right">'.$langs->trans("Amount").'</td>';
@@ -840,11 +840,12 @@ if ($rowid > 0)
                 $subscriptionstatic->fetch($subscription->id);
                 print '<td>'.$subscriptionstatic->getNomUrl(1).'</td>';
                 print '<td align="center">';
+                print '<td align="center">'.dol_print_date($subscription->datec,'dayhour')."</td>\n";
                 if ( ! empty($subscription->fk_type)) {
                 print '<a href="'.dol_buildpath('/adherentsplus/type.php?rowid='.$subscription->fk_type.'', 1).'">'.img_object($langs->trans("ShowType"),'group').' '.dol_escape_htmltag($subscription->label)."</a>";
                 }
                 print '</td>';
-                print '<td align="center">'.dol_print_date($subscription->datec,'dayhour')."</td>\n";
+
                 print '<td align="center">'.dol_print_date($subscription->dateh,'day')."</td>\n";
                 print '<td align="center">'.dol_print_date($subscription->datef,'day')."</td>\n";
                 print '<td align="right">'.price($subscription->amount).'</td>';
