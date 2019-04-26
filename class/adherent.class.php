@@ -146,6 +146,7 @@ class AdherentPlus extends CommonObject
 	var $user_login;
 
   var $fk_soc;
+  var $socid;
   var $fk_parent;
 
 	// Fields loaded by fetch_subscriptions()
@@ -1362,18 +1363,19 @@ class AdherentPlus extends CommonObject
 			{
 				$obj = $this->db->fetch_object($resql);
 
-				$this->entity			= $obj->entity;
-				$this->ref				= $obj->ref?$obj->ref:$obj->rowid;
-				$this->id				= $obj->rowid;
+				$this->entity			  = $obj->entity;
+				$this->ref				  = $obj->ref?$obj->ref:$obj->rowid;
+				$this->id				    = $obj->rowid;
 				$this->ref_ext			= $obj->ref_ext;
-				$this->civility_id		= $obj->civility_id;
+				$this->civility_id	= $obj->civility_id;
 				$this->firstname		= $obj->firstname;
 				$this->lastname			= $obj->lastname;
-				$this->login			= $obj->login;
+				$this->login			 = $obj->login;
 				$this->societe			= $obj->company;
 				$this->company			= $obj->company;
 				$this->fk_soc			= $obj->fk_soc;
-                $this->fk_parent			= $obj->fk_parent;
+        $this->socid			= $obj->fk_soc;
+        $this->fk_parent			= $obj->fk_parent;
 				$this->address			= $obj->address;
 				$this->zip				= $obj->zip;
 				$this->town				= $obj->town;
