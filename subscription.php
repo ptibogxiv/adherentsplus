@@ -839,15 +839,15 @@ if ($rowid > 0)
                 print '<tr class="oddeven">';
                 $subscriptionstatic->fetch($subscription->id);
                 print '<td>'.$subscriptionstatic->getNomUrl(1).'</td>';
+                print '<td align="center">'.dol_print_date($subscription->datec,'dayhour')."</td>";                  
                 print '<td align="center">';
-                print '<td align="center">'.dol_print_date($subscription->datec,'dayhour')."</td>\n";
                 if ( ! empty($subscription->fk_type)) {
                 print '<a href="'.dol_buildpath('/adherentsplus/type.php?rowid='.$subscription->fk_type.'', 1).'">'.img_object($langs->trans("ShowType"),'group').' '.dol_escape_htmltag($subscription->label)."</a>";
                 }
                 print '</td>';
 
-                print '<td align="center">'.dol_print_date($subscription->dateh,'day')."</td>\n";
-                print '<td align="center">'.dol_print_date($subscription->datef,'day')."</td>\n";
+                print '<td align="center">'.dol_print_date($subscription->dateh,'day')."</td>";
+                print '<td align="center">'.dol_print_date($subscription->datef,'day')."</td>";
                 print '<td align="right">'.price($subscription->amount).'</td>';
 				if (! empty($conf->banque->enabled))
 				{
