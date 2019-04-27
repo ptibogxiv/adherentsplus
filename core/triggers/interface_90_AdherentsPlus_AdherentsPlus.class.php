@@ -115,7 +115,8 @@ if ($action == 'BILL_PAYED') {
 			dol_syslog(
 				"Trigger '" . $this->name . "' for action '$action' launched by " . __FILE__ . ". id=" . $object->id
 			);     
-dol_include_once('/adherentsplus/class/adherent.class.php'); 
+dol_include_once('/adherentsplus/class/adherent.class.php');
+dol_include_once('/adherentsplus/class/adherent_type.class.php'); 
 require_once DOL_DOCUMENT_ROOT.'/compta/facture/class/facture.class.php';
       
         $sql = "SELECT fk_product, date_start, date_end, total_ttc";               
@@ -138,6 +139,8 @@ if ($objp2->fk_product==$conf->global->ADHERENT_PRODUCT_ID_FOR_SUBSCRIPTIONS) {
 
 $member=new AdherentPlus($db);
 $member->fetch('','',$object->socid);
+$adht = new AdherentTypePlus($db);
+$adht->fetch($member->typeid);
 
 if ($member->id >0) {
 if (empty($conf->global->MEMBER_NO_DEFAULT_LABEL)) {
@@ -173,9 +176,12 @@ $invoice->fetch($object->id);
 $invoice->add_object_linked('subscription', $idcot); 
 } 
 
-			// Send confirmation email (according to parameters of member type. Otherwise generic)
-			if ($member->email && $idcot>0)
-			{
+        // Send email
+        //if (! $error)
+        //{
+            // Send confirmation Email
+            if ($member->email && ! empty($conf->global->ADHERENT_DEFAULT_SENDINFOBYMAIL))   // $object is 'Adherent'
+            {
 				$subject = '';
 				$msg= '';
 
@@ -184,12 +190,12 @@ $invoice->add_object_linked('subscription', $idcot);
 				$formmail=new FormMail($db);
 				// Set output language
 				$outputlangs = new Translate('', $conf);
-				$outputlangs->setDefaultLang(empty($object->thirdparty->default_lang) ? $mysoc->default_lang : $object->thirdparty->default_lang);
+				$outputlangs->setDefaultLang(empty($member->thirdparty->default_lang) ? $mysoc->default_lang : $member->thirdparty->default_lang);
 				// Load traductions files requiredby by page
 				$outputlangs->loadLangs(array("main", "members"));
 				// Get email content from template
 				$arraydefaultmessage=null;
-				$labeltouse = $conf->global->ADHERENT_EMAIL_TEMPLATE_MEMBER_VALIDATION;
+				$labeltouse = $conf->global->ADHERENT_EMAIL_TEMPLATE_SUBSCRIPTION;
 
 				if (! empty($labeltouse)) $arraydefaultmessage=$formmail->getEMailTemplate($db, 'member', $user, $outputlangs, 0, 1, $labeltouse);
 
@@ -205,21 +211,23 @@ $invoice->add_object_linked('subscription', $idcot);
 					$error++;
 				}
 				else {
-					$substitutionarray=getCommonSubstitutionArray($outputlangs, 0, null, $object);
-					complete_substitutions_array($substitutionarray, $outputlangs, $object);
+					$substitutionarray=getCommonSubstitutionArray($outputlangs, 0, null, $member);
+					complete_substitutions_array($substitutionarray, $outputlangs, $member);
 					$subjecttosend = make_substitutions($subject, $substitutionarray, $outputlangs);
 					$texttosend = make_substitutions(dol_concatdesc($msg, $adht->getMailOnValid()), $substitutionarray, $outputlangs);
 
 					$moreinheader='X-Dolibarr-Info: send_an_email by adherents/card.php'."\r\n";
 
-					$result=$object->send_an_email($texttosend, $subjecttosend, array(), array(), array(), "", "", 0, -1, '', $moreinheader);
+					$result=$member->send_an_email($texttosend, $subjecttosend, array(), array(), array(), "", "", 0, -1, '', $moreinheader);
 					if ($result < 0)
 					{
 						$error++;
-						setEventMessages($object->error, $object->errors, 'errors');
+						setEventMessages($member->error, $member->errors, 'errors');
 					}
 				}
-			}
+            }
+
+       // }
                              
 }                    
             } 

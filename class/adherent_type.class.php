@@ -435,18 +435,17 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
      *     @return string     Return mail model
      */
     function getMailOnSubscription()
-    {
-        global $conf;
-	// mail_subscription not  defined so never used
-        if (! empty($this->mail_subscription) && trim(dol_htmlentitiesbr_decode($this->mail_subscription)))  // Property not yet defined
-        {
-            return $this->mail_subscription;
-        }
-        else
-        {
-            return $conf->global->ADHERENT_MAIL_COTIS;
-        }
-    }
+	{
+		global $conf;
+
+		// mail_subscription not  defined so never used
+		if (! empty($this->mail_subscription) && trim(dol_htmlentitiesbr_decode($this->mail_subscription)))  // Property not yet defined
+		{
+			return $this->mail_subscription;
+		}
+
+		return '';
+	}
 
     /**
      *     getMailOnResiliate
