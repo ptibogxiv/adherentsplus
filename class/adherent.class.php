@@ -1322,7 +1322,7 @@ class AdherentPlus extends CommonObject
 	{
 		global $conf,$langs;
 
-		$sql = "SELECT d.rowid, d.ref, d.ref_ext, d.civility as civility_id, d.firstname, d.lastname, d.societe as company, d.fk_soc, d.fk_parent, d.statut, d.public, d.address, d.zip, d.town, d.note_private,";
+		$sql = "SELECT d.rowid, d.ref, d.ref_ext, d.civility as civility_code, d.firstname, d.lastname, d.societe as company, d.fk_soc, d.fk_parent, d.statut, d.public, d.address, d.zip, d.town, d.note_private,";
 		$sql.= " d.note_public,";
 		$sql.= " d.email, d.skype, d.twitter, d.facebook, d.linkedin, d.phone, d.phone_perso, d.phone_mobile, d.login, d.pass, d.pass_crypted,";
 		$sql.= " d.photo, d.fk_adherent_type, d.morphy, d.entity,";
@@ -1367,7 +1367,11 @@ class AdherentPlus extends CommonObject
 				$this->ref				  = $obj->ref?$obj->ref:$obj->rowid;
 				$this->id				    = $obj->rowid;
 				$this->ref_ext			= $obj->ref_ext;
-				$this->civility_id	= $obj->civility_id;
+        
+				$this->civility_id      = $obj->civility_code;                
+				$this->civility_code    = $obj->civility_code;
+				$this->civility	        = $obj->civility_code?($langs->trans("Civility".$obj->civility_code) != ("Civility".$obj->civility_code) ? $langs->trans("Civility".$obj->civility_code) : $obj->civility_code):'';
+
 				$this->firstname		= $obj->firstname;
 				$this->lastname			= $obj->lastname;
 				$this->login			 = $obj->login;
@@ -1685,7 +1689,7 @@ require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 	{
 		global $langs;
 
-		$sql = "SELECT d.rowid as id, d.ref, d.ref_ext, d.fk_adherent_type, d.fk_parent, d.civility as civility_id, d.firstname, d.lastname, d.societe as company, d.fk_soc, d.fk_parent, d.statut, d.public, d.address, d.zip, d.town, d.note_private,";
+		$sql = "SELECT d.rowid as id, d.ref, d.ref_ext, d.fk_adherent_type, d.fk_parent, d.civility as civility_code, d.firstname, d.lastname, d.societe as company, d.fk_soc, d.fk_parent, d.statut, d.public, d.address, d.zip, d.town, d.note_private,";
 		$sql.= " d.note_public,";
 		$sql.= " d.email, d.skype, d.twitter, d.facebook, d.linkedin, d.phone, d.phone_perso, d.phone_mobile, d.login, d.pass, d.pass_crypted,";
 		$sql.= " d.photo, d.fk_adherent_type, d.morphy, d.entity,";
@@ -1731,7 +1735,11 @@ require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
                 $linkedmember->id				= $obj->id;
                 $linkedmember->rowid				= $obj->id;
                 $linkedmember->ref_ext			= $obj->ref_ext;
-                $linkedmember->civility_id		= $obj->civility_id;
+
+                $linkedmember->civility_id      = $obj->civility_code;                
+                $linkedmember->civility_code    = $obj->civility_code;
+                $linkedmember->civility	        = $obj->civility_code?($langs->trans("Civility".$obj->civility_code) != ("Civility".$obj->civility_code) ? $langs->trans("Civility".$obj->civility_code) : $obj->civility_code):'';
+
                 $linkedmember->firstname	= $obj->firstname;
                 $linkedmember->lastname		= $obj->lastname;
                 $linkedmember->login			= $obj->login;
