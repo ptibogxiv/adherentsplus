@@ -94,7 +94,7 @@ class AdherentsPlus extends DolibarrApi
         }
 
         $member = new AdherentPlus($this->db);
-        $result = $member->fetch('', $license);
+        $result = $member->fetch('', '', '', '', true, true, $license);
         if( ! $result ) {
             throw new RestException(404, 'member not found');
         }
