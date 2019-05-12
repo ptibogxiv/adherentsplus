@@ -99,7 +99,7 @@ class AdherentsPlus extends DolibarrApi
             throw new RestException(404, 'member not found');
         }
 
-        if( ! DolibarrApi::_checkAccessToResource('adherent', $member->id)) {
+        if( ! DolibarrApi::_checkAccessToResource('adherent', $member->license)) {
             throw new RestException(401, 'Access not allowed for login '.DolibarrApiAccess::$user->login);
         }
 
