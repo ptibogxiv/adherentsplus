@@ -50,6 +50,7 @@ class AdherentPlus extends CommonObject
 	var $login;
 	var $ref;
   var $ref_ext;
+  var $license;
 	//! Clear password in memory
 	var $pass;
 	//! Clear password in database (defined if DATABASE_PWD_ENCRYPTED=0)

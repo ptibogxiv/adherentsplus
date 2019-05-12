@@ -1648,13 +1648,13 @@ else print $langs->trans("NoPrincipalMember");
 
 		// Birthday
 		print '<tr><td class="titlefield">'.$langs->trans("Birthday").'</td><td class="valeur">'.dol_print_date($object->birth,'day').'</td></tr>';
-
-		// Public
+ 		
+    // License
+		print '<tr><td class="titlefield">'.$langs->trans("License").'</td><td class="valeur">'.$object->license.'</td></tr>';
+		
+    // Public
 		print '<tr><td>'.$langs->trans("Public").'</td><td class="valeur">'.yn($object->public).'</td></tr>';
 
-    // License
-		print '<tr><td>'.$langs->trans("License").'</td><td class="valeur">'.$object->ref.'</td></tr>';
-    
     // Commitment
 		print '<tr><td class="titlefield">'.$langs->trans("Commitment").'</td><td class="valeur">';
 		if ($object->datecommitment)
