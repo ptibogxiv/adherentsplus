@@ -324,11 +324,13 @@ if (empty($reshook))
 			$object->phone_perso = trim(GETPOST("phone_perso",'alpha'));
 			$object->phone_mobile= trim(GETPOST("phone_mobile",'alpha'));
 			$object->email       = preg_replace('/\s+/', '', GETPOST("member_email",'alpha'));
-			$object->skype       = trim(GETPOST("skype",'alpha'));
-			$object->twitter     = trim(GETPOST("twitter",'alpha'));
-			$object->facebook    = trim(GETPOST("facebook",'alpha'));
+			$object->skype       = trim(GETPOST("skype", 'alpha'));
+			$object->twitter     = trim(GETPOST("twitter", 'alpha'));
+			$object->facebook    = trim(GETPOST("facebook", 'alpha'));
+			$object->linkedin    = trim(GETPOST("linkedin", 'alpha'));
 			$object->birth       = $birthdate;
-
+			$object->ref_ext     = trim(GETPOST("license",'alpha'));
+      
 			$object->typeid      = GETPOST("typeid",'int');
 			//$object->note        = trim(GETPOST("comment","alpha"));
 			$object->morphy      = GETPOST("morphy",'alpha');
@@ -454,34 +456,36 @@ if (empty($reshook))
 			$datesubscription=dol_mktime(12, 0, 0, $_POST["remonth"], $_POST["reday"], $_POST["reyear"]);
 		}
 
-		$typeid=GETPOST("typeid",'int');
-		$civility_id=GETPOST("civility_id",'alpha');
-		$lastname=GETPOST("lastname",'alpha');
-		$firstname=GETPOST("firstname",'alpha');
-		$societe=GETPOST("societe",'alpha');
-		$address=GETPOST("address",'alpha');
-		$zip=GETPOST("zipcode",'alpha');
-		$town=GETPOST("town",'alpha');
-		$state_id=GETPOST("state_id",'int');
-		$country_id=GETPOST("country_id",'int');
+		$typeid=GETPOST("typeid", 'int');
+		$civility_id=GETPOST("civility_id", 'alpha');
+		$lastname=GETPOST("lastname", 'alpha');
+		$firstname=GETPOST("firstname", 'alpha');
+		$gender=GETPOST("gender", 'alpha');
+		$societe=GETPOST("societe", 'alpha');
+		$address=GETPOST("address", 'alpha');
+		$zip=GETPOST("zipcode", 'alpha');
+		$town=GETPOST("town", 'alpha');
+		$state_id=GETPOST("state_id", 'int');
+		$country_id=GETPOST("country_id", 'int');
 
-		$phone=GETPOST("phone",'alpha');
-		$phone_perso=GETPOST("phone_perso",'alpha');
-		$phone_mobile=GETPOST("phone_mobile",'alpha');
-		$skype=GETPOST("member_skype",'alpha');
-		$twitter=GETPOST("member_twitter",'alpha');
-		$facebook=GETPOST("member_facebook",'alpha');
-		$email=preg_replace('/\s+/', '', GETPOST("member_email",'alpha'));
-		$login=GETPOST("member_login",'alpha');
-		$pass=GETPOST("password",'alpha');
-		$photo=GETPOST("photo",'alpha');
+		$phone=GETPOST("phone", 'alpha');
+		$phone_perso=GETPOST("phone_perso", 'alpha');
+		$phone_mobile=GETPOST("phone_mobile", 'alpha');
+		$skype=GETPOST("member_skype", 'alpha');
+		$twitter=GETPOST("member_twitter", 'alpha');
+		$facebook=GETPOST("member_facebook", 'alpha');
+        $linkedin=GETPOST("member_linkedin", 'alpha');
+		$email=preg_replace('/\s+/', '', GETPOST("member_email", 'alpha'));
+		$login=GETPOST("member_login", 'alpha');
+		$pass=GETPOST("password", 'alpha');
+		$photo=GETPOST("photo", 'alpha');
 		//$comment=GETPOST("comment",'none');
-		$morphy=GETPOST("morphy",'alpha');
-		$subscription=GETPOST("subscription",'alpha');
-		$public=GETPOST("public",'alpha');
+		$morphy=GETPOST("morphy", 'alpha');
+		$subscription=GETPOST("subscription", 'alpha');
+		$public=GETPOST("public", 'alpha');
 
-		$userid=GETPOST("userid",'int');
-		$socid=GETPOST("socid",'int');
+		$userid=GETPOST("userid", 'int');
+		$socid=GETPOST("socid", 'int');
 
 		$object->civility_id = $civility_id;
 		$object->firstname   = $firstname;
@@ -499,6 +503,7 @@ if (empty($reshook))
 		$object->skype       = $skype;
 		$object->twitter     = $twitter;
 		$object->facebook    = $facebook;
+		$object->linkedin    = $linkedin;
 
 		$object->email       = $email;
 		$object->login       = $login;
