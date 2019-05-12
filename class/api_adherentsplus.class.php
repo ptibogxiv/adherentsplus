@@ -82,7 +82,9 @@ class AdherentsPlus extends DolibarrApi
      *
      * @param string      $license   License
      * @return 	array|mixed data without useless information
-     *
+     * 
+     * @url	GET license/{license}
+     * 
      * @throws    RestException
      */
     function getLicense($license)
