@@ -329,7 +329,7 @@ if (empty($reshook))
 			$object->facebook    = trim(GETPOST("facebook", 'alpha'));
 			$object->linkedin    = trim(GETPOST("linkedin", 'alpha'));
 			$object->birth       = $birthdate;
-			$object->ref_ext     = trim(GETPOST("license",'alpha'));
+			$object->license     = trim(GETPOST("license",'alpha'));
       
 			$object->typeid      = GETPOST("typeid",'int');
 			//$object->note        = trim(GETPOST("comment","alpha"));
@@ -966,6 +966,10 @@ else
 		print "<TR><TD>".$langs->trans("Birthday")."</TD><TD>\n";
 		$form->select_date(($object->birth ? $object->birth : -1),'birth','','',1,'formsoc');
 		print "</TD></TR>\n";
+    
+    // License
+		print '<TR><TD id="tdfirstname">'.$langs->trans("License").'</TD><TD><INPUT type="text" name="license" class="minwidth100" value="'.(isset($_POST["license"])?GETPOST("license",'',3):$object->license).'"></TD>';
+		print '</TR>';
 
 		// Public profil
 		print "<TR><TD>".$langs->trans("Public")."</TD><TD>\n";
@@ -1217,7 +1221,7 @@ else
 		print "</TD></TR>\n";
 
     // License
-		print '<TR><TD id="tdfirstname">'.$langs->trans("License").'</TD><TD><INPUT type="text" name="firstname" class="minwidth100" value="'.(isset($_POST["license"])?GETPOST("license",'',3):$object->license).'"></TD>';
+		print '<TR><TD id="tdfirstname">'.$langs->trans("License").'</TD><TD><INPUT type="text" name="license" class="minwidth100" value="'.(isset($_POST["license"])?GETPOST("license",'',3):$object->license).'"></TD>';
 		print '</TR>';
 
 		// Public profil
