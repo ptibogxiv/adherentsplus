@@ -1324,9 +1324,10 @@ class AdherentPlus extends CommonObject
 	 * 	@param	string	$ref_ext				External reference
 	 *  @param	bool	$fetch_optionals		To load optionals (extrafields)
 	 *  @param	bool	$fetch_subscriptions	To load member subscriptions
+	 * 	@param	string	$license					To load member from its license
 	 *	@return int								>0 if OK, 0 if not found, <0 if KO
 	 */
-	public function fetch($rowid, $ref = '', $fk_soc = '', $ref_ext = '', $fetch_optionals = true, $fetch_subscriptions = true)
+	public function fetch($rowid, $ref = '', $fk_soc = '', $ref_ext = '', $fetch_optionals = true, $fetch_subscriptions = true, $license = '')
 	{
 		global $langs;
 
