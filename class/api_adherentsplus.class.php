@@ -579,7 +579,7 @@ class AdherentsPlus extends DolibarrApi
      *
      * @throws RestException
      *
-     * @url GET {id}/linkedmember
+     * @url GET {id}/linkedmembers
      */
     function getLinkedmember($id)
     {
