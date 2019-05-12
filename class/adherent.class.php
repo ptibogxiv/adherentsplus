@@ -49,6 +49,7 @@ class AdherentPlus extends CommonObject
 
 	var $login;
 	var $ref;
+  var $ref_ext;
 	//! Clear password in memory
 	var $pass;
 	//! Clear password in database (defined if DATABASE_PWD_ENCRYPTED=0)
@@ -1376,7 +1377,8 @@ class AdherentPlus extends CommonObject
 				$this->ref				  = $obj->ref?$obj->ref:$obj->rowid;
 				$this->id				    = $obj->rowid;
 				$this->ref_ext			= $obj->ref_ext;
-        
+ 				$this->license   		= $obj->ref_ext;
+                
 				$this->civility_id      = $obj->civility_code;                
 				$this->civility_code    = $obj->civility_code;
 				$this->civility	        = $obj->civility_code?($langs->trans("Civility".$obj->civility_code) != ("Civility".$obj->civility_code) ? $langs->trans("Civility".$obj->civility_code) : $obj->civility_code):'';
