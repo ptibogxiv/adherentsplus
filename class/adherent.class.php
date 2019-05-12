@@ -532,7 +532,7 @@ class AdherentPlus extends CommonObject
 	 * 	@param	string	$action				Current action for hookmanager
 	 * 	@return	int							<0 if KO, >0 if OK
 	 */
-	function update($user,$notrigger=0,$nosyncuser=0,$nosyncuserpass=0,$nosyncthirdparty=0,$action='update')
+	public function update($user, $notrigger = 0, $nosyncuser = 0, $nosyncuserpass = 0, $nosyncthirdparty = 0, $action = 'update')
 	{
 		global $conf, $langs, $hookmanager;
 
