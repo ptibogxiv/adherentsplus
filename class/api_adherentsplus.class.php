@@ -47,7 +47,7 @@ class AdherentsPlus extends DolibarrApi
     }
 
     /**
-     * Get properties of a member object
+     * Get properties of a member object by id
      *
      * Return an array with member informations
      *
@@ -76,7 +76,7 @@ class AdherentsPlus extends DolibarrApi
     }
     
     /**
-     * Get properties of a member object
+     * Get properties of a member object by license
      *
      * Return an array with member informations
      *
