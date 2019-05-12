@@ -51,7 +51,7 @@ class AdherentsPlus extends DolibarrApi
      *
      * Return an array with member informations
      *
-     * @param     int     $id ID / License of member
+     * @param     int     $id ID of member
      * @return 	array|mixed data without useless information
      *
      * @throws    RestException
