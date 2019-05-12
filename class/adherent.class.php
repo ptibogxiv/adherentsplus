@@ -324,7 +324,7 @@ class AdherentPlus extends CommonObject
 	 *	@param  int		$notrigger		1 ne declenche pas les triggers, 0 sinon
 	 *	@return	int						<0 if KO, >0 if OK
 	 */
-	function create($user,$notrigger=0)
+	public function create($user, $notrigger = 0)
 	{
 		global $conf,$langs;
 
@@ -339,7 +339,7 @@ class AdherentPlus extends CommonObject
 		if (! empty($conf->global->ADHERENT_MAIL_REQUIRED) && ! isValidEMail($this->email))
 		{
 			$langs->load("errors");
-			$this->error = $langs->trans("ErrorBadEMail",$this->email);
+			$this->error = $langs->trans("ErrorBadEMail", $this->email);
 			return -1;
 		}
 		if (! $this->datec) $this->datec=$now;
@@ -347,7 +347,7 @@ class AdherentPlus extends CommonObject
 		{
 			if (empty($this->login))
 			{
-				$this->error = $langs->trans("ErrorWrongValueForParameterX","Login");
+				$this->error = $langs->trans("ErrorWrongValueForParameterX", "Login");
 				return -1;
 			}
 		}
@@ -378,7 +378,7 @@ class AdherentPlus extends CommonObject
 				$this->ref=(string) $id;
 
 				// Update minor fields
-				$result=$this->update($user,1,1,0,0,'add'); // nosync is 1 to avoid update data of user
+				$result=$this->update($user, 1, 1, 0, 0, 'add'); // nosync is 1 to avoid update data of user
 				if ($result < 0)
 				{
 					$this->db->rollback();
@@ -405,14 +405,14 @@ class AdherentPlus extends CommonObject
 				if (! $notrigger)
 				{
 					// Call trigger
-					$result=$this->call_trigger('MEMBER_CREATE',$user);
+					$result=$this->call_trigger('MEMBER_CREATE', $user);
 					if ($result < 0) { $error++; }
 					// End call triggers
 				}
 
 				if (count($this->errors))
 				{
-					dol_syslog(get_class($this)."::create ".implode(',',$this->errors), LOG_ERR);
+					dol_syslog(get_class($this)."::create ".implode(',', $this->errors), LOG_ERR);
 					$this->db->rollback();
 					return -3;
 				}
