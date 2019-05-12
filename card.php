@@ -1211,6 +1211,10 @@ else
 		$form->select_date(($object->birth ? $object->birth : -1),'birth','','',1,'formsoc');
 		print "</TD></TR>\n";
 
+    // License
+		print '<TR><TD id="tdfirstname">'.$langs->trans("License").'</TD><TD><INPUT type="text" name="firstname" class="minwidth100" value="'.(isset($_POST["license"])?GETPOST("license",'',3):$object->license).'"></TD>';
+		print '</TR>';
+
 		// Public profil
 		print "<TR><TD>".$langs->trans("Public")."</TD><TD>\n";
 		print $form->selectyesno("public",(isset($_POST["public"])?GETPOST("public",'',2):$object->public),1);
