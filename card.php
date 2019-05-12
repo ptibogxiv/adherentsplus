@@ -474,7 +474,8 @@ if (empty($reshook))
 		$skype=GETPOST("member_skype", 'alpha');
 		$twitter=GETPOST("member_twitter", 'alpha');
 		$facebook=GETPOST("member_facebook", 'alpha');
-        $linkedin=GETPOST("member_linkedin", 'alpha');
+    $linkedin=GETPOST("member_linkedin", 'alpha');
+    $license=GETPOST("license", 'alpha');
 		$email=preg_replace('/\s+/', '', GETPOST("member_email", 'alpha'));
 		$login=GETPOST("member_login", 'alpha');
 		$pass=GETPOST("password", 'alpha');
@@ -509,6 +510,7 @@ if (empty($reshook))
 		$object->login       = $login;
 		$object->pass        = $pass;
 		$object->birth       = $birthdate;
+    $object->license     = $license;
 		$object->photo       = $photo;
 		$object->typeid      = $typeid;
 		//$object->note        = $comment;
