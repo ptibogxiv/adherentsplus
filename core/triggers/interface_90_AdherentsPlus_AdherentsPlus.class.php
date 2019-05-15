@@ -102,15 +102,14 @@ class InterfaceAdherentsplus
 	{
 		// Put here code you want to execute when a Dolibarr business events occurs.
 		// Data and type of action are stored into $object and $action
-global $langs,$db,$conf;
-$langs->load("members");
-$langs->load("users");
-$langs->load("mails");
-$langs->load('other');	
+global $db, $conf, $langs;
+
+// Load translation files required by the page
+$langs->loadLangs(array("members", "users", "mails", "other"));
+
 /** Users */
 $ok=0; 
-
-    
+  
 if ($action == 'BILL_PAYED') {
 			dol_syslog(
 				"Trigger '" . $this->name . "' for action '$action' launched by " . __FILE__ . ". id=" . $object->id
