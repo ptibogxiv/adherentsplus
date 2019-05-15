@@ -812,7 +812,7 @@ else
 
 		if ($conf->use_javascript_ajax)
 		{
-			print "\n".'<SCRIPT type="text/javascript" language="javascript">';
+			print "\n".'<script type="text/javascript" language="javascript">';
 			print 'jQuery(document).ready(function () {
 						jQuery("#selectcountry_id").change(function() {
 							document.formsoc.action.value="create";
@@ -838,22 +838,22 @@ else
 						});
 						initfieldrequired();
 					})';
-			print '</SCRIPT>'."\n";
+			print '</script>'."\n";
 		}
 
-		print '<FORM name="formsoc" action="'.$_SERVER["PHP_SELF"].'" method="post" enctype="multipart/form-data">';
-		print '<INPUT type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
-		print '<INPUT type="hidden" name="action" value="add">';
+		print '<form name="formsoc" action="'.$_SERVER["PHP_SELF"].'" method="post" enctype="multipart/form-data">';
+		print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
+		print '<input type="hidden" name="action" value="add">';
 
         dol_fiche_head('');
 
-		print '<TABLE class="border" width="100%">';
-		print '<TBODY>';
+		print '<table class="border" width="100%">';
+		print '<tbody>';
 
 		// Login
 		if (empty($conf->global->ADHERENT_LOGIN_NOT_REQUIRED))
 		{
-			print '<TR><TD><SPAN class="fieldrequired">'.$langs->trans("Login").' / '.$langs->trans("Id").'</SPAN></TD><TD><INPUT type="text" name="member_login" class="maxwidth200" value="'.(isset($_POST["member_login"])?GETPOST("member_login", 'alpha', 2):$object->login).'"></TD></TR>';
+			print '<tr><td><span class="fieldrequired">'.$langs->trans("Login").' / '.$langs->trans("Id").'</span></td><td><input type="text" name="member_login" class="maxwidth200" value="'.(isset($_POST["member_login"])?GETPOST("member_login", 'alpha', 2):$object->login).'"></td></tr>';
 		}
 
 		// Password
@@ -861,71 +861,71 @@ else
 		{
 			require_once DOL_DOCUMENT_ROOT.'/core/lib/security2.lib.php';
 			$generated_password=getRandomPassword(false);
-			print '<TR><TD><SPAN class="fieldrequired">'.$langs->trans("Password").'</SPAN></TD><TD>';
-			print '<INPUT size="30" maxsize="32" type="text" name="password" value="'.$generated_password.'">';
-			print '</TD></TR>';
+			print '<tr><td><span class="fieldrequired">'.$langs->trans("Password").'</span></td><td>';
+			print '<input size="30" maxsize="32" type="text" name="password" value="'.$generated_password.'">';
+			print '</td></tr>';
 		}
 
 		// Type
-		print '<TR><TD class="fieldrequired">'.$langs->trans("MemberType").'</TD><TD>';
+		print '<tr><td class="fieldrequired">'.$langs->trans("MemberType").'</td><td>';
 		$listetype=$adht->liste_array();
 		if (count($listetype))
 		{
 			print $form->selectarray("typeid", $listetype, GETPOST('typeid','int')?GETPOST('typeid','int'):$typeid, count($listetype)>1?1:0);
 		} else {
-			print '<FONT class="error">'.$langs->trans("NoTypeDefinedGoToSetup").'</FONT>';
+			print '<font class="error">'.$langs->trans("NoTypeDefinedGoToSetup").'</font>';
 		}
-		print "</TD>\n";
+		print "</td>\n";
 
 		// Morphy
 		$morphys["phy"] = $langs->trans("Physical");
 		$morphys["mor"] = $langs->trans("Moral");
-		print '<TR><TD class="fieldrequired">'.$langs->trans("Nature")."</TD><TD>\n";
+		print '<tr><td class="fieldrequired">'.$langs->trans("Nature")."</td><td>\n";
 		print $form->selectarray("morphy", $morphys, GETPOST('morphy','alpha')?GETPOST('morphy','alpha'):$object->morphy, 1);
-		print "</TD>\n";
+		print "</td>\n";
 
 		// Company
-		print '<TR><TD id="tdcompany">'.$langs->trans("Company").'</TD><TD><INPUT type="text" name="societe" size="40" value="'.(GETPOST('societe','alpha')?GETPOST('societe','alpha'):$object->societe).'"></TD></TR>';
+		print '<tr><td id="tdcompany">'.$langs->trans("Company").'</td><td><input type="text" name="societe" size="40" value="'.(GETPOST('societe','alpha')?GETPOST('societe','alpha'):$object->societe).'"></td></tr>';
 
 		// Civility
-		print '<TR><TD>'.$langs->trans("UserTitle").'</TD><TD>';
-		print $formcompany->select_civility(GETPOST('civility_id','int')?GETPOST('civility_id','int'):$object->civility_id,'civility_id').'</TD>';
-		print '</TR>';
+		print '<tr><td>'.$langs->trans("UserTitle").'</td><td>';
+		print $formcompany->select_civility(GETPOST('civility_id','int')?GETPOST('civility_id','int'):$object->civility_id,'civility_id').'</td>';
+		print '</tr>';
 
 		// Lastname
-		print '<TR><TD id="tdlastname">'.$langs->trans("Lastname").'</TD><TD><INPUT type="text" name="lastname" value="'.(GETPOST('lastname','alpha')?GETPOST('lastname','alpha'):$object->lastname).'" size="40"></TD>';
-		print '</TR>';
+		print '<tr><td id="tdlastname">'.$langs->trans("Lastname").'</td><td><input type="text" name="lastname" value="'.(GETPOST('lastname','alpha')?GETPOST('lastname','alpha'):$object->lastname).'" size="40"></td>';
+		print '</tr>';
 
 		// Firstname
-		print '<TR><TD id="tdfirstname">'.$langs->trans("Firstname").'</TD><TD><INPUT type="text" name="firstname" size="40" value="'.(GETPOST('firstname','alpha')?GETPOST('firstname','alpha'):$object->firstname).'"></TD>';
-		print '</TR>';
+		print '<tr><td id="tdfirstname">'.$langs->trans("Firstname").'</td><td><input type="text" name="firstname" size="40" value="'.(GETPOST('firstname','alpha')?GETPOST('firstname','alpha'):$object->firstname).'"></td>';
+		print '</tr>';
 
 		// EMail
-		print '<TR><TD>'.($conf->global->ADHERENT_MAIL_REQUIRED?'<SPAN class="fieldrequired">':'').$langs->trans("EMail").($conf->global->ADHERENT_MAIL_REQUIRED?'</SPAN>':'').'</TD><TD><INPUT type="text" name="member_email" size="40" value="'.(GETPOST('member_email','alpha')?GETPOST('member_email','alpha'):$object->email).'"></TD></TR>';
+		print '<tr><td>'.($conf->global->ADHERENT_MAIL_REQUIRED?'<span class="fieldrequired">':'').$langs->trans("EMail").($conf->global->ADHERENT_MAIL_REQUIRED?'</span>':'').'</td><td><input type="text" name="member_email" size="40" value="'.(GETPOST('member_email','alpha')?GETPOST('member_email','alpha'):$object->email).'"></td></tr>';
 
 		// Address
-		print '<TR><TD class="tdtop">'.$langs->trans("Address").'</TD><TD>';
-		print '<TEXTAREA name="address" wrap="soft" class="quatrevingtpercent" rows="2">'.(GETPOST('address','alpha')?GETPOST('address','alpha'):$object->address).'</TEXTAREA>';
-		print '</TD></TR>';
+		print '<tr><td class="tdtop">'.$langs->trans("Address").'</td><td>';
+		print '<textarea name="address" wrap="soft" class="quatrevingtpercent" rows="2">'.(GETPOST('address','alpha')?GETPOST('address','alpha'):$object->address).'</textarea>';
+		print '</td></tr>';
 
 		// Zip / Town
-		print '<TR><TD>'.$langs->trans("Zip").' / '.$langs->trans("Town").'</TD><TD>';
+		print '<tr><td>'.$langs->trans("Zip").' / '.$langs->trans("Town").'</td><td>';
 		print $formcompany->select_ziptown((GETPOST('zipcode','alpha')?GETPOST('zipcode','alpha'):$object->zip),'zipcode',array('town','selectcountry_id','state_id'),6);
 		print ' ';
 		print $formcompany->select_ziptown((GETPOST('town','alpha')?GETPOST('town','alpha'):$object->town),'town',array('zipcode','selectcountry_id','state_id'));
-		print '</TD></TR>';
+		print '</td></tr>';
 
 		// Country
 		$object->country_id=$object->country_id?$object->country_id:$mysoc->country_id;
-		print '<TR><TD width="25%">'.$langs->trans('Country').'</TD><TD>';
+		print '<tr><td width="25%">'.$langs->trans('Country').'</td><td>';
 		print $form->select_country(GETPOST('country_id','alpha')?GETPOST('country_id','alpha'):$object->country_id,'country_id');
 		if ($user->admin) print info_admin($langs->trans("YouCanChangeValuesForThisListFromDictionarySetup"),1);
-		print '</TD></TR>';
+		print '</td></tr>';
 
 		// State
 		if (empty($conf->global->MEMBER_DISABLE_STATE))
 		{
-			print '<TR><TD>'.$langs->trans('State').'</TD><TD>';
+			print '<tr><td>'.$langs->trans('State').'</td><td>';
 			if ($object->country_id)
 			{
 				print $formcompany->select_state(GETPOST('state_id','int')?GETPOST('state_id','int'):$object->state_id,$object->country_code);
@@ -934,17 +934,17 @@ else
 			{
 				print $countrynotdefined;
 			}
-			print '</TD></TR>';
+			print '</td></tr>';
 		}
 
 		// Pro phone
-		print '<TR><TD>'.$langs->trans("PhonePro").'</TD><TD><INPUT type="text" name="phone" size="20" value="'.(GETPOST('phone','alpha')?GETPOST('phone','alpha'):$object->phone).'"></TD></TR>';
+		print '<tr><td>'.$langs->trans("PhonePro").'</td><td><input type="text" name="phone" size="20" value="'.(GETPOST('phone','alpha')?GETPOST('phone','alpha'):$object->phone).'"></td></tr>';
 
 		// Personal phone
-		print '<TR><TD>'.$langs->trans("PhonePerso").'</TD><TD><INPUT type="text" name="phone_perso" size="20" value="'.(GETPOST('phone_perso','alpha')?GETPOST('phone_perso','alpha'):$object->phone_perso).'"></TD></TR>';
+		print '<tr><td>'.$langs->trans("PhonePerso").'</td><td><input type="text" name="phone_perso" size="20" value="'.(GETPOST('phone_perso','alpha')?GETPOST('phone_perso','alpha'):$object->phone_perso).'"></td></tr>';
 
 		// Mobile phone
-		print '<TR><TD>'.$langs->trans("PhoneMobile").'</TD><TD><INPUT type="text" name="phone_mobile" size="20" value="'.(GETPOST('phone_mobile','alpha')?GETPOST('phone_mobile','alpha'):$object->phone_mobile).'"></TD></TR>';
+		print '<tr><td>'.$langs->trans("PhoneMobile").'</td><td><input type="text" name="phone_mobile" size="20" value="'.(GETPOST('phone_mobile','alpha')?GETPOST('phone_mobile','alpha'):$object->phone_mobile).'"></td></tr>';
 
 	    // Skype
 	    if (! empty($conf->socialnetworks->enabled))
@@ -965,26 +965,26 @@ else
 	    }
 
 		// Birthday
-		print "<TR><TD>".$langs->trans("Birthday")."</TD><TD>\n";
+		print "<tr><td>".$langs->trans("Birthday")."</td><td>\n";
 		$form->select_date(($object->birth ? $object->birth : -1),'birth','','',1,'formsoc');
-		print "</TD></TR>\n";
+		print "</td></tr>\n";
     
     // License
-		print '<TR><TD id="tdfirstname">'.$langs->trans("License").'</TD><TD><INPUT type="text" name="license" class="minwidth100" value="'.(isset($_POST["license"])?GETPOST("license",'',3):$object->license).'"></TD>';
-		print '</TR>';
+		print '<tr><td id="tdfirstname">'.$langs->trans("License").'</td><td><input type="text" name="license" class="minwidth100" value="'.(isset($_POST["license"])?GETPOST("license",'',3):$object->license).'"></td>';
+		print '</tr>';
 
 		// Public profil
-		print "<TR><TD>".$langs->trans("Public")."</TD><TD>\n";
+		print "<tr><td>".$langs->trans("Public")."</td><td>\n";
 		print $form->selectyesno("public",$object->public,1);
-		print "</TD></TR>\n";
+		print "</td></tr>\n";
 
 		// Categories
 		if (! empty($conf->categorie->enabled)  && ! empty($user->rights->categorie->lire))
 		{
-			print '<TR><TD>' . fieldLabel('Categories', 'memcars') . '</TD><TD>';
+			print '<tr><td>' . fieldLabel('Categories', 'memcars') . '</td><td>';
 			$cate_arbo = $form->select_all_categories(Categorie::TYPE_MEMBER, null, 'parent', null, null, 1);
 			print $form->multiselectarray('memcats', $cate_arbo, GETPOST('memcats', 'array'), null, null, null, null, '100%');
-			print "</TD></TR>";
+			print "</td></tr>";
 		}
 
 		// Other attributes
@@ -996,18 +996,18 @@ else
 			print $object->showOptionals($extrafields,'edit');
 		}
 
-        print '<TBODY>';
-		print "</TABLE>\n";
+        print '<tbody>';
+		print "</table>\n";
 
         dol_fiche_end();
 
-	    print '<DIV class="center">';
-	    print '<INPUT type="submit" name="button" class="button" value="'.$langs->trans("AddMember").'">';
+	    print '<div class="center">';
+	    print '<input type="submit" name="button" class="button" value="'.$langs->trans("AddMember").'">';
 	    print '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-	    print '<INPUT type="submit" name="cancel" class="button" value="'.$langs->trans("Cancel").'" onclick="history.go(-1)" />';
-	    print '</DIV>';
+	    print '<input type="submit" name="cancel" class="button" value="'.$langs->trans("Cancel").'" onclick="history.go(-1)" />';
+	    print '</div>';
 
-		print "</FORM>\n";
+		print "</form>\n";
 	}
 
 	if ($action == 'edit')
@@ -1054,7 +1054,7 @@ else
 
 		if ($conf->use_javascript_ajax)
 		{
-			print "\n".'<SCRIPT type="text/javascript" language="javascript">';
+			print "\n".'<script type="text/javascript" language="javascript">';
 			print 'jQuery(document).ready(function () {
 				jQuery("#selectcountry_id").change(function() {
 					document.formsoc.action.value="edit";
@@ -1080,43 +1080,43 @@ else
 				});
 				initfieldrequired();
 			})';
-			print '</SCRIPT>'."\n";
+			print '</script>'."\n";
 		}
 
-		print '<FORM name="formsoc" action="'.$_SERVER["PHP_SELF"].'" method="post" enctype="multipart/form-data">';
-		print '<INPUT type="hidden" name="token" value="'.$_SESSION['newtoken'].'" />';
-		print '<INPUT type="hidden" name="action" value="update" />';
-		print '<INPUT type="hidden" name="rowid" value="'.$id.'" />';
-		print '<INPUT type="hidden" name="statut" value="'.$object->statut.'" />';
-		if ($backtopage) print '<INPUT type="hidden" name="backtopage" value="'.($backtopage != '1' ? $backtopage : $_SERVER["HTTP_REFERER"]).'">';
+		print '<form name="formsoc" action="'.$_SERVER["PHP_SELF"].'" method="post" enctype="multipart/form-data">';
+		print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'" />';
+		print '<input type="hidden" name="action" value="update" />';
+		print '<input type="hidden" name="rowid" value="'.$id.'" />';
+		print '<input type="hidden" name="statut" value="'.$object->statut.'" />';
+		if ($backtopage) print '<input type="hidden" name="backtopage" value="'.($backtopage != '1' ? $backtopage : $_SERVER["HTTP_REFERER"]).'">';
 
 		dol_fiche_head($head, 'general', $langs->trans("Member"), 0, 'user');
 
-		print '<TABLE class="border" width="100%">';
+		print '<table class="border" width="100%">';
 
 		// Ref
-		print '<TR><TD class="titlefieldcreate">'.$langs->trans("Ref").'</TD><TD class="valeur">'.$object->ref.'</TD></TR>';
+		print '<tr><td class="titlefieldcreate">'.$langs->trans("Ref").'</td><td class="valeur">'.$object->ref.'</td></tr>';
 
 		// Login
 		if (empty($conf->global->ADHERENT_LOGIN_NOT_REQUIRED))
 		{
-			print '<TR><TD><SPAN class="fieldrequired">'.$langs->trans("Login").' / '.$langs->trans("Id").'</SPAN></TD><TD><INPUT type="text" name="login" class="maxwidth200" value="'.(isset($_POST["login"])?GETPOST("login",'alpha',2):$object->login).'"></TD></TR>';
+			print '<tr><td><span class="fieldrequired">'.$langs->trans("Login").' / '.$langs->trans("Id").'</span></td><td><input type="text" name="login" class="maxwidth200" value="'.(isset($_POST["login"])?GETPOST("login",'alpha',2):$object->login).'"></td></tr>';
 		}
 
 	// Password
 		if (empty($conf->global->ADHERENT_LOGIN_NOT_REQUIRED))
 		{
-			print '<TR><TD class="fieldrequired">'.$langs->trans("Password").'</TD><TD><INPUT type="password" name="pass" class="maxwdith200" value="'.(isset($_POST["pass"])?GETPOST("pass",'',2):$object->pass).'"></TD></TR>';
+			print '<tr><td class="fieldrequired">'.$langs->trans("Password").'</td><td><input type="password" name="pass" class="maxwdith200" value="'.(isset($_POST["pass"])?GETPOST("pass",'',2):$object->pass).'"></td></tr>';
 		}
 		// Morphy
 		$morphys["phy"] = $langs->trans("Physical");
 		$morphys["mor"] = $langs->trans("Morale");
-		print '<TR><TD><SPAN class="fieldrequired">'.$langs->trans("Nature").'</SPAN></TD><TD>';
+		print '<tr><td><span class="fieldrequired">'.$langs->trans("Nature").'</span></td><td>';
 		print $form->selectarray("morphy", $morphys, isset($_POST["morphy"])?$_POST["morphy"]:$object->morphy);
-		print "</TD></TR>";
+		print "</td></tr>";
 
 		// Type
-		print '<TR><TD class="fieldrequired">'.$langs->trans("Type").'</TD><TD>';
+		print '<tr><td class="fieldrequired">'.$langs->trans("Type").'</td><td>';
 		if ($user->rights->adherent->creer)
 		{
 			print $form->selectarray("typeid", $adht->liste_array(), (isset($_POST["typeid"])?$_POST["typeid"]:$object->typeid));
@@ -1124,80 +1124,80 @@ else
 		else
 		{
 			print $adht->getNomUrl(1);
-			print '<INPUT type="hidden" name="typeid" value="'.$object->typeid.'">';
+			print '<input type="hidden" name="typeid" value="'.$object->typeid.'">';
 		}
-		print "</TD></TR>";
+		print "</td></tr>";
 
 		// Company
-		print '<TR><TD id="tdcompany">'.$langs->trans("Company").'</TD><TD><INPUT type="text" name="societe" class="minwidth100" value="'.(isset($_POST["societe"])?GETPOST("societe",'',2):$object->societe).'"></TD></TR>';
+		print '<tr><td id="tdcompany">'.$langs->trans("Company").'</td><td><input type="text" name="societe" class="minwidth100" value="'.(isset($_POST["societe"])?GETPOST("societe",'',2):$object->societe).'"></td></tr>';
 
 		// Civility
-		print '<TR><TD>'.$langs->trans("UserTitle").'</TD><TD>';
+		print '<tr><td>'.$langs->trans("UserTitle").'</td><td>';
 		print $formcompany->select_civility(isset($_POST["civility_id"])?$_POST["civility_id"]:$object->civility_id)."\n";
-		print '</TD>';
-		print '</TR>';
+		print '</td>';
+		print '</tr>';
 
 		// Lastname
-		print '<TR><TD id="tdlastname">'.$langs->trans("Lastname").'</TD><TD><INPUT type="text" name="lastname" class="minwidth100" value="'.(isset($_POST["lastname"])?GETPOST("lastname",'',2):$object->lastname).'"></TD>';
-		print '</TR>';
+		print '<tr><td id="tdlastname">'.$langs->trans("Lastname").'</td><td><input type="text" name="lastname" class="minwidth100" value="'.(isset($_POST["lastname"])?GETPOST("lastname",'',2):$object->lastname).'"></td>';
+		print '</tr>';
 
 		// Firstname
-		print '<TR><TD id="tdfirstname">'.$langs->trans("Firstname").'</TD><TD><INPUT type="text" name="firstname" class="minwidth100" value="'.(isset($_POST["firstname"])?GETPOST("firstname",'',3):$object->firstname).'"></TD>';
-		print '</TR>';
+		print '<tr><td id="tdfirstname">'.$langs->trans("Firstname").'</td><td><input type="text" name="firstname" class="minwidth100" value="'.(isset($_POST["firstname"])?GETPOST("firstname",'',3):$object->firstname).'"></td>';
+		print '</tr>';
 
 		// Photo
-		print '<TR><TD>'.$langs->trans("Photo").'</TD>';
-		print '<TD class="hideonsmartphone" valign="middle">';
+		print '<tr><td>'.$langs->trans("Photo").'</td>';
+		print '<td class="hideonsmartphone" valign="middle">';
 		print $form->showphoto('memberphoto',$object)."\n";
 		if ($caneditfieldmember)
 		{
-			if ($object->photo) print "<BR>\n";
-			print '<TABLE class="nobordernopadding">';
-			if ($object->photo) print '<TR><TD><INPUT type="checkbox" class="flat photodelete" name="deletephoto" id="photodelete"> '.$langs->trans("Delete").'<BR><BR></TD></TR>';
-			print '<TR><TD>'.$langs->trans("PhotoFile").'</TD></TR>';
-			print '<TR><TD><INPUT type="file" class="flat" name="photo" id="photoinput"></TD></TR>';
-			print '</TABLE>';
+			if ($object->photo) print "<br>\n";
+			print '<table class="nobordernopadding">';
+			if ($object->photo) print '<tr><td><input type="checkbox" class="flat photodelete" name="deletephoto" id="photodelete"> '.$langs->trans("Delete").'<br><br></td></tr>';
+			print '<tr><td>'.$langs->trans("PhotoFile").'</td></tr>';
+			print '<tr><td><input type="file" class="flat" name="photo" id="photoinput"></td></tr>';
+			print '</table>';
 		}
-		print '</TD></TR>';
+		print '</td></tr>';
 
 		// EMail
-		print '<TR><TD>'.($conf->global->ADHERENT_MAIL_REQUIRED?'<SPAN class="fieldrequired">':'').$langs->trans("EMail").($conf->global->ADHERENT_MAIL_REQUIRED?'</SPAN>':'').'</TD><TD><INPUT type="text" name="member_email" size="40" value="'.(isset($_POST["member_email"])?GETPOST("member_email",'',2):$object->email).'"></TD></TR>';
+		print '<tr><td>'.($conf->global->ADHERENT_MAIL_REQUIRED?'<span class="fieldrequired">':'').$langs->trans("EMail").($conf->global->ADHERENT_MAIL_REQUIRED?'</span>':'').'</td><td><input type="text" name="member_email" size="40" value="'.(isset($_POST["member_email"])?GETPOST("member_email",'',2):$object->email).'"></td></tr>';
 
 		// Address
-		print '<TR><TD>'.$langs->trans("Address").'</TD><TD>';
-		print '<TEXTAREA name="address" wrap="soft" class="quatrevingtpercent" rows="'.ROWS_2.'">'.(isset($_POST["address"])?GETPOST("address",'',2):$object->address).'</TEXTAREA>';
-		print '</TD></TR>';
+		print '<tr><td>'.$langs->trans("Address").'</td><td>';
+		print '<textarea name="address" wrap="soft" class="quatrevingtpercent" rows="'.ROWS_2.'">'.(isset($_POST["address"])?GETPOST("address",'',2):$object->address).'</textarea>';
+		print '</td></tr>';
 
 		// Zip / Town
-		print '<TR><TD>'.$langs->trans("Zip").' / '.$langs->trans("Town").'</TD><TD>';
+		print '<tr><td>'.$langs->trans("Zip").' / '.$langs->trans("Town").'</td><td>';
 		print $formcompany->select_ziptown((isset($_POST["zipcode"])?GETPOST("zipcode",'',2):$object->zip),'zipcode',array('town','selectcountry_id','state_id'),6);
 		print ' ';
 		print $formcompany->select_ziptown((isset($_POST["town"])?GETPOST("town",'',2):$object->town),'town',array('zipcode','selectcountry_id','state_id'));
-		print '</TD></TR>';
+		print '</td></tr>';
 
 		// Country
 		//$object->country_id=$object->country_id?$object->country_id:$mysoc->country_id;    // In edit mode we don't force to company country if not defined
-		print '<TR><TD>'.$langs->trans('Country').'</TD><TD>';
+		print '<tr><td>'.$langs->trans('Country').'</td><td>';
 		print $form->select_country(isset($_POST["country_id"])?$_POST["country_id"]:$object->country_id,'country_id');
 		if ($user->admin) print info_admin($langs->trans("YouCanChangeValuesForThisListFromDictionarySetup"),1);
-		print '</TD></TR>';
+		print '</td></tr>';
 
 		// State
 		if (empty($conf->global->MEMBER_DISABLE_STATE))
 		{
-			print '<TR><TD>'.$langs->trans('State').'</TD><TD>';
+			print '<tr><td>'.$langs->trans('State').'</td><td>';
 			print $formcompany->select_state($object->state_id,isset($_POST["country_id"])?GETPOST("country_id"):$object->country_id);
-			print '</TD></TR>';
+			print '</td></tr>';
 		}
 
 		// Pro phone
-		print '<TR><TD>'.$langs->trans("PhonePro").'</TD><TD><INPUT type="text" name="phone" size="20" value="'.(isset($_POST["phone"])?GETPOST("phone"):$object->phone).'"></TD></TR>';
+		print '<tr><td>'.$langs->trans("PhonePro").'</td><td><input type="text" name="phone" size="20" value="'.(isset($_POST["phone"])?GETPOST("phone"):$object->phone).'"></td></tr>';
 
 		// Personal phone
-		print '<TR><TD>'.$langs->trans("PhonePerso").'</TD><TD><INPUT type="text" name="phone_perso" size="20" value="'.(isset($_POST["phone_perso"])?GETPOST("phone_perso"):$object->phone_perso).'"></TD></TR>';
+		print '<tr><td>'.$langs->trans("PhonePerso").'</td><td><input type="text" name="phone_perso" size="20" value="'.(isset($_POST["phone_perso"])?GETPOST("phone_perso"):$object->phone_perso).'"></td></tr>';
 
 		// Mobile phone
-		print '<TR><TD>'.$langs->trans("PhoneMobile").'</TD><TD><INPUT type="text" name="phone_mobile" size="20" value="'.(isset($_POST["phone_mobile"])?GETPOST("phone_mobile"):$object->phone_mobile).'"></TD></TR>';
+		print '<tr><td>'.$langs->trans("PhoneMobile").'</td><td><input type="text" name="phone_mobile" size="20" value="'.(isset($_POST["phone_mobile"])?GETPOST("phone_mobile"):$object->phone_mobile).'"></td></tr>';
 
 	    // Skype
 	    if (! empty($conf->socialnetworks->enabled))
@@ -1218,24 +1218,24 @@ else
 	    }
 
 		// Birthday
-		print "<TR><TD>".$langs->trans("Birthday")."</TD><TD>\n";
+		print "<tr><td>".$langs->trans("Birthday")."</td><td>\n";
 		$form->select_date(($object->birth ? $object->birth : -1),'birth','','',1,'formsoc');
-		print "</TD></TR>\n";
+		print "</td></tr>\n";
 
     // License
-		print '<TR><TD id="tdfirstname">'.$langs->trans("License").'</TD><TD><INPUT type="text" name="license" class="minwidth100" value="'.(isset($_POST["license"])?GETPOST("license",'',3):$object->license).'"></TD>';
-		print '</TR>';
+		print '<tr><td id="tdfirstname">'.$langs->trans("License").'</td><td><input type="text" name="license" class="minwidth100" value="'.(isset($_POST["license"])?GETPOST("license",'',3):$object->license).'"></td>';
+		print '</tr>';
 
 		// Public profil
-		print "<TR><TD>".$langs->trans("Public")."</TD><TD>\n";
+		print "<tr><td>".$langs->trans("Public")."</td><td>\n";
 		print $form->selectyesno("public",(isset($_POST["public"])?GETPOST("public",'',2):$object->public),1);
-		print "</TD></TR>\n";
+		print "</td></tr>\n";
 
 		// Categories
 		if (! empty( $conf->categorie->enabled ) && !empty( $user->rights->categorie->lire ))
 		{
-			print '<TR><TD>' . fieldLabel('Categories', 'memcats') . '</TD>';
-			print '<TD>';
+			print '<tr><td>' . fieldLabel('Categories', 'memcats') . '</td>';
+			print '<td>';
 			$cate_arbo = $form->select_all_categories(Categorie::TYPE_MEMBER, null, null, null, null, 1);
 			$c = new Categorie($db);
 			$cats = $c->containing($object->id, Categorie::TYPE_MEMBER);
@@ -1243,7 +1243,7 @@ else
 				$arrayselected[] = $cat->id;
 			}
 			print $form->multiselectarray('memcats', $cate_arbo, $arrayselected, '', 0, '', 0, '100%');
-			print "</TD></TR>";
+			print "</td></tr>";
 		}
 
 		// Other attributes
@@ -1258,7 +1258,7 @@ else
 		// Third party Dolibarr
 		if (! empty($conf->societe->enabled))
 		{
-			print '<TR><TD>'.$langs->trans("LinkedToDolibarrThirdParty").'</TD><TD colspan="2" class="valeur">';
+			print '<tr><td>'.$langs->trans("LinkedToDolibarrThirdParty").'</td><td colspan="2" class="valeur">';
 			if ($object->socid)
 			{
 				$company=new Societe($db);
@@ -1269,29 +1269,29 @@ else
 			{
 				print $langs->trans("NoThirdPartyAssociatedToMember");
 			}
-			print '</TD></TR>';
+			print '</td></tr>';
 		}
 
 		// Login Dolibarr
-		print '<TR><TD>'.$langs->trans("LinkedToDolibarrUser").'</TD><TD colspan="2" class="valeur">';
+		print '<tr><td>'.$langs->trans("LinkedToDolibarrUser").'</td><td colspan="2" class="valeur">';
 		if ($object->user_id)
 		{
 			$form->form_users($_SERVER['PHP_SELF'].'?rowid='.$object->id,$object->user_id,'none');
 		}
 		else print $langs->trans("NoDolibarrAccess");
-		print '</TD></TR>';
+		print '</td></tr>';
 
-		print '</TABLE>';
+		print '</table>';
 
 		dol_fiche_end();
 
-		print '<DIV class="center">';
-		print '<INPUT type="submit" class="button" name="save" value="'.$langs->trans("Save").'">';
+		print '<div class="center">';
+		print '<input type="submit" class="button" name="save" value="'.$langs->trans("Save").'">';
 		print '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-		print '<INPUT type="submit" class="button" name="cancel" value="'.$langs->trans("Cancel").'" onclick="history.go(-1)" />';
-		print '</DIV>';
+		print '<input type="submit" class="button" name="cancel" value="'.$langs->trans("Cancel").'" onclick="history.go(-1)" />';
+		print '</div>';
 
-		print '</FORM>';
+		print '</form>';
 
 	}
 
@@ -1342,7 +1342,7 @@ else
 			$formquestion=array(
 					array('label' => $langs->trans("LoginToCreate"), 'type' => 'text', 'name' => 'login', 'value' => $login)
 			);
-			$text=$langs->trans("ConfirmCreateLogin").'<BR>';
+			$text=$langs->trans("ConfirmCreateLogin").'<br>';
 			if (! empty($conf->societe->enabled))
 			{
 				if ($object->socid > 0) $text.=$langs->trans("UserWillBeExternalUser");
@@ -1389,15 +1389,15 @@ else
 			$texttosend=$object->makeSubstitution($adht->getMailOnValid());
 
 			$tmp=$langs->trans("SendAnEMailToMember");
-			$tmp.='<BR>('.$langs->trans("MailFrom").': <B>'.$conf->global->ADHERENT_MAIL_FROM.'</B>, ';
-			$tmp.=$langs->trans("MailRecipient").': <B>'.$object->email.'</B>)';
+			$tmp.='<br>('.$langs->trans("MailFrom").': <b>'.$conf->global->ADHERENT_MAIL_FROM.'</b>, ';
+			$tmp.=$langs->trans("MailRecipient").': <b>'.$object->email.'</b>)';
 			$helpcontent='';
-			$helpcontent.='<B>'.$langs->trans("MailFrom").'</B>: '.$conf->global->ADHERENT_MAIL_FROM.'<BR>'."\n";
-			$helpcontent.='<B>'.$langs->trans("MailRecipient").'</B>: '.$object->email.'<BR>'."\n";
-			$helpcontent.='<B>'.$langs->trans("Subject").'</B>:<BR>'."\n";
+			$helpcontent.='<b>'.$langs->trans("MailFrom").'</b>: '.$conf->global->ADHERENT_MAIL_FROM.'<br>'."\n";
+			$helpcontent.='<b>'.$langs->trans("MailRecipient").'</b>: '.$object->email.'<br>'."\n";
+			$helpcontent.='<b>'.$langs->trans("Subject").'</b>:<br>'."\n";
 			$helpcontent.=$subjecttosend."\n";
-			$helpcontent.="<BR>";
-			$helpcontent.='<B>'.$langs->trans("Content").'</B>:<BR>';
+			$helpcontent.="<br>";
+			$helpcontent.='<b>'.$langs->trans("Content").'</b>:<br>';
 			$helpcontent.=dol_htmlentitiesbr($texttosend)."\n";
 			$label=$form->textwithpicto($tmp,$helpcontent,1,'help');
 
@@ -1431,15 +1431,15 @@ else
 			$texttosend=$object->makeSubstitution($adht->getMailOnResiliate());
 
 			$tmp=$langs->trans("SendAnEMailToMember");
-			$tmp.='<BR>('.$langs->trans("MailFrom").': <B>'.$conf->global->ADHERENT_MAIL_FROM.'</B>, ';
-			$tmp.=$langs->trans("MailRecipient").': <B>'.$object->email.'</B>)';
+			$tmp.='<br>('.$langs->trans("MailFrom").': <b>'.$conf->global->ADHERENT_MAIL_FROM.'</b>, ';
+			$tmp.=$langs->trans("MailRecipient").': <b>'.$object->email.'</b>)';
 			$helpcontent='';
-			$helpcontent.='<B>'.$langs->trans("MailFrom").'</B>: '.$conf->global->ADHERENT_MAIL_FROM.'<BR>'."\n";
-			$helpcontent.='<B>'.$langs->trans("MailRecipient").'</B>: '.$object->email.'<BR>'."\n";
-			$helpcontent.='<B>'.$langs->trans("Subject").'</B>:<BR>'."\n";
+			$helpcontent.='<b>'.$langs->trans("MailFrom").'</b>: '.$conf->global->ADHERENT_MAIL_FROM.'<br>'."\n";
+			$helpcontent.='<b>'.$langs->trans("MailRecipient").'</b>: '.$object->email.'<br>'."\n";
+			$helpcontent.='<b>'.$langs->trans("Subject").'</b>:<br>'."\n";
 			$helpcontent.=$subjecttosend."\n";
-			$helpcontent.="<BR>";
-			$helpcontent.='<B>'.$langs->trans("Content").'</B>:<BR>';
+			$helpcontent.="<br>";
+			$helpcontent.='<b>'.$langs->trans("Content").'</b>:<br>';
 			$helpcontent.=dol_htmlentitiesbr($texttosend)."\n";
 			$label=$form->textwithpicto($tmp,$helpcontent,1,'help');
 
@@ -1473,7 +1473,7 @@ else
 		if (empty($conf->global->ADHERENT_LOGIN_NOT_REQUIRED)) $rowspan++;
 		if (! empty($conf->societe->enabled)) $rowspan++;
 
-		$linkback = '<A href="'.dol_buildpath('/adherentsplus/list.php', 1).'">'.$langs->trans("BackToList").'</A>';
+		$linkback = '<a href="'.dol_buildpath('/adherentsplus/list.php', 1).'">'.$langs->trans("BackToList").'</a>';
 
 		dol_banner_tab($object, 'rowid', $linkback);
 
@@ -1645,7 +1645,7 @@ if ($object->fk_parent > 0) {
 $objp = new Adherentplus($db);
 $objp->fetch($object->fk_parent);
 print '<a href="'.$dolibarr_main_url_root.dol_buildpath('/adherentsplus/card.php?rowid='.$object->fk_parent, 1).'">'.img_picto('', 'object_user').' '.$objp->firstname.' '.$objp->lastname.' '.$objp->company.'</a>';
-//if ($user->rights->adherent->creer) {print '<A href="'. $_SERVER['PHP_SELF'] .'?action=deleteparent&rowid=' . $object->id . '&link=' . $object->id . '" class="deletefilelink">' . img_delete() . '</A>';}   
+//if ($user->rights->adherent->creer) {print '<a href="'. $_SERVER['PHP_SELF'] .'?action=deleteparent&rowid=' . $object->id . '&link=' . $object->id . '" class="deletefilelink">' . img_delete() . '</a>';}   
 } 
 else print $langs->trans("NoPrincipalMember");
 
@@ -1902,7 +1902,7 @@ else print $langs->trans("NoPrincipalMember");
 				print showOnlinePaymentUrl('membersubscription', $object->id);
 			}
 
-		print '</DIV><DIV class="fichehalfright"><DIV class="ficheaddleft">';
+		print '</div><div class="fichehalfright"><div class="ficheaddleft">';
 
 		// List of actions on element
         /* Already in tab Agenda/Events
