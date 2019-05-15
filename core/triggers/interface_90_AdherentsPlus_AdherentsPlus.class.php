@@ -113,7 +113,8 @@ $ok=0;
 if ($action == 'BILL_PAYED') {
 			dol_syslog(
 				"Trigger '" . $this->name . "' for action '$action' launched by " . __FILE__ . ". id=" . $object->id
-			);     
+			); 
+require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';          
 dol_include_once('/adherentsplus/class/adherent.class.php');
 dol_include_once('/adherentsplus/class/adherent_type.class.php'); 
 require_once DOL_DOCUMENT_ROOT.'/compta/facture/class/facture.class.php';
