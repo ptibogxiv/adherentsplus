@@ -58,7 +58,7 @@ class Actionsadherentsplus
 	 */
 	function formObjectOptions($parameters=false, &$object, &$action='')
 	{
-		global $db,$conf,$user,$langs,$form;
+		global $db, $conf, $user, $langs, $form;
 
 		if (is_array($parameters) && ! empty($parameters))
 		{
