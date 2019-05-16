@@ -613,7 +613,7 @@ class AdherentsPlus extends DolibarrApi
      *
      * @throws RestException
      *
-     * @url DELETE {id}/linkedmember/{linkedmemberid}
+     * @url DELETE {id}/linkedmembers/{linkedmemberid}
      */
     function deleteLinkedmember($id, $linkedmemberid)
     {
