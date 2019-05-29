@@ -32,8 +32,6 @@ pour toutes versions de Dolibarr:
  
  ALTER TABLE `llx_adherent_type` ADD COLUMN `price_level` int(11)   DEFAULT NULL;
  
- ALTER TABLE `llx_adherent_type` ADD COLUMN `vote` varchar(3)   DEFAULT NULL;
- 
  ALTER TABLE `llx_adherent_type` ADD COLUMN `automatic` varchar(3)   DEFAULT NULL;
  
  ALTER TABLE `llx_adherent_type` ADD COLUMN `automatic_renew` varchar(3)   DEFAULT NULL;
