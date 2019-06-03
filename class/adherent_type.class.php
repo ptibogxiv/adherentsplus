@@ -151,7 +151,7 @@ class AdherentTypePlus extends CommonObject
         $sql.= "welcome = '".$this->welcome."',";
         $sql.= "price = '".$this->price."',";
         $sql.= "price_level = '".$this->price_level."',";
-        $sql.= ", duration = '" . $this->db->escape($this->duration_value . $this->duration_unit) ."'";
+        $sql.= "duration = '" . $this->db->escape($this->duration_value . $this->duration_unit) ."',";
         $sql.= "note = '".$this->db->escape($this->note)."',";
         $sql.= "vote = '".$this->vote."',";
         $sql.= "automatic = '".$this->automatic."',";
