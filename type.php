@@ -135,6 +135,8 @@ if ($action == 'add' && $user->rights->adherent->configurer)
     $object->statut         = trim($statut);
     $object->morphy         = trim($morphy);
 		$object->subscription	= (int) trim($subscription);
+    $object->duration_value     	 = $duration_value;
+    $object->duration_unit      	 = $duration_unit;
 		$object->note			= trim($comment);
 		$object->mail_valid		= (boolean) trim($mail_valid);
 		$object->vote			= (boolean) trim($vote);
@@ -182,6 +184,8 @@ if ($action == 'update' && $user->rights->adherent->configurer)
     $object->welcome     = price2num($welcome);
     $object->price       = price2num($price);
     $object->price_level       = trim($price_level?$price_level:'1');
+    $object->duration_value     	 = $duration_value;
+    $object->duration_unit      	 = $duration_unit;
     $object->automatic   = (boolean) trim($automatic);
     $object->automatic_renew   = (boolean) trim($automatic_renew);
 		// Fill array 'array_options' with data from add form
