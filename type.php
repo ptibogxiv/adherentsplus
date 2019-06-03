@@ -89,6 +89,8 @@ $mail_valid=GETPOST("mail_valid");
 $welcome=GETPOST("welcome","alpha");
 $price=GETPOST("price","alpha");
 $price_level=GETPOST("price_level","int");
+$duration_value = GETPOST('duration_value', 'int');
+$duration_unit = GETPOST('duration_unit', 'alpha');
 $automatic=GETPOST("automatic","int");
 $automatic_renew=GETPOST("automatic_renew","int");
 // Security check
