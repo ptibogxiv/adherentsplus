@@ -51,6 +51,7 @@ dol_include_once('/adherentsplus/lib/member.lib.php');
 dol_include_once('/adherentsplus/class/adherent.class.php');
 dol_include_once('/adherentsplus/class/adherent_type.class.php');
 require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
+require_once DOL_DOCUMENT_ROOT.'/product/class/html.formproduct.class.php';
 require_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';    
 require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
 
@@ -209,7 +210,7 @@ llxHeader('',$langs->trans("MembersTypeSetup"),'EN:Module_Foundations|FR:Module_
 
 $form=new Form($db);
 $formother=new FormOther($db);
-
+$formproduct = new FormProduct($db);
 
 // List of members type
 if (! $rowid && $action != 'create' && $action != 'edit')
@@ -366,6 +367,12 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
 	print '</select>';
 	print '</td></tr>';
 }
+
+  print '<tr><td>'.$langs->trans("Duration").'</td><td colspan="3">';
+  print '<input name="surface" size="4" value="'.GETPOST('duration_value', 'int').'">';
+  print $formproduct->selectMeasuringUnits("duration_unit", "time", GETPOST('duration_value', 'alpha'), 0, 1);
+  print '</td></tr>';
+
 	print '<tr><td>'.$langs->trans("VoteAllowed").'</td><td>';
 	print $form->selectyesno("vote",0,1);
 	print '</td></tr>';
@@ -467,6 +474,19 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
     print '<tr><td>';
 	  print $langs->trans("PriceLevel").'</td><td colspan="2">'.$object->price_level."</td></tr>";
 }
+
+    print '<tr><td class="titlefield">'.$langs->trans("Duration").'</td><td colspan="2">'.$object->duration_value.'&nbsp;';
+    if ($object->duration_value > 1)
+    {
+    $dur=array("i"=>$langs->trans("Minute"),"h"=>$langs->trans("Hours"),"d"=>$langs->trans("Days"),"w"=>$langs->trans("Weeks"),"m"=>$langs->trans("Months"),"y"=>$langs->trans("Years"));
+    }
+    elseif ($object->duration_value > 0)
+    {
+    $dur=array("i"=>$langs->trans("Minute"),"h"=>$langs->trans("Hour"),"d"=>$langs->trans("Day"),"w"=>$langs->trans("Week"),"m"=>$langs->trans("Month"),"y"=>$langs->trans("Year"));
+    }
+    print (! empty($object->duration_unit) && isset($dur[$object->duration_unit]) ? $langs->trans($dur[$object->duration_unit]) : '')."&nbsp;";
+    print '</td></tr>';
+                
 		print '<tr><td>'.$langs->trans("VoteAllowed").'</td><td>';
 		print yn($object->vote);
 		print '</tr>';
@@ -849,6 +869,12 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
 	  print '</select>';
 	  print '</td></tr>';
  }
+ 
+    print '<tr><td>'.$langs->trans("Duration").'</td><td colspan="3">';
+    print '<input name="duration_value" size="5" value="'.$object->duration_value.'"> ';
+    print $formproduct->selectMeasuringUnits("duration_unit", "time", $object->duration_unit, 0, 1);
+    print '</td></tr>';
+                 
 		print '<tr><td>'.$langs->trans("VoteAllowed").'</td><td>';
 		print $form->selectyesno("vote",$object->vote,1);
 		print '</td></tr>';
