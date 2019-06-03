@@ -70,6 +70,16 @@ class AdherentTypePlus extends CommonObject
 	public $family;
   public $statut;
   public $morphy;
+  
+    /*
+    * Service expiration
+    */
+    public $duration_value;
+
+    /**
+     * Exoiration unit
+     */
+    public $duration_unit;  
     /**
 	 *	Constructor
 	 *
@@ -141,6 +151,7 @@ class AdherentTypePlus extends CommonObject
         $sql.= "welcome = '".$this->welcome."',";
         $sql.= "price = '".$this->price."',";
         $sql.= "price_level = '".$this->price_level."',";
+        $sql.= ", duration = '" . $this->db->escape($this->duration_value . $this->duration_unit) ."'";
         $sql.= "note = '".$this->db->escape($this->note)."',";
         $sql.= "vote = '".$this->vote."',";
         $sql.= "automatic = '".$this->automatic."',";
@@ -230,7 +241,7 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
      */
     function fetch($rowid)
     {
-        $sql = "SELECT d.rowid, d.libelle as label, d.statut, d.morphy, d.subscription, d.welcome, d.price, d.price_level, d.automatic, d.automatic_renew, d.family, d.mail_valid, d.note, d.vote";
+        $sql = "SELECT d.rowid, d.libelle as label, d.statut, d.morphy, d.subscription, d.welcome, d.price, d.price_level, d.duration, d.automatic, d.automatic_renew, d.family, d.mail_valid, d.note, d.vote";
         $sql .= " FROM ".MAIN_DB_PREFIX."adherent_type as d";
         $sql .= " WHERE d.rowid = ".$rowid;
 
@@ -252,6 +263,9 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
                 $this->libelle        = $obj->label;	// For backward compatibility
                 $this->statut         = $obj->statut;
                 $this->morphy         = $obj->morphy;
+                $this->duration       = $obj->duration;
+                $this->duration_value = substr($obj->duration, 0, dol_strlen($obj->duration)-1);
+                $this->duration_unit  = substr($obj->duration, -1);
                 $this->subscription   = $obj->subscription;
                 $this->automatic      = $obj->automatic;
                 $this->automatic_renew= $obj->automatic_renew;
