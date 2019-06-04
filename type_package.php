@@ -62,8 +62,8 @@ $rowid  = GETPOST('rowid','int');
 $action = GETPOST('action','alpha');
 $cancel = GETPOST('cancel','alpha');
 
-$search_lastname	= GETPOST('search_lastname','alpha');
-$search_login		= GETPOST('search_login','alpha');
+$search_ref	= GETPOST('search_ref','alpha');
+$search_label		= GETPOST('search_label','alpha');
 $search_email		= GETPOST('search_email','alpha');
 $type				= GETPOST('type','alpha');
 $status				= GETPOST('status','alpha');
@@ -526,13 +526,13 @@ else print img_picto($langs->trans('TypeStatusInactive'),'statut5').' '.$langs->
 		  		//$sql.= natural_search(array("d.firstname","d.lastname"), GETPOST('search','alpha'));
 		  	}
 		}
-		if (! empty($search_lastname))
+		if (! empty($search_ref))
 		{
-			//$sql.= natural_search(array("d.firstname","d.lastname"), $search_lastname);
+			$sql.= natural_search("p.ref", $search_ref);
 		}
-		if (! empty($search_login))
+		if (! empty($search_label))
 		{
-			//$sql.= natural_search("d.login", $search_login);
+			$sql.= natural_search("p.label", $search_label);
 		}
 		if (! empty($search_email))
 		{
@@ -588,9 +588,8 @@ else print img_picto($langs->trans('TypeStatusInactive'),'statut5').' '.$langs->
 
 		    $param="&rowid=".$rowid;
 		    if (! empty($status))			$param.="&status=".$status;
-		    if (! empty($search_lastname))	$param.="&search_lastname=".$search_lastname;
-		    if (! empty($search_firstname))	$param.="&search_firstname=".$search_firstname;
-		    if (! empty($search_login))		$param.="&search_login=".$search_login;
+		    if (! empty($search_ref))	$param.="&search_ref=".$search_ref;
+		    if (! empty($search_label))		$param.="&search_label=".$search_label;
 		    if (! empty($search_email))		$param.="&search_email=".$search_email;
 		    if (! empty($filter))			$param.="&filter=".$filter;
 
@@ -614,10 +613,10 @@ else print img_picto($langs->trans('TypeStatusInactive'),'statut5').' '.$langs->
 			print '<tr class="liste_titre_filter">';
 
 			print '<td class="liste_titre" align="left">';
-			print '<input class="flat" type="text" name="search_lastname" value="'.dol_escape_htmltag($search_lastname).'" size="12"></td>';
+			print '<input class="flat" type="text" name="search_ref" value="'.dol_escape_htmltag($search_ref).'" size="7"></td>';
 
 			print '<td class="liste_titre" align="left">';
-			print '<input class="flat" type="text" name="search_login" value="'.dol_escape_htmltag($search_login).'" size="7"></td>';
+			print '<input class="flat" type="text" name="search_label" value="'.dol_escape_htmltag($search_label).'" size="12"></td>';
 
 			print '<td class="liste_titre">&nbsp;</td>';
 
@@ -635,8 +634,8 @@ else print img_picto($langs->trans('TypeStatusInactive'),'statut5').' '.$langs->
 			print "</tr>";
 
 			print '<tr class="liste_titre">';
-		    print_liste_field_titre( $langs->trans("Ref"),$_SERVER["PHP_SELF"],"d.lastname",$param,"","",$sortfield,$sortorder);
-		    print_liste_field_titre("ProductsOrServices",$_SERVER["PHP_SELF"],"d.login",$param,"","",$sortfield,$sortorder);
+		    print_liste_field_titre( $langs->trans("Ref"),$_SERVER["PHP_SELF"],"p.ref",$param,"","",$sortfield,$sortorder);
+		    print_liste_field_titre("ProductsOrServices",$_SERVER["PHP_SELF"],"p.label",$param,"","",$sortfield,$sortorder);
 		    print_liste_field_titre("Nature",$_SERVER["PHP_SELF"],"d.morphy",$param,"","",$sortfield,$sortorder);
 		    print_liste_field_titre("Qty",$_SERVER["PHP_SELF"],"t.qty",$param,"","",$sortfield,$sortorder);
 		    print_liste_field_titre("DateStart",$_SERVER["PHP_SELF"],"d.statut,d.datefin",$param,"","",$sortfield,$sortorder);
@@ -674,7 +673,11 @@ else print img_picto($langs->trans('TypeStatusInactive'),'statut5').' '.$langs->
 		        print "<td>".dol_trunc($objp->label, 80)."</td>";
 
 		        // Qty
-		        print "<td>".$objp->qty."</td>";
+            if (!empty($objp->qty)) {
+ 		        print "<td>".$objp->qty."</td>";           
+            } else {
+		        print "<td>".$langs->trans("unlimited")."</td>";
+            }
 
 		        // Statut
 		        print '<td class="nowrap">';
