@@ -75,8 +75,8 @@ llxHeader("",$title,$helpurl);
 
 $form = new Form($db);
 
-if ($id)
-{
+if ($id) 
+{  
 	$head = member_prepare_head($object);
 
 	dol_fiche_head($head, 'consumption', $langs->trans("Member"), -1, 'user');
@@ -121,6 +121,9 @@ if ($id)
 				}
 			print '</td></tr>';
 		}
+    
+    // Type
+    print '<tr><td>'.$langs->trans("Type").'</td><td class="valeur">'.$adht->getNomUrl(1).'</td></tr>';
 
     // Company
     print '<tr><td>'.$langs->trans("NextInvoice").'</td><td class="valeur">'.dol_print_date($object->nextinvoice,'day').'</td></tr>';
