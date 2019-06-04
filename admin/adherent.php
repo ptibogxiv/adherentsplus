@@ -292,7 +292,7 @@ print "</tr>\n";
 					$cats = $c->containing($conf->global->ADHERENT_MEMBER_CATEGORY, Categorie::TYPE_PRODUCT);
 					foreach ($cats as $cat) {
 						$arrayselected[] = $cat->id;
-            print $cat->id;
+          //print $cat->id;
 					}
 					print $form->multiselectarray('ADHERENT_MEMBER_CATEGORY', $cate_arbo, array($conf->global->ADHERENT_MEMBER_CATEGORY), '', 0, '', 0, '90%');
 					print "</td></tr>";
