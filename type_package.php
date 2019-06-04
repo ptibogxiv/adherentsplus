@@ -76,7 +76,7 @@ $offset = $limit * $page ;
 $pageprev = $page - 1;
 $pagenext = $page + 1;
 if (! $sortorder) {  $sortorder="DESC"; }
-if (! $sortfield) {  $sortfield="d.lastname"; }
+//if (! $sortfield) {  $sortfield="d.lastname"; }
 
 $label=GETPOST("label","alpha");
 $statut=GETPOST("statut","int");
@@ -555,48 +555,46 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
 
 		$now=dol_now();
 
-		$sql = "SELECT d.rowid, d.login, d.firstname, d.lastname, d.societe, ";
-		$sql.= " d.datefin,";
-		$sql.= " d.email, d.fk_adherent_type as type_id, d.morphy, d.statut,";
-		$sql.= " t.libelle as type, t.subscription";
-		$sql.= " FROM ".MAIN_DB_PREFIX."adherent as d, ".MAIN_DB_PREFIX."adherent_type as t";
-		$sql.= " WHERE d.fk_adherent_type = t.rowid ";
-		$sql.= " AND d.entity IN (".getEntity('adherent').")";
-		$sql.= " AND t.rowid = ".$object->id;
+		$sql = "SELECT t.rowid, t.fk_type as type, t.fk_product as product";
+    $sql.= " , p.label";
+		$sql.= " FROM ".MAIN_DB_PREFIX."adherent_type_package as t";
+    $sql.= " JOIN".MAIN_DB_PREFIX."product as p";
+		$sql.= " WHERE t.entity IN (".getEntity('adherent').")";
+		$sql.= " AND t.fk_type = ".$object->id;
 		if ($sall)
 		{
-			$sql.=natural_search(array("f.firstname","d.lastname","d.societe","d.email","d.login","d.address","d.town","d.note_public","d.note_private"), $sall);
+			//$sql.=natural_search(array("f.firstname","d.lastname","d.societe","d.email","d.login","d.address","d.town","d.note_public","d.note_private"), $sall);
 		}
 		if ($status != '')
 		{
-		    $sql.= " AND d.statut IN (".$db->escape($status).")";     // Peut valoir un nombre ou liste de nombre separes par virgules
+		    $sql.= " AND t.statut IN (".$db->escape($status).")";     // Peut valoir un nombre ou liste de nombre separes par virgules
 		}
 		if ($action == 'search')
 		{
 			if (GETPOST('search'))
 			{
-		  		$sql.= natural_search(array("d.firstname","d.lastname"), GETPOST('search','alpha'));
+		  		//$sql.= natural_search(array("d.firstname","d.lastname"), GETPOST('search','alpha'));
 		  	}
 		}
 		if (! empty($search_lastname))
 		{
-			$sql.= natural_search(array("d.firstname","d.lastname"), $search_lastname);
+			//$sql.= natural_search(array("d.firstname","d.lastname"), $search_lastname);
 		}
 		if (! empty($search_login))
 		{
-			$sql.= natural_search("d.login", $search_login);
+			//$sql.= natural_search("d.login", $search_login);
 		}
 		if (! empty($search_email))
 		{
-			$sql.= natural_search("d.email", $search_email);
+			//$sql.= natural_search("d.email", $search_email);
 		}
 		if ($filter == 'uptodate')
 		{
-		    $sql.=" AND datefin >= '".$db->idate($now)."'";
+		    //$sql.=" AND datefin >= '".$db->idate($now)."'";
 		}
 		if ($filter == 'outofdate')
 		{
-		    $sql.=" AND datefin < '".$db->idate($now)."'";
+		    //$sql.=" AND datefin < '".$db->idate($now)."'";
 		}
 		// Count total nb of records
 		$nbtotalofrecords = '';
@@ -616,7 +614,7 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
 		    $num = $db->num_rows($resql);
 		    $i = 0;
 
-		    $titre=$langs->trans("MembersList");
+		    $titre=$langs->trans("ProductsList");
 		    if ($status != '')
 		    {
 		        if ($status == '-1,1')								{ $titre=$langs->trans("MembersListQualified"); }
