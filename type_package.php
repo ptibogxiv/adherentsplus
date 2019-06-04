@@ -52,6 +52,7 @@ dol_include_once('/adherentsplus/class/adherent.class.php');
 dol_include_once('/adherentsplus/class/adherent_type.class.php');
 require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
 require_once DOL_DOCUMENT_ROOT.'/product/class/html.formproduct.class.php';
+require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 require_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';    
 require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
 
@@ -457,30 +458,6 @@ else print img_picto($langs->trans('TypeStatusInactive'),'statut5').' '.$langs->
 		print '<tr><td>'.$langs->trans("Nature").'</td><td class="valeur" >'.$object->getmorphylib($object->morphy).'</td>';
 		print '</tr>';
 
-    print '<tr><td class="titlefield">'.$langs->trans("GroupSubscription").'</td><td>';
-		print yn($object->family);
-		print '</tr>';
-
-		print '<tr><td class="titlefield">'.$langs->trans("SubscriptionRequired").'</td><td>';
-		print yn($object->subscription);
-		print '</tr>';
-    if ($object->subscription == '1')
-	{        
-    print '<tr><td>'.$langs->trans("SubscriptionWelcome").'</td><td>';
-		print price($object->welcome);
-    print ' '.$langs->trans("Currency".$conf->currency);
-		print '</tr>';
-    
-    print '<tr><td>'.$langs->trans("SubscriptionPrice").'</td><td>';
-		print price($object->price);
-    print ' '.$langs->trans("Currency".$conf->currency);
-		print '</tr>';               
-}
-if (! empty($conf->global->PRODUIT_MULTIPRICES)){
-    print '<tr><td>';
-	  print $langs->trans("PriceLevel").'</td><td colspan="2">'.$object->price_level."</td></tr>";
-}
-
     print '<tr><td class="titlefield">'.$langs->trans("Duration").'</td><td colspan="2">'.$object->duration_value.'&nbsp;';
     if ($object->duration_value > 1)
     {
@@ -492,24 +469,9 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
     }
     print (! empty($object->duration_unit) && isset($dur[$object->duration_unit]) ? $langs->trans($dur[$object->duration_unit]) : '')."&nbsp;";
     print '</td></tr>';
-                
-		print '<tr><td>'.$langs->trans("VoteAllowed").'</td><td>';
-		print yn($object->vote);
-		print '</tr>';
-
-    print '<tr><td>'.$langs->trans("Validation").'</td><td>';
-		print autoOrManual($object->automatic);
-		print '</tr>';
-    
-    print '<tr><td>'.$langs->trans("Renewal").'</td><td>';
-		print autoOrManual($object->automatic_renew);
-		print '</tr>';
 
 		print '<tr><td class="tdtop">'.$langs->trans("Description").'</td><td>';
 		print nl2br($object->note)."</td></tr>";
-
-		print '<tr><td class="tdtop">'.$langs->trans("WelcomeEMail").'</td><td>';
-		print nl2br($object->mail_valid)."</td></tr>";
 
     	// Other attributes
     	include DOL_DOCUMENT_ROOT . '/core/tpl/extrafields_view.tpl.php';
@@ -526,12 +488,6 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
 
 		print '<div class="tabsAction">';
 
-		// Edit
-		if ($user->rights->adherent->configurer)
-		{
-			print '<div class="inline-block divButAction"><a class="butAction" href="'.$_SERVER['PHP_SELF'].'?action=edit&amp;rowid='.$object->id.'">'.$langs->trans("Modify").'</a></div>';
-		}
-
 		// Add
     if ( $user->rights->adherent->configurer && !empty($object->statut) )
 		{
@@ -539,12 +495,6 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
     } else {
 		print '<div class="inline-block divButAction"><a class="butActionRefused classfortooltip" href="#" title="'.dol_escape_htmltag($langs->trans("NoAddMember")).'">'.$langs->trans("AddMember").'</a></div>';    
     }
-    
-		// Delete
-		if ($user->rights->adherent->configurer)
-		{
-			print '<div class="inline-block divButAction"><a class="butActionDelete" href="'.$_SERVER['PHP_SELF'].'?action=delete&rowid='.$object->id.'">'.$langs->trans("DeleteType").'</a></div>';
-		}
 
 		print "</div>";
 
@@ -555,10 +505,10 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
 
 		$now=dol_now();
 
-		$sql = "SELECT t.rowid, t.fk_type as type, t.fk_product as product";
-    $sql.= " , p.label";
+		$sql = "SELECT t.rowid, t.fk_type as type, t.fk_product as product, t.qty as qty";
+    $sql.= " , p.label, p.ref as ref";
 		$sql.= " FROM ".MAIN_DB_PREFIX."adherent_type_package as t";
-    $sql.= " JOIN".MAIN_DB_PREFIX."product as p";
+    $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."product as p ON p.rowid = t.fk_product";
 		$sql.= " WHERE t.entity IN (".getEntity('adherent').")";
 		$sql.= " AND t.fk_type = ".$object->id;
 		if ($sall)
@@ -682,13 +632,13 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
 		    print '<input type="image" class="liste_titre" src="'.DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/searchclear.png" name="button_removefilter" value="'.dol_escape_htmltag($langs->trans("RemoveFilter")).'" title="'.dol_escape_htmltag($langs->trans("RemoveFilter")).'">';
 			print '</td>';
 
-			print "</tr>\n";
+			print "</tr>";
 
 			print '<tr class="liste_titre">';
-		    print_liste_field_titre( $langs->trans("Name")." / ".$langs->trans("Company"),$_SERVER["PHP_SELF"],"d.lastname",$param,"","",$sortfield,$sortorder);
-		    print_liste_field_titre("Login",$_SERVER["PHP_SELF"],"d.login",$param,"","",$sortfield,$sortorder);
+		    print_liste_field_titre( $langs->trans("Ref"),$_SERVER["PHP_SELF"],"d.lastname",$param,"","",$sortfield,$sortorder);
+		    print_liste_field_titre("ProductsOrServices",$_SERVER["PHP_SELF"],"d.login",$param,"","",$sortfield,$sortorder);
 		    print_liste_field_titre("Nature",$_SERVER["PHP_SELF"],"d.morphy",$param,"","",$sortfield,$sortorder);
-		    print_liste_field_titre("EMail",$_SERVER["PHP_SELF"],"d.email",$param,"","",$sortfield,$sortorder);
+		    print_liste_field_titre("Qty",$_SERVER["PHP_SELF"],"t.qty",$param,"","",$sortfield,$sortorder);
 		    print_liste_field_titre("Status",$_SERVER["PHP_SELF"],"d.statut,d.datefin",$param,"","",$sortfield,$sortorder);
 		    print_liste_field_titre("EndSubscription",$_SERVER["PHP_SELF"],"d.datefin",$param,"",'align="center"',$sortfield,$sortorder);
 		    print_liste_field_titre("Action",$_SERVER["PHP_SELF"],"",$param,"",'width="60" align="center"',$sortfield,$sortorder);
@@ -700,23 +650,17 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
 
 		        $datefin=$db->jdate($objp->datefin);
 
-		        $adh=new AdherentPlus($db);
-		        $adh->lastname=$objp->lastname;
-		        $adh->firstname=$objp->firstname;
-
+	$product_static = new Product($db);
+		$product_static->id = $objp->product;
+		$product_static->ref = $objp->ref;
 		        // Lastname
 		        print '<tr class="oddeven">';
-		        if ($objp->societe != '')
-		        {
-		            print '<td><a href="card.php?rowid='.$objp->rowid.'">'.img_object($langs->trans("ShowMember"),"user").' '.$adh->getFullName($langs,0,-1,20).' / '.dol_trunc($objp->societe,12).'</a></td>'."\n";
-		        }
-		        else
-		        {
-		            print '<td><a href="card.php?rowid='.$objp->rowid.'">'.img_object($langs->trans("ShowMember"),"user").' '.$adh->getFullName($langs,0,-1,32).'</a></td>'."\n";
-		        }
+			print '<td class="tdoverflowmax200">';
+			print $product_static->getNomUrl(1);
+			print "</td>";
 
 		        // Login
-		        print "<td>".$objp->login."</td>\n";
+		        print '<td class="tdoverflowmax200">'.dol_trunc($objp->label, 80).'</td>';
 
 		        // Type
 		        /*print '<td class="nowrap">';
@@ -727,14 +671,14 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
 				*/
 
 		        // Moral/Physique
-		        print "<td>".$adh->getmorphylib($objp->morphy)."</td>\n";
+		        print "<td>".dol_trunc($objp->label, 80)."</td>";
 
-		        // EMail
-		        print "<td>".dol_print_email($objp->email,0,0,1)."</td>\n";
+		        // Qty
+		        print "<td>".$objp->qty."</td>";
 
 		        // Statut
 		        print '<td class="nowrap">';
-		        print $adh->LibStatut($objp->statut,$objp->subscription,$datefin,2);
+		        //print $adh->LibStatut($objp->statut,$objp->subscription,$datefin,2);
 		        print "</td>";
 
 		        // Date end subscription
