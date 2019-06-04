@@ -146,9 +146,9 @@ function member_type_prepare_head(AdherentTypePlus $object)
 	$h++;
 
 if ( !empty($conf->global->ADHERENT_CONSUMPTION) ) {  
-	$head[$h][0] = dol_buildpath('/adherentsplus/type.php?rowid='.$object->id.'', 1);
-	$head[$h][1] = $langs->trans("Consumptions");
-	$head[$h][2] = 'consumption';
+	$head[$h][0] = dol_buildpath('/adherentsplus/type_package.php?rowid='.$object->id.'', 1);
+	$head[$h][1] = $langs->trans("Package");
+	$head[$h][2] = 'package';
 	$h++;
 }
 

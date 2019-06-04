@@ -33,18 +33,44 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/commonobject.class.php';
  */
 class AdherentTypePlus extends CommonObject
 {
+	/**
+	 * @var string Name of table without prefix where object is stored
+	 */
 	public $table_element = 'adherent_type';
+
+	/**
+	 * @var string ID to identify managed object
+	 */
 	public $element = 'adherent_type';
+
+	/**
+	 * @var string String with name of icon for myobject. Must be the part after the 'object_' into object_myobject.png
+	 */
 	public $picto = 'group';
+
+	/**
+	 * 0=No test on entity, 1=Test with field entity, 2=Test with link by societe
+	 * @var int
+	 */
+	public $ismultientitymanaged = 1;
 
 	/**
 	 * @var string
 	 * @deprecated Use label
-	 * @see label
+	 * @see $label
 	 */
 	public $libelle;
-	/** @var string Label */
-	public $label;
+
+	/**
+     * @var string Adherent type label
+     */
+    public $label;
+
+    /**
+     * @var string Adherent type nature
+     */
+    public $morphy;
+
 	/**
 	 * @var bool
 	 * @deprecated Use subscription
@@ -69,7 +95,6 @@ class AdherentTypePlus extends CommonObject
   public $automatic_renew;
 	public $family;
   public $statut;
-  public $morphy;
   
     /*
     * Service expiration
@@ -92,55 +117,90 @@ class AdherentTypePlus extends CommonObject
     }
 
 
-    /**
-     *  Fonction qui permet de creer le status de l'adherent
-     *
-     *  @param      User		$user		User making creation
-     *  @return     int						>0 if OK, < 0 if KO
-     */
-    function create($user)
-    {
-        global $conf;
+	/**
+	 *  Fonction qui permet de creer le status de l'adherent
+	 *
+	 *  @param	User		$user			User making creation
+	 *  @param	int		$notrigger		1=do not execute triggers, 0 otherwise
+	 *  @return	int						>0 if OK, < 0 if KO
+	 */
+	public function create($user, $notrigger = 0)
+	{
+		global $conf;
 
-        //$this->statut=(int) $this->statut;
-        $this->label=(!empty($this->libelle)?trim($this->libelle):trim($this->label));
+		$error=0;
 
-        $sql = "INSERT INTO ".MAIN_DB_PREFIX."adherent_type (";
-        $sql.= "libelle";
-        $sql.= ", entity";
-        $sql.= ") VALUES (";
-        $sql.= "'".$this->db->escape($this->label)."'";
-        $sql.= ", ".$conf->entity;
-        $sql.= ")";
+		$this->statut=(int) $this->statut;
+		$this->label=trim($this->label);
 
-        dol_syslog("Adherent_type::create", LOG_DEBUG);
-        $result = $this->db->query($sql);
-        if ($result)
-        {
-            $this->id = $this->db->last_insert_id(MAIN_DB_PREFIX."adherent_type");
-            return $this->update($user);
-        }
-        else
-        {
-            $this->error=$this->db->error().' sql='.$sql;
-            return -1;
-        }
-    }
+		$this->db->begin();
+
+		$sql = "INSERT INTO ".MAIN_DB_PREFIX."adherent_type (";
+		$sql.= "libelle";
+		$sql.= ", entity";
+		$sql.= ") VALUES (";
+		$sql.= "'".$this->db->escape($this->label)."'";
+		$sql.= ", ".$conf->entity;
+		$sql.= ")";
+
+		dol_syslog("Adherent_type::create", LOG_DEBUG);
+		$result = $this->db->query($sql);
+		if ($result)
+		{
+			$this->id = $this->db->last_insert_id(MAIN_DB_PREFIX."adherent_type");
+
+			$result = $this->update($user, 1);
+			if ($result < 0)
+			{
+				$this->db->rollback();
+				return -3;
+			}
+
+			if (! $notrigger)
+			{
+				// Call trigger
+				$result=$this->call_trigger('MEMBER_TYPE_CREATE', $user);
+				if ($result < 0) { $error++; }
+				// End call triggers
+			}
+
+			if (! $error)
+			{
+				$this->db->commit();
+				return $this->id;
+			}
+			else
+			{
+				dol_syslog(get_class($this)."::create ".$this->error, LOG_ERR);
+				$this->db->rollback();
+				return -2;
+			}
+		}
+		else
+		{
+			$this->error=$this->db->lasterror();
+			$this->db->rollback();
+			return -1;
+		}
+	}
 
 
-    /**
-     *  Met a jour en base donnees du type
-     *
-     *	@param		User	$user	Object user making change
-     *  @return		int				>0 if OK, < 0 if KO
-     */
-    function update($user)
-    {
-    	global $hookmanager,$conf;
+	/**
+	 *  Updating the type in the database
+	 *
+	 *  @param	User	$user			Object user making change
+	 *  @param	int		$notrigger		1=do not execute triggers, 0 otherwise
+	 *  @return	int						>0 if OK, < 0 if KO
+	 */
+	public function update($user, $notrigger = 0)
+	{
+		global $conf, $hookmanager;
 
-    	$error=0;
+		$error=0;
 
-    	$this->label=(!empty($this->libelle)?trim($this->libelle):trim($this->label));
+		$this->label=trim($this->label);
+
+		$this->db->begin();
       
         $sql = "UPDATE ".MAIN_DB_PREFIX."adherent_type ";
         $sql.= "SET ";
@@ -202,45 +262,47 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
         }
     }
 
-    /**
-     *	Fonction qui permet de supprimer le status de l'adherent
-     *
-     *	@param      int		$rowid		Id of member type to delete
-     *  @return		int					>0 if OK, 0 if not found, < 0 if KO
-     */
-    function delete($rowid='')
-    {
-    	if (empty($rowid)) $rowid=$this->id;
+	/**
+	 *	Function to delete the member's status
+	 *
+	 *  @return		int		> 0 if OK, 0 if not found, < 0 if KO
+	 */
+	public function delete()
+	{
+		global $user;
 
-        $sql = "DELETE FROM ".MAIN_DB_PREFIX."adherent_type WHERE rowid = ".$rowid;
+		$error = 0;
 
-        $resql=$this->db->query($sql);
-        if ($resql)
-        {
-            if ($this->db->affected_rows($resql))
-            {
-                return 1;
-            }
-            else
-            {
-                return 0;
-            }
-        }
-        else
-        {
-            print "Err : ".$this->db->error();
-            return 0;
-        }
-    }
+		$sql = "DELETE FROM ".MAIN_DB_PREFIX."adherent_type";
+		$sql.= " WHERE rowid = ".$this->id;
 
-    /**
-     *  Fonction qui permet de recuperer le status de l'adherent
-     *
-     *  @param 		int		$rowid		Id of member type to load
-     *  @return		int					<0 if KO, >0 if OK
-     */
-    function fetch($rowid)
-    {
+		$resql=$this->db->query($sql);
+		if ($resql)
+		{
+			// Call trigger
+			$result=$this->call_trigger('MEMBER_TYPE_DELETE', $user);
+			if ($result < 0) { $error++; $this->db->rollback(); return -2; }
+			// End call triggers
+
+			$this->db->commit();
+			return 1;
+		}
+		else
+		{
+			$this->db->rollback();
+			$this->error=$this->db->lasterror();
+			return -1;
+		}
+	}
+
+	/**
+	 *  Function that retrieves the status of the member
+	 *
+	 *  @param 		int		$rowid			Id of member type to load
+	 *  @return		int						<0 if KO, >0 if OK
+	 */
+	public function fetch($rowid)
+	{
         $sql = "SELECT d.rowid, d.libelle as label, d.statut, d.morphy, d.subscription, d.welcome, d.price, d.price_level, d.duration, d.automatic, d.automatic_renew, d.family, d.mail_valid, d.note, d.vote";
         $sql .= " FROM ".MAIN_DB_PREFIX."adherent_type as d";
         $sql .= " WHERE d.rowid = ".$rowid;
@@ -287,13 +349,15 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
         }
     }
 
+    // phpcs:disable PEAR.NamingConventions.ValidFunctionName.ScopeNotCamelCaps
 	/**
 	 *  Return list of members' type
 	 *
 	 *  @return 	array	List of types of members
 	 */
-	function liste_array()
+	public function liste_array()
 	{
+        // phpcs:enable
 		global $conf,$langs;
 
 		$adherenttypes = array();
