@@ -47,7 +47,7 @@ dol_include_once('/adherentsplus/class/adherent_type.class.php');
 dol_include_once('/adherentsplus/class/subscription.class.php');
 require_once DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php';
 
-$langs->loadLangs(array("members","companies"));
+$langs->loadLangs(array("members", "companies"));
 
 $action=GETPOST('action', 'aZ09');
 $massaction=GETPOST('massaction', 'alpha');
@@ -437,7 +437,7 @@ if (! empty($arrayfields['d.bank']['checked']))
 }
 if (! empty($arrayfields['c.dateadh']['checked']))
 {
-	print_liste_field_titre("Date", $_SERVER["PHP_SELF"], "c.dateadh", $param, "", 'align="center"', $sortfield, $sortorder);
+	print_liste_field_titre("DateStart", $_SERVER["PHP_SELF"], "c.dateadh", $param, "", 'align="center"', $sortfield, $sortorder);
 }
 if (! empty($arrayfields['c.datef']['checked']))
 {
