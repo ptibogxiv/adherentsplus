@@ -64,7 +64,7 @@ $cancel = GETPOST('cancel','alpha');
 
 $search_ref	= GETPOST('search_ref','alpha');
 $search_label		= GETPOST('search_label','alpha');
-$search_email		= GETPOST('search_email','alpha');
+$search_qty		= GETPOST('search_qty','int');
 $type				= GETPOST('type','alpha');
 $status				= GETPOST('status','alpha');
 
@@ -491,9 +491,9 @@ else print img_picto($langs->trans('TypeStatusInactive'),'statut5').' '.$langs->
 		// Add
     if ( $user->rights->adherent->configurer && !empty($object->statut) )
 		{
-		print '<div class="inline-block divButAction"><a class="butAction" href="card.php?action=create&typeid='.$object->id.'">'.$langs->trans("AddMember").'</a></div>';
+		print '<div class="inline-block divButAction"><a class="butAction" href="card.php?action=create&typeid='.$object->id.'">'.$langs->trans("AddProductOrService").'</a></div>';
     } else {
-		print '<div class="inline-block divButAction"><a class="butActionRefused classfortooltip" href="#" title="'.dol_escape_htmltag($langs->trans("NoAddMember")).'">'.$langs->trans("AddMember").'</a></div>';    
+		print '<div class="inline-block divButAction"><a class="butActionRefused classfortooltip" href="#" title="'.dol_escape_htmltag($langs->trans("NoAddProductOrService")).'">'.$langs->trans("AddProductOrService").'</a></div>';    
     }
 
 		print "</div>";
@@ -534,9 +534,9 @@ else print img_picto($langs->trans('TypeStatusInactive'),'statut5').' '.$langs->
 		{
 			$sql.= natural_search("p.label", $search_label);
 		}
-		if (! empty($search_email))
+		if (! empty($search_qty))
 		{
-			//$sql.= natural_search("d.email", $search_email);
+			$sql.= natural_search("t.qty", $search_qty);
 		}
 		if ($filter == 'uptodate')
 		{
@@ -621,7 +621,7 @@ else print img_picto($langs->trans('TypeStatusInactive'),'statut5').' '.$langs->
 			print '<td class="liste_titre">&nbsp;</td>';
 
 			print '<td class="liste_titre" align="left">';
-			print '<input class="flat" type="text" name="search_email" value="'.dol_escape_htmltag($search_email).'" size="12"></td>';
+			print '<input class="flat" type="text" name="search_qty" value="'.dol_escape_htmltag($search_qty).'" size="5"></td>';
 
 			print '<td class="liste_titre">&nbsp;</td>';
 
@@ -635,7 +635,7 @@ else print img_picto($langs->trans('TypeStatusInactive'),'statut5').' '.$langs->
 
 			print '<tr class="liste_titre">';
 		    print_liste_field_titre( $langs->trans("Ref"),$_SERVER["PHP_SELF"],"p.ref",$param,"","",$sortfield,$sortorder);
-		    print_liste_field_titre("ProductsOrServices",$_SERVER["PHP_SELF"],"p.label",$param,"","",$sortfield,$sortorder);
+		    print_liste_field_titre("Label",$_SERVER["PHP_SELF"],"p.label",$param,"","",$sortfield,$sortorder);
 		    print_liste_field_titre("Nature",$_SERVER["PHP_SELF"],"d.morphy",$param,"","",$sortfield,$sortorder);
 		    print_liste_field_titre("Qty",$_SERVER["PHP_SELF"],"t.qty",$param,"","",$sortfield,$sortorder);
 		    print_liste_field_titre("DateStart",$_SERVER["PHP_SELF"],"d.statut,d.datefin",$param,"","",$sortfield,$sortorder);
@@ -722,7 +722,7 @@ else print img_picto($langs->trans('TypeStatusInactive'),'statut5').' '.$langs->
 				print '&nbsp;';
 				if ($user->rights->adherent->supprimer)
 				{
-					print '<a href="card.php?rowid='.$objp->rowid.'&action=resign&return=list.php">'.img_picto($langs->trans("Resiliate"),'disable.png').'</a>';
+					print '<a href="type_package.php?rowid='.$objp->rowid.'&action=resign&return=list.php">'.img_picto($langs->trans("Resiliate"),'disable.png').'</a>';
 		        }
 				print "</td>";
 
