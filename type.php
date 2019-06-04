@@ -375,8 +375,8 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
 }
 
   print '<tr><td>'.$langs->trans("Duration").'</td><td colspan="3">';
-  print '<input name="surface" size="4" value="'.GETPOST('duration_value', 'int').'">';
-  print $formproduct->selectMeasuringUnits("duration_unit", "time", GETPOST('duration_value', 'alpha'), 0, 1);
+  print '<input name="surface" size="4" value="1">';
+  print $formproduct->selectMeasuringUnits("duration_unit", "time", "y", 0, 1);
   print '</td></tr>';
 
 	print '<tr><td>'.$langs->trans("VoteAllowed").'</td><td>';
