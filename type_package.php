@@ -473,11 +473,12 @@ else print img_picto($langs->trans('TypeStatusInactive'),'statut5').' '.$langs->
 		print '<tr><td class="tdtop">'.$langs->trans("Description").'</td><td>';
 		print nl2br($object->note)."</td></tr>";
 
-    	// Other attributes
-    	include DOL_DOCUMENT_ROOT . '/core/tpl/extrafields_view.tpl.php';
+    // Other attributes
+    include DOL_DOCUMENT_ROOT . '/core/tpl/extrafields_view.tpl.php';
 
 		print '</table>';
-        print '</div>';
+    
+    print '</div>';
 
 		dol_fiche_end();
 
@@ -636,7 +637,7 @@ else print img_picto($langs->trans('TypeStatusInactive'),'statut5').' '.$langs->
 			print '<tr class="liste_titre">';
 		    print_liste_field_titre( $langs->trans("Ref"),$_SERVER["PHP_SELF"],"p.ref",$param,"","",$sortfield,$sortorder);
 		    print_liste_field_titre("Label",$_SERVER["PHP_SELF"],"p.label",$param,"","",$sortfield,$sortorder);
-		    print_liste_field_titre("Nature",$_SERVER["PHP_SELF"],"d.morphy",$param,"","",$sortfield,$sortorder);
+		    print_liste_field_titre("Description",$_SERVER["PHP_SELF"],"",$param,"","",$sortfield,$sortorder);
 		    print_liste_field_titre("Qty",$_SERVER["PHP_SELF"],"t.qty",$param,"","",$sortfield,$sortorder);
 		    print_liste_field_titre("DateStart",$_SERVER["PHP_SELF"],"d.statut,d.datefin",$param,"","",$sortfield,$sortorder);
 		    print_liste_field_titre("DateEnd",$_SERVER["PHP_SELF"],"d.datefin",$param,"",'align="center"',$sortfield,$sortorder);
