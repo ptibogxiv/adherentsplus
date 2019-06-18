@@ -104,17 +104,18 @@ class AdherentTypePlus extends CommonObject
     /**
      * Exoiration unit
      */
-    public $duration_unit;  
-    /**
+    public $duration_unit;
+  
+	/**
 	 *	Constructor
 	 *
 	 *	@param 		DoliDB		$db		Database handler
-     */
-    function __construct($db)
-    {
-        $this->db = $db;
-        //$this->statut = 1;
-    }
+	 */
+	public function __construct($db)
+	{
+		$this->db = $db;
+		$this->statut = 1;
+	}
 
 
 	/**
