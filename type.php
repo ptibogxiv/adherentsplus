@@ -92,9 +92,12 @@ $price_level=GETPOST("price_level","int");
 $duration_value = GETPOST('duration_value', 'int');
 $duration_unit = GETPOST('duration_unit', 'alpha');
 $automatic=GETPOST("automatic","int");
-$automatic_renew=GETPOST("automatic_renew","int");
+$automatic_renew=GETPOST("automatic_renew","int")
+;
 // Security check
-$result=restrictedArea($user,'adherent',$rowid,'adherent_type');
+$result=restrictedArea($user, 'adherent', $rowid, 'adherent_type');
+
+$object = new AdherentTypePlus($db);
 
 $extrafields = new ExtraFields($db);
 
@@ -169,10 +172,10 @@ if ($action == 'add' && $user->rights->adherent->configurer)
 
 if ($action == 'update' && $user->rights->adherent->configurer)
 {
-	if (! $cancel)
-	{
-		$object = new AdherentTypePlus($db);
-		$object->id             = $rowid;
+	$object->fetch($rowid);
+
+	$object->oldcopy = clone $object;
+
 		$object->label        = trim($label);
     $object->statut         = trim($statut);
     $object->morphy         = trim($morphy);
@@ -188,23 +191,42 @@ if ($action == 'update' && $user->rights->adherent->configurer)
     $object->duration_unit      	 = $duration_unit;
     $object->automatic   = (boolean) trim($automatic);
     $object->automatic_renew   = (boolean) trim($automatic_renew);
-		// Fill array 'array_options' with data from add form
-		$ret = $extrafields->setOptionalsFromPost($extralabels,$object);
-		if ($ret < 0) $error++;
 
-		$object->update($user);
+	// Fill array 'array_options' with data from add form
+	$ret = $extrafields->setOptionalsFromPost($extralabels, $object);
+	if ($ret < 0) $error++;
 
-		header("Location: ".$_SERVER["PHP_SELF"]."?rowid=".$_POST["rowid"]);
-		exit;
+	$ret=$object->update($user);
+
+	if ($ret >= 0 && ! count($object->errors))
+	{
+		setEventMessages($langs->trans("MemberTypeModified"), null, 'mesgs');
 	}
+	else
+	{
+		setEventMessages($object->error, $object->errors, 'errors');
+	}
+
+	header("Location: ".$_SERVER["PHP_SELF"]."?rowid=".$object->id);
+	exit;
 }
 
-if ($action == 'delete' && $user->rights->adherent->configurer)
+if ($action == 'confirm_delete' && $user->rights->adherent->configurer)
 {
-	$object = new AdherentTypePlus($db);
-	$object->delete($rowid);
-	header("Location: ".$_SERVER["PHP_SELF"]);
-	exit;
+	$object->fetch($rowid);
+	$res=$object->delete();
+
+	if ($res > 0)
+	{
+		setEventMessages($langs->trans("MemberTypeDeleted"), null, 'mesgs');
+		header("Location: ".$_SERVER["PHP_SELF"]);
+		exit;
+	}
+	else
+	{
+		setEventMessages($langs->trans("MemberTypeCanNotBeDeleted"), null, 'errors');
+		$action='';
+	}
 }
 
 
@@ -519,7 +541,6 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
 
 		dol_fiche_end();
 
-
 		/*
 		 * Buttons
 		 */
@@ -533,13 +554,13 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
 		}
 
 		// Add
-    if ( $user->rights->adherent->configurer && !empty($object->statut) )
+        if ( $user->rights->adherent->configurer && !empty($object->statut) )
 		{
-		print '<div class="inline-block divButAction"><a class="butAction" href="card.php?action=create&typeid='.$object->id.'">'.$langs->trans("AddMember").'</a></div>';
-    } else {
-		print '<div class="inline-block divButAction"><a class="butActionRefused classfortooltip" href="#" title="'.dol_escape_htmltag($langs->trans("NoAddMember")).'">'.$langs->trans("AddMember").'</a></div>';    
-    }
-    
+            print '<div class="inline-block divButAction"><a class="butAction" href="card.php?action=create&typeid='.$object->id.'&backtopage='.urlencode($_SERVER["PHP_SELF"].'?rowid='.$object->id).'">'.$langs->trans("AddMember").'</a></div>';
+        } else {
+		    print '<div class="inline-block divButAction"><a class="butActionRefused classfortooltip" href="#" title="'.dol_escape_htmltag($langs->trans("NoAddMember")).'">'.$langs->trans("AddMember").'</a></div>';
+        }
+
 		// Delete
 		if ($user->rights->adherent->configurer)
 		{
