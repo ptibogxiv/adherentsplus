@@ -76,8 +76,8 @@ class box_adherent_birthdays extends ModeleBoxes
 
 		$this->max=$max;
 
-        include_once DOL_DOCUMENT_ROOT.'/user/class/user.class.php';
-        $userstatic=new User($db);
+        include_once DOL_DOCUMENT_ROOT.'/adherents/class/adherent.class.php';
+        $memberstatic=new Adherent($db);
 
         $this->info_box_head = array('text' => $langs->trans("BoxTitleMemberBirthdaysOfMonth"));
 
@@ -101,16 +101,16 @@ class box_adherent_birthdays extends ModeleBoxes
 				while ($line < $num)
 				{
 					$objp = $db->fetch_object($result);
-                    $userstatic->id = $objp->rowid;
-                    $userstatic->firstname = $objp->firstname;
-                    $userstatic->lastname = $objp->lastname;
-                    $userstatic->email = $objp->email;
+                    $memberstatic->id = $objp->rowid;
+                    $memberstatic->firstname = $objp->firstname;
+                    $memberstatic->lastname = $objp->lastname;
+                    $memberstatic->email = $objp->email;
                     $dateb=$db->jdate($objp->birth);
                     $age = date('Y', dol_now()) - date('Y', $dateb);
 
                     $this->info_box_contents[$line][] = array(
                         'td' => '',
-                        'text' => $userstatic->getNomUrl(1),
+                        'text' => $memberstatic->getNomUrl(1),
                         'asis' => 1,
                     );
 
@@ -121,7 +121,7 @@ class box_adherent_birthdays extends ModeleBoxes
 
                     /*$this->info_box_contents[$line][] = array(
                         'td' => 'class="right" width="18"',
-                        'text' => $userstatic->LibStatut($objp->status, 3)
+                        'text' => $memberstatic->LibStatut($objp->status, 3)
                     );*/
 
 					$line++;
