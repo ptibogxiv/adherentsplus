@@ -1705,7 +1705,7 @@ require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 		$sql = "SELECT d.rowid as id, d.ref, d.ref_ext, d.fk_adherent_type, d.fk_parent, d.civility as civility_code, d.firstname, d.lastname, d.societe as company, d.fk_soc, d.fk_parent, d.statut, d.public, d.address, d.zip, d.town, d.note_private,";
 		$sql.= " d.note_public,";
 		$sql.= " d.email, d.skype, d.twitter, d.facebook, d.linkedin, d.phone, d.phone_perso, d.phone_mobile, d.login, d.pass, d.pass_crypted,";
-		$sql.= " d.photo, d.fk_adherent_type, d.morphy, d.entity,";
+		$sql.= " d.photo, d.morphy, d.entity,";
 		$sql.= " d.datec as datec,";
 		$sql.= " d.tms as datem,";
 		$sql.= " d.datefin as datefin,";
@@ -1798,7 +1798,14 @@ require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
                 
                 $linkedmember->login=$obj->login;
                 $linkedmember->morphy=$obj->morphy;
-                $linkedmember->statut=$obj->statut;              
+                $linkedmember->statut=$obj->statut;
+                
+                $linkedmember->note_private		= $obj->note_private;
+                $linkedmember->note_public		= $obj->note_public;
+
+                $linkedmember->typeid			= $obj->fk_adherent_type;
+                $linkedmember->type				= $obj->type;
+                $linkedmember->need_subscription 	= $obj->subscription;              
 
                 $this->linkedmembers[]=$linkedmember;
 
