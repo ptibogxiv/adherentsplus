@@ -197,7 +197,7 @@ class modAdherentsPlus extends DolibarrModules
 
         // Boxes
         //-------
-        $this->boxes = array(0=>array('file'=>'box_members.php','enabledbydefaulton'=>'Home'));
+        $this->boxes = array(0=>array('file'=>'box_adherent_birthdays.php','enabledbydefaulton'=>'Home'));
 
         // Permissions
         //------------
