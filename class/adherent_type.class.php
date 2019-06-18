@@ -202,66 +202,73 @@ class AdherentTypePlus extends CommonObject
 		$this->label=trim($this->label);
 
 		$this->db->begin();
-      
-        $sql = "UPDATE ".MAIN_DB_PREFIX."adherent_type ";
-        $sql.= "SET ";
-        $sql.= "statut = ".$this->statut.",";
-        $sql.= "morphy = '".$this->morphy."',";
-        $sql.= "libelle = '".$this->db->escape($this->label) ."',";
-        $sql.= "subscription = '".$this->subscription."',";
-        $sql.= "welcome = '".$this->welcome."',";
-        $sql.= "price = '".$this->price."',";
-        $sql.= "price_level = '".$this->price_level."',";
-        $sql.= "duration = '" . $this->db->escape($this->duration_value . $this->duration_unit) ."',";
-        $sql.= "note = '".$this->db->escape($this->note)."',";
-        $sql.= "vote = '".$this->vote."',";
-        $sql.= "automatic = '".$this->automatic."',";
-        $sql.= "automatic_renew = '".$this->automatic_renew."',";
-        $sql.= "family = '".$this->family."',";
-        $sql.= "mail_valid = '".$this->db->escape($this->mail_valid)."'";
-        $sql.= " WHERE rowid =".$this->id;
 
-        $result = $this->db->query($sql);
-        if ($result)
-        {
-        	$action='update';
+		$sql = "UPDATE ".MAIN_DB_PREFIX."adherent_type ";
+		$sql.= "SET ";
+    $sql.= "statut = ".$this->statut.",";
+    $sql.= "morphy = '".$this->morphy."',";
+    $sql.= "libelle = '".$this->db->escape($this->label) ."',";
+    $sql.= "subscription = '".$this->subscription."',";
+    $sql.= "welcome = '".$this->welcome."',";
+    $sql.= "price = '".$this->price."',";
+    $sql.= "price_level = '".$this->price_level."',";
+    $sql.= "duration = '" . $this->db->escape($this->duration_value . $this->duration_unit) ."',";
+    $sql.= "note = '".$this->db->escape($this->note)."',";
+    $sql.= "vote = '".$this->vote."',";
+    $sql.= "automatic = '".$this->automatic."',";
+    $sql.= "automatic_renew = '".$this->automatic_renew."',";
+    $sql.= "family = '".$this->family."',";
+    $sql.= "mail_valid = '".$this->db->escape($this->mail_valid)."'";
+    $sql.= " WHERE rowid =".$this->id;
+
+		$result = $this->db->query($sql);
+		if ($result)
+		{
+			$action='update';
+      
 if (! empty($conf->global->PRODUIT_MULTIPRICES)){  
       $sql  = "UPDATE ".MAIN_DB_PREFIX."societe as s";
 			$sql .= " SET s.price_level = '".$this->price_level."'";
 			$sql .= " WHERE s.rowid IN (SELECT a.fk_soc FROM ".MAIN_DB_PREFIX."adherent as a WHERE a.fk_adherent_type =".$this->id.")";
-
-			if (! $this->db->query($sql))
-			{
-				dol_print_error($this->db);
-				return -1;
-			}
 }      
-        	// Actions on extra fields (by external module or standard code)
-        	$hookmanager->initHooks(array('membertypedao'));
-        	$parameters=array('membertype'=>$this->id);
-        	$reshook=$hookmanager->executeHooks('insertExtraFields',$parameters,$this,$action);    // Note that $action and $object may have been modified by some hooks
-        	if (empty($reshook))
-        	{
-        		if (empty($conf->global->MAIN_EXTRAFIELDS_DISABLED)) // For avoid conflicts if trigger used
-        		{
-        			$result=$this->insertExtraFields();
-        			if ($result < 0)
-        			{
-        				$error++;
-        			}
-        		}
-        	}
-        	else if ($reshook < 0) $error++;
 
+			// Actions on extra fields
+			if (! $error && empty($conf->global->MAIN_EXTRAFIELDS_DISABLED)) // For avoid conflicts if trigger used
+			{
+				$result=$this->insertExtraFields();
+				if ($result < 0)
+				{
+					$error++;
+				}
+			}
 
-            return 1;
-        }
-        else
-        {
-            $this->error=$this->db->error().' sql='.$sql;
-            return -1;
-        }
-    }
+			if (! $error && ! $notrigger)
+			{
+				// Call trigger
+				$result=$this->call_trigger('MEMBER_TYPE_MODIFY', $user);
+				if ($result < 0) { $error++; }
+				// End call triggers
+			}
+
+			if (! $error)
+			{
+				$this->db->commit();
+				return 1;
+			}
+			else
+			{
+				$this->db->rollback();
+				dol_syslog(get_class($this)."::update ".$this->error, LOG_ERR);
+				return -$error;
+			}
+		}
+		else
+		{
+			$this->error=$this->db->lasterror();
+			$this->db->rollback();
+			return -1;
+		}
+	}
 
 	/**
 	 *	Function to delete the member's status
