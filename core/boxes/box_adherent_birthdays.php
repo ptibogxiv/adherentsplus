@@ -60,7 +60,7 @@ class box_adherent_birthdays extends ModeleBoxes
 
 		$this->db = $db;
 
-		$this->hidden = ! ($user->rights->user->user->lire && empty($user->socid));
+		$this->hidden = ! ($user->rights->adherent->lire && empty($user->socid));
 	}
 
 	/**
@@ -81,7 +81,7 @@ class box_adherent_birthdays extends ModeleBoxes
 
         $this->info_box_head = array('text' => $langs->trans("BoxTitleMemberBirthdaysOfMonth"));
 
-		if ($user->rights->user->user->lire)
+		if ($user->rights->adherent->lire)
 		{
 			$sql = "SELECT u.rowid, u.firstname, u.lastname";
       $sql.= ", u.birth";
