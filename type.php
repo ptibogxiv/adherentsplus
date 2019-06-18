@@ -455,7 +455,15 @@ if ($rowid > 0)
 	{
 		$object = new AdherentTypePlus($db);
 		$object->fetch($rowid);
-		$object->fetch_optionals($rowid,$extralabels);
+		$object->fetch_optionals();
+
+		/*
+		 * Confirmation suppression
+		 */
+		if ($action == 'delete')
+		{
+			print $form->formconfirm($_SERVER['PHP_SELF']."?rowid=".$object->id, $langs->trans("DeleteAMemberType"), $langs->trans("ConfirmDeleteMemberType", $object->label), "confirm_delete", '', 0, 1);
+		}
 
 		$head = member_type_prepare_head($object);
 
