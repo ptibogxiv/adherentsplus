@@ -79,7 +79,7 @@ class box_adherent_birthdays extends ModeleBoxes
         include_once DOL_DOCUMENT_ROOT.'/adherents/class/adherent.class.php';
         $memberstatic=new Adherent($db);
 
-        $this->info_box_head = array('text' => $langs->trans("BoxTitleMemberBirthdaysOfMonth"));
+        $this->info_box_head = array('text' => $langs->trans("BoxTitleMemberNextBirthdays"));
 
 		if ($user->rights->adherent->lire)
 		{
@@ -87,8 +87,11 @@ class box_adherent_birthdays extends ModeleBoxes
       $sql.= ", u.birth";
 			$sql.= " FROM ".MAIN_DB_PREFIX."adherent as u";
 			$sql.= " WHERE u.entity IN (".getEntity('adherent').")";
-            $sql.= " AND MONTH(u.birth) = ".date('m');
-			$sql.= " ORDER BY u.birth ASC";
+      $sql.= " AND u.statut = 1";
+      //$sql.= " AND MONTH(u.birth) >= ".date('m');
+      //$sql.= " AND DAY(u.birth) >= ".date('d');
+      $sql.= " AND date_format(u.birth, '%m-%d') >= date_format(curdate(), '%m-%d')";      
+			$sql.= " ORDER BY date_format(u.birth, '%m-%d') ASC";
 			$sql.= $db->plimit($max, 0);
 
 			dol_syslog(get_class($this)."::loadBox", LOG_DEBUG);

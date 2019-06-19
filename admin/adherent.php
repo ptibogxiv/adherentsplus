@@ -263,8 +263,7 @@ if ($conf->global->ADHERENT_SUBSCRIPTION_PRORATA > '0')
 // Insert subscription into bank account
 print '<tr class="oddeven"><td>'.$langs->trans("FiscalMonthStart").'</td>';
 print '<td>';
-print $formother->select_month($conf->global->SOCIETE_SUBSCRIBE_MONTH_START,'SOCIETE_SUBSCRIBE_MONTH_START',0,1);
-//print $form->selectarray('SOCIETE_SUBSCRIBE_MONTH_START', array('1'=>'1','2'=>'2','3'=>'3','4'=>'4','5'=>'5','6'=>'6','7'=>'7','8'=>'8','9'=>'9','10'=>'10','11'=>'11','12'=>'12'), (empty($conf->global->SOCIETE_SUBSCRIBE_MONTH_START)?'0':$conf->global->SOCIETE_SUBSCRIBE_MONTH_START), 0);
+print $formother->select_month($conf->global->SOCIETE_FISCAL_MONTH_START, 'SOCIETE_FISCAL_MONTH_START', 0, 1, 'maxwidth100');
 print '</td>';
 print "</tr>\n";
 }
