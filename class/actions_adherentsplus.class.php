@@ -52,57 +52,6 @@ class Actionsadherentsplus
 	{
 		$this->db = $db;
 	}
-
-	/**
-	 *
-	 */
-	function formObjectOptions($parameters=false, &$object, &$action='')
-	{
-		global $db, $conf, $user, $langs, $form;
-
-		if (is_array($parameters) && ! empty($parameters))
-		{
-			foreach($parameters as $key=>$value)
-			{
-				$key=$value;
-			}
-		}
-
-		if (is_object($object) && $object->element == 'societe')
-		{ 
-			if ($action == 'create' || $action == 'editparentwordpress')
-			{
-//				$this->resprints.= '<tr><td>'.fieldLabel('LinkedToWordpress','linked_entity').'</td><td colspan="3" class="maxwidthonsmartphone">';
-//				$s = $this->select_entities('', 'linked_entity', '', 0, array($conf->entity), true);
-//				$this->resprints.= $form->textwithpicto($s,$langs->trans("LinkedToDolibarrMember"),1);
-//				$this->resprints.= '</td></tr>';
-			}
-			else
-			{
-				$this->resprints.= '<tr><td>';
-				$this->resprints.= '<table width="100%" class="nobordernopadding"><tr><td>';
-				$this->resprints.= $langs->trans("LinkedToDolibarrMember+");
-				$this->resprints.= '<td><td align="right">';
-				$this->resprints.= '</td></tr></table>';
-				$this->resprints.= '</td>';
-				$this->resprints.= '<td colspan="3">';
-            $adh=new AdherentPlus($db);
-            $result=$adh->fetch('','',$object->id);
-            if ($result > 0)
-            {
-                $adh->ref=$adh->getFullName($langs);
-$this->resprints.= ''.$adh->getNomUrl(1);
-            }
-            else
-            {
-$this->resprints.= '<span class="opacitymedium">'.$langs->trans("ThirdpartyNotLinkedToMember").'</span>';
-            }
-				$this->resprints.= '</td></tr>';
-			}
-		} 
-
-		return 0;
-	}
   
   	/**
 	 * addMoreActionsButtons
