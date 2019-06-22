@@ -486,7 +486,7 @@ if ($rowid > 0)
 			print $form->formconfirm($_SERVER['PHP_SELF']."?rowid=".$object->id, $langs->trans("DeleteAMemberType"), $langs->trans("ConfirmDeleteMemberType", $object->label), "confirm_delete", '', 0, 1);
 		}
 
-		$head = member_type_prepare_head($object);
+		$head = memberplus_type_prepare_head($object);
 
 		dol_fiche_head($head, 'card', $langs->trans("MemberType"), -1, 'group');
 
@@ -864,7 +864,7 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
 		$object->fetch($rowid);
 		$object->fetch_optionals($rowid,$extralabels);
 
-		$head = member_type_prepare_head($object);
+		$head = memberplus_type_prepare_head($object);
 
 		print '<form method="post" action="'.$_SERVER["PHP_SELF"].'?rowid='.$rowid.'">';
 		print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
