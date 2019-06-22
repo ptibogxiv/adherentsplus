@@ -265,11 +265,14 @@ class modAdherentsPlus extends DolibarrModules
         $this->rights[$r][4] = 'cotisation';
         $this->rights[$r][5] = 'creer';
 
+         // New pages on tabs
+        // -----------------
+		$this->tabs = array(
+    		'member:+linkedmember:LinkedMembers:adherentsplus@adherentsplus:$conf->global->ADHERENT_LINKEDMEMBER:/adherentsplus/linkedmember.php?rowid=__ID__',
+				'member:+consumption:Consumptions:adherentsplus@adherentsplus:$conf->global->ADHERENT_CONSUMPTION:/adherentsplus/consumption.php?rowid=__ID__'
+		);
 
-		// Menus
-		//-------
-//		$this->menu = 1;        // This module add menu entries. They are coded into menu manager.
-
+//'objecttype:+tabname1:Title1:mylangfile@mymodule:$user->rights->mymodule->read:/mymodule/mypagetab1.php?id=__ID__
 // Main menu entries
 $this->menu = array();			// List of menus to add
 $r=0;
