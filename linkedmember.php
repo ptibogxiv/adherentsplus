@@ -124,7 +124,7 @@ $form = new Form($db);
 
 if ($id)
 {
-	$head = member_prepare_head($object);
+	$head = memberplus_prepare_head($object);
 
 	dol_fiche_head($head, 'linkedmember', $langs->trans("Member"), -1, 'user');
 

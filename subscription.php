@@ -599,7 +599,7 @@ if ($rowid > 0)
 
     $adht->fetch($object->typeid);
 
-    $head = member_prepare_head($object);
+    $head = memberplus_prepare_head($object);
 
     $rowspan=10;
     if (empty($conf->global->ADHERENT_LOGIN_NOT_REQUIRED)) $rowspan++;
