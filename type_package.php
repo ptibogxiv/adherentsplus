@@ -436,7 +436,7 @@ if ($rowid > 0)
 		$object->fetch($rowid);
 		$object->fetch_optionals($rowid,$extralabels);
 
-		$head = member_type_prepare_head($object);
+		$head = memberplus_type_prepare_head($object);
 
 		dol_fiche_head($head, 'package', $langs->trans("MemberType"), -1, 'group');
 
@@ -760,7 +760,7 @@ else print img_picto($langs->trans('TypeStatusInactive'),'statut5').' '.$langs->
 		$object->fetch($rowid);
 		$object->fetch_optionals($rowid,$extralabels);
 
-		$head = member_type_prepare_head($object);
+		$head = memberplus_type_prepare_head($object);
 
 		print '<form method="post" action="'.$_SERVER["PHP_SELF"].'?rowid='.$rowid.'">';
 		print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';

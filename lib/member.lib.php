@@ -116,25 +116,36 @@ function memberplus_prepare_head(Adherentplus $object)
  *  @param	AdherentType	$object         Member
  *  @return array           		head
  */
-function member_type_prepare_head(AdherentTypePlus $object)
+function memberplus_type_prepare_head(AdherentTypePlus $object)
 {
 	global $langs, $conf, $user;
 
 	$h=0;
 	$head = array();
 
-	$head[$h][0] = dol_buildpath('/adherentsplus/type.php?rowid='.$object->id.'', 1);
+	$head[$h][0] = DOL_URL_ROOT.'/adherents/type.php?rowid='.$object->id;
 	$head[$h][1] = $langs->trans("Card");
 	$head[$h][2] = 'card';
 	$h++;
+
+	if ((! empty($conf->ldap->enabled) && ! empty($conf->global->LDAP_MEMBER_TYPE_ACTIVE))
+		&& (empty($conf->global->MAIN_DISABLE_LDAP_TAB) || ! empty($user->admin)))
+	{
+		$langs->load("ldap");
+
+		$head[$h][0] = DOL_URL_ROOT.'/adherents/type_ldap.php?rowid='.$object->id;
+		$head[$h][1] = $langs->trans("LDAPCard");
+		$head[$h][2] = 'ldap';
+		$h++;
+	}
 
     // Show more tabs from modules
     // Entries must be declared in modules descriptor with line
     // $this->tabs = array('entity:+tabname:Title:@mymodule:/mymodule/mypage.php?id=__ID__');   to add new tab
     // $this->tabs = array('entity:-tabname:Title:@mymodule:/mymodule/mypage.php?id=__ID__');   to remove a tab
-    complete_head_from_modules($conf,$langs,$object,$head,$h,'membertype');
+    complete_head_from_modules($conf, $langs, $object, $head, $h, 'membertype');
 
-	complete_head_from_modules($conf,$langs,$object,$head,$h,'membertype','remove');
+	complete_head_from_modules($conf, $langs, $object, $head, $h, 'membertype', 'remove');
 
 	return $head;
 }
