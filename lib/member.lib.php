@@ -60,26 +60,7 @@ function member_prepare_head(Adherentplus $object)
 		if ($nbSubscription > 0) $head[$h][1].= ' <span class="badge">'.$nbSubscription.'</span>';
 		$h++;
 	}
-  
-  if (! empty($user->rights->adherent->cotisation->lire) && !empty($conf->global->ADHERENT_LINKEDMEMBER))
-	{
-		$nbLinkedmembers = is_array($object-> linkedmembers)?count($object-> linkedmembers):0; 
-		$head[$h][0] = dol_buildpath('/adherentsplus/linkedmember.php', 1) . '?rowid=' . $object->id;
-		$head[$h][1] = $langs->trans("LinkedMembers");
-		$head[$h][2] = 'linkedmember';
-		if ($nbLinkedmembers > 0) $head[$h][1].= ' <span class="badge">'.$nbLinkedmembers.'</span>';
-		$h++;
-	}
 
- 	if (! empty($user->rights->adherent->cotisation->lire) && !empty($conf->global->ADHERENT_CONSUMPTION) )
-	{
-		$nbConsumption = is_array($object->consumptions)?count($object->consumptions):0;
-		$head[$h][0] = dol_buildpath('/adherentsplus/consumption.php', 1) . '?rowid=' . $object->id;
-		$head[$h][1] = $langs->trans("Consumptions");
-		$head[$h][2] = 'consumption';
-		if ($nbConsumption > 0) $head[$h][1].= ' <span class="badge">'.$nbConsumption.'</span>';
-		$h++;
-	}
     // Show more tabs from modules
     // Entries must be declared in modules descriptor with line
     // $this->tabs = array('entity:+tabname:Title:@mymodule:/mymodule/mypage.php?id=__ID__');   to add new tab
