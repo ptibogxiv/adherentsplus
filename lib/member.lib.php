@@ -42,7 +42,8 @@ function memberplus_prepare_head(Adherentplus $object)
 	$head[$h][2] = 'general';
 	$h++;
 
-	if (! empty($conf->ldap->enabled) && ! empty($conf->global->LDAP_MEMBER_ACTIVE))
+	if ((! empty($conf->ldap->enabled) && ! empty($conf->global->LDAP_MEMBER_ACTIVE))
+		&& (empty($conf->global->MAIN_DISABLE_LDAP_TAB) || ! empty($user->admin)))
 	{
 		$langs->load("ldap");
 
@@ -66,7 +67,7 @@ function memberplus_prepare_head(Adherentplus $object)
     // Entries must be declared in modules descriptor with line
     // $this->tabs = array('entity:+tabname:Title:@mymodule:/mymodule/mypage.php?id=__ID__');   to add new tab
     // $this->tabs = array('entity:-tabname:Title:@mymodule:/mymodule/mypage.php?id=__ID__');   to remove a tab
-    complete_head_from_modules($conf,$langs,$object,$head,$h,'member');
+    complete_head_from_modules($conf, $langs, $object, $head, $h, 'member');
 
     $nbNote = 0;
     if(!empty($object->note)) $nbNote++;
@@ -81,8 +82,8 @@ function memberplus_prepare_head(Adherentplus $object)
     // Attachments
     require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
     require_once DOL_DOCUMENT_ROOT.'/core/class/link.class.php';
-    $upload_dir = $conf->adherent->multidir_output[$object->entity].'/'.get_exdir(0,0,0,1,$object,'member');
-    $nbFiles = count(dol_dir_list($upload_dir,'files',0,'','(\.meta|_preview\.png)$'));
+    $upload_dir = $conf->adherent->multidir_output[$object->entity].'/'.get_exdir(0, 0, 0, 1, $object, 'member');
+    $nbFiles = count(dol_dir_list($upload_dir, 'files', 0, '', '(\.meta|_preview.*\.png)$'));
     $nbLinks=Link::count($db, $object->element, $object->id);
     $head[$h][0] = DOL_URL_ROOT.'/adherents/document.php?id='.$object->id;
     $head[$h][1] = $langs->trans('Documents');
@@ -103,8 +104,8 @@ function memberplus_prepare_head(Adherentplus $object)
 	    $head[$h][2] = 'agenda';
 	    $h++;
 	}
-	
-	complete_head_from_modules($conf,$langs,$object,$head,$h,'member','remove');
+
+	complete_head_from_modules($conf, $langs, $object, $head, $h, 'member', 'remove');
 
 	return $head;
 }
