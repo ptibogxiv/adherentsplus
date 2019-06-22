@@ -611,7 +611,7 @@ if ($rowid > 0)
 
     dol_fiche_head($head, 'subscription', $langs->trans("Member"), -1, 'user');
 
-    $linkback = '<a href="'.dol_buildpath('/adherentsplus/list.php', 1).'">'.$langs->trans("BackToList").'</a>';
+    $linkback = '<a href="'.DOL_URL_ROOT.'/adherents/list.php?restore_lastsearch_values=1">'.$langs->trans("BackToList").'</a>';
 
     dol_banner_tab($object, 'rowid', $linkback);
 
