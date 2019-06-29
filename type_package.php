@@ -508,7 +508,7 @@ else print img_picto($langs->trans('TypeStatusInactive'),'statut5').' '.$langs->
 
 		$sql = "SELECT t.rowid, t.fk_type as type, t.fk_product as product, t.qty as qty";
     $sql.= " , p.label, p.ref as ref";
-		$sql.= " FROM ".MAIN_DB_PREFIX."adherent_type_package as t";
+		$sql.= " FROM ".MAIN_DB_PREFIX."adherent_package as t";
     $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."product as p ON p.rowid = t.fk_product";
 		$sql.= " WHERE t.entity IN (".getEntity('adherent').")";
 		$sql.= " AND t.fk_type = ".$object->id;
