@@ -301,10 +301,13 @@ print '</TABLE><BR>'."\n";
 		}
 		print '</div>';
 
+    if (!empty ($object->fk_parent)) {
+    
+    } else {
+    
     /*
     * List of linked members
     */
-
             print '<table class="noborder" width="100%">'."\n";
 
             print '<tr class="liste_titre">';
@@ -331,6 +334,7 @@ print '</TABLE><BR>'."\n";
             $adh->id=$linkedmember->id;
             $adh->ref=$linkedmember->id;
             $adh->label=$linkedmember->type;
+            $adh->login=$linkedmember->login;
             print '<td class="nowrap">';
             print $adh->getNomUrl(1, 32).'</td>';
                 print '<td align="left">'.$linkedmember->login.'</td>';    
@@ -372,6 +376,8 @@ print '</TABLE><BR>'."\n";
 
             }
             print "</table>";
+}
+
 
 llxFooter();
 $db->close();
