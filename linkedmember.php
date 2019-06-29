@@ -46,6 +46,7 @@ if (! $res)
 dol_include_once('/adherentsplus/lib/member.lib.php');
 dol_include_once('/adherentsplus/class/adherent.class.php');
 dol_include_once('/adherentsplus/class/adherent_type.class.php');
+require_once DOL_DOCUMENT_ROOT.'/adherents/class/adherent.class.php';
 require_once DOL_DOCUMENT_ROOT.'/core/class/html.formcompany.class.php';
 require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
 
@@ -309,7 +310,7 @@ print '</TABLE><BR>'."\n";
             print '<tr class="liste_titre">';
             print '<td>'.$langs->trans("Name")." / ".$langs->trans("Company").'</td>';
             print '<td align="left">'.$langs->trans("Login").'</td>';
-            print '<td align="left">'.$langs->trans("Nature").'</td>';
+            print '<td align="left">'.$langs->trans("Type").'</td>';
             print '<td align="left">'.$langs->trans("Email").'</td>';
             print '<td align="left">'.$langs->trans("Status").'</td>';
             print '<td align="left">'.$langs->trans("EndSubscription").'</td>';
@@ -321,20 +322,17 @@ print '</TABLE><BR>'."\n";
 
             $datefin=$db->jdate($linkedmember->datefin);
 
-		        $adh=new AdherentPlus($db);
+		        $adh=new Adherent($db);
 		        $adh->lastname=$linkedmember->lastname;
 		        $adh->firstname=$linkedmember->firstname;
 
 		        // Lastname
 		        print '<tr class="oddeven">';
-		        if ($linkedmember->societe != '')
-		        {
-		            print '<td><a href="card.php?rowid='.$linkedmember->rowid.'">'.img_object($langs->trans("ShowMember"),"user").' '.$adh->getFullName($langs,0,-1,20).' / '.dol_trunc($linkedmember->societe,12).'</a></td>'."\n";
-		        }
-		        else
-		        {
-		            print '<td><a href="card.php?rowid='.$linkedmember->rowid.'">'.img_object($langs->trans("ShowMember"),"user").' '.$adh->getFullName($langs,0,-1,32).'</a></td>'."\n";
-		        }
+            $adh->id=$linkedmember->id;
+            $adh->ref=$linkedmember->id;
+            $adh->label=$linkedmember->type;
+            print '<td class="nowrap">';
+            print $adh->getNomUrl(1, 32).'</td>';
                 print '<td align="left">'.$linkedmember->login.'</td>';    
                 print '<td align="left">'.$adh->getmorphylib($linkedmember->morphy).'</td>';        
                 print '<td align="left">'.dol_print_email($linkedmember->email,0,0,1).'</td>';
