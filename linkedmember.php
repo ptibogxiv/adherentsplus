@@ -302,7 +302,13 @@ print '</TABLE><BR>'."\n";
 		print '</div>';
 
     if (!empty ($object->fk_parent)) {
-    
+		        $adh=new Adherent($db);
+            $adh->fetch($object->fk_parent);
+
+		        // Lastname
+		        print '<tr class="oddeven">';
+            print '<td class="nowrap">link with';
+            print $adh->getNomUrl(1, 32).'</td>';
     } else {
     
     /*
@@ -326,15 +332,10 @@ print '</TABLE><BR>'."\n";
             $datefin=$db->jdate($linkedmember->datefin);
 
 		        $adh=new Adherent($db);
-		        $adh->lastname=$linkedmember->lastname;
-		        $adh->firstname=$linkedmember->firstname;
+            $adh->fetch($linkedmember->id);
 
 		        // Lastname
 		        print '<tr class="oddeven">';
-            $adh->id=$linkedmember->id;
-            $adh->ref=$linkedmember->id;
-            $adh->label=$linkedmember->type;
-            $adh->login=$linkedmember->login;
             print '<td class="nowrap">';
             print $adh->getNomUrl(1, 32).'</td>';
                 print '<td align="left">'.$linkedmember->login.'</td>';    
