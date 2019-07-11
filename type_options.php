@@ -620,7 +620,7 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
 		print '<input type="hidden" name="rowid" value="'.$rowid.'">';
 		print '<input type="hidden" name="action" value="update">';
 
-		dol_fiche_head($head, 'card', $langs->trans("MemberType"), 0, 'group');
+		dol_fiche_head($head, 'options', $langs->trans("MemberType"), 0, 'group');
 
 		print '<table class="border" width="100%">';
 
