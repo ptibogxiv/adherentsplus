@@ -324,6 +324,8 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
             {
                 $obj = $this->db->fetch_object($resql);
 
+                if (empty($obj->duration)) $obj->duration="1y"; 
+
                 $this->id             = $obj->rowid;
                 $this->ref            = $obj->rowid;
                 $this->welcome        = $obj->welcome;
