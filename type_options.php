@@ -528,8 +528,11 @@ else print img_picto($langs->trans('TypeStatusInactive'),'statut5').' '.$langs->
 		print '</tr>';               
 }
 if (! empty($conf->global->PRODUIT_MULTIPRICES)){
-    print '<tr><td>';
-	  print $langs->trans("PriceLevel").'</td><td colspan="2">'.$object->price_level."</td></tr>";
+    print '<tr><td>'.$langs->trans("PriceLevel").'</td><td>';
+    print $object->price_level;
+	  $keyforlabel='PRODUIT_MULTIPRICES_LABEL'.$object->price_level;
+		if (! empty($conf->global->$keyforlabel)) print ' - '.$langs->trans($conf->global->$keyforlabel);
+    print '</td></tr>';
 }
 
     print '<tr><td class="titlefield">'.$langs->trans("Duration").'</td><td colspan="2">'.$object->duration_value.'&nbsp;';
