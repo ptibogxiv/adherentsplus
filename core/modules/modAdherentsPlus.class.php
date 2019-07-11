@@ -272,6 +272,7 @@ class modAdherentsPlus extends DolibarrModules
         'member:+subscription:Subscriptions:adherentsplus@adherentsplus:1:/adherentsplus/subscription.php?rowid=__ID__',
     		'member:+linkedmember:LinkedMembers:adherentsplus@adherentsplus:$conf->global->ADHERENT_LINKEDMEMBER:/adherentsplus/linkedmember.php?rowid=__ID__',
 				'member:+consumption:Consumptions:adherentsplus@adherentsplus:$conf->global->ADHERENT_CONSUMPTION:/adherentsplus/consumption.php?rowid=__ID__',
+        'membertype:+options:Options:adherentsplus@adherentsplus:1:/adherentsplus/type_options.php?rowid=__ID__',
         'membertype:+package:Package:adherentsplus@adherentsplus:$conf->global->ADHERENT_CONSUMPTION:/adherentsplus/type_package.php?rowid=__ID__'
 		);
 
