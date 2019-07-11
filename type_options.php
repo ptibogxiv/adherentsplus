@@ -299,7 +299,7 @@ if (! $rowid && $action != 'create' && $action != 'edit')
 		print '<tr class="liste_titre">';
 		print '<th>'.$langs->trans("Ref").'</th>';
 		print '<th>'.$langs->trans("Label").'</th>';
-    print '<th class="center">'.$langs->trans("Nature").'</th>';
+    print '<th class="center">'.$langs->trans("MemberNature").'</th>';
     print '<th class="center">'.$langs->trans("GroupSubscription").'</th>';
 		print '<th class="center">'.$langs->trans("SubscriptionRequired").'</th>';
 		print '<th class="center">'.$langs->trans("VoteAllowed").'</th>';
@@ -378,7 +378,7 @@ if ($action == 'create')
   $morphys[] = $langs->trans("Physical & Morale");
   $morphys["phy"] = $langs->trans("Physical");
 	$morphys["mor"] = $langs->trans("Morale");
-	print '<tr><td><span>'.$langs->trans("Nature").'</span></td><td>';
+	print '<tr><td><span>'.$langs->trans("MemberNature").'</span></td><td>';
 	print $form->selectarray("morphy", $morphys, isset($_POST["morphy"])?$_POST["morphy"]:$object->morphy);
 	print "</td></tr>";
   
@@ -505,7 +505,7 @@ else print img_picto($langs->trans('TypeStatusInactive'),'statut5').' '.$langs->
 		print '</tr>';
     
     // Morphy
-		print '<tr><td>'.$langs->trans("Nature").'</td><td class="valeur" >'.$object->getmorphylib($object->morphy).'</td>';
+		print '<tr><td>'.$langs->trans("MemberNature").'</td><td class="valeur" >'.$object->getmorphylib($object->morphy).'</td>';
 		print '</tr>';
 
     print '<tr><td class="titlefield">'.$langs->trans("GroupSubscription").'</td><td>';
@@ -639,7 +639,7 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
     $morphys[null] = $langs->trans("Physical & Morale");
     $morphys["phy"] = $langs->trans("Physical");
     $morphys["mor"] = $langs->trans("Morale");
-    print '<tr><td><span>'.$langs->trans("Nature").'</span></td><td>';
+    print '<tr><td><span>'.$langs->trans("MemberNature").'</span></td><td>';
     print $form->selectarray("morphy", $morphys, isset($_POST["morphy"])?$_POST["morphy"]:$object->morphy);
     print "</td></tr>";
   
