@@ -172,7 +172,7 @@ if ($id)
     /*
     * List of consumptions
     */
-  $morehtmlright= dolGetButtonTitle($langs->trans('Add'), '', 'fa fa-plus-circle', $_SERVER["PHP_SELF"].'?socid='.$object->id.'&action=create');
+  $morehtmlright= dolGetButtonTitle($langs->trans('Add'), '', 'fa fa-plus-circle', $_SERVER["PHP_SELF"].'?rowid='.$object->id.'&action=create');
 
       print load_fiche_titre($langs->trans("ListOfProductsServices"), $morehtmlright, '');
 
