@@ -237,70 +237,6 @@ $formconfirm=$form->formconfirm($_SERVER["PHP_SELF"].'?rowid='.$object->id.'&lin
 print $formconfirm;	
 }
 
-if ( $conf->global->ADHERENT_LINKEDMEMBER && empty($object->fk_parent) ) {
-print load_fiche_titre($langs->trans("LinkMember"), '', ''); 
-print '<TABLE class="noborder" summary="listofdocumentstable" id="'.$modulepart.'_table" width="100%">'."\n";
-print '<TR class="liste_titre">';
-print '<TH align="center" colspan="'.(3+($addcolumforpicto?'2':'1')).'" class="formdoc liste_titre maxwidthonsmartphone">';
-print '<form href="' . $_SERVER["PHP_SELF"] . '?rowid=' . $object->id . '&action=confirm_addlinkedmember" id="'.$forname.'_form" method="post">';
-print '<SELECT name="link">';  
-        
-        $sql = "SELECT c.rowid, c.firstname, c.lastname";               
-        $sql.= " FROM ".MAIN_DB_PREFIX."adherent as c";
-        $sql.= " WHERE c.entity IN (" . getEntity('adherentsplus') . ") AND c.rowid!=".$object->id." AND ISNULL(c.fk_parent)";
-        $sql.= " ORDER BY c.firstname, c.lastname ASC";
-        //$sql.= " LIMIT 0,5";
-        
-        $result = $db->query($sql);
-        if ($result)
-        {
-            $num = $db->num_rows($result);
-            $i = 0;
-
-            $var=True;
-            print '<OPTION value="" disabled selected>'.$langs->trans('Members').'</OPTION>';  
-            while ($i < $num)
-            {            
-                $objp = $db->fetch_object($result);
-                $var=!$var;               
-             
-                print '<OPTION value="'.$objp->rowid.'">'.$objp->firstname.' '.$objp->lastname.'</OPTION>';   
-                            
-                $i++;
-            }
-        }
-        else
-        {
-            dol_print_error($db);
-        }
-
-print '</SELECT>';
-print '<input class="button buttongen" id="addsecondarymember" name="addsecondarymember" type="submit" value="'.$langs->trans('Add').'">';
-print '</form></TH></TR>';
-
-print '</TABLE><BR>'."\n";   
-}
-
-		/*
-		 * Hotbar
-		 */
-
-		print '<div class="tabsAction">';
-		$parameters = array();
-		$reshook = $hookmanager->executeHooks('addMoreActionsButtons', $parameters, $object, $action); // Note that $action and $object may have been
-		if (empty($reshook)) {
-			if ($action != 'valid' && $action != 'editlogin' && $action != 'editthirdparty')
-			{
-				// Send
-				if ($object->statut == 1) {
-					print '<div class="inline-block divButAction"><a class="butAction" href="' . $_SERVER["PHP_SELF"] . '?rowid=' . $object->id . '&action=addlinkedmember">' . $langs->trans('LinkMember') . '</a></div>';
-				}
-
-
-			}
-		}
-		print '</div>';
-
     if (!empty ($object->fk_parent)) {
 		        $adh=new Adherent($db);
             $adh->fetch($object->fk_parent);
@@ -314,7 +250,13 @@ print '</TABLE><BR>'."\n";
     /*
     * List of linked members
     */
-            print '<table class="noborder" width="100%">'."\n";
+
+  $morehtmlright= dolGetButtonTitle($langs->trans('Add'), '', 'fa fa-plus-circle', $_SERVER["PHP_SELF"].'?socid='.$object->id.'&action=create');
+
+      print load_fiche_titre($langs->trans("ListOfLinkedMembers"), $morehtmlright, '');
+
+      print '<div class="div-table-responsive">';
+      print '<table class="tagtable liste'.($moreforfilter?" listwithfilterbefore":"").'">'."\n";
 
             print '<tr class="liste_titre">';
             print '<td>'.$langs->trans("Name")." / ".$langs->trans("Company").'</td>';
@@ -376,7 +318,7 @@ print '</TABLE><BR>'."\n";
                 print "</tr>";
 
             }
-            print "</table>";
+            print "</table></div>";
 }
 
 

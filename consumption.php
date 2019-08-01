@@ -168,8 +168,12 @@ if ($id)
     /*
     * List of consumptions
     */
+  $morehtmlright= dolGetButtonTitle($langs->trans('Add'), '', 'fa fa-plus-circle', $_SERVER["PHP_SELF"].'?socid='.$object->id.'&action=create');
 
-            print '<table class="noborder" width="100%">'."\n";
+      print load_fiche_titre($langs->trans("ListOfProductsServices"), $morehtmlright, '');
+
+      print '<div class="div-table-responsive">';
+      print '<table class="tagtable liste'.($moreforfilter?" listwithfilterbefore":"").'">'."\n";
 
             print '<tr class="liste_titre">';
             print '<td>'.$langs->trans("Ref").'</td>';
@@ -215,7 +219,7 @@ if ($id)
                 print "</tr>";
 
             }
-            print "</table>";
+            print "</table></div>";
 
 llxFooter();
 $db->close();
