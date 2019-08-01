@@ -165,6 +165,10 @@ if ($id)
 
 }
 
+
+			print '<input class="flat" type="hidden" name="rowid" value="'.$socid.'" size="12">';
+      
+      print_barre_liste('',$page,$_SERVER["PHP_SELF"],$param,$sortfield,$sortorder,'',$num,$nbtotalofrecords);
     /*
     * List of consumptions
     */

@@ -231,12 +231,6 @@ if ($id)
 
 }
 
-if ($action=='deletelinkedmember' && $user->rights->adherent->creer) {
-$form = new Form($db);
-$formconfirm=$form->formconfirm($_SERVER["PHP_SELF"].'?rowid='.$object->id.'&link='.$link, $langs->trans('Confirm'), $langs->trans('ConfirmLinkedMember'), 'confirm_deletelinkedmember', '', 0, 1);
-print $formconfirm;	
-}
-
     if (!empty ($object->fk_parent)) {
 		        $adh=new Adherent($db);
             $adh->fetch($object->fk_parent);
@@ -249,7 +243,17 @@ print $formconfirm;
     
     /*
     * List of linked members
-    */
+    */   
+    
+if ($action=='deletelinkedmember' && $user->rights->adherent->creer) {
+$form = new Form($db);
+$formconfirm=$form->formconfirm($_SERVER["PHP_SELF"].'?rowid='.$object->id.'&link='.$link, $langs->trans('Confirm'), $langs->trans('ConfirmLinkedMember'), 'confirm_deletelinkedmember', '', 0, 1);
+print $formconfirm;	
+}
+
+			print '<input class="flat" type="hidden" name="rowid" value="'.$socid.'" size="12">';
+      
+      print_barre_liste('',$page,$_SERVER["PHP_SELF"],$param,$sortfield,$sortorder,'',$num,$nbtotalofrecords);
 
   $morehtmlright= dolGetButtonTitle($langs->trans('Add'), '', 'fa fa-plus-circle', $_SERVER["PHP_SELF"].'?socid='.$object->id.'&action=create');
 
