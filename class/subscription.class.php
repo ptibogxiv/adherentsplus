@@ -63,46 +63,60 @@ class SubscriptionPlus extends CommonObject
 	 *	@return	int					<0 if KO, Id subscription created if OK
 	 */
 	function create($userid)
-	{
-		global $langs;
-		$now=dol_now();
+    {
+        global $langs;
+        $error = 0;
+        $now=dol_now();
+        // Check parameters
+        if ($this->datef <= $this->dateh)
+        {
+            $this->error=$langs->trans("ErrorBadValueForDate");
+            return -1;
+        }
+        if (empty($this->datec)) $this->datec = $now;
+        $this->db->begin();
+        $sql = "INSERT INTO ".MAIN_DB_PREFIX."subscription (fk_adherent, fk_type, datec, dateadh, datef, subscription, note)";
+        require_once DOL_DOCUMENT_ROOT.'/adherents/class/adherent.class.php';
+        $member=new Adherent($this->db);
+        $result=$member->fetch($this->fk_adherent);
 
-		// Check parameters
-		if ($this->datef <= $this->dateh)
-		{
-			$this->error=$langs->trans("ErrorBadValueForDate");
-			return -1;
-		}
-    
-		$sql = "INSERT INTO ".MAIN_DB_PREFIX."subscription (fk_adherent, fk_type, datec, dateadh, datef, subscription, note)";
-        if ($this->fk_type == NULL) {
-dol_include_once('/adherentsplus/class/adherent.class.php');
-		$member=new AdherentPlus($this->db);
-		$result=$member->fetch($this->fk_adherent);
-    $type=$member->typeid;
-    }else {
-    $type=$this->fk_type;
+        if ($this->fk_type == null) {	// If type not defined, we use the type of member
+            $type=$member->typeid;
+        } else {
+            $type=$this->fk_type;
+        }
+        $sql.= " VALUES (".$this->fk_adherent.", '".$type."', '".$this->db->idate($now)."',";
+        $sql.= " '".$this->db->idate($this->dateh)."',";
+        $sql.= " '".$this->db->idate($this->datef)."',";
+        $sql.= " ".$this->amount.",";
+        $sql.= " '".$this->db->escape($this->note_public?$this->note_public:$this->note)."')";
+        $resql = $this->db->query($sql);
+        if (! $resql) {
+            $error++;
+            $this->errors[] = $this->db->lasterror();
+        }
+        if (! $error)
+        {
+            $this->id = $this->db->last_insert_id(MAIN_DB_PREFIX . $this->table_element);
+            $this->fk_type = $type;
+        }
+        if (! $error && ! $notrigger)
+        {
+        	$this->context = array('member'=>$member);
+        	// Call triggers
+            $result=$this->call_trigger('MEMBER_SUBSCRIPTION_CREATE', $user);
+            if ($result < 0) { $error++; }
+            // End call triggers
+        }
+        // Commit or rollback
+        if ($error) {
+            $this->db->rollback();
+            return -1;
+        } else {
+            $this->db->commit();
+            return $this->id;
+        }
     }
-    $sql.= " VALUES (".$this->fk_adherent.", '".$type."', '".$this->db->idate($now)."',";
-		$sql.= " '".$this->db->idate($this->dateh)."',";
-		$sql.= " '".$this->db->idate($this->datef)."',";
-		$sql.= " ".$this->amount.",";
-		$sql.= " '".$this->db->escape($this->note)."')";
-
-		dol_syslog(get_class($this)."::create", LOG_DEBUG);
-		$resql = $this->db->query($sql);
-		if ($resql)
-		{
-		    $this->id = $this->db->last_insert_id(MAIN_DB_PREFIX."subscription");
-		    return $this->id;
-		}
-		else
-		{
-			$this->error=$this->db->lasterror();
-			return -1;
-		}
-	}
-
 
 	/**
 	 *  Method to load a subscription
