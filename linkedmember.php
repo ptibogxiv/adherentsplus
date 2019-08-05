@@ -50,7 +50,7 @@ require_once DOL_DOCUMENT_ROOT.'/adherents/class/adherent.class.php';
 require_once DOL_DOCUMENT_ROOT.'/core/class/html.formcompany.class.php';
 require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
 
-$langs->loadLangs(array('products', 'companies', 'members', 'bills', 'other'));
+$langs->loadLangs(array('products', 'companies', 'members', 'bills', 'other', 'adherentsplus@adherentsplus'));
 
 $action=GETPOST('action','alpha');
 $cancel=GETPOST('cancel','alpha');

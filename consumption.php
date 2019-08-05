@@ -48,7 +48,7 @@ dol_include_once('/adherentsplus/class/adherent.class.php');
 dol_include_once('/adherentsplus/class/adherent_type.class.php');
 require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 
-$langs->loadLangs(array('products', 'companies', 'members', 'bills', 'other'));
+$langs->loadLangs(array('products', 'companies', 'members', 'bills', 'other', 'adherentsplus@adherentsplus'));
 
 $action=GETPOST('action','alpha');
 $id=GETPOST('rowid','int');
