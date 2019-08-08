@@ -142,9 +142,29 @@ $member->fetch('','',$object->socid);
 $adht = new AdherentTypePlus($db);
 $adht->fetch($member->typeid);
 
+if (empty($objp2->date_start)) {
+$datefrom = $member->next_subscription_date_start;
+} else {
+$datefrom = strtotime($objp2->date_start);
+}
+
+if (empty($objp2->date_end)) {
+$dateto = $member->next_subscription_date_end;
+} else {
+$dateto = strtotime($objp2->date_end);
+}
+
+$d = strftime("%Y",$datefrom);
+$f = strftime("%Y",$dateto);
+if ($d==$f) {
+$season=$d;
+}else{
+$season=$d."/".$f;
+}
+
 if ($member->id >0) {
 if (empty($conf->global->MEMBER_NO_DEFAULT_LABEL)) {
-$adhesion=$langs->trans("Subscription").' '.dol_print_date((strtotime($objp2->date_start)?strtotime($objp2->date_start):time()),"%Y");
+$adhesion=$langs->trans("Subscription").' '.$season;
 } else{
 $adhesion=$conf->global->MEMBER_NO_DEFAULT_LABEL;
 }
@@ -163,7 +183,7 @@ $adhesion=$conf->global->MEMBER_NO_DEFAULT_LABEL;
     }
     }
 
-$idcot=$member->subscription(strtotime($objp2->date_start), $objp2->total_ttc, $bankkey, '', $adhesion, '', '', '', strtotime($objp2->date_end)); 
+$idcot=$member->subscription($datefrom, $objp2->total_ttc, $bankkey, '', $adhesion, '', '', '', $dateto); 
 
 if ($idcot>0) {
 $sql = 'UPDATE '.MAIN_DB_PREFIX.'subscription SET fk_bank='.$bankkey;
