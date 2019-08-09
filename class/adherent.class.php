@@ -1494,7 +1494,12 @@ else { $tx=(ceil((($dateto-$today)/31558464)*$conf->global->ADHERENT_SUBSCRIPTIO
 $monthnb=12-(12*$tx);
 
 $datefrom = strtotime(date("Y-m-d", dol_time_plus_duree($date,+$monthnb,'m'))); 
-
+//if (!empty($adht->duration)) {
+//$dateto=dol_time_plus_duree($datefrom, +$adht->duration_value, $adht->duration_unit);
+//if (($dateto - $datefrom)>=(3600*24*2)) { $dateto=dol_time_plus_duree($dateto, -1, 'd'); }
+//elseif (($dateto - $datefrom)>=(3600*24*1)) { $dateto=dol_time_plus_duree($datefrom, -0, 'd'); }       
+//}
+        
 if ($datefrom<$datefin) {
 $datefrom = $date;
 }
