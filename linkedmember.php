@@ -123,8 +123,61 @@ llxHeader("",$title,$helpurl);
 
 $form = new Form($db);
 
-if ($id)
+// Create Card
+if ($id && $action == 'create' && $user->rights->adherent->creer)
 {
+
+	$head = memberplus_prepare_head($object);
+
+	dol_fiche_head($head, 'linkedmember', $langs->trans("Member"), -1, 'user');
+ 	
+  print "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">";
+	print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
+
+  $linkback = '<a href="'.DOL_URL_ROOT.'/adherents/list.php?restore_lastsearch_values=1">'.$langs->trans("BackToList").'</a>';
+
+  dol_banner_tab($object, 'rowid', $linkback);
+
+	print '<div class="nofichecenter">';
+
+	print '<div class="underbanner clearboth"></div>';
+	print '<table class="border centpercent">';
+
+	print '<tr><td class="titlefieldcreate fieldrequired">'.$langs->trans("PredefinedProductsAndServicesToSell").'</td>';
+	print '<td>';
+  			if (! empty($conf->global->ENTREPOT_EXTRA_STATUS))
+			{
+				// hide products in closed warehouse, but show products for internal transfer
+				$form->select_produits(GETPOST('productid', 'int'), 'productidd', $filtertype, $conf->product->limit_size, $object->price_level, 1, 2, '', 1, array(), $object->id, '1', 0, 'maxwidth300', 0, 'warehouseopen,warehouseinternal', GETPOST('combinations', 'array'));
+			}
+			else
+			{
+				$form->select_produits(GETPOST('productid', 'int'), 'productid', $filtertype, $conf->product->limit_size, $object->price_level, 1, 2, '', 1, array(), $object->id, '1', 0, 'maxwidth300', 0, '', GETPOST('combinations', 'array'));
+			}
+  print '</td></tr>';
+
+	print '<tr><td class="fieldrequired">'.$langs->trans("Qty").'</td>';
+	print '<td><input class="minwidth200" type="text" name="qty" value="'.(GETPOST('qty', 'int')?GETPOST('qty', 'int'):1).'"></td></tr>';
+
+	print '<tr><td>'.$langs->trans("AnnualTarget").'</td>';
+	print '<td><input class="minwidth200" type="text" name="target" value="'.GETPOST('target', 'int').'"></td></tr>';
+
+	print '</table>';
+
+	print '</div>';
+
+	dol_fiche_end();
+
+	dol_set_focus('#label');
+
+	print '<div class="center">';
+	print '<input class="button" value="'.$langs->trans("Add").'" type="submit">';
+	print '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+	print '<input name="cancel" class="button" value="'.$langs->trans("Cancel").'" type="submit">';
+	print '</div>';
+
+} elseif ($id) {
+
 	$head = memberplus_prepare_head($object);
 
 	dol_fiche_head($head, 'linkedmember', $langs->trans("Member"), -1, 'user');
@@ -229,8 +282,6 @@ if ($id)
 
     dol_fiche_end();
 
-}
-
     if (!empty ($object->fk_parent)) {
 		        $adh=new Adherent($db);
             $adh->fetch($object->fk_parent);
@@ -324,7 +375,7 @@ print $formconfirm;
             }
             print "</table></div>";
 }
-
+}
 
 llxFooter();
 $db->close();
