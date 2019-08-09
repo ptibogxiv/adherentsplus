@@ -325,10 +325,6 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
     }
     print (! empty($object->duration_unit) && isset($dur[$object->duration_unit]) ? $langs->trans($dur[$object->duration_unit]) : '')."&nbsp;";
     print '</td></tr>';
-                
-		print '<tr><td>'.$langs->trans("VoteAllowed").'</td><td>';
-		print yn($object->vote);
-		print '</tr>';
 
     print '<tr><td>'.$langs->trans("Validation").'</td><td>';
 		print autoOrManual($object->automatic);
