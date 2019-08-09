@@ -413,6 +413,8 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
 		print '<input size="10" type="text" value="' . price($object->price) . '" name="price">';   
     print ' '.$langs->trans("Currency".$conf->currency);    
 		print '</td></tr>';
+    } else {
+    print '<input size="10" type="text" value="0" name="welcome"><input size="10" type="text" value="0" name="price">';
     }
 
 if (! empty($conf->global->PRODUIT_MULTIPRICES)){    
@@ -485,14 +487,13 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
 		print '<div class="center">';
 		print '<input type="submit" class="button" value="'.$langs->trans("Save").'">';
 		print '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-		print '<input type="submit" name="button" class="button" value="'.$langs->trans("Cancel").'">';
+		print '<input type="submit" name="cancel" class="button" value="'.$langs->trans("Cancel").'">';
 		print '</div>';
 
 		print "</form>";
 	}
 }
 
-
+// End of page
 llxFooter();
-
 $db->close();
