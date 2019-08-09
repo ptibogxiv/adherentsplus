@@ -1348,7 +1348,7 @@ class AdherentPlus extends CommonObject
 		$sql.= " d.model_pdf,";
 		$sql.= " c.rowid as country_id, c.code as country_code, c.label as country,";
 		$sql.= " dep.nom as state, dep.code_departement as state_code,";
-		$sql.= " t.libelle as type, t.subscription as subscription,";
+		$sql.= " t.libelle as type, t.subscription as subscription, t.duration as type_duration,";
 		$sql.= " u.rowid as user_id, u.login as user_login";
 		$sql.= " FROM ".MAIN_DB_PREFIX."adherent_type as t, ".MAIN_DB_PREFIX."adherent as d";
 		$sql.= " LEFT JOIN ".MAIN_DB_PREFIX."c_country as c ON d.country = c.rowid";
@@ -1494,11 +1494,12 @@ else { $tx=(ceil((($dateto-$today)/31558464)*$conf->global->ADHERENT_SUBSCRIPTIO
 $monthnb=12-(12*$tx);
 
 $datefrom = strtotime(date("Y-m-d", dol_time_plus_duree($date,+$monthnb,'m'))); 
-//if (!empty($adht->duration)) {
-//$dateto=dol_time_plus_duree($datefrom, +$adht->duration_value, $adht->duration_unit);
-//if (($dateto - $datefrom)>=(3600*24*2)) { $dateto=dol_time_plus_duree($dateto, -1, 'd'); }
-//elseif (($dateto - $datefrom)>=(3600*24*1)) { $dateto=dol_time_plus_duree($datefrom, -0, 'd'); }       
-//}
+
+if (!empty($obj->type_duration)) {
+$dateto=dol_time_plus_duree($datefrom, + substr($obj->type_duration, 0, dol_strlen($obj->type_duration)-1), substr($obj->type_duration, -1));
+if (($dateto - $datefrom)>=(3600*24*2)) { $dateto=dol_time_plus_duree($dateto, -1, 'd'); }
+elseif (($dateto - $datefrom)>=(3600*24*1)) { $dateto=dol_time_plus_duree($datefrom, -0, 'd'); }       
+}
         
 if ($datefrom<$datefin) {
 $datefrom = $date;

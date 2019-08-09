@@ -999,16 +999,9 @@ if ($rowid > 0)
         print $form->select_date($object->next_subscription_date_start,'','','','',"subscription",1,0,1);
         print "</td></tr>";
 
-           //$dateto1=dol_mktime(0,0,0,$conf->global->SOCIETE_SUBSCRIBE_MONTH_START,1,$year+1);
-        $dateto=$object->next_subscription_date_end;
-        if (!empty($adht->duration)) {
-        $dateto=dol_time_plus_duree($object->next_subscription_date_start, +$adht->duration_value, $adht->duration_unit);
-        if (($dateto - $object->next_subscription_date_start)>=(3600*24*2)) { $dateto=dol_time_plus_duree($dateto, -1, 'd'); }
-        elseif (($dateto - $object->next_subscription_date_start)>=(3600*24*1)) { $dateto=dol_time_plus_duree($object->next_subscription_date_start, -0, 'd'); }       
-        }
-
+        //Date end subscription
         print '<tr><td>'.$langs->trans("DateEndSubscription").'</td><td>';
-        print $form->select_date($dateto,'end','','','',"subscription",1,0,1);
+        print $form->select_date($object->next_subscription_date_end,'end','','','',"subscription",1,0,1);
         print "</td></tr>";
 
         if ($adht->subscription)
