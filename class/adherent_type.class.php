@@ -95,7 +95,8 @@ class AdherentTypePlus extends CommonObject
   public $automatic_renew;
 	public $family;
   public $statut;
-  
+  public $duration;
+
     /*
     * Service expiration
     */
