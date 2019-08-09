@@ -179,8 +179,18 @@ print '<SELECT name="link">';
 print '</SELECT>';
   print '</td></tr>';
 
-	print '<tr><td class="fieldrequired">'.$langs->trans("Qty").'</td>';
-	print '<td><input class="minwidth200" type="text" name="qty" value="'.(GETPOST('qty', 'int')?GETPOST('qty', 'int'):1).'"></td></tr>';
+		// Type
+		print '<tr><td class="fieldrequired">'.$langs->trans("Type").'</td><td>';
+		if ($user->rights->adherent->creer)
+		{
+			print $form->selectarray("typeid", $adht->liste_array(), (isset($_POST["typeid"])?$_POST["typeid"]:$object->typeid));
+		}
+		else
+		{
+			print $adht->getNomUrl(1);
+			print '<input type="hidden" name="typeid" value="'.$object->typeid.'">';
+		}
+		print "</td></tr>";
 
 	print '</table>';
 
