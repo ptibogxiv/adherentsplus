@@ -70,16 +70,18 @@ if ($result > 0)
     $result=$adht->fetch($object->typeid);
 }
 
-// Get object canvas (By default, this is not defined, so standard usage of dolibarr)
-$object->getCanvas($id);
-$canvas = $object->canvas?$object->canvas:GETPOST("canvas");
-$objcanvas=null;
-if (! empty($canvas))
+/*
+ *	Actions
+ */
+
+if ($cancel)
 {
-	require_once DOL_DOCUMENT_ROOT.'/core/class/canvas.class.php';
-	$objcanvas = new Canvas($db, $action);
-	$objcanvas->getCanvas('adherent', 'membercard', $canvas);
+	$action='';
 }
+
+$parameters=array('id'=>$socid, 'objcanvas'=>$objcanvas);
+$reshook=$hookmanager->executeHooks('doActions', $parameters, $object, $action);    // Note that $action and $object may have been modified by some hooks
+if ($reshook < 0) setEventMessages($hookmanager->error, $hookmanager->errors, 'errors');
 
 $permissionnote=$user->rights->adherent->creer;  // Used by the include of actions_setnotes.inc.php
 
@@ -113,6 +115,56 @@ $permissionnote=$user->rights->adherent->creer;  // Used by the include of actio
 			$errmesg=$object->error;
 		}
   }
+  
+  	if ($action == 'add' && $user->rights->societe->creer)
+	{
+		$error=0;
+
+		if (! GETPOST('memberid', 'alpha'))
+		{
+			if (! GETPOST('memberid', 'alpha')) setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("Member")), null, 'errors');
+			//if (! GETPOST('qty', 'int')) setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("Qty")), null, 'errors');
+			$action='create';
+			$error++;
+		}
+
+		if (! $error)
+		{
+		$db->begin();
+
+		// Insert member
+		$sql = "UPDATE ".MAIN_DB_PREFIX."adherent";
+    $sql.= " SET fk_parent = '".$id."'";
+    $sql.= " WHERE rowid = '".GETPOST('memberid', 'alpha')."'";
+
+		//dol_syslog(get_class($this)."::create", LOG_DEBUG);
+		$result = $db->query($sql);
+
+			if (! $error)
+			{
+				//$result = $companypaymentmode->create($user);
+				if ($result < 0)
+				{
+					$error++;
+					//setEventMessages($companypaymentmode->error, $companypaymentmode->errors, 'errors');
+					$action='create';     // Force chargement page création
+				}
+			}
+
+			if (! $error)
+			{
+				$db->commit();
+
+				$url=$_SERVER["PHP_SELF"].'?rowid='.$object->id;
+				header('Location: '.$url);
+				exit;
+			}
+			else
+			{
+				$db->rollback();
+			}
+		}
+	}
 
 /*
  * View
@@ -153,7 +205,7 @@ if ($id && $action == 'create' && $user->rights->adherent->creer)
 
 	print '<tr><td class="titlefieldcreate fieldrequired">'.$langs->trans("Member").'</td>';
 	print '<td>';
-print '<SELECT name="link">';  
+print '<SELECT name="memberid">';  
         
         $sql = "SELECT c.rowid, c.firstname, c.lastname, c.societe";               
         $sql.= " FROM ".MAIN_DB_PREFIX."adherent as c";
