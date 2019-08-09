@@ -378,7 +378,7 @@ print '</SELECT>';
 
 		        // Lastname
 		        print '<tr class="oddeven">';
-            print '<td class="nowrap">link with';
+            print '<td class="nowrap">link with ';
             print $adh->getNomUrl(1, 32).'</td>';
     } else {
     
