@@ -280,7 +280,7 @@ if ($rowid > 0)
 
 		dol_fiche_head($head, 'options', $langs->trans("MemberType"), -1, 'group');
 
-		$linkback = '<a href="'.dol_buildpath('/adherentsplus/type.php', 1).'">'.$langs->trans("BackToList").'</a>';
+		$linkback = '<a href="'.dol_buildpath('/adherents/type.php', 1).'">'.$langs->trans("BackToList").'</a>';
 
 		dol_banner_tab($object, 'rowid', $linkback);
 
