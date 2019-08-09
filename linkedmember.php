@@ -143,24 +143,44 @@ if ($id && $action == 'create' && $user->rights->adherent->creer)
 	print '<div class="underbanner clearboth"></div>';
 	print '<table class="border centpercent">';
 
-	print '<tr><td class="titlefieldcreate fieldrequired">'.$langs->trans("PredefinedProductsAndServicesToSell").'</td>';
+	print '<tr><td class="titlefieldcreate fieldrequired">'.$langs->trans("Member").'</td>';
 	print '<td>';
-  			if (! empty($conf->global->ENTREPOT_EXTRA_STATUS))
-			{
-				// hide products in closed warehouse, but show products for internal transfer
-				$form->select_produits(GETPOST('productid', 'int'), 'productidd', $filtertype, $conf->product->limit_size, $object->price_level, 1, 2, '', 1, array(), $object->id, '1', 0, 'maxwidth300', 0, 'warehouseopen,warehouseinternal', GETPOST('combinations', 'array'));
-			}
-			else
-			{
-				$form->select_produits(GETPOST('productid', 'int'), 'productid', $filtertype, $conf->product->limit_size, $object->price_level, 1, 2, '', 1, array(), $object->id, '1', 0, 'maxwidth300', 0, '', GETPOST('combinations', 'array'));
-			}
+print '<SELECT name="link">';  
+        
+        $sql = "SELECT c.rowid, c.firstname, c.lastname, c.societe";               
+        $sql.= " FROM ".MAIN_DB_PREFIX."adherent as c";
+        $sql.= " WHERE c.entity IN (" . getEntity('adherentsplus') . ") AND c.rowid!=".$object->id." AND ISNULL(c.fk_parent)";
+        $sql.= " ORDER BY c.firstname, c.lastname ASC";
+        //$sql.= " LIMIT 0,5";
+        
+        $result = $db->query($sql);
+        if ($result)
+        {
+            $num = $db->num_rows($result);
+            $i = 0;
+
+            $var=True;
+            //print '<OPTION value="" disabled selected>'.$langs->trans('Members').'</OPTION>';  
+            while ($i < $num)
+            {            
+                $objp = $db->fetch_object($result);
+                $var=!$var;               
+             
+                print '<OPTION value="'.$objp->rowid.'">'.$objp->firstname.' '.$objp->lastname.' '.$objp->societe.'</OPTION>';   
+                            
+                $i++;
+            }
+        }
+        else
+        {
+            dol_print_error($db);
+        }
+
+print '</SELECT>';
   print '</td></tr>';
 
 	print '<tr><td class="fieldrequired">'.$langs->trans("Qty").'</td>';
 	print '<td><input class="minwidth200" type="text" name="qty" value="'.(GETPOST('qty', 'int')?GETPOST('qty', 'int'):1).'"></td></tr>';
-
-	print '<tr><td>'.$langs->trans("AnnualTarget").'</td>';
-	print '<td><input class="minwidth200" type="text" name="target" value="'.GETPOST('target', 'int').'"></td></tr>';
 
 	print '</table>';
 
