@@ -121,6 +121,14 @@ $title=$langs->trans("Member") . " - " . $langs->trans("LinkedMembers");
 $helpurl="EN:Module_Foundations|FR:Module_Adh&eacute;rents|ES:M&oacute;dulo_Miembros";
 llxHeader("",$title,$helpurl);
 
+if ($id && $action == 'create' && $user->rights->societe->creer)
+{
+	print '<form action="'.$_SERVER["PHP_SELF"].'?rowid='.$object->id.'" method="post">';
+	print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
+	$actionforadd='add';
+	print '<input type="hidden" name="action" value="'.$actionforadd.'">';
+}
+
 $form = new Form($db);
 
 // Create Card
