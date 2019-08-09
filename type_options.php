@@ -78,22 +78,15 @@ $pagenext = $page + 1;
 if (! $sortorder) {  $sortorder="DESC"; }
 if (! $sortfield) {  $sortfield="d.lastname"; }
 
-$label=GETPOST("label","alpha");
-$statut=GETPOST("statut","int");
-$morphy=GETPOST("morphy","alpha");
-$subscription=GETPOST("subscription","int");
 $family=GETPOST("family","int");
-$vote=GETPOST("vote","int");
-$comment=GETPOST("comment");
-$mail_valid=GETPOST("mail_valid");
 $welcome=GETPOST("welcome","alpha");
 $price=GETPOST("price","alpha");
 $price_level=GETPOST("price_level","int");
 $duration_value = GETPOST('duration_value', 'int');
 $duration_unit = GETPOST('duration_unit', 'alpha');
 $automatic=GETPOST("automatic","int");
-$automatic_renew=GETPOST("automatic_renew","int")
-;
+$automatic_renew=GETPOST("automatic_renew","int");
+
 // Security check
 $result=restrictedArea($user, 'adherent', $rowid, 'adherent_type');
 
@@ -132,78 +125,12 @@ if ($cancel) {
 	}
 }
 
-if ($action == 'add' && $user->rights->adherent->configurer) {
-
-    $object->welcome     = price2num($welcome);
-    $object->price       = price2num($price);
-    $object->price_level       = trim($price_level?$price_level:'1');
-    $object->automatic   = (boolean) trim($automatic);
-    $object->automatic_renew   = (boolean) trim($automatic_renew);
-    $object->family   = (boolean) trim($family);
-		$object->label			= trim($label);
-    $object->statut         = trim($statut);
-    $object->morphy         = trim($morphy);
-		$object->subscription	= (int) trim($subscription);
-    $object->duration_value     	 = $duration_value;
-    $object->duration_unit      	 = $duration_unit;
-		$object->note			= trim($comment);
-		$object->mail_valid		= (boolean) trim($mail_valid);
-		$object->vote			= (boolean) trim($vote);
-
-	// Fill array 'array_options' with data from add form
-	$ret = $extrafields->setOptionalsFromPost($extralabels, $object);
-	if ($ret < 0) $error++;
-
-	if (empty($object->label)) {
-		$error++;
-		setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentities("Label")), null, 'errors');
-	}
-	else {
-		$sql = "SELECT libelle FROM ".MAIN_DB_PREFIX."adherent_type WHERE libelle='".$db->escape($object->label)."'";
-		$result = $db->query($sql);
-		if ($result) {
-			$num = $db->num_rows($result);
-		}
-		if ($num) {
-			$error++;
-			$langs->load("errors");
-			setEventMessages($langs->trans("ErrorLabelAlreadyExists", $login), null, 'errors');
-		}
-	}
-
-	if (! $error)
-	{
-		$id=$object->create($user);
-		if ($id > 0)
-		{
-			header("Location: ".$_SERVER["PHP_SELF"]);
-			exit;
-		}
-		else
-		{
-			setEventMessages($object->error, $object->errors, 'errors');
-			$action = 'create';
-		}
-	}
-	else
-	{
-		$action = 'create';
-	}
-}
-
 if ($action == 'update' && $user->rights->adherent->configurer)
 {
 	$object->fetch($rowid);
 
 	$object->oldcopy = clone $object;
 
-		$object->label        = trim($label);
-    $object->statut         = trim($statut);
-    $object->morphy         = trim($morphy);
-		$object->subscription   = (int) trim($subscription);
-		$object->note           = trim($comment);
-		$object->mail_valid     = (boolean) trim($mail_valid);
-		$object->vote           = (boolean) trim($vote);
     $object->family           = (boolean) trim($family);
     $object->welcome     = price2num($welcome);
     $object->price       = price2num($price);
@@ -231,25 +158,6 @@ if ($action == 'update' && $user->rights->adherent->configurer)
 	header("Location: ".$_SERVER["PHP_SELF"]."?rowid=".$object->id);
 	exit;
 }
-
-if ($action == 'confirm_delete' && $user->rights->adherent->configurer)
-{
-	$object->fetch($rowid);
-	$res=$object->delete();
-
-	if ($res > 0)
-	{
-		setEventMessages($langs->trans("MemberTypeDeleted"), null, 'mesgs');
-		header("Location: ".$_SERVER["PHP_SELF"]);
-		exit;
-	}
-	else
-	{
-		setEventMessages($langs->trans("MemberTypeCanNotBeDeleted"), null, 'errors');
-		$action='';
-	}
-}
-
 
 /*
  * View
@@ -347,124 +255,6 @@ else print img_picto($langs->trans("ActivityCeased"),'statut5');
 	}
 }
 
-
-/* ************************************************************************** */
-/*                                                                            */
-/* Creation mode                                                              */
-/*                                                                            */
-/* ************************************************************************** */
-if ($action == 'create')
-{
-	$object = new AdherentTypePlus($db);
-
-	print load_fiche_titre($langs->trans("NewMemberType"));
-
-	print '<form action="'.$_SERVER['PHP_SELF'].'" method="POST">';
-	print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
-	print '<input type="hidden" name="action" value="add">';
-
-    dol_fiche_head('');
-
-	print '<table class="border" width="100%">';
-	print '<tbody>';
-
-	print '<tr><td class="titlefieldcreate fieldrequired">'.$langs->trans("Label").'</td><td><input type="text" name="label" size="40"></td></tr>';
-
-  print '<tr><td>'.$langs->trans("Status").'</td><td>';
-  print $form->selectarray('statut', array('0'=>$langs->trans('ActivityCeased'),'1'=>$langs->trans('InActivity')),1);
-  print '</td></tr>';
-  
-  // Morphy
-  $morphys[] = $langs->trans("Physical & Morale");
-  $morphys["phy"] = $langs->trans("Physical");
-	$morphys["mor"] = $langs->trans("Morale");
-	print '<tr><td><span>'.$langs->trans("MemberNature").'</span></td><td>';
-	print $form->selectarray("morphy", $morphys, isset($_POST["morphy"])?$_POST["morphy"]:$object->morphy);
-	print "</td></tr>";
-  
-  print '<tr><td>'.$langs->trans("GroupSubscription").'</td><td>';
-	print $form->selectyesno("family",0,1);
-  print '</td></tr>';
-	
-	print '<tr><td>'.$langs->trans("SubscriptionRequired").'</td><td>';
-	print $form->selectyesno("subscription",1,1);
-	print '</td></tr>';
-  
-  print '<tr ><td>'.$langs->trans("SubscriptionWelcome").'</td><td>';
-	print '<input size="10" type="text" value="' . price($object->welcome) . '" name="welcome">';
-  print ' '.$langs->trans("Currency".$conf->currency);    
-	print '</td></tr>';
-    
-  print '<tr ><td>'.$langs->trans("SubscriptionPrice").'</td><td>';
-	print '<input size="10" type="text" value="' . price($object->price) . '" name="price">';   
-  print ' '.$langs->trans("Currency".$conf->currency);    
-	print '</td></tr>';
-if (! empty($conf->global->PRODUIT_MULTIPRICES)){
-  print '<tr><td>';
-	print $langs->trans("PriceLevel").'</td><td colspan="2">';
-	print '<select name="price_level" class="flat">';
-	for($i=1;$i<=$conf->global->PRODUIT_MULTIPRICES_LIMIT;$i++)
-	{
-		print '<option value="'.$i.'"' ;
-		if($i == $object->price_level)
-		print 'selected';
-		print '>'.$i;
-		$keyforlabel='PRODUIT_MULTIPRICES_LABEL'.$i;
-		if (! empty($conf->global->$keyforlabel)) print ' - '.$langs->trans($conf->global->$keyforlabel);
-		print '</option>';
-	}
-	print '</select>';
-	print '</td></tr>';
-}
-
-  print '<tr><td>'.$langs->trans("Duration").'</td><td colspan="3">';
-  print '<input name="surface" size="4" value="1">';
-  print $formproduct->selectMeasuringUnits("duration_unit", "time", "y", 0, 1);
-  print '</td></tr>';
-
-	print '<tr><td>'.$langs->trans("VoteAllowed").'</td><td>';
-	print $form->selectyesno("vote",0,1);
-	print '</td></tr>';
-  
-  print '<tr><td>'.$langs->trans("Validation").'</td><td>';
-	print $formother->selectAutoManual("automatic",$object->automatic,1);
-	print '</td></tr>';
-    
-  print '<tr><td>'.$langs->trans("Renewal").'</td><td>';
-	print $formother->selectAutoManual("automatic_renew",$object->automatic_renew,1);
-	print '</td></tr>';
-
-	print '<tr><td class="tdtop">'.$langs->trans("Description").'</td><td>';
-	print '<textarea name="comment" wrap="soft" class="centpercent" rows="3"></textarea></td></tr>';
-
-	print '<tr><td class="tdtop">'.$langs->trans("WelcomeEMail").'</td><td>';
-	require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
-	$doleditor=new DolEditor('mail_valid',$object->mail_valid,'',280,'dolibarr_notes','',false,true,$conf->fckeditor->enabled,15,'90%');
-	$doleditor->Create();
-	print '</td></tr>';
-
-	// Other attributes
-	$parameters=array();
-	$reshook=$hookmanager->executeHooks('formObjectOptions',$parameters,$act,$action);    // Note that $action and $object may have been modified by hook
-    print $hookmanager->resPrint;
-	if (empty($reshook) && ! empty($extrafields->attribute_label))
-	{
-		print $object->showOptionals($extrafields,'edit');
-	}
-	print '<tbody>';
-	print "</table>\n";
-
-	dol_fiche_end();
-
-	print '<div class="center">';
-	print '<input type="submit" name="button" class="button" value="'.$langs->trans("Add").'">';
-	print '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-	print '<input type="submit" name="cancel" class="button" value="'.$langs->trans("Cancel").'" onclick="history.go(-1)" />';
-	print '</div>';
-
-	print "</form>\n";
-}
-
 /* ************************************************************************** */
 /*                                                                            */
 /* View mode                                                                  */
@@ -499,24 +289,12 @@ if ($rowid > 0)
 
 		print '<table class="border" width="100%">';
 
-    print '<tr><td class="titlefield">'.$langs->trans("Status").'</td><td>';
-if ( !empty($object->statut) ) print img_picto($langs->trans('TypeStatusActive'),'statut4').' '.$langs->trans("InActivity");
-else print img_picto($langs->trans('TypeStatusInactive'),'statut5').' '.$langs->trans("ActivityCeased");   
-		print '</tr>';
-    
-    // Morphy
-		print '<tr><td>'.$langs->trans("MemberNature").'</td><td class="valeur" >'.$object->getmorphylib($object->morphy).'</td>';
-		print '</tr>';
-
     print '<tr><td class="titlefield">'.$langs->trans("GroupSubscription").'</td><td>';
 		print yn($object->family);
 		print '</tr>';
 
-		print '<tr><td class="titlefield">'.$langs->trans("SubscriptionRequired").'</td><td>';
-		print yn($object->subscription);
-		print '</tr>';
-    if ($object->subscription == '1')
-	{        
+    if (! empty($object->subscription))
+    {        
     print '<tr><td>'.$langs->trans("SubscriptionWelcome").'</td><td>';
 		print price($object->welcome);
     print ' '.$langs->trans("Currency".$conf->currency);
@@ -525,8 +303,9 @@ else print img_picto($langs->trans('TypeStatusInactive'),'statut5').' '.$langs->
     print '<tr><td>'.$langs->trans("SubscriptionPrice").'</td><td>';
 		print price($object->price);
     print ' '.$langs->trans("Currency".$conf->currency);
-		print '</tr>';               
-}
+		print '</tr>';
+    }
+
 if (! empty($conf->global->PRODUIT_MULTIPRICES)){
     print '<tr><td>'.$langs->trans("PriceLevel").'</td><td>';
     print $object->price_level;
@@ -558,12 +337,6 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
     print '<tr><td>'.$langs->trans("Renewal").'</td><td>';
 		print autoOrManual($object->automatic_renew);
 		print '</tr>';
-
-		print '<tr><td class="tdtop">'.$langs->trans("Description").'</td><td>';
-		print nl2br($object->note)."</td></tr>";
-
-		print '<tr><td class="tdtop">'.$langs->trans("WelcomeEMail").'</td><td>';
-		print nl2br($object->mail_valid)."</td></tr>";
 
     	// Other attributes
     	include DOL_DOCUMENT_ROOT . '/core/tpl/extrafields_view.tpl.php';
@@ -627,30 +400,14 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
 
 		print '<table class="border" width="100%">';
 
-		print '<tr><td class="titlefield">'.$langs->trans("Ref").'</td><td>'.$object->id.'</td></tr>';
-
-		print '<tr><td class="fieldrequired">'.$langs->trans("Label").'</td><td><input type="text" name="label" size="40" value="'.dol_escape_htmltag($object->label).'"></td></tr>';
-
-    print '<tr><td>'.$langs->trans("Status").'</td><td>';
-    print $form->selectarray('statut', array('0'=>$langs->trans('ActivityCeased'),'1'=>$langs->trans('InActivity')), $object->statut);
-    print '</td></tr>';
-    
-    // Morphy
-    $morphys[null] = $langs->trans("Physical & Morale");
-    $morphys["phy"] = $langs->trans("Physical");
-    $morphys["mor"] = $langs->trans("Morale");
-    print '<tr><td><span>'.$langs->trans("MemberNature").'</span></td><td>';
-    print $form->selectarray("morphy", $morphys, isset($_POST["morphy"])?$_POST["morphy"]:$object->morphy);
-    print "</td></tr>";
+		print '<tr><td class="titlefield">'.$langs->trans("Ref").'</td><td>'.$object->id.' '.dol_escape_htmltag($object->label).'</td></tr>';
   
     print '<tr><td>'.$langs->trans("GroupSubscription").'</td><td>';
 		print $form->selectyesno("family",$object->family,1);
 		print '</td></tr>';
 
-		print '<tr><td>'.$langs->trans("SubscriptionRequired").'</td><td>';
-		print $form->selectyesno("subscription",$object->subscription,1);
-		print '</td></tr>';
-
+    if (! empty($object->subscription))
+    {  
     print '<tr ><td>'.$langs->trans("SubscriptionWelcome").'</td><td>';
 		print '<input size="10" type="text" value="' . price($object->welcome) . '" name="welcome">';
     print ' '.$langs->trans("Currency".$conf->currency);    
@@ -660,6 +417,8 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
 		print '<input size="10" type="text" value="' . price($object->price) . '" name="price">';   
     print ' '.$langs->trans("Currency".$conf->currency);    
 		print '</td></tr>';
+    }
+
 if (! empty($conf->global->PRODUIT_MULTIPRICES)){    
     print '<tr><td>';
 	  print $langs->trans("PriceLevel").'</td><td colspan="2">';
@@ -682,10 +441,6 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
     print '<input name="duration_value" size="5" value="'.$object->duration_value.'"> ';
     print $formproduct->selectMeasuringUnits("duration_unit", "time", $object->duration_unit, 0, 1);
     print '</td></tr>';
-                 
-		print '<tr><td>'.$langs->trans("VoteAllowed").'</td><td>';
-		print $form->selectyesno("vote",$object->vote,1);
-		print '</td></tr>';
     
     print '<tr><td>'.$langs->trans("Validation").'</td><td>';
 		print $formother->selectAutoManual("automatic",$object->automatic,1);
@@ -694,15 +449,6 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
     print '<tr><td>'.$langs->trans("Renewal").'</td><td>';
 		print $formother->selectAutoManual("automatic_renew",$object->automatic_renew,1);
 		print '</td></tr>';
-
-		print '<tr><td class="tdtop">'.$langs->trans("Description").'</td><td>';
-		print '<textarea name="comment" wrap="soft" class="centpercent" rows="3">'.$object->note.'</textarea></td></tr>';
-
-		print '<tr><td class="tdtop">'.$langs->trans("WelcomeEMail").'</td><td>';
-		require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
-		$doleditor=new DolEditor('mail_valid',$object->mail_valid,'',280,'dolibarr_notes','',false,true,$conf->fckeditor->enabled,15,'90%');
-		$doleditor->Create();
-		print "</td></tr>";
 
 		// Other attributes
 		$parameters=array();
