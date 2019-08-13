@@ -1433,11 +1433,11 @@ class AdherentPlus extends CommonObject
 				$this->birth			= $this->db->jdate($obj->birthday);
         
 $today=dol_now();
-$year = strftime("%Y",$today);
+$year = strftime("%Y", $today);
 if ($conf->global->SOCIETE_SUBSCRIBE_MONTH_START>0){
 $month = $conf->global->SOCIETE_SUBSCRIBE_MONTH_START;
 } else { 
-$month = strftime("%m",$today);
+$month = strftime("%m", $today);
 }
 //if ($obj->datefin == null){
 //$datefin=dol_time_plus_duree(dol_now(),-1,'d');
@@ -1446,29 +1446,29 @@ $datefin=$this->db->jdate($obj->datefin);
 //}
 
 $cotis1 = dol_get_first_day($year,$month,false);//dol_mktime(00,00,00,$conf->global->SOCIETE_SUBSCRIBE_MONTH_START,'01',$year);
-$startcotispre1 = dol_time_plus_duree($cotis1,-$conf->global->SOCIETE_SUBSCRIBE_MONTH_PRESTART,'m');
-$startcotis1 = dol_time_plus_duree($cotis1,+1,'y');
+$startcotispre1 = dol_time_plus_duree($cotis1, -$conf->global->SOCIETE_SUBSCRIBE_MONTH_PRESTART, 'm');
+$startcotis1 = dol_time_plus_duree($cotis1, +1, 'y');
 if ( $startcotis1>$today && ($startcotis1-$today)<31536000 && (($today-$startcotispre1)>31536000) ) {
-$cotis1 = dol_time_plus_duree($cotis1,+2,'y');
+$cotis1 = dol_time_plus_duree($cotis1, +2, 'y');
 } elseif ( $startcotis1>$today && ($startcotis1-$today)<31536000 ) {
-$cotis1 = dol_time_plus_duree($cotis1,+1,'y'); 
+$cotis1 = dol_time_plus_duree($cotis1, +1, 'y'); 
 }
 
-$cotis2 = dol_time_plus_duree($cotis1,+1,'y');
-$startcotis2 = dol_time_plus_duree($cotis2,-$conf->global->SOCIETE_SUBSCRIBE_MONTH_PRESTART,'m');
+$cotis2 = dol_time_plus_duree($cotis1, +1, 'y');
+$startcotis2 = dol_time_plus_duree($cotis2, -$conf->global->SOCIETE_SUBSCRIBE_MONTH_PRESTART, 'm');
 //$startcotis0 = dol_time_plus_duree($cotis0,-$conf->global->SOCIETE_SUBSCRIBE_MONTH_PRESTART,'m');
 
 if ($startcotis1>$today){
 if ($conf->global->ADHERENT_SUBSCRIPTION_PRORATA == '0') { 
 //$next = dol_time_plus_duree($today,+$conf->global->SOCIETE_SUBSCRIBE_MONTH_PRESTART,'m');
 if ($datefin>$today ) {  //|| ($today-$datefin)<31536000
-$date = $dateb = dol_time_plus_duree($datefin,+1,'d');
+$date = $dateb = dol_time_plus_duree($datefin, +1, 'd');
 } else {
 $date = $dateb = $today;
 }
 } else {
 //$next = $startcotis1;
-$cotis0 = dol_time_plus_duree($cotis1,-1,'y');
+$cotis0 = dol_time_plus_duree($cotis1, -1, 'y');
 if ($cotis0>$today && $datefin<$today){
 $date=$cotis0; // $today;
 } else {
@@ -1486,16 +1486,16 @@ $date = $dateb =$today;
 if ($cotis1>$today && $datefin<$today){$date=$today;} else {
 $date = $cotis1;}
 $dateb = $cotis1;} 
-$dateto = strtotime(date("Y-m-d", dol_time_plus_duree($cotis2,-1,'d')));
+$dateto = strtotime(date("Y-m-d", dol_time_plus_duree($cotis2, -1, 'd')));
 } 
 
 if ( $conf->global->ADHERENT_SUBSCRIPTION_PRORATA == '1' || empty($conf->global->ADHERENT_SUBSCRIPTION_PRORATA) ) { $tx="1"; }
 else { $tx=(ceil((($dateto-$today)/31558464)*$conf->global->ADHERENT_SUBSCRIPTION_PRORATA)/$conf->global->ADHERENT_SUBSCRIPTION_PRORATA); }
 $monthnb=12-(12*$tx);
 
-$datefrom = strtotime(date("Y-m-d", dol_time_plus_duree($date,+$monthnb,'m'))); 
+$datefrom = strtotime(date("Y-m-d", dol_time_plus_duree($date, +$monthnb, 'm'))); 
 
-if (!empty($obj->type_duration)) {
+if (!empty($obj->type_duration) && ($conf->global->ADHERENT_SUBSCRIPTION_PRORATA == '1' || empty($conf->global->ADHERENT_SUBSCRIPTION_PRORATA))) {
 $dateto=dol_time_plus_duree($datefrom, + substr($obj->type_duration, 0, dol_strlen($obj->type_duration)-1), substr($obj->type_duration, -1));
 if (($dateto - $datefrom)>=(3600*24*2)) { $dateto=dol_time_plus_duree($dateto, -1, 'd'); }
 elseif (($dateto - $datefrom)>=(3600*24*1)) { $dateto=dol_time_plus_duree($datefrom, -0, 'd'); }       
@@ -1505,8 +1505,8 @@ if ($datefrom<$datefin) {
 $datefrom = $date;
 }
 
-$d = strftime("%Y",$datefrom);
-$f = strftime("%Y",$dateto);
+$d = strftime("%Y", $datefrom);
+$f = strftime("%Y", $dateto);
 if ($d==$f) {
 $season=$d;
 }else{
