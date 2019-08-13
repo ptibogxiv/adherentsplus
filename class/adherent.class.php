@@ -1501,7 +1501,7 @@ if (($dateto - $datefrom)>=(3600*24*2)) { $dateto=dol_time_plus_duree($dateto, -
 elseif (($dateto - $datefrom)>=(3600*24*1)) { $dateto=dol_time_plus_duree($datefrom, -0, 'd'); }       
 }
         
-if ($datefrom<$datefin) {
+if ($datefrom < $datefin) {
 $datefrom = $date;
 }
 
