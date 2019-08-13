@@ -1470,7 +1470,7 @@ $date = $dateb = $today;
 //$next = $startcotis1;
 $cotis0 = dol_time_plus_duree($cotis1, -1, 'y');
 if ($cotis0>$today && $datefin<$today){
-$date=$cotis0; // $today;
+$date = $cotis0; // $today;
 } else {
 $date = $cotis0;
 }
@@ -1483,9 +1483,9 @@ if ($conf->global->ADHERENT_SUBSCRIPTION_PRORATA == '0') {
 $date = $dateb =$today;
 } else { 
 //$next = $startcotis2; 
-if ($cotis1>$today && $datefin<$today){$date=$today;} else {
-$date = $cotis1;}
-$dateb = $cotis1;} 
+if ($cotis1 > $today && $datefin < $today) { $date=$today; } else {
+$date = $cotis1; }
+$dateb = $cotis1; } 
 $dateto = strtotime(date("Y-m-d", dol_time_plus_duree($cotis2, -1, 'd')));
 } 
 
