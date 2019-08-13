@@ -195,7 +195,7 @@ class AdherentsPlus extends DolibarrApi
      * @param string    $nature     Nature of type phy, mor or both (for only both not mor or phy only)
      * @param int       $limit      Limit for list
      * @param int       $page       Page number
-	   * @param string   	$member_id	Member id to filter wishlists of.
+	   * @param string   	$member_id	Member id to filter type lists of.
      * @param string    $sqlfilters Other criteria to filter answers separated by a comma. Syntax example "(t.libelle:like:'SO-%') and (t.subscription:=:'1')"
      * @return array                Array of member type objects
      *
