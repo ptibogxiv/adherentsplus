@@ -1425,10 +1425,10 @@ class AdherentPlus extends CommonObject
 				$this->statut			= $obj->statut;
 				$this->public			= $obj->public;
 
-				$this->datec			= $this->db->jdate($obj->datec);
-				$this->datem			= $this->db->jdate($obj->datem);
+				$this->date_creation			= $this->db->jdate($obj->datec);
+				$this->date_modification			= $this->db->jdate($obj->datem);
 				$this->datefin			= $this->db->jdate($obj->datefin); 
-				$this->datevalid		= $this->db->jdate($obj->datev);
+				$this->date_validation		= $this->db->jdate($obj->datev);   
         $this->datecommitment			= $this->db->jdate($obj->datecommitment);
 				$this->birth			= $this->db->jdate($obj->birthday);
         

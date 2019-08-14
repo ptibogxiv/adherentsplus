@@ -312,7 +312,7 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
 	 */
 	public function fetch($rowid)
 	{
-        $sql = "SELECT d.rowid, d.libelle as label, d.statut, d.morphy, d.subscription, d.welcome, d.price, d.price_level, d.duration, d.automatic, d.automatic_renew, d.family, d.mail_valid, d.note, d.vote";
+        $sql = "SELECT d.rowid, d.tms as datem, d.libelle as label, d.statut, d.morphy, d.subscription, d.welcome, d.price, d.price_level, d.duration, d.automatic, d.automatic_renew, d.family, d.mail_valid, d.note, d.vote";
         $sql .= " FROM ".MAIN_DB_PREFIX."adherent_type as d";
         $sql .= " WHERE d.rowid = ".$rowid;
 
@@ -347,6 +347,7 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
                 $this->note           = $obj->note;
                 $this->vote           = $obj->vote;
                 $this->status         = $obj->status;
+                $this->date_modification			= $this->db->jdate($obj->datem);
                 
 	if (! empty($conf->global->PRODUIT_MULTIPRICES) && empty($this->price_level)) $this->price_level=1;
                  
