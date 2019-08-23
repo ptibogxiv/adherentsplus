@@ -72,7 +72,7 @@ class box_adherent_birthdays extends ModeleBoxes
 	public function loadBox($max = 20)
 	{
 		global $user, $langs, $db, $conf;
-		$langs->load("boxes", "adherentsplus@adherentsplus");
+    $langs->loadLangs(array("boxes", "adherentsplus@adherentsplus"));
 
 		$this->max=$max;
 
