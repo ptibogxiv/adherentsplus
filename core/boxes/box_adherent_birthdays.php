@@ -34,8 +34,8 @@ class box_adherent_birthdays extends ModeleBoxes
 {
     public $boxcode="adherent_birthdays";
     public $boximg="object_member";
-    public $boxlabel="BoxAdherentBirthdays";
-    public $depends = array("adherent");
+    public $boxlabel="BoxLastMembers";
+    public $depends = array("adherentsplus");
 
 	/**
      * @var DoliDB Database handler.
@@ -72,7 +72,7 @@ class box_adherent_birthdays extends ModeleBoxes
 	public function loadBox($max = 20)
 	{
 		global $user, $langs, $db, $conf;
-		$langs->load("boxes");
+		$langs->load("boxes", "adherentsplus@adherentsplus");
 
 		$this->max=$max;
 

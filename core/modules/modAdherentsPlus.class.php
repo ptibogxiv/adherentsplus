@@ -199,7 +199,7 @@ class modAdherentsPlus extends DolibarrModules
         //-------
 
         $this->boxes[0]['file']='box_adherent_birthdays.php@adherentsplus';
-        $this->boxes[0]['note']='Ma box anniv';
+        $this->boxes[0]['note']='';
 
         // Permissions
         //------------
