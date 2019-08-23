@@ -18,7 +18,7 @@ download then unzip then copy in htdocs/custom folder
 Add the following fields in dolibarr database
 Il vous faut ajouter les champs suivants dans la base de données:
 
-Pour les versions avant la V11:
+Pour les versions avant la V11 / develop:
 
 
 Pour les versions avant la V10:
