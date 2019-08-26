@@ -252,16 +252,20 @@ if (! empty($conf->global->MEMBER_ENABLE_PUBLIC))
 {
 	print '<br>';
 	//print $langs->trans('FollowingLinksArePublic').'<br>';
-	print img_picto('','object_globe.png').' '.$langs->trans('BlankSubscriptionForm').':<br>';
+	print img_picto('', 'object_globe.png').' '.$langs->trans('BlankSubscriptionForm').':<br>';
 	if ($conf->multicompany->enabled) {
 		$entity_qr='?entity='.$conf->entity;
 	} else {
 		$entity_qr='';
 	}
-	print '<a target="_blank" href="'.dol_buildpath('/adherentsplus/public/new.php'.$entity_qr.'', 1).'">'.DOL_MAIN_URL_ROOT.''.dol_buildpath('/adherentsplus/public/new.php'.$entity_qr.'', 1).'</a>';
 
+	// Define $urlwithroot
+	$urlwithouturlroot=preg_replace('/'.preg_quote(DOL_URL_ROOT, '/').'$/i', '', trim($dolibarr_main_url_root));
+	$urlwithroot=$urlwithouturlroot.DOL_URL_ROOT;		// This is to use external domain name found into config file
+	//$urlwithroot=DOL_MAIN_URL_ROOT;					// This is to use same domain name than current
+
+	print '<a target="_blank" href="'.$urlwithroot.'/public/members/new.php'.$entity_qr.'">'.$urlwithroot.'/public/members/new.php'.$entity_qr.'</a>';
 }
-
 
 llxFooter();
 
