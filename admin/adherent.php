@@ -258,15 +258,12 @@ print $form->selectarray('ADHERENT_SUBSCRIPTION_PRORATA', array('0'=>$langs->tra
 print '</td>';
 print "</tr>\n";
 
-if ($conf->global->ADHERENT_SUBSCRIPTION_PRORATA > '0')
-	{ 
 // Insert subscription into bank account
 print '<tr class="oddeven"><td>'.$langs->trans("FiscalMonthStart").'</td>';
 print '<td>';
 print $formother->select_month($conf->global->SOCIETE_FISCAL_MONTH_START, 'SOCIETE_FISCAL_MONTH_START', 0, 1, 'maxwidth100');
 print '</td>';
 print "</tr>\n";
-}
 
 // presale for next membership
 print '<tr class="oddeven"><td>'.$langs->trans("SOCIETE_SUBSCRIBE_MONTH_PRESTART").'</td>';
