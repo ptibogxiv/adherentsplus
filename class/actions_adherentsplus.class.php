@@ -56,7 +56,7 @@ class Actionsadherentsplus
   	/**
 	 * addMoreActionsButtons
 	 *
-	 * @param arra	 	$parameters	Parameters
+	 * @param array	 	$parameters	Parameters
 	 * @param Object	$object		Object
 	 * @param string	$action		action
 	 * @return int					0
@@ -74,6 +74,20 @@ class Actionsadherentsplus
 }    
     
 	}
+  return 0;
+  }
+  
+  	/**
+	 * ActionButtons
+	 *
+	 * @param array	 	$parameters	Parameters
+	 * @return int					0
+	 */
+	function ActionButtons($parameters)
+	{
+
+  //print array('title'=>'<span class="far fa-money-bill-alt paddingrightonly"></span><div class="trunc">'.$langs->trans("Payment").'</div>');
+  
   return 0;
   }
 

@@ -70,7 +70,7 @@ class modAdherentsPlus extends DolibarrModules
 		$this->module_parts = array(
     'models' => 1,
     'triggers' => 1, 
-    'hooks' => array('thirdpartycard'),
+    'hooks' => array('thirdpartycard', 'takeposfrontend'),
 		);
         // Dependencies
         //------------
