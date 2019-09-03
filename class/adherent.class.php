@@ -1434,8 +1434,8 @@ class AdherentPlus extends CommonObject
         
 $today=dol_now();
 $year = strftime("%Y", $today);
-if ($conf->global->SOCIETE_SUBSCRIBE_MONTH_START>0){
-$month = $conf->global->SOCIETE_SUBSCRIBE_MONTH_START;
+if ($conf->global->SOCIETE_FISCAL_MONTH_START > 0) {
+$month = $conf->global->SOCIETE_FISCAL_MONTH_START;
 } else { 
 $month = strftime("%m", $today);
 }
@@ -1458,7 +1458,7 @@ $cotis2 = dol_time_plus_duree($cotis1, +1, 'y');
 $startcotis2 = dol_time_plus_duree($cotis2, -$conf->global->SOCIETE_SUBSCRIBE_MONTH_PRESTART, 'm');
 //$startcotis0 = dol_time_plus_duree($cotis0,-$conf->global->SOCIETE_SUBSCRIBE_MONTH_PRESTART,'m');
 
-if ($startcotis1>$today){
+if ($startcotis1 > $today){
 if ($conf->global->ADHERENT_SUBSCRIPTION_PRORATA == '0') { 
 //$next = dol_time_plus_duree($today,+$conf->global->SOCIETE_SUBSCRIBE_MONTH_PRESTART,'m');
 if ($datefin>$today ) {  //|| ($today-$datefin)<31536000
@@ -1489,7 +1489,7 @@ $dateb = $cotis1; }
 $dateto = strtotime(date("Y-m-d", dol_time_plus_duree($cotis2, -1, 'd')));
 } 
 
-if ( $conf->global->ADHERENT_SUBSCRIPTION_PRORATA == '1' || empty($conf->global->ADHERENT_SUBSCRIPTION_PRORATA) ) { $tx="1"; }
+if ( $conf->global->ADHERENT_SUBSCRIPTION_PRORATA == '1' || empty($conf->global->ADHERENT_SUBSCRIPTION_PRORATA) ) { $tx = "1"; }
 else { 
 $tx = ceil((($dateto-$today)/31558464)*$conf->global->ADHERENT_SUBSCRIPTION_PRORATA)/$conf->global->ADHERENT_SUBSCRIPTION_PRORATA;
 }
@@ -1516,8 +1516,10 @@ $season=$d;
 $season=$d."/".$f;
 }
 
-if ($conf->global->ADHERENT_SUBSCRIPTION_PRORATA <= '1'){$tx="1";}
-else {$tx=(ceil((($dateto-$today)/31558464)*$conf->global->ADHERENT_SUBSCRIPTION_PRORATA)/$conf->global->ADHERENT_SUBSCRIPTION_PRORATA);}
+if ($conf->global->ADHERENT_SUBSCRIPTION_PRORATA <= '1') { $tx = "1"; }
+else { 
+$tx = ceil((($dateto-$today)/31558464)*$conf->global->ADHERENT_SUBSCRIPTION_PRORATA)/$conf->global->ADHERENT_SUBSCRIPTION_PRORATA;
+}
        
         $this->next_subscription_renew			= dol_time_plus_duree(strtotime($obj->datefin), -$conf->global->SOCIETE_SUBSCRIBE_MONTH_PRESTART, 'm'); 
 				$this->next_subscription_date_start			= $datefrom;
