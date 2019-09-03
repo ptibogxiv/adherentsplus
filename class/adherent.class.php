@@ -1434,8 +1434,8 @@ class AdherentPlus extends CommonObject
         
 $today=dol_now();
 $year = strftime("%Y", $today);
-if ($conf->global->SOCIETE_FISCAL_MONTH_START > 0) {
-$month = $conf->global->SOCIETE_FISCAL_MONTH_START;
+if ($conf->global->SOCIETE_SUBSCRIBE_MONTH_START > 0) {
+$month = $conf->global->SOCIETE_SUBSCRIBE_MONTH_START;
 } else { 
 $month = strftime("%m", $today);
 }

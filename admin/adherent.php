@@ -261,7 +261,7 @@ print "</tr>\n";
 // Insert subscription into bank account
 print '<tr class="oddeven"><td>'.$langs->trans("FiscalMonthStart").'</td>';
 print '<td>';
-print $formother->select_month($conf->global->SOCIETE_FISCAL_MONTH_START, 'SOCIETE_FISCAL_MONTH_START', 0, 1, 'maxwidth100');
+print $formother->select_month($conf->global->SOCIETE_SUBSCRIBE_MONTH_START, 'SOCIETE_SUBSCRIBE_MONTH_START', 0, 1, 'maxwidth100');
 print '</td>';
 print "</tr>\n";
 
