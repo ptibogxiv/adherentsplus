@@ -450,59 +450,128 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
 
 
     /**
-     *    	Return clicable name (with picto eventually)
+     *  Return clicable name (with picto eventually)
      *
-     *		@param		int		$withpicto		0=No picto, 1=Include picto into link, 2=Only picto
-     *		@param		int		$maxlen			length max libelle
-     *		@return		string					String with URL
+     *  @param		int		$withpicto		0=No picto, 1=Include picto into link, 2=Only picto
+     *  @param		int		$maxlen			length max label
+     *  @param		int  	$notooltip		1=Disable tooltip
+     *  @return		string					String with URL
      */
-    function getNomUrl($withpicto=0,$maxlen=0)
+    public function getNomUrl($withpicto = 0, $maxlen = 0, $notooltip = 0)
     {
         global $langs;
 
         $result='';
-        $label=$langs->trans("ShowTypeCard",$this->label);
+        $label=$langs->trans("ShowTypeCard", $this->label);
 
-        $link = '<a href="'.dol_buildpath('/adherentsplus/type.php?rowid='.$this->id.'', 1).'" title="'.dol_escape_htmltag($label, 1).'" class="classfortooltip">';
+        $linkstart = '<a href="'.DOL_URL_ROOT.'/adherents/type.php?rowid='.$this->id.'" title="'.dol_escape_htmltag($label, 1).'" class="classfortooltip">';
         $linkend='</a>';
 
-        $picto='group';
+        $result .= $linkstart;
+        if ($withpicto) $result.=img_object(($notooltip?'':$label), ($this->picto?$this->picto:'generic'), ($notooltip?(($withpicto != 2) ? 'class="paddingright"' : ''):'class="'.(($withpicto != 2) ? 'paddingright ' : '').'classfortooltip"'), 0, 0, $notooltip?0:1);
+        if ($withpicto != 2) $result.= ($maxlen?dol_trunc($this->label, $maxlen):$this->label);
+        $result .= $linkend;
 
-        if ($withpicto) $result.=($link.img_object($label, $picto, 'class="classfortooltip"').$linkend);
-        if ($withpicto && $withpicto != 2) $result.=' ';
-        $result.=$link.($maxlen?dol_trunc($this->label,$maxlen):$this->label).$linkend;
         return $result;
     }
-
 
     /**
      *     getLibStatut
      *
      *     @return string     Return status of a type of member
      */
-	function getLibStatut($mode=0)
+    public function getLibStatut()
+    {
+        return '';
+    }
+    
+    // phpcs:disable PEAR.NamingConventions.ValidFunctionName.ScopeNotCamelCaps
+    // phpcs:disable PEAR.NamingConventions.ValidFunctionName.PublicUnderscore
+	/**
+	 *	Retourne chaine DN complete dans l'annuaire LDAP pour l'objet
+	 *
+	 *	@param		array	$info		Info array loaded by _load_ldap_info
+	 *	@param		int		$mode		0=Return full DN (uid=qqq,ou=xxx,dc=aaa,dc=bbb)
+	 *									1=Return DN without key inside (ou=xxx,dc=aaa,dc=bbb)
+	 *									2=Return key only (uid=qqq)
+	 *	@return		string				DN
+	 */
+	public function _load_ldap_dn($info, $mode = 0)
 	{
-		return '';//$this->LibStatut($this->statut,$mode);
+        // phpcs:enable
+		global $conf;
+		$dn='';
+		if ($mode==0) $dn=$conf->global->LDAP_KEY_MEMBERS_TYPES."=".$info[$conf->global->LDAP_KEY_MEMBERS_TYPES].",".$conf->global->LDAP_MEMBER_TYPE_DN;
+		if ($mode==1) $dn=$conf->global->LDAP_MEMBER_TYPE_DN;
+		if ($mode==2) $dn=$conf->global->LDAP_KEY_MEMBERS_TYPES."=".$info[$conf->global->LDAP_KEY_MEMBERS_TYPES];
+		return $dn;
 	}
 
-    /**
-     *     getMailOnValid
-     *
-     *     @return string     Return mail model
-     */
-    function getMailOnValid()
-    {
-        global $conf;
 
-        if (! empty($this->mail_valid) && trim(dol_htmlentitiesbr_decode($this->mail_valid)))
-        {
-            return $this->mail_valid;
-        }
-        else
-        {
-            return $conf->global->ADHERENT_MAIL_VALID;
-        }
-    }
+    // phpcs:disable PEAR.NamingConventions.ValidFunctionName.ScopeNotCamelCaps
+    // phpcs:disable PEAR.NamingConventions.ValidFunctionName.PublicUnderscore
+	/**
+	 *	Initialize the info array (array of LDAP values) that will be used to call LDAP functions
+	 *
+	 *	@return		array		Tableau info des attributs
+	 */
+	public function _load_ldap_info()
+	{
+        // phpcs:enable
+		global $conf,$langs;
+
+		$info=array();
+
+		// Object classes
+		$info["objectclass"]=explode(',', $conf->global->LDAP_MEMBER_TYPE_OBJECT_CLASS);
+
+		// Champs
+		if ($this->label && ! empty($conf->global->LDAP_MEMBER_TYPE_FIELD_FULLNAME)) $info[$conf->global->LDAP_MEMBER_TYPE_FIELD_FULLNAME] = $this->label;
+		if ($this->note && ! empty($conf->global->LDAP_MEMBER_TYPE_FIELD_DESCRIPTION)) $info[$conf->global->LDAP_MEMBER_TYPE_FIELD_DESCRIPTION] = dol_string_nohtmltag($this->note, 0, 'UTF-8', 1);
+		if (! empty($conf->global->LDAP_MEMBER_TYPE_FIELD_GROUPMEMBERS))
+		{
+			$valueofldapfield=array();
+			foreach($this->members as $key=>$val)    // This is array of users for group into dolibarr database.
+			{
+				$member=new AdherentPlus($this->db);
+				$member->fetch($val->id, '', '', '', false, false);
+				$info2 = $member->_load_ldap_info();
+				$valueofldapfield[] = $member->_load_ldap_dn($info2);
+			}
+			$info[$conf->global->LDAP_MEMBER_TYPE_FIELD_GROUPMEMBERS] = (!empty($valueofldapfield)?$valueofldapfield:'');
+		}
+		return $info;
+	}
+
+	/**
+	 *  Initialise an instance with random values.
+	 *  Used to build previews or test instances.
+	 *	id must be 0 if object instance is a specimen.
+	 *
+	 *  @return	void
+	 */
+	public function initAsSpecimen()
+	{
+		global $conf, $user, $langs;
+
+		// Initialise parametres
+		$this->id = 0;
+		$this->ref = 'MTSPEC';
+		$this->specimen=1;
+
+		$this->label='MEMBERS TYPE SPECIMEN';
+		$this->note='This is a note';
+		$this->mail_valid='This is welcome email';
+		$this->subscription=1;
+		$this->vote=0;
+
+		$this->statut=1;
+
+		// Members of this member type is just me
+		$this->members=array(
+			$user->id => $user
+		);
+	}
     
 	/**
 	 *	Return translated label by the nature of a adherent (physical or moral)
@@ -517,14 +586,31 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
 		elseif ($morphy == 'mor') { return $langs->trans("Moral"); } 
     else return $langs->trans("Physical & Morale");
 		//return $morphy;
-	}    
+	} 
+  
+	/**
+	 *     getMailOnValid
+	 *
+	 *     @return string     Return mail content of type or empty
+	 */
+	public function getMailOnValid()
+	{
+		global $conf;
 
-    /**
-     *     getMailOnSubscription
-     *
-     *     @return string     Return mail model
-     */
-    function getMailOnSubscription()
+		if (! empty($this->mail_valid) && trim(dol_htmlentitiesbr_decode($this->mail_valid)))
+		{
+			return $this->mail_valid;
+		}
+
+		return '';
+	}  
+
+	/**
+	 *     getMailOnSubscription
+	 *
+	 *     @return string     Return mail content of type or empty
+	 */
+	public function getMailOnSubscription()
 	{
 		global $conf;
 
@@ -537,22 +623,21 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
 		return '';
 	}
 
-    /**
-     *     getMailOnResiliate
-     *
-     *     @return string     Return mail model
-     */
-    function getMailOnResiliate()
+	/**
+	 *     getMailOnResiliate
+	 *
+	 *     @return string     Return mail model content of type or empty
+	 */
+    public function getMailOnResiliate()
     {
         global $conf;
-	// NOTE mail_resiliate not defined so never used
+
+        // NOTE mail_resiliate not defined so never used
         if (! empty($this->mail_resiliate) && trim(dol_htmlentitiesbr_decode($this->mail_resiliate)))  // Property not yet defined
         {
             return $this->mail_resiliate;
         }
-        else
-        {
-            return $conf->global->ADHERENT_MAIL_RESIL;
-        }
+
+        return '';
     }
 }

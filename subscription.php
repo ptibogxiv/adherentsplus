@@ -842,7 +842,7 @@ if ($rowid > 0)
                 print '<td align="center">'.dol_print_date($subscription->datec,'dayhour')."</td>";                  
                 print '<td align="center">';
                 if ( ! empty($subscription->fk_type)) {
-                print '<a href="'.dol_buildpath('/adherentsplus/type.php?rowid='.$subscription->fk_type.'', 1).'">'.img_object($langs->trans("ShowType"),'group').' '.dol_escape_htmltag($subscription->label)."</a>";
+                print '<a href="'.dol_buildpath('/adherents/type.php?rowid='.$subscription->fk_type.'', 1).'">'.img_object($langs->trans("ShowType"),'group').' '.dol_escape_htmltag($subscription->label)."</a>";
                 }
                 print '</td>';
 
