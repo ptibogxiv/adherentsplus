@@ -24,8 +24,8 @@
  *	\brief      File Class multicompany
  */
  
-dol_include_once('/adherentsplus/class/adherent.class.php');
-$langs->load("adherentsplus@adherentsplus");
+require_once DOL_DOCUMENT_ROOT.'/adherents/class/adherent.class.php';
+$langs->loadLangs(array("members"));
 
 /**
  *	\class      ActionsMulticompany
@@ -66,9 +66,9 @@ class Actionsadherentsplus
 		global $langs, $conf, $user;
 		if (is_object($object) && $object->element == 'societe'){
 
-    $adh = new AdherentPlus($this->db);
+    $adh = new Adherent($this->db);
     $result=$adh->fetch('','',$object->id);
-    if (!$result && $object->client==1)
+    if (!$result && $object->client == 1)
 {
 		print '<a class="butAction" href="'.DOL_URL_ROOT.'/adherents/card.php?&action=create&email=' . $object->email.'" title="'.dol_escape_htmltag($langs->trans("CreateMember")).'">'.$langs->trans("CreateMember").'</a>';
 }    
