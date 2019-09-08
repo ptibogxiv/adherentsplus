@@ -64,7 +64,7 @@ class Actionsadherentsplus
 	function addMoreActionsButtons($parameters, &$object, &$action)
 	{
 		global $langs, $conf, $user;
-		if (is_object($object) && $object->element == 'societe'){
+		if (is_object($object) && $object->element == 'societe' && (float)DOL_VERSION < 11.0 ){
 
     $adh = new Adherent($this->db);
     $result=$adh->fetch('','',$object->id);
