@@ -70,7 +70,7 @@ class Actionsadherentsplus
     $result=$adh->fetch('','',$object->id);
     if (!$result && $object->client == 1)
 {
-		print '<a class="butAction" href="'.DOL_URL_ROOT.'/adherents/card.php?&action=create&email=' . $object->email.'" title="'.dol_escape_htmltag($langs->trans("NewMember")).'">'.$langs->trans("NewMember").'</a>';
+		print '<a class="butAction" href="'.DOL_URL_ROOT.'/adherents/card.php?&action=create&socid='.$object->id.'&email=' . $object->email.'" title="'.dol_escape_htmltag($langs->trans("NewMember")).'">'.$langs->trans("NewMember").'</a>';
 }    
     
 	}
