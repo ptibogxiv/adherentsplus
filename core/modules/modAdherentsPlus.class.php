@@ -52,10 +52,13 @@ class modAdherentsPlus extends DolibarrModules
         $this->family = "hr";
         $this->module_position = 20;
 		// Module label (no space allowed), used if translation string 'ModuleXXXName' not found (where XXX is value of numeric property 'numero' of module)
-		$this->name = preg_replace('/^mod/i','',get_class($this));
+    $this->name = preg_replace('/^mod/i','',get_class($this));
         $this->description = "Management Extended of members of a foundation or association Extended";
         $this->version = '10.0.2';                        // 'experimental' or 'dolibarr' or version
         $this->const_name = 'MAIN_MODULE_'.strtoupper($this->name);
+		// Module description used if translation string 'ModuleXXXDesc' not found (XXX is id value)
+    $this->editor_name = 'ptibogxiv.net';
+    $this->editor_url = 'https://www.ptibogxiv.net';
         $this->special = 0;
         $this->picto='user';
 
