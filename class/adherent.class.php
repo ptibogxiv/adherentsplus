@@ -171,7 +171,7 @@ class AdherentPlus extends CommonObject
 	 *
 	 *	@param 		DoliDB		$db		Database handler
 	 */
-	function __construct($db)
+	public function __construct($db)
 	{
 		$this->db = $db;
 		$this->statut = -1;
@@ -199,7 +199,7 @@ class AdherentPlus extends CommonObject
 	 *  @param	string	$moreinheader		Add more html headers
 	 *  @return	int							<0 if KO, >0 if OK
 	 */
-	function send_an_email($text, $subject, $filename_list = array(), $mimetype_list = array(), $mimefilename_list = array(), $addr_cc = "", $addr_bcc = "", $deliveryreceipt = 0, $msgishtml = -1, $errors_to = '', $moreinheader = '')
+	public function send_an_email($text, $subject, $filename_list = array(), $mimetype_list = array(), $mimefilename_list = array(), $addr_cc = "", $addr_bcc = "", $deliveryreceipt = 0, $msgishtml = -1, $errors_to = '', $moreinheader = '')
 	{
         // phpcs:enable
 		global $conf,$langs;
@@ -243,14 +243,14 @@ class AdherentPlus extends CommonObject
 	 * @param	string	$text       Text to make substitution to
 	 * @return  string      		Value of input text string with substitutions done
 	 */
-	function makeSubstitution($text)
+	public function makeSubstitution($text)
 	{
 		global $conf,$langs;
 
-		$birthday = dol_print_date($this->birth,'day');
+		$birthday = dol_print_date($this->birth, 'day');
 
 		$msgishtml = 0;
-		if (dol_textishtml($text,1)) $msgishtml = 1;
+		if (dol_textishtml($text, 1)) $msgishtml = 1;
 
 		$infos='';
 		if ($this->civility_id) $infos.= $langs->transnoentities("UserTitle").": ".$this->getCivilityLabel()."\n";
@@ -277,23 +277,25 @@ class AdherentPlus extends CommonObject
 
 		// Substitutions
 		$substitutionarray=array(
+		    '__ID__'=>$this->id,
+		    '__MEMBER_ID__'=>$this->id,
 			'__CIVILITY__'=>$this->getCivilityLabel(),
-			'__FIRSTNAME__'=>$msgishtml?dol_htmlentitiesbr($this->firstname):$this->firstname,
-			'__LASTNAME__'=>$msgishtml?dol_htmlentitiesbr($this->lastname):$this->lastname,
+			'__FIRSTNAME__'=>$msgishtml?dol_htmlentitiesbr($this->firstname):($this->firstname?$this->firstname:''),
+			'__LASTNAME__'=>$msgishtml?dol_htmlentitiesbr($this->lastname):($this->lastname?$this->lastname:''),
 			'__FULLNAME__'=>$msgishtml?dol_htmlentitiesbr($this->getFullName($langs)):$this->getFullName($langs),
-			'__COMPANY__'=>$msgishtml?dol_htmlentitiesbr($this->societe):$this->societe,
-			'__ADDRESS__'=>$msgishtml?dol_htmlentitiesbr($this->address):$this->address,
-			'__ZIP__'=>$msgishtml?dol_htmlentitiesbr($this->zip):$this->zip,
-			'__TOWN__'=>$msgishtml?dol_htmlentitiesbr($this->town):$this->town,
-			'__COUNTRY__'=>$msgishtml?dol_htmlentitiesbr($this->country):$this->country,
-			'__EMAIL__'=>$msgishtml?dol_htmlentitiesbr($this->email):$this->email,
-			'__BIRTH__'=>$msgishtml?dol_htmlentitiesbr($birthday):$birthday,
-			'__PHOTO__'=>$msgishtml?dol_htmlentitiesbr($this->photo):$this->photo,
-			'__LOGIN__'=>$msgishtml?dol_htmlentitiesbr($this->login):$this->login,
-			'__PASSWORD__'=>$msgishtml?dol_htmlentitiesbr($this->pass):$this->pass,
-			'__PHONE__'=>$msgishtml?dol_htmlentitiesbr($this->phone):$this->phone,
-			'__PHONEPRO__'=>$msgishtml?dol_htmlentitiesbr($this->phone_perso):$this->phone_perso,
-			'__PHONEMOBILE__'=>$msgishtml?dol_htmlentitiesbr($this->phone_mobile):$this->phone_mobile,
+			'__COMPANY__'=>$msgishtml?dol_htmlentitiesbr($this->societe):($this->societe?$this->societe:''),
+			'__ADDRESS__'=>$msgishtml?dol_htmlentitiesbr($this->address):($this->address?$this->address:''),
+			'__ZIP__'=>$msgishtml?dol_htmlentitiesbr($this->zip):($this->zip?$this->zip:''),
+			'__TOWN__'=>$msgishtml?dol_htmlentitiesbr($this->town):($this->town?$this->town:''),
+			'__COUNTRY__'=>$msgishtml?dol_htmlentitiesbr($this->country):($this->country?$this->country:''),
+			'__EMAIL__'=>$msgishtml?dol_htmlentitiesbr($this->email):($this->email?$this->email:''),
+			'__BIRTH__'=>$msgishtml?dol_htmlentitiesbr($birthday):($birthday?$birthday:''),
+			'__PHOTO__'=>$msgishtml?dol_htmlentitiesbr($this->photo):($this->photo?$this->photo:''),
+			'__LOGIN__'=>$msgishtml?dol_htmlentitiesbr($this->login):($this->login?$this->login:''),
+			'__PASSWORD__'=>$msgishtml?dol_htmlentitiesbr($this->pass):($this->pass?$this->pass:''),
+			'__PHONE__'=>$msgishtml?dol_htmlentitiesbr($this->phone):($this->phone?$this->phone:''),
+			'__PHONEPRO__'=>$msgishtml?dol_htmlentitiesbr($this->phone_perso):($this->phone_perso?$this->phone_perso:''),
+			'__PHONEMOBILE__'=>$msgishtml?dol_htmlentitiesbr($this->phone_mobile):($this->phone_mobile?$this->phone_mobile:'')
 		);
 
 		complete_substitutions_array($substitutionarray, $langs, $this);
@@ -308,7 +310,7 @@ class AdherentPlus extends CommonObject
 	 *	@param	string		$morphy		Nature of the adherent (physical or moral)
 	 *	@return	string					Label
 	 */
-	function getmorphylib($morphy='')
+	public function getmorphylib($morphy = '')
 	{
 		global $langs;
 		if (! $morphy) { $morphy=$this->morphy; }
@@ -804,6 +806,7 @@ class AdherentPlus extends CommonObject
 	}
 
 
+    // phpcs:disable PEAR.NamingConventions.ValidFunctionName.ScopeNotCamelCaps
 	/**
 	 *	Update denormalized last subscription date.
 	 * 	This function is called when we delete a subscription for example.
@@ -811,8 +814,9 @@ class AdherentPlus extends CommonObject
 	 *	@param	User	$user			User making change
 	 *	@return	int						<0 if KO, >0 if OK
 	 */
-	function update_end_date($user)
+	public function update_end_date($user)
 	{
+        // phpcs:enable
 		$this->db->begin();
 
 		// Search for last subscription id and end date
@@ -857,7 +861,6 @@ class AdherentPlus extends CommonObject
 			$this->db->rollback();
 			return -1;
 		}
-
 	}
 
 	/**
@@ -868,7 +871,7 @@ class AdherentPlus extends CommonObject
 	 *	@param	int		$notrigger	1=Does not execute triggers, 0= execute triggers
 	 *  @return	int					<0 if KO, 0=nothing to do, >0 if OK
 	 */
-	function delete($rowid, $user, $notrigger=0)
+	public function delete($rowid, $user, $notrigger = 0)
 	{
 		global $conf, $langs;
 
@@ -884,7 +887,7 @@ class AdherentPlus extends CommonObject
 		if (! $error && ! $notrigger)
 		{
 			// Call trigger
-			$result=$this->call_trigger('MEMBER_DELETE',$user);
+			$result=$this->call_trigger('MEMBER_DELETE', $user);
 			if ($result < 0) $error++;
 			// End call triggers
 		}
@@ -978,13 +981,13 @@ class AdherentPlus extends CommonObject
 	 *    @param	int		$nosyncuser		Do not synchronize linked user
 	 *    @return   string           		If OK return clear password, 0 if no change, < 0 if error
 	 */
-	function setPassword($user, $password='', $isencrypted=0, $notrigger=0, $nosyncuser=0)
+	public function setPassword($user, $password = '', $isencrypted = 0, $notrigger = 0, $nosyncuser = 0)
 	{
 		global $conf, $langs;
 
 		$error=0;
 
-		dol_syslog(get_class($this)."::setPassword user=".$user->id." password=".preg_replace('/./i','*',$password)." isencrypted=".$isencrypted);
+		dol_syslog(get_class($this)."::setPassword user=".$user->id." password=".preg_replace('/./i', '*', $password)." isencrypted=".$isencrypted);
 
 		// If new password not provided, we generate one
 		if (! $password)
@@ -1042,11 +1045,11 @@ class AdherentPlus extends CommonObject
 
 					if ($result >= 0)
 					{
-						$result=$luser->setPassword($user,$this->pass,0,0,1);
+						$result=$luser->setPassword($user, $this->pass, 0, 0, 1);
 						if ($result < 0)
 						{
 							$this->error=$luser->error;
-							dol_syslog(get_class($this)."::setPassword ".$this->error,LOG_ERR);
+							dol_syslog(get_class($this)."::setPassword ".$this->error, LOG_ERR);
 							$error++;
 						}
 					}
@@ -1060,7 +1063,7 @@ class AdherentPlus extends CommonObject
 				if (! $error && ! $notrigger)
 				{
 					// Call trigger
-					$result=$this->call_trigger('MEMBER_NEW_PASSWORD',$user);
+					$result=$this->call_trigger('MEMBER_NEW_PASSWORD', $user);
 					if ($result < 0) { $error++; $this->db->rollback(); return -1; }
 					// End call triggers
 				}
@@ -1081,7 +1084,6 @@ class AdherentPlus extends CommonObject
 			return -1;
 		}
 	}
-
 
 	/**
 	 *    Set link to a user
@@ -1222,7 +1224,7 @@ class AdherentPlus extends CommonObject
 	 *    @param     int	$thirdpartyid		Id of user to link to
 	 *    @return    int						1=OK, -1=KO
 	 */
-	function setThirdPartyId($thirdpartyid)
+	public function setThirdPartyId($thirdpartyid)
 	{
 		global $conf, $langs;
 
@@ -1258,14 +1260,16 @@ class AdherentPlus extends CommonObject
 	}
 
 
+    // phpcs:disable PEAR.NamingConventions.ValidFunctionName.ScopeNotCamelCaps
 	/**
 	 *	Method to load member from its login
 	 *
 	 *	@param	string	$login		login of member
 	 *	@return	void
 	 */
-	function fetch_login($login)
+	public function fetch_login($login)
 	{
+        // phpcs:enable
 		global $conf;
 
 		$sql = "SELECT rowid FROM ".MAIN_DB_PREFIX."adherent";
@@ -1287,6 +1291,7 @@ class AdherentPlus extends CommonObject
 		}
 	}
 
+    // phpcs:disable PEAR.NamingConventions.ValidFunctionName.ScopeNotCamelCaps
 	/**
 	 *	Method to load member from its name
 	 *
@@ -1294,8 +1299,9 @@ class AdherentPlus extends CommonObject
 	 *	@param	string	$lastname	Lastname
 	 *	@return	void
 	 */
-	function fetch_name($firstname,$lastname)
+	public function fetch_name($firstname, $lastname)
 	{
+        // phpcs:enable
 		global $conf;
 
 		$sql = "SELECT rowid FROM ".MAIN_DB_PREFIX."adherent";
@@ -1910,14 +1916,317 @@ dol_include_once('/adherentsplus/class/subscription.class.php');
 			return -1;
 		}
 	}
+  
+	/**
+	 *	Do complementary actions after subscription recording.
+	 *
+	 *	@param	int			$subscriptionid			Id of created subscription
+	 *  @param	string		$option					Which action ('bankdirect', 'bankviainvoice', 'invoiceonly', ...)
+	 *	@param	int			$accountid				Id bank account
+	 *	@param	int			$datesubscription		Date of subscription
+	 *	@param	int			$paymentdate			Date of payment
+	 *	@param	string		$operation				Code of type of operation (if Id bank account provided). Example 'CB', ...
+	 *	@param	string		$label					Label operation (if Id bank account provided)
+	 *	@param	double		$amount     			Amount of subscription (0 accepted for some members)
+	 *	@param	string		$num_chq				Numero cheque (if Id bank account provided)
+	 *	@param	string		$emetteur_nom			Name of cheque writer
+	 *	@param	string		$emetteur_banque		Name of bank of cheque
+	 *  @param	string		$autocreatethirdparty	Auto create new thirdparty if member not yet linked to a thirdparty and we request an option that generate invoice.
+	 *	@return int									<0 if KO, >0 if OK
+	 */
+	public function subscriptionComplementaryActions($subscriptionid, $option, $accountid, $datesubscription, $paymentdate, $operation, $label, $amount, $num_chq, $emetteur_nom = '', $emetteur_banque = '', $autocreatethirdparty = 0)
+	{
+		global $conf, $langs, $user, $mysoc;
 
+		$error = 0;
+
+		$this->invoice = null;	// This will contains invoice if an invoice is created
+
+		dol_syslog("subscriptionComplementaryActions subscriptionid=".$subscriptionid." option=".$option." accountid=".$accountid." datesubscription=".$datesubscription." paymentdate=".$paymentdate." label=".$label." amount=".$amount." num_chq=".$num_chq." autocreatethirdparty=".$autocreatethirdparty);
+
+		// Insert into bank account directlty (if option choosed for) + link to llx_subscription if option is 'bankdirect'
+		if ($option == 'bankdirect' && $accountid)
+		{
+			require_once DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php';
+
+			$acct=new Account($this->db);
+			$result=$acct->fetch($accountid);
+
+			$dateop=$paymentdate;
+
+			$insertid=$acct->addline($dateop, $operation, $label, $amount, $num_chq, '', $user, $emetteur_nom, $emetteur_banque);
+			if ($insertid > 0)
+			{
+				$inserturlid=$acct->add_url_line($insertid, $this->id, DOL_URL_ROOT.'/adherents/card.php?rowid=', $this->getFullname($langs), 'member');
+				if ($inserturlid > 0)
+				{
+					// Update table subscription
+					$sql ="UPDATE ".MAIN_DB_PREFIX."subscription SET fk_bank=".$insertid;
+					$sql.=" WHERE rowid=".$subscriptionid;
+
+					dol_syslog("subscription::subscription", LOG_DEBUG);
+					$resql = $this->db->query($sql);
+					if (! $resql)
+					{
+						$error++;
+						$this->error=$this->db->lasterror();
+						$this->errors[]=$this->error;
+					}
+				}
+				else
+				{
+					$error++;
+					$this->error=$acct->error;
+					$this->errors=$acct->errors;
+				}
+			}
+			else
+			{
+				$error++;
+				$this->error=$acct->error;
+				$this->errors=$acct->errors;
+			}
+		}
+
+		// If option choosed, we create invoice
+		if (($option == 'bankviainvoice' && $accountid) || $option == 'invoiceonly')
+		{
+			require_once DOL_DOCUMENT_ROOT.'/compta/facture/class/facture.class.php';
+			require_once DOL_DOCUMENT_ROOT.'/compta/facture/class/paymentterm.class.php';
+
+			$invoice=new Facture($this->db);
+			$customer=new Societe($this->db);
+
+			if (! $error)
+			{
+				if (! ($this->fk_soc > 0))	// If not yet linked to a company
+				{
+					if ($autocreatethirdparty)
+					{
+						// Create a linked thirdparty to member
+						$companyalias='';
+						$fullname = $this->getFullName($langs);
+
+						if ($this->morphy == 'mor')
+						{
+							$companyname=$this->societe;
+							if (! empty($fullname)) $companyalias=$fullname;
+						}
+						else
+						{
+							$companyname=$fullname;
+							if (! empty($this->societe)) $companyalias=$this->societe;
+						}
+
+						$result=$customer->create_from_member($this, $companyname, $companyalias);
+						if ($result < 0)
+						{
+							$this->error = $customer->error;
+							$this->errors = $customer->errors;
+							$error++;
+						}
+						else
+						{
+							$this->fk_soc = $result;
+						}
+					}
+					else
+					{
+						 $langs->load("errors");
+						 $this->error=$langs->trans("ErrorMemberNotLinkedToAThirpartyLinkOrCreateFirst");
+						 $this->errors[]=$this->error;
+						 $error++;
+					}
+				}
+			}
+			if (! $error)
+			{
+				$result=$customer->fetch($this->fk_soc);
+				if ($result <= 0)
+				{
+					$this->error=$customer->error;
+					$this->errors=$customer->errors;
+					$error++;
+				}
+			}
+
+			if (! $error)
+			{
+				// Create draft invoice
+				$invoice->type=Facture::TYPE_STANDARD;
+				$invoice->cond_reglement_id=$customer->cond_reglement_id;
+				if (empty($invoice->cond_reglement_id))
+				{
+					$paymenttermstatic=new PaymentTerm($this->db);
+					$invoice->cond_reglement_id=$paymenttermstatic->getDefaultId();
+					if (empty($invoice->cond_reglement_id))
+					{
+						$error++;
+						$this->error='ErrorNoPaymentTermRECEPFound';
+						$this->errors[]=$this->error;
+					}
+				}
+				$invoice->socid=$this->fk_soc;
+				$invoice->date=$datesubscription;
+
+				// Possibility to add external linked objects with hooks
+				$invoice->linked_objects['subscription'] = $subscriptionid;
+				if (! empty($_POST['other_linked_objects']) && is_array($_POST['other_linked_objects']))
+				{
+					$invoice->linked_objects = array_merge($invoice->linked_objects, $_POST['other_linked_objects']);
+				}
+
+				$result=$invoice->create($user);
+				if ($result <= 0)
+				{
+					$this->error=$invoice->error;
+					$this->errors=$invoice->errors;
+					$error++;
+				}
+				else
+				{
+					$this->invoice = $invoice;
+				}
+			}
+
+			if (! $error)
+			{
+				// Add line to draft invoice
+				$idprodsubscription=0;
+				if (! empty($conf->global->ADHERENT_PRODUCT_ID_FOR_SUBSCRIPTIONS) && (! empty($conf->product->enabled) || ! empty($conf->service->enabled))) $idprodsubscription = $conf->global->ADHERENT_PRODUCT_ID_FOR_SUBSCRIPTIONS;
+
+				$vattouse=0;
+				if (isset($conf->global->ADHERENT_VAT_FOR_SUBSCRIPTIONS) && $conf->global->ADHERENT_VAT_FOR_SUBSCRIPTIONS == 'defaultforfoundationcountry')
+				{
+					$vattouse=get_default_tva($mysoc, $mysoc, $idprodsubscription);
+				}
+				//print xx".$vattouse." - ".$mysoc." - ".$customer;exit;
+				$result=$invoice->addline($label, 0, 1, $vattouse, 0, 0, $idprodsubscription, 0, $datesubscription, '', 0, 0, '', 'TTC', $amount, 1);
+				if ($result <= 0)
+				{
+					$this->error=$invoice->error;
+					$this->errors=$invoice->errors;
+					$error++;
+				}
+			}
+
+			if (! $error)
+			{
+				// Validate invoice
+				$result=$invoice->validate($user);
+				if ($result <= 0)
+				{
+					$this->error=$invoice->error;
+					$this->errors=$invoice->errors;
+					$error++;
+				}
+			}
+
+			if (! $error)
+			{
+				// TODO Link invoice with subscription ?
+			}
+
+			// Add payment onto invoice
+			if (! $error && $option == 'bankviainvoice' && $accountid)
+			{
+				require_once DOL_DOCUMENT_ROOT.'/compta/paiement/class/paiement.class.php';
+				require_once DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php';
+				require_once DOL_DOCUMENT_ROOT.'/core/lib/functions.lib.php';
+
+				$amounts = array();
+				$amounts[$invoice->id] = price2num($amount);
+
+				$paiement = new Paiement($this->db);
+				$paiement->datepaye     = $paymentdate;
+				$paiement->amounts      = $amounts;
+				$paiement->paiementid   = dol_getIdFromCode($this->db, $operation, 'c_paiement', 'code', 'id', 1);
+				$paiement->num_paiement = $num_chq;
+				$paiement->note         = $label;
+				$paiement->note_public  = $label;
+
+				if (! $error)
+				{
+					// Create payment line for invoice
+					$paiement_id = $paiement->create($user);
+					if (! $paiement_id > 0)
+					{
+						$this->error=$paiement->error;
+						$this->errors=$paiement->errors;
+						$error++;
+					}
+				}
+
+				if (! $error)
+				{
+					// Add transaction into bank account
+					$bank_line_id=$paiement->addPaymentToBank($user, 'payment', '(SubscriptionPayment)', $accountid, $emetteur_nom, $emetteur_banque);
+					if (! ($bank_line_id > 0))
+					{
+						$this->error=$paiement->error;
+						$this->errors=$paiement->errors;
+						$error++;
+					}
+				}
+
+				if (! $error && !empty($bank_line_id))
+				{
+					// Update fk_bank into subscription table
+					$sql = 'UPDATE '.MAIN_DB_PREFIX.'subscription SET fk_bank='.$bank_line_id;
+					$sql.= ' WHERE rowid='.$subscriptionid;
+
+					$result = $this->db->query($sql);
+					if (! $result)
+					{
+						$error++;
+					}
+				}
+
+				if (! $error)
+				{
+					// Set invoice as paid
+					$invoice->set_paid($user);
+				}
+			}
+
+			if (! $error)
+			{
+				// Define output language
+				$outputlangs = $langs;
+				$newlang = '';
+				$lang_id=GETPOST('lang_id');
+				if ($conf->global->MAIN_MULTILANGS && empty($newlang) && ! empty($lang_id))
+					$newlang = $lang_id;
+				if ($conf->global->MAIN_MULTILANGS && empty($newlang))
+					$newlang = $customer->default_lang;
+				if (! empty($newlang)) {
+					$outputlangs = new Translate("", $conf);
+					$outputlangs->setDefaultLang($newlang);
+				}
+				// Generate PDF (whatever is option MAIN_DISABLE_PDF_AUTOUPDATE) so we can include it into email
+				//if (empty($conf->global->MAIN_DISABLE_PDF_AUTOUPDATE))
+
+				$invoice->generateDocument($invoice->modelpdf, $outputlangs);
+			}
+		}
+
+		if ($error)
+		{
+			return -1;
+		}
+		else
+		{
+			return 1;
+		}
+	}
+  
 	/**
 	 *		Function that validate a member
 	 *
 	 *		@param	User	$user		user adherent qui valide
 	 *		@return	int					<0 if KO, 0 if nothing done, >0 if OK
 	 */
-	function validate($user)
+	public function validate($user)
 	{
 		global $langs,$conf;
 
@@ -1946,9 +2255,11 @@ dol_include_once('/adherentsplus/class/subscription.class.php');
 			$this->statut=1;
 
 			// Call trigger
-			$result=$this->call_trigger('MEMBER_VALIDATE',$user);
+			$result=$this->call_trigger('MEMBER_VALIDATE', $user);
 			if ($result < 0) { $error++; $this->db->rollback(); return -1; }
 			// End call triggers
+
+			$this->datevalid = $now;
 
 			$this->db->commit();
 			return 1;
@@ -1967,7 +2278,7 @@ dol_include_once('/adherentsplus/class/subscription.class.php');
      *		@param	User	$user		user adherent qui valide
      *		@return	int					<0 if KO, 0 if nothing done, >0 if OK
      */
-    function revalidate($user)
+    public function revalidate($user)
     {
         global $langs,$conf;
 
@@ -2016,13 +2327,13 @@ dol_include_once('/adherentsplus/class/subscription.class.php');
 	 *		@param	User	$user		User making change
 	 *		@return	int					<0 if KO, >0 if OK
 	 */
-	function resiliate($user)
+	public function resiliate($user)
 	{
 		global $langs,$conf;
 
 		$error=0;
 
-		// Check paramaters
+		// Check parameters
 		if ($this->statut == 0)
 		{
 			dol_syslog(get_class($this)."::resiliate statut of member does not allow this", LOG_WARNING);
@@ -2042,7 +2353,7 @@ dol_include_once('/adherentsplus/class/subscription.class.php');
 			$this->statut=0;
 
 			// Call trigger
-			$result=$this->call_trigger('MEMBER_RESILIATE',$user);
+			$result=$this->call_trigger('MEMBER_RESILIATE', $user);
 			if ($result < 0) { $error++; $this->db->rollback(); return -1; }
 			// End call triggers
 
@@ -2058,13 +2369,15 @@ dol_include_once('/adherentsplus/class/subscription.class.php');
 	}
 
 
+    // phpcs:disable PEAR.NamingConventions.ValidFunctionName.ScopeNotCamelCaps
 	/**
 	 *  Function to add member into external tools mailing-list, spip, etc.
 	 *
 	 *  @return		int		<0 if KO, >0 if OK
 	 */
-	function add_to_abo()
+	public function add_to_abo()
 	{
+        // phpcs:enable
 		global $conf,$langs;
 
 		include_once DOL_DOCUMENT_ROOT.'/mailmanspip/class/mailmanspip.class.php';
@@ -2085,12 +2398,12 @@ dol_include_once('/adherentsplus/class/subscription.class.php');
 			foreach ($mailmanspip->mladded_ko as $tmplist => $tmpemail)
 			{
 				$langs->load("errors");
-				$this->errors[]=$langs->trans("ErrorFailedToAddToMailmanList",$tmpemail,$tmplist);
+				$this->errors[]=$langs->trans("ErrorFailedToAddToMailmanList", $tmpemail, $tmplist);
 			}
 			foreach ($mailmanspip->mladded_ok as $tmplist => $tmpemail)
 			{
 				$langs->load("mailmanspip");
-				$this->mesgs[]=$langs->trans("SuccessToAddToMailmanList",$tmpemail,$tmplist);
+				$this->mesgs[]=$langs->trans("SuccessToAddToMailmanList", $tmpemail, $tmplist);
 			}
 		}
 
@@ -2115,13 +2428,15 @@ dol_include_once('/adherentsplus/class/subscription.class.php');
 	}
 
 
+    // phpcs:disable PEAR.NamingConventions.ValidFunctionName.ScopeNotCamelCaps
 	/**
 	 *  Function to delete a member from external tools like mailing-list, spip, etc.
 	 *
 	 *  @return     int     <0 if KO, >0 if OK
 	 */
-	function del_to_abo()
+	public function del_to_abo()
 	{
+        // phpcs:enable
 		global $conf,$langs;
 
 		include_once DOL_DOCUMENT_ROOT.'/mailmanspip/class/mailmanspip.class.php';
@@ -2142,12 +2457,12 @@ dol_include_once('/adherentsplus/class/subscription.class.php');
 			foreach ($mailmanspip->mlremoved_ko as $tmplist => $tmpemail)
 			{
 				$langs->load("errors");
-				$this->errors[]=$langs->trans("ErrorFailedToRemoveToMailmanList",$tmpemail,$tmplist);
+				$this->errors[]=$langs->trans("ErrorFailedToRemoveToMailmanList", $tmpemail, $tmplist);
 			}
 			foreach ($mailmanspip->mlremoved_ok as $tmplist => $tmpemail)
 			{
 				$langs->load("mailmanspip");
-				$this->mesgs[]=$langs->trans("SuccessToRemoveToMailmanList",$tmpemail,$tmplist);
+				$this->mesgs[]=$langs->trans("SuccessToRemoveToMailmanList", $tmpemail, $tmplist);
 			}
 		}
 
@@ -2177,7 +2492,7 @@ dol_include_once('/adherentsplus/class/subscription.class.php');
 	 *
 	 *    @return   string              	Translated name of civility (translated with transnoentitiesnoconv)
 	 */
-	function getCivilityLabel()
+	public function getCivilityLabel()
 	{
 		global $langs;
 		$langs->load("dict");
@@ -2287,9 +2602,9 @@ dol_include_once('/adherentsplus/class/subscription.class.php');
 	 *  @param	int		$mode       0=libelle long, 1=libelle court, 2=Picto + Libelle court, 3=Picto, 4=Picto + Libelle long, 5=Libelle court + Picto
 	 *  @return string				Label
 	 */
-	function getLibStatut($mode=0)
+	public function getLibStatut($mode = 0)
 	{
-		return $this->LibStatut($this->statut,$this->need_subscription,$this->datefin,$mode);
+		return $this->LibStatut($this->statut, $this->need_subscription, $this->datefin, $mode);
 	}
 
 	/**
