@@ -189,8 +189,6 @@ $formadmin=new FormAdmin($db);
 
 $head = memberplus_type_prepare_head($object);
 $titre=$langs->trans("MemberType".$object->type);
-//$picto=($object->type==Product::TYPE_SERVICE?'service':'product');
-
 
 // Calculate $cnt_trans
 $cnt_trans = 0;
@@ -203,7 +201,7 @@ if (! empty($object->multilangs))
 }
 
 
-dol_fiche_head($head, 'translation', $titre, 0, $picto);
+dol_fiche_head($head, 'translation', $titre, 0, 'group');
 
 $linkback = '<a href="'.dol_buildpath('/adherents/type.php', 1).'">'.$langs->trans("BackToList").'</a>';
 
