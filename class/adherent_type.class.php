@@ -149,14 +149,14 @@ class AdherentTypePlus extends CommonObject
                     $sql2.= " SET ";
                     $sql2.= " label='".$this->db->escape($this->label)."',";
                     $sql2.= " description='".$this->db->escape($this->description)."'";
-                    if (! empty($conf->global->PRODUCT_USE_OTHER_FIELD_IN_TRANSLATION)) { $sql2.= ", note='".$this->db->escape($this->other)."'";
+                    if (! empty($conf->global->PRODUCT_USE_OTHER_FIELD_IN_TRANSLATION)) { $sql2.= ", email='".$this->db->escape($this->other)."'";
                     }
                     $sql2.= " WHERE fk_type=".$this->id." AND lang='".$this->db->escape($key)."'";
                 }
                 else
                 {
                     $sql2 = "INSERT INTO ".MAIN_DB_PREFIX."adherent_type_lang (fk_type, lang, label, description";
-                    if (! empty($conf->global->PRODUCT_USE_OTHER_FIELD_IN_TRANSLATION)) { $sql2.=", note";
+                    if (! empty($conf->global->PRODUCT_USE_OTHER_FIELD_IN_TRANSLATION)) { $sql2.=", email";
                     }
                     $sql2.= ")";
                     $sql2.= " VALUES(".$this->id.",'".$this->db->escape($key)."','". $this->db->escape($this->label)."',";
@@ -185,14 +185,14 @@ class AdherentTypePlus extends CommonObject
                     $sql2.= " SET ";
                     $sql2.= " label='".$this->db->escape($this->multilangs["$key"]["label"])."',";
                     $sql2.= " description='".$this->db->escape($this->multilangs["$key"]["description"])."'";
-                    if (! empty($conf->global->PRODUCT_USE_OTHER_FIELD_IN_TRANSLATION)) { $sql2.= ", note='".$this->db->escape($this->multilangs["$key"]["other"])."'";
+                    if (! empty($conf->global->PRODUCT_USE_OTHER_FIELD_IN_TRANSLATION)) { $sql2.= ", email='".$this->db->escape($this->multilangs["$key"]["other"])."'";
                     }
                     $sql2.= " WHERE fk_type=".$this->id." AND lang='".$this->db->escape($key)."'";
                 }
                 else
                 {
                     $sql2 = "INSERT INTO ".MAIN_DB_PREFIX."adherent_type_lang (fk_type, lang, label, description";
-                    if (! empty($conf->global->PRODUCT_USE_OTHER_FIELD_IN_TRANSLATION)) { $sql2.=", note";
+                    if (! empty($conf->global->PRODUCT_USE_OTHER_FIELD_IN_TRANSLATION)) { $sql2.=", email";
                     }
                     $sql2.= ")";
                     $sql2.= " VALUES(".$this->id.",'".$this->db->escape($key)."','". $this->db->escape($this->multilangs["$key"]["label"])."',";
@@ -406,13 +406,8 @@ class AdherentTypePlus extends CommonObject
 		$result = $this->db->query($sql);
 		if ($result)
 		{
-			$action='update';
-      
-if (! empty($conf->global->PRODUIT_MULTIPRICES)){  
-      $sql  = "UPDATE ".MAIN_DB_PREFIX."societe as s";
-			$sql .= " SET s.price_level = '".$this->price_level."'";
-			$sql .= " WHERE s.rowid IN (SELECT a.fk_soc FROM ".MAIN_DB_PREFIX."adherent as a WHERE a.fk_adherent_type =".$this->id.")";
-}      
+    
+                $this->id = $id;
 
                 // Multilangs
                 if (! empty($conf->global->MAIN_MULTILANGS)) {
@@ -421,6 +416,14 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
                            return -2;
                     }
                 }
+    
+			$action='update';
+      
+if (! empty($conf->global->PRODUIT_MULTIPRICES)){  
+      $sql  = "UPDATE ".MAIN_DB_PREFIX."societe as s";
+			$sql .= " SET s.price_level = '".$this->price_level."'";
+			$sql .= " WHERE s.rowid IN (SELECT a.fk_soc FROM ".MAIN_DB_PREFIX."adherent as a WHERE a.fk_adherent_type =".$this->id.")";
+}      
 
 			// Actions on extra fields
 			if (! $error && empty($conf->global->MAIN_EXTRAFIELDS_DISABLED)) // For avoid conflicts if trigger used
