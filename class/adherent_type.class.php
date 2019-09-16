@@ -377,7 +377,7 @@ class AdherentTypePlus extends CommonObject
 	 */
 	public function update($user, $notrigger = 0)
 	{
-		global $conf, $hookmanager;
+    global $langs, $conf, $hookmanager;
 
 		$error=0;
 
