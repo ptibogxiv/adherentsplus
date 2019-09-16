@@ -309,7 +309,7 @@ class AdherentTypePlus extends CommonObject
 	 */
 	public function create($user, $notrigger = 0)
 	{
-		global $conf;
+		global $conf, $langs;
 
 		$error=0;
 
