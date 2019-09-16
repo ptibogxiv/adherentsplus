@@ -54,9 +54,9 @@ $action=GETPOST('action','alpha');
 $id=GETPOST('rowid','int');
 
 // Security check
-$result=restrictedArea($user,'adherent',$id);
+$result=restrictedArea($user, 'adherent', $id);
 
-$object = new Adherentplus($db);
+$object = new AdherentPlus($db);
 $result=$object->fetch($id);
 if ($result > 0)
 {
