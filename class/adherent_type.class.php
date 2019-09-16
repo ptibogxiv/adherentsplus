@@ -84,6 +84,7 @@ class AdherentTypePlus extends CommonObject
 	public $subscription;
 	/** @var string Public note */
 	public $note;
+	public $description;
 	/** @var bool Can vote*/
 	public $vote;
 	/** @var bool Email sent during validation */
@@ -541,6 +542,7 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
                 $this->family         = $obj->family;
                 $this->mail_valid     = $obj->mail_valid;
                 $this->note           = $obj->note;
+                $this->description    = $obj->note;  
                 $this->vote           = $obj->vote;
                 $this->status         = $obj->status;
                 $this->date_modification			= $this->db->jdate($obj->datem);
