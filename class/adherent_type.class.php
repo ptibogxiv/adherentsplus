@@ -120,6 +120,46 @@ class AdherentTypePlus extends CommonObject
 		$this->statut = 1;
 	}
   
+  
+    /**
+     *    Load array this->multilangs
+     *
+     * @return int        <0 if KO, >0 if OK
+     */
+    public function getMultiLangs()
+    {
+        global $langs;
+
+        $current_lang = $langs->getDefaultLang();
+
+        $sql = "SELECT lang, label, description, email";
+        $sql.= " FROM ".MAIN_DB_PREFIX."adherent_type_lang";
+        $sql.= " WHERE fk_type=".$this->id;
+
+        $result = $this->db->query($sql);
+        if ($result) {
+            while ($obj = $this->db->fetch_object($result))
+            {
+                //print 'lang='.$obj->lang.' current='.$current_lang.'<br>';
+                if ($obj->lang == $current_lang)  // si on a les traduct. dans la langue courante on les charge en infos principales.
+                {
+                    $this->label        = $obj->label;
+                    $this->description    = $obj->description;
+                    $this->email        = $obj->email;
+                }
+                $this->multilangs["$obj->lang"]["label"]        = $obj->label;
+                $this->multilangs["$obj->lang"]["description"]    = $obj->description;
+                $this->multilangs["$obj->lang"]["email"]        = $obj->email;
+            }
+            return 1;
+        }
+        else
+        {
+            $this->error="Error: ".$this->db->lasterror()." - ".$sql;
+            return -1;
+        }
+    }
+  
     /**
      *    Update or add a translation for a product
      *
@@ -260,45 +300,7 @@ class AdherentTypePlus extends CommonObject
             return -1;
         }
     }
-  
-    /**
-     *    Load array this->multilangs
-     *
-     * @return int        <0 if KO, >0 if OK
-     */
-    public function getMultiLangs()
-    {
-        global $langs;
 
-        $current_lang = $langs->getDefaultLang();
-
-        $sql = "SELECT lang, label, description, email";
-        $sql.= " FROM ".MAIN_DB_PREFIX."adherent_type_lang";
-        $sql.= " WHERE fk_type=".$this->id;
-
-        $result = $this->db->query($sql);
-        if ($result) {
-            while ($obj = $this->db->fetch_object($result))
-            {
-                //print 'lang='.$obj->lang.' current='.$current_lang.'<br>';
-                if ($obj->lang == $current_lang)  // si on a les traduct. dans la langue courante on les charge en infos principales.
-                {
-                    $this->label        = $obj->label;
-                    $this->description    = $obj->description;
-                    $this->email        = $obj->email;
-                }
-                $this->multilangs["$obj->lang"]["label"]        = $obj->label;
-                $this->multilangs["$obj->lang"]["description"]    = $obj->description;
-                $this->multilangs["$obj->lang"]["email"]        = $obj->email;
-            }
-            return 1;
-        }
-        else
-        {
-            $this->error="Error: ".$this->db->lasterror()." - ".$sql;
-            return -1;
-        }
-    }
 
 	/**
 	 *  Fonction qui permet de creer le status de l'adherent
@@ -406,8 +408,8 @@ class AdherentTypePlus extends CommonObject
 		$result = $this->db->query($sql);
 		if ($result)
 		{
-    
-                $this->id = $id;
+
+                $this->description = $this->db->escape($this->note);
 
                 // Multilangs
                 if (! empty($conf->global->MAIN_MULTILANGS)) {
