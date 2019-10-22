@@ -20,7 +20,7 @@
  */
 
 /**
- *	\file       htdocs/product/traduction.php
+ *	\file       htdocs/product/type_translation.php
  *	\ingroup    product
  *	\brief      Page de traduction des produits
  */
@@ -223,8 +223,8 @@ if ($action == '')
 {
     if ($user->rights->adherent->configurer)
     {                                            
-        print '<a class="butAction" href="'.dol_buildpath('/adherentsplus/traduction.php?action=add&id='.$object->id, 1).'">'.$langs->trans("Add").'</a>';
-        if ($cnt_trans > 0) print '<a class="butAction" href="'.dol_buildpath('/adherentsplus/traduction.php?action=edit&id='.$object->id, 1).'">'.$langs->trans("Update").'</a>';
+        print '<a class="butAction" href="'.dol_buildpath('/adherentsplus/type_translation.php?action=add&id='.$object->id, 1).'">'.$langs->trans("Add").'</a>';
+        if ($cnt_trans > 0) print '<a class="butAction" href="'.dol_buildpath('/adherentsplus/type_translation.php?action=edit&id='.$object->id, 1).'">'.$langs->trans("Update").'</a>';
     }
 }
 
