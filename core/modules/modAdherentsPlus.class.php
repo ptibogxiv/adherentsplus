@@ -80,7 +80,7 @@ class modAdherentsPlus extends DolibarrModules
         $this->depends = array();
         $this->requiredby = array('modMailmanSpip');
         $this->langfiles = array("members","companies");
-        $this->need_dolibarr_version = array(6,0);
+        $this->need_dolibarr_version = array(9,0);
         // Constants
         //-----------
         $this->const = array();
