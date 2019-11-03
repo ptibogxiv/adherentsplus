@@ -127,6 +127,15 @@ function memberplus_type_prepare_head(AdherentTypePlus $object)
 	$head[$h][1] = $langs->trans("Card");
 	$head[$h][2] = 'card';
 	$h++;
+  
+	// Multilangs
+	if ((float) DOL_VERSION >= 11.0 && ! empty($conf->global->MAIN_MULTILANGS))
+	{
+		$head[$h][0] = DOL_URL_ROOT."/adherents/type_translation.php?rowid=".$object->id;
+		$head[$h][1] = $langs->trans("Translation");
+		$head[$h][2] = 'translation';
+		$h++;
+	}
 
 	if ((! empty($conf->ldap->enabled) && ! empty($conf->global->LDAP_MEMBER_TYPE_ACTIVE))
 		&& (empty($conf->global->MAIN_DISABLE_LDAP_TAB) || ! empty($user->admin)))
