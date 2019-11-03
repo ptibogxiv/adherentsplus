@@ -20,6 +20,7 @@ Il vous faut ajouter les champs suivants dans la base de données:
 
 Pour les versions avant la V11 / develop:
 
+ ALTER TABLE `llx_adherent_type` ADD COLUMN `duration` varchar(6) DEFAULT NULL;
 
 Pour les versions avant la V10:
 
@@ -42,8 +43,6 @@ pour toutes versions de Dolibarr:
  ALTER TABLE `llx_adherent_type` ADD COLUMN `family` int(3)   DEFAULT NULL;
  
  ALTER TABLE `llx_adherent_type` ADD COLUMN `use_default` int(11) DEFAULT NULL;
- 
- ALTER TABLE `llx_adherent_type` ADD COLUMN `duration` varchar(6) DEFAULT NULL;
  
  ALTER TABLE `llx_adherent` ADD COLUMN `fk_parent` int(11) DEFAULT NULL;
 

@@ -9,7 +9,6 @@ ALTER TABLE llx_adherent_type ADD COLUMN price double(24,8) DEFAULT 0.00000000;
 ALTER TABLE llx_adherent_type ADD COLUMN price_level int(11) DEFAULT NULL;
 
 ALTER TABLE llx_adherent_type ADD COLUMN duration varchar(6) DEFAULT NULL;
-UPDATE llx_adherent_type SET duration = '1y' WHERE duration IS null;
 
 ALTER TABLE llx_adherent_type ADD COLUMN vote varchar(3) DEFAULT NULL;
 
