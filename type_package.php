@@ -449,15 +449,6 @@ if ($rowid > 0)
 
 		print '<table class="border" width="100%">';
 
-    print '<tr><td class="titlefield">'.$langs->trans("Status").'</td><td>';
-if ( !empty($object->statut) ) print img_picto($langs->trans('TypeStatusActive'),'statut4').' '.$langs->trans("InActivity");
-else print img_picto($langs->trans('TypeStatusInactive'),'statut5').' '.$langs->trans("ActivityCeased");   
-		print '</tr>';
-    
-    // Morphy
-		print '<tr><td>'.$langs->trans("Nature").'</td><td class="valeur" >'.$object->getmorphylib($object->morphy).'</td>';
-		print '</tr>';
-
     print '<tr><td class="titlefield">'.$langs->trans("Duration").'</td><td colspan="2">'.$object->duration_value.'&nbsp;';
     if ($object->duration_value > 1)
     {
