@@ -509,7 +509,7 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
 	{
         global $langs, $conf;
   
-        $sql = "SELECT d.rowid, d.tms as datem, d.libelle as label, d.statut, d.morphy, d.subscription, d.welcome, d.price, d.price_level, d.duration, d.automatic, d.automatic_renew, d.family, d.mail_valid, d.note, d.vote";
+        $sql = "SELECT d.rowid, d.tms as datem, d.libelle as label, d.statut as status, d.morphy, d.subscription, d.welcome, d.price, d.price_level, d.duration, d.automatic, d.automatic_renew, d.family, d.mail_valid, d.note, d.vote";
         $sql .= " FROM ".MAIN_DB_PREFIX."adherent_type as d";
         $sql .= " WHERE d.rowid = ".$rowid;
 
@@ -531,7 +531,8 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
                 $this->price_level    = $obj->price_level;
                 $this->label          = $obj->label;
                 $this->libelle        = $obj->label;	// For backward compatibility
-                $this->statut         = $obj->statut;
+                $this->statut         = $obj->status;
+                $this->status         = $obj->status;
                 $this->morphy         = $obj->morphy;
                 $this->duration       = $obj->duration;
                 $this->duration_value = substr($obj->duration, 0, dol_strlen($obj->duration)-1);
