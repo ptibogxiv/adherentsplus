@@ -446,28 +446,6 @@ if ($rowid > 0)
 
 		print '<div class="fichecenter">';
 		print '<div class="underbanner clearboth"></div>';
-
-		print '<table class="border" width="100%">';
-
-    print '<tr><td class="titlefield">'.$langs->trans("Duration").'</td><td colspan="2">'.$object->duration_value.'&nbsp;';
-    if ($object->duration_value > 1)
-    {
-    $dur=array("i"=>$langs->trans("Minute"),"h"=>$langs->trans("Hours"),"d"=>$langs->trans("Days"),"w"=>$langs->trans("Weeks"),"m"=>$langs->trans("Months"),"y"=>$langs->trans("Years"));
-    }
-    elseif ($object->duration_value > 0)
-    {
-    $dur=array("i"=>$langs->trans("Minute"),"h"=>$langs->trans("Hour"),"d"=>$langs->trans("Day"),"w"=>$langs->trans("Week"),"m"=>$langs->trans("Month"),"y"=>$langs->trans("Year"));
-    }
-    print (! empty($object->duration_unit) && isset($dur[$object->duration_unit]) ? $langs->trans($dur[$object->duration_unit]) : '')."&nbsp;";
-    print '</td></tr>';
-
-		print '<tr><td class="tdtop">'.$langs->trans("Description").'</td><td>';
-		print nl2br($object->note)."</td></tr>";
-
-    // Other attributes
-    include DOL_DOCUMENT_ROOT . '/core/tpl/extrafields_view.tpl.php';
-
-		print '</table>';
     
     print '</div>';
 
