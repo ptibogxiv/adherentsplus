@@ -135,8 +135,8 @@ if ($action == 'update' && $user->rights->adherent->configurer)
     $object->welcome     = price2num($welcome);
     $object->price       = price2num($price);
     $object->price_level       = trim($price_level?$price_level:'1');
-    $object->duration_value     	 = $duration_value;
-    $object->duration_unit      	 = $duration_unit;
+    if ((float) DOL_VERSION < 11.0) $object->duration_value     	 = $duration_value;
+    if ((float) DOL_VERSION < 11.0) $object->duration_unit      	 = $duration_unit;
     $object->automatic   = (boolean) trim($automatic);
     $object->automatic_renew   = (boolean) trim($automatic_renew);
 
@@ -313,7 +313,7 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
 		if (! empty($conf->global->$keyforlabel)) print ' - '.$langs->trans($conf->global->$keyforlabel);
     print '</td></tr>';
 }
-
+if ((float) DOL_VERSION < 11.0) {
     print '<tr><td class="titlefield">'.$langs->trans("Duration").'</td><td colspan="2">'.$object->duration_value.'&nbsp;';
     if ($object->duration_value > 1)
     {
@@ -325,7 +325,7 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
     }
     print (! empty($object->duration_unit) && isset($dur[$object->duration_unit]) ? $langs->trans($dur[$object->duration_unit]) : '')."&nbsp;";
     print '</td></tr>';
-
+}
     print '<tr><td>'.$langs->trans("Validation").'</td><td>';
 		print autoOrManual($object->automatic);
 		print '</tr>';
