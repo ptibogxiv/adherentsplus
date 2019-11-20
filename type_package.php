@@ -22,7 +22,7 @@
  */
 
 /**
- *      \file       htdocs/adherentsex/type.php
+ *      \file       htdocs/adherentsex/type_package.php
  *      \ingroup    member
  *      \brief      Member's type setup
  */
@@ -461,7 +461,7 @@ if ($rowid > 0)
 		// Add
     if ( $user->rights->adherent->configurer && !empty($object->statut) )
 		{
-		print '<div class="inline-block divButAction"><a class="butAction" href="card.php?action=create&typeid='.$object->id.'">'.$langs->trans("AddProductOrService").'</a></div>';
+		print '<div class="inline-block divButAction"><a class="butAction" href="type_package.php?action=create&rowid='.$object->id.'">'.$langs->trans("AddProductOrService").'</a></div>';
     } else {
 		print '<div class="inline-block divButAction"><a class="butActionRefused classfortooltip" href="#" title="'.dol_escape_htmltag($langs->trans("NoAddProductOrService")).'">'.$langs->trans("AddProductOrService").'</a></div>';    
     }
