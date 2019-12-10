@@ -1660,7 +1660,7 @@ dol_include_once('/adherentsplus/class/subscription.class.php');
 dol_include_once('/adherentsplus/class/consumption.class.php');
 require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 
-    $sql = "SELECT c.rowid,c.entity,c.date_creation,c.fk_member,c.fk_product,c.qty";    
+    $sql = "SELECT c.rowid, c.fk_member, c.fk_product, c.qty";    
     $sql.= " FROM ".MAIN_DB_PREFIX."adherent_consumption as c";
     $sql.= " WHERE c.fk_member=".$this->id;
 		$sql.= " ORDER BY c.rowid DESC";
