@@ -59,15 +59,15 @@ require_once DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php';
 require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 require_once DOL_DOCUMENT_ROOT.'/accountancy/class/accountingjournal.class.php';
 
-$langs->loadLangs(array("companies","bills","members","users","mails",'other'));
+$langs->loadLangs(array("companies", "bills", "members", "users", "mails", 'other'));
 
-$action=GETPOST('action', 'alpha');
-$confirm=GETPOST('confirm', 'alpha');
-$rowid=GETPOST('rowid', 'int')?GETPOST('rowid', 'int'):GETPOST('id', 'int');
-$typeid=GETPOST('typeid', 'int');
+$action = GETPOST('action', 'alpha');
+$confirm = GETPOST('confirm', 'alpha');
+$rowid = GETPOST('rowid', 'int') ?GETPOST('rowid', 'int') : GETPOST('id', 'int');
+$typeid = GETPOST('typeid', 'int');
 
 // Load variable for pagination
-$limit = GETPOST('limit', 'int')?GETPOST('limit', 'int'):$conf->liste_limit;
+$limit = GETPOST('limit', 'int') ?GETPOST('limit', 'int') : $conf->liste_limit;
 $sortfield = GETPOST('sortfield', 'alpha');
 $sortorder = GETPOST('sortorder', 'alpha');
 $page = GETPOST('page', 'int');
@@ -77,12 +77,12 @@ $pageprev = $page - 1;
 $pagenext = $page + 1;
 
 // Default sort order (if not yet defined by previous GETPOST)
-if (! $sortfield) $sortfield="c.rowid";
-if (! $sortorder) $sortorder="DESC";
+if (!$sortfield) $sortfield = "c.rowid";
+if (!$sortorder) $sortorder = "DESC";
 
 
 // Security check
-$result=restrictedArea($user, 'adherent', $rowid, '', 'cotisation');
+$result = restrictedArea($user, 'adherent', $rowid, '', 'cotisation');
 
 $object = new Adherent($db);
 $object2 = new AdherentPlus($db);
@@ -90,13 +90,12 @@ $extrafields = new ExtraFields($db);
 $adht = new AdherentTypePlus($db);
 
 // fetch optionals attributes and labels
-$extralabels=$extrafields->fetch_name_optionals_label($object->table_element);
+$extrafields->fetch_name_optionals_label($object->table_element);
 
-$errmsg='';
-$errmsgs=array();
+$errmsg = '';
 
-$defaultdelay=1;
-$defaultdelayunit='y';
+$defaultdelay = 1;
+$defaultdelayunit = 'y';
 
 if ($rowid)
 {
@@ -108,7 +107,7 @@ if ($rowid)
     // Define variables to know what current user can do on properties of user linked to edited member
     if ($object->user_id)
     {
-        // $user est le user qui edite, $object->user_id est l'id de l'utilisateur lies au membre edite
+        // $user is the user editing, $object->user_id is the user's id linked to the edited member
         $caneditfielduser=( (($user->id == $object->user_id) && $user->rights->user->self->creer)
         || (($user->id != $object->user_id) && $user->rights->user->user->creer) );
         $caneditpassworduser=( (($user->id == $object->user_id) && $user->rights->user->self->password)
@@ -144,7 +143,7 @@ if ($action == 'confirm_create_thirdparty' && $confirm == 'yes' && $user->rights
 	{
 		// Creation of thirdparty
 		$company = new Societe($db);
-		$result=$company->create_from_member($object, GETPOST('companyname', 'alpha'), GETPOST('companyalias', 'alpha'), GETPOST('customercode', 'alpha'));
+		$result = $company->create_from_member($object, GETPOST('companyname', 'alpha'), GETPOST('companyalias', 'alpha'), GETPOST('customercode', 'alpha'));
 
 		if ($result < 0)
 		{
@@ -153,7 +152,7 @@ if ($action == 'confirm_create_thirdparty' && $confirm == 'yes' && $user->rights
 		}
 		else
 		{
-			$action='addsubscription';
+			$action = 'addsubscription';
 		}
 	}
 	else
@@ -164,7 +163,7 @@ if ($action == 'confirm_create_thirdparty' && $confirm == 'yes' && $user->rights
 
 if ($action == 'setuserid' && ($user->rights->user->self->creer || $user->rights->user->user->creer))
 {
-    $error=0;
+    $error = 0;
     if (empty($user->rights->user->user->creer))    // If can edit only itself user, we can link to itself only
     {
         if ($_POST["userid"] != $user->id && $_POST["userid"] != $object->user_id)
@@ -174,48 +173,48 @@ if ($action == 'setuserid' && ($user->rights->user->self->creer || $user->rights
         }
     }
 
-    if (! $error)
+    if (!$error)
     {
         if ($_POST["userid"] != $object->user_id)  // If link differs from currently in database
         {
-            $result=$object->setUserId($_POST["userid"]);
+            $result = $object->setUserId($_POST["userid"]);
             if ($result < 0) dol_print_error('', $object->error);
-            $_POST['action']='';
-            $action='';
+            $_POST['action'] = '';
+            $action = '';
         }
     }
 }
 
 if ($action == 'setsocid')
 {
-    $error=0;
-    if (! $error)
+    $error = 0;
+    if (!$error)
     {
         if (GETPOST('socid', 'int') != $object->fk_soc)    // If link differs from currently in database
         {
-            $sql ="SELECT rowid FROM ".MAIN_DB_PREFIX."adherent";
-            $sql.=" WHERE fk_soc = '".GETPOST('socid', 'int')."'";
+            $sql = "SELECT rowid FROM ".MAIN_DB_PREFIX."adherent";
+            $sql .= " WHERE fk_soc = '".GETPOST('socid', 'int')."'";
             $resql = $db->query($sql);
             if ($resql)
             {
                 $obj = $db->fetch_object($resql);
                 if ($obj && $obj->rowid > 0)
                 {
-                    $othermember=new Adherent($db);
+                    $othermember = new Adherent($db);
                     $othermember->fetch($obj->rowid);
-                    $thirdparty=new Societe($db);
+                    $thirdparty = new Societe($db);
                     $thirdparty->fetch(GETPOST('socid', 'int'));
                     $error++;
 	                setEventMessages($langs->trans("ErrorMemberIsAlreadyLinkedToThisThirdParty", $othermember->getFullName($langs), $othermember->login, $thirdparty->name), null, 'errors');
                 }
             }
 
-            if (! $error)
+            if (!$error)
             {
-                $result=$object->setThirdPartyId(GETPOST('socid', 'int'));
+                $result = $object->setThirdPartyId(GETPOST('socid', 'int'));
                 if ($result < 0) dol_print_error('', $object->error);
-                $_POST['action']='';
-                $action='';
+                $_POST['action'] = '';
+                $action = '';
             }
         }
     }
@@ -457,38 +456,39 @@ if ($user->rights->adherent->cotisation->creer && $action == 'subscription' && !
 
 $form = new Form($db);
 
-$now=dol_now();
+$now = dol_now();
 
-$title=$langs->trans("Member") . " - " . $langs->trans("Subscriptions");
-$helpurl="EN:Module_Foundations|FR:Module_Adh&eacute;rents|ES:M&oacute;dulo_Miembros";
+$title = $langs->trans("Member")." - ".$langs->trans("Subscriptions");
+$helpurl = "EN:Module_Foundations|FR:Module_Adh&eacute;rents|ES:M&oacute;dulo_Miembros";
 llxHeader("", $title, $helpurl);
 
 
-$param='';
-if (! empty($contextpage) && $contextpage != $_SERVER["PHP_SELF"]) $param.='&contextpage='.urlencode($contextpage);
-if ($limit > 0 && $limit != $conf->liste_limit) $param.='&limit='.urlencode($limit);
-$param.= '&id='.$rowid;
-if ($optioncss != '')     $param.='&optioncss='.urlencode($optioncss);
+$param = '';
+if (!empty($contextpage) && $contextpage != $_SERVER["PHP_SELF"]) $param .= '&contextpage='.urlencode($contextpage);
+if ($limit > 0 && $limit != $conf->liste_limit) $param .= '&limit='.urlencode($limit);
+$param .= '&id='.$rowid;
+if ($optioncss != '')     $param .= '&optioncss='.urlencode($optioncss);
 // Add $param from extra fields
 //include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_search_param.tpl.php';
 
 
 if ($rowid > 0)
 {
-    $res=$object->fetch($rowid);
+    $res = $object->fetch($rowid);
     if ($res < 0) { dol_print_error($db, $object->error); exit; }
 
     $adht->fetch($object->typeid);
+
     $object2->fetch($rowid);
     
     $head = memberplus_prepare_head($object2);
 
-    $rowspan=10;
+    $rowspan = 10;
     if (empty($conf->global->ADHERENT_LOGIN_NOT_REQUIRED)) $rowspan++;
-    if (! empty($conf->societe->enabled)) $rowspan++;
+    if (!empty($conf->societe->enabled)) $rowspan++;
 
     print '<form action="'.$_SERVER["PHP_SELF"].'" method="POST">';
-    print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
+    print '<input type="hidden" name="token" value="'.newToken().'">';
     print '<input type="hidden" name="rowid" value="'.$object->id.'">';
 
     dol_fiche_head($head, 'subscription', $langs->trans("Member"), -1, 'user');
@@ -517,7 +517,7 @@ if ($rowid > 0)
 	print '</tr>';
 
 	// Company
-	print '<tr><td>'.$langs->trans("Company").'</td><td class="valeur">'.$object->societe.'</td></tr>';
+	print '<tr><td>'.$langs->trans("Company").'</td><td class="valeur">'.$object->company.'</td></tr>';
 
 	// Civility
 	print '<tr><td>'.$langs->trans("UserTitle").'</td><td class="valeur">'.$object->getCivilityLabel().'&nbsp;</td>';
@@ -527,10 +527,10 @@ if ($rowid > 0)
 	if (empty($conf->global->ADHERENT_LOGIN_NOT_REQUIRED))
 	{
 		print '<tr><td>'.$langs->trans("Password").'</td><td>'.preg_replace('/./i', '*', $object->pass);
-		if ((! empty($object->pass) || ! empty($object->pass_crypted)) && empty($object->user_id))
+		if ((!empty($object->pass) || !empty($object->pass_crypted)) && empty($object->user_id))
 		{
 		    $langs->load("errors");
-		    $htmltext=$langs->trans("WarningPasswordSetWithNoAccount");
+		    $htmltext = $langs->trans("WarningPasswordSetWithNoAccount");
 		    print ' '.$form->textwithpicto('', $htmltext, 1, 'warning');
 		}
 		print '</td></tr>';
@@ -551,17 +551,17 @@ if ($rowid > 0)
 	print '<tr><td>'.$langs->trans("Public").'</td><td class="valeur">'.yn($object->public).'</td></tr>';
 
 	// Categories
-	if (! empty($conf->categorie->enabled)  && ! empty($user->rights->categorie->lire))
+	if (!empty($conf->categorie->enabled) && !empty($user->rights->categorie->lire))
 	{
-		print '<tr><td>' . $langs->trans("Categories") . '</td>';
+		print '<tr><td>'.$langs->trans("Categories").'</td>';
 		print '<td colspan="2">';
 		print $form->showCategories($object->id, 'member', 1);
 		print '</td></tr>';
 	}
 
     // Other attributes
-    $cols=2;
-    include DOL_DOCUMENT_ROOT . '/core/tpl/extrafields_view.tpl.php';
+    $cols = 2;
+    include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_view.tpl.php';
 
 	// Date end subscription
 	print '<tr><td>'.$langs->trans("SubscriptionEndDate").'</td><td class="valeur">';
@@ -574,15 +574,15 @@ if ($rowid > 0)
 	}
 	else
 	{
-	    if (! $adht->subscription)
+	    if (!$adht->subscription)
 	    {
 	        print $langs->trans("SubscriptionNotRecorded");
-	        if ($object->statut > 0) print " ".img_warning($langs->trans("Late")); // Affiche picto retard uniquement si non brouillon et non resilie
+	        if ($object->statut > 0) print " ".img_warning($langs->trans("Late")); // Display a delay picto only if it is not a draft and is not canceled
 	    }
 	    else
 	    {
 	        print $langs->trans("SubscriptionNotReceived");
-	        if ($object->statut > 0) print " ".img_warning($langs->trans("Late")); // Affiche picto retard uniquement si non brouillon et non resilie
+	        if ($object->statut > 0) print " ".img_warning($langs->trans("Late")); // Display a delay picto only if it is not a draft and is not canceled
 	    }
 	}
 	print '</td></tr>';
@@ -691,46 +691,46 @@ if ($rowid > 0)
     if ($action != 'addsubscription' && $action != 'create_thirdparty')
     {
         $sql = "SELECT d.rowid, d.firstname, d.lastname, d.societe, d.fk_adherent_type as type,";
-        $sql.= " c.rowid as crowid, c.subscription,";
-        $sql.= " c.datec, c.fk_type as cfk_type,";
-        $sql.= " c.dateadh as dateh,";
-        $sql.= " c.datef,";
-        $sql.= " c.fk_bank,";
-        $sql.= " b.rowid as bid,";
-        $sql.= " ba.rowid as baid, ba.label, ba.bank, ba.ref, ba.account_number, ba.fk_accountancy_journal, ba.number, ba.currency_code";
-        $sql.= " FROM ".MAIN_DB_PREFIX."adherent as d, ".MAIN_DB_PREFIX."subscription as c";
-        $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."bank as b ON c.fk_bank = b.rowid";
-        $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."bank_account as ba ON b.fk_account = ba.rowid";
-        $sql.= " WHERE d.rowid = c.fk_adherent AND d.rowid=".$rowid;
-		$sql.= $db->order($sortfield, $sortorder);
+        $sql .= " c.rowid as crowid, c.subscription,";
+        $sql .= " c.datec, c.fk_type as cfk_type,";
+        $sql .= " c.dateadh as dateh,";
+        $sql .= " c.datef,";
+        $sql .= " c.fk_bank,";
+        $sql .= " b.rowid as bid,";
+        $sql .= " ba.rowid as baid, ba.label, ba.bank, ba.ref, ba.account_number, ba.fk_accountancy_journal, ba.number, ba.currency_code";
+        $sql .= " FROM ".MAIN_DB_PREFIX."adherent as d, ".MAIN_DB_PREFIX."subscription as c";
+        $sql .= " LEFT JOIN ".MAIN_DB_PREFIX."bank as b ON c.fk_bank = b.rowid";
+        $sql .= " LEFT JOIN ".MAIN_DB_PREFIX."bank_account as ba ON b.fk_account = ba.rowid";
+        $sql .= " WHERE d.rowid = c.fk_adherent AND d.rowid=".$rowid;
+		$sql .= $db->order($sortfield, $sortorder);
 
         $result = $db->query($sql);
         if ($result)
         {
-            $subscriptionstatic=new Subscription($db);
+            $subscriptionstatic = new Subscription($db);
 
             $num = $db->num_rows($result);
-            $i = 0;
 
-            print '<table class="noborder" width="100%">'."\n";
+            print '<table class="noborder centpercent">'."\n";
 
             print '<tr class="liste_titre">';
             print_liste_field_titre('Ref', $_SERVER["PHP_SELF"], 'c.rowid', '', $param, '', $sortfield, $sortorder);
-            print '<td class="center">'.$langs->trans("DateCreation").'</td>';
-            print '<td align="center">'.$langs->trans("Type").'</td>';
-            print '<td class="center">'.$langs->trans("DateStart").'</td>';
-            print '<td class="center">'.$langs->trans("DateEnd").'</td>';
-            print '<td class="right">'.$langs->trans("Amount").'</td>';
-            if (! empty($conf->banque->enabled))
+            print_liste_field_titre('DateCreation', $_SERVER["PHP_SELF"], '', '', $param, '', $sortfield, $sortorder, 'center ');
+            print_liste_field_titre('Type', $_SERVER["PHP_SELF"], '', '', $param, '', $sortfield, $sortorder, 'center ');
+            print_liste_field_titre('DateStart', $_SERVER["PHP_SELF"], '', '', $param, '', $sortfield, $sortorder, 'center ');
+            print_liste_field_titre('DateEnd', $_SERVER["PHP_SELF"], '', '', $param, '', $sortfield, $sortorder, 'center ');
+            print_liste_field_titre('Amount', $_SERVER["PHP_SELF"], '', '', $param, '', $sortfield, $sortorder, 'right ');
+            if (!empty($conf->banque->enabled))
             {
-                print '<td class="right">'.$langs->trans("Account").'</td>';
+            	print_liste_field_titre('Account', $_SERVER["PHP_SELF"], '', '', $param, '', $sortfield, $sortorder, 'right ');
             }
             print "</tr>\n";
 
-            $accountstatic=new Account($db);
+            $accountstatic = new Account($db);
             $adh = new Adherent($db);
-            $adht = new AdherentTypePlus($db);
+            $adht = new AdherentType($db);
 
+            $i = 0;
             while ($i < $num)
             {
                 $objp = $db->fetch_object($result);
@@ -738,8 +738,8 @@ if ($rowid > 0)
                 $adh->id = $objp->rowid;
                 $adh->typeid = $objp->type;
 
-                $subscriptionstatic->ref=$objp->crowid;
-                $subscriptionstatic->id=$objp->crowid;
+                $subscriptionstatic->ref = $objp->crowid;
+                $subscriptionstatic->id = $objp->crowid;
 
                 $typeid = ($objp->cfk_type > 0 ? $objp->cfk_type : $adh->typeid);
                 if ($typeid > 0)
@@ -758,18 +758,18 @@ if ($rowid > 0)
                 print '<td class="center">'.dol_print_date($db->jdate($objp->dateh), 'day')."</td>\n";
                 print '<td class="center">'.dol_print_date($db->jdate($objp->datef), 'day')."</td>\n";
                 print '<td class="right">'.price($objp->subscription).'</td>';
-				if (! empty($conf->banque->enabled))
+				if (!empty($conf->banque->enabled))
 				{
 					print '<td class="right">';
 					if ($objp->bid)
 					{
-						$accountstatic->label=$objp->label;
-						$accountstatic->id=$objp->baid;
-						$accountstatic->number=$objp->number;
-						$accountstatic->account_number=$objp->account_number;
-						$accountstatic->currency_code=$objp->currency_code;
+						$accountstatic->label = $objp->label;
+						$accountstatic->id = $objp->baid;
+						$accountstatic->number = $objp->number;
+						$accountstatic->account_number = $objp->account_number;
+						$accountstatic->currency_code = $objp->currency_code;
 
-						if (! empty($conf->accounting->enabled) && $objp->fk_accountancy_journal > 0)
+						if (!empty($conf->accounting->enabled) && $objp->fk_accountancy_journal > 0)
 						{
 							$accountingjournal = new AccountingJournal($db);
 							$accountingjournal->fetch($objp->fk_accountancy_journal);
@@ -777,7 +777,7 @@ if ($rowid > 0)
 							$accountstatic->accountancy_journal = $accountingjournal->getNomUrl(0, 1, 1, '', 1);
 						}
 
-                        $accountstatic->ref=$objp->ref;
+                        $accountstatic->ref = $objp->ref;
                         print $accountstatic->getNomUrl(1);
                     }
                     else
@@ -789,6 +789,13 @@ if ($rowid > 0)
                 print "</tr>";
                 $i++;
             }
+
+            if (empty($num)) {
+                $colspan = 6;
+                if (!empty($conf->banque->enabled)) $colspan++;
+                print '<tr><td colspan="'.$colspan.'"><span class="opacitymedium">'.$langs->trans("None").'</span></td></tr>';
+            }
+
             print "</table>";
         }
         else
@@ -801,7 +808,7 @@ if ($rowid > 0)
     if (($action != 'addsubscription' && $action != 'create_thirdparty'))
     {
 	    // Shon online payment link
-	    $useonlinepayment = (! empty($conf->paypal->enabled) || ! empty($conf->stripe->enabled) || ! empty($conf->paybox->enabled));
+	    $useonlinepayment = (!empty($conf->paypal->enabled) || !empty($conf->stripe->enabled) || !empty($conf->paybox->enabled));
 
 	    if ($useonlinepayment)
 	    {
