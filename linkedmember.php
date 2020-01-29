@@ -176,7 +176,7 @@ llxHeader("",$title,$helpurl);
 if ($id && $action == 'create' && $user->rights->societe->creer)
 {
 	print '<form action="'.$_SERVER["PHP_SELF"].'?rowid='.$object->id.'" method="post">';
-	print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
+	print '<input type="hidden" name="token" value="'.newToken().'">';
 	$actionforadd='add';
 	print '<input type="hidden" name="action" value="'.$actionforadd.'">';
 }
@@ -192,7 +192,7 @@ if ($id && $action == 'create' && $user->rights->adherent->creer)
 	dol_fiche_head($head, 'linkedmember', $langs->trans("Member"), -1, 'user');
  	
   print "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">";
-	print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
+	print '<input type="hidden" name="token" value="'.newToken().'">';
 
   $linkback = '<a href="'.DOL_URL_ROOT.'/adherents/list.php?restore_lastsearch_values=1">'.$langs->trans("BackToList").'</a>';
 
@@ -273,7 +273,7 @@ print '</SELECT>';
 	dol_fiche_head($head, 'linkedmember', $langs->trans("Member"), -1, 'user');
 
 	print "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">";
-	print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
+	print '<input type="hidden" name="token" value="'.newToken().'">';
 
     $linkback = '<a href="'.DOL_URL_ROOT.'/adherents/list.php?restore_lastsearch_values=1">'.$langs->trans("BackToList").'</a>';
 
