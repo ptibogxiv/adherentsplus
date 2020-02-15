@@ -253,7 +253,14 @@ $invoice->add_object_linked('subscription', $idcot);
             } 
 $i++;
         }  }
-}       
+    	} else if ($action == 'MEMBER_RESILIATE' || $action == 'MEMBER_DELETE' ){
+if (! empty($conf->global->PRODUIT_MULTIPRICES)){  
+      $sql  = "UPDATE ".MAIN_DB_PREFIX."societe as s";
+			$sql .= " SET s.price_level = '1'";
+			$sql .= " WHERE s.rowid IN (SELECT a.fk_soc FROM ".MAIN_DB_PREFIX."adherent as a WHERE a.rowid =".$object->id.")";
+      $result = $db->query($sql);
+} 
+    	}       
               
           
  
