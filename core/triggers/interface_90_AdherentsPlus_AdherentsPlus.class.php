@@ -253,12 +253,21 @@ $invoice->add_object_linked('subscription', $idcot);
             } 
 $i++;
         }  }
-    	} else if ($action == 'MEMBER_RESILIATE' || $action == 'MEMBER_DELETE' ){
-if (! empty($conf->global->PRODUIT_MULTIPRICES)){  
-      $sql  = "UPDATE ".MAIN_DB_PREFIX."societe as s";
-			$sql .= " SET s.price_level = '1'";
-			$sql .= " WHERE s.rowid IN (SELECT a.fk_soc FROM ".MAIN_DB_PREFIX."adherent as a WHERE a.rowid =".$object->id.")";
-      $result = $db->query($sql);
+    	} else if ($action == 'MEMBER_VALIDATE' || ($action == 'MEMBER_MODIFY' && !empty($object->statut)) ){
+if (! empty($conf->global->PRODUIT_MULTIPRICES) && !empty($object->fk_soc)){
+  dol_include_once('/adherentsplus/class/adherent_type.class.php');
+  $type=new AdherentTypePlus($db);
+  $type->fetch($object->typeid);
+
+	$soc = new Societe($db);
+	$soc->fetch($object->fk_soc);
+	$soc->set_price_level($type->price_level, $user);
+} 
+    	}  else if ($action == 'MEMBER_RESILIATE' || $action == 'MEMBER_DELETE' ){
+if (! empty($conf->global->PRODUIT_MULTIPRICES) && !empty($object->fk_soc)){
+	$soc = new Societe($db);
+	$soc->fetch($object->fk_soc);
+	$soc->set_price_level('1', $user);
 } 
     	}       
               
