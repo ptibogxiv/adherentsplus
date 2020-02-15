@@ -423,10 +423,29 @@ class AdherentTypePlus extends CommonObject
 			$action='update';
       
 if (! empty($conf->global->PRODUIT_MULTIPRICES)){  
-      $sql  = "UPDATE ".MAIN_DB_PREFIX."societe as s";
-			$sql .= " SET s.price_level = '".$this->price_level."'";
-			$sql .= " WHERE s.rowid IN (SELECT a.fk_soc FROM ".MAIN_DB_PREFIX."adherent as a WHERE a.fk_adherent_type =".$this->id.")";
-      $result = $this->db->query($sql);
+        require_once DOL_DOCUMENT_ROOT.'/societe/class/societe.class.php'; 
+        $sql = "SELECT s.rowid as id, s.price_level";
+        $sql.= " FROM ".MAIN_DB_PREFIX."societe as s";
+	      $sql.= " WHERE s.entity IN (".getEntity('adherent').")";
+	      $sql.= " AND s.rowid IN (SELECT a.fk_soc FROM ".MAIN_DB_PREFIX."adherent as a WHERE a.fk_adherent_type =".$this->id.")";
+
+        $resql=$this->db->query($sql);
+        if ($resql)
+        {
+            $nump = $this->db->num_rows($resql);
+
+            if ($nump)
+            {
+                $i = 0;
+                while ($i < $nump)
+                {     $objp = $this->db->fetch_object($resql);
+                    	$soc = new Societe($this->db);
+                      $soc->fetch($objp->id);
+                      $soc->set_price_level($this->price_level, $user);
+                    $i++;
+                }
+            }
+        }
 }      
 
 			// Actions on extra fields
