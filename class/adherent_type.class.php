@@ -425,9 +425,12 @@ class AdherentTypePlus extends CommonObject
 if (! empty($conf->global->PRODUIT_MULTIPRICES)){  
         require_once DOL_DOCUMENT_ROOT.'/societe/class/societe.class.php'; 
         $sql = "SELECT s.rowid as id, s.price_level";
-        $sql.= " FROM ".MAIN_DB_PREFIX."societe as s";
-	      $sql.= " WHERE s.entity IN (".getEntity('adherent').")";
-	      $sql.= " AND s.rowid IN (SELECT a.fk_soc FROM ".MAIN_DB_PREFIX."adherent as a WHERE a.fk_adherent_type = ".$this->id." AND a.statut='1')";
+        $sql.= " , a.statut as statut";
+        $sql.= " FROM ".MAIN_DB_PREFIX."adherent as a";
+        $sql.= " JOIN ".MAIN_DB_PREFIX."societe as s ON s.rowid = a.fk_soc";
+	      $sql.= " WHERE a.entity IN (".getEntity('adherent').")";
+	      $sql.= " AND a.fk_adherent_type = ".$this->id;
+	      //$sql.= " AND s.rowid IN (SELECT b.rowid FROM ".MAIN_DB_PREFIX."adherent as b WHERE b.fk_adherent_type = ".$this->id.")";
 
         $resql=$this->db->query($sql);
         if ($resql)
@@ -441,8 +444,12 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
                 {     $objp = $this->db->fetch_object($resql);
                     	$soc = new Societe($this->db);
                       $soc->fetch($objp->id);
+                      if (!empty($objp->statut)) {
                       $soc->set_price_level($this->price_level, $user);
-                    $i++;
+                      } else {
+                      $soc->set_price_level('1', $user);
+                      }
+                      $i++;
                 }
             }
         }
