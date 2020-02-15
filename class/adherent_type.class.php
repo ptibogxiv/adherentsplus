@@ -427,7 +427,7 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
         $sql = "SELECT s.rowid as id, s.price_level";
         $sql.= " FROM ".MAIN_DB_PREFIX."societe as s";
 	      $sql.= " WHERE s.entity IN (".getEntity('adherent').")";
-	      $sql.= " AND s.rowid IN (SELECT a.fk_soc FROM ".MAIN_DB_PREFIX."adherent as a WHERE a.fk_adherent_type =".$this->id.")";
+	      $sql.= " AND s.rowid IN (SELECT a.fk_soc FROM ".MAIN_DB_PREFIX."adherent as a WHERE a.fk_adherent_type = ".$this->id." AND a.statut='1')";
 
         $resql=$this->db->query($sql);
         if ($resql)
