@@ -427,7 +427,7 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
         $sql = "SELECT s.rowid as id, s.price_level as price_level";
         $sql.= " , a.statut as statut";
         $sql.= " FROM ".MAIN_DB_PREFIX."adherent as a";
-        $sql.= " JOIN ".MAIN_DB_PREFIX."societe as s ON s.rowid = a.fk_soc";
+        $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."societe as s ON s.rowid = a.fk_soc";
 	      $sql.= " WHERE a.entity IN (".getEntity('adherent').")";
 	      $sql.= " AND a.fk_adherent_type = ".$this->id."";
 
@@ -446,7 +446,7 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
                       $soc->fetch($objp->id);
                       if (!empty($objp->statut)) {
                       $soc->set_price_level($this->price_level, $user);
-                      } else {
+                      } elseif($objp->price_level != '1') {
                       $soc->set_price_level('1', $user);
                       }
                       }
