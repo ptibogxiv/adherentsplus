@@ -430,7 +430,6 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
         $sql.= " JOIN ".MAIN_DB_PREFIX."societe as s ON s.rowid = a.fk_soc";
 	      $sql.= " WHERE a.entity IN (".getEntity('adherent').")";
 	      $sql.= " AND a.fk_adherent_type = ".$this->id;
-	      //$sql.= " AND s.rowid IN (SELECT b.rowid FROM ".MAIN_DB_PREFIX."adherent as b WHERE b.fk_adherent_type = ".$this->id.")";
 
         $resql=$this->db->query($sql);
         if ($resql)
