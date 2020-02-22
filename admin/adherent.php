@@ -257,7 +257,7 @@ if ($conf->facture->enabled)
 }
 
 // Login/Pass required for members
-print '<tr class="oddeven"><td>'.$langs->trans("AdherentFederalPart").'</td><td>';
+print '<tr class="oddeven"><td>'.$langs->trans("FederalPart").'</td><td>';
 print $form->selectyesno('ADHERENT_FEDERAL_PART', (! empty($conf->global->ADHERENT_FEDERAL_PART)?$conf->global->ADHERENT_FEDERAL_PART:0),1);
 print "</td></tr>\n";
 
