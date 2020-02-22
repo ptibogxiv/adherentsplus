@@ -6,6 +6,8 @@ ALTER TABLE llx_adherent_type ADD COLUMN welcome double(24,8) DEFAULT 0.00000000
 
 ALTER TABLE llx_adherent_type ADD COLUMN price double(24,8) DEFAULT 0.00000000;
 
+ALTER TABLE llx_adherent_type ADD COLUMN federal double(24,8) DEFAULT 0.00000000;
+
 ALTER TABLE llx_adherent_type ADD COLUMN price_level int(11) DEFAULT NULL;
 
 ALTER TABLE llx_adherent_type ADD COLUMN duration varchar(6) DEFAULT NULL;

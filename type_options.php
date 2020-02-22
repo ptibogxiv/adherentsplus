@@ -81,6 +81,7 @@ if (! $sortfield) {  $sortfield="d.lastname"; }
 $family=GETPOST("family","int");
 $welcome=GETPOST("welcome","alpha");
 $price=GETPOST("price","alpha");
+$federal=GETPOST("federal","alpha");
 $price_level=GETPOST("price_level","int");
 $duration_value = GETPOST('duration_value', 'int');
 $duration_unit = GETPOST('duration_unit', 'alpha');
@@ -134,6 +135,7 @@ if ($action == 'update' && $user->rights->adherent->configurer)
     $object->family           = (boolean) trim($family);
     $object->welcome     = price2num($welcome);
     $object->price       = price2num($price);
+    $object->federal       = price2num($federal);
     $object->price_level       = trim($price_level?$price_level:'1');
     if ((float) DOL_VERSION < 11.0) $object->duration_value     	 = $duration_value;
     if ((float) DOL_VERSION < 11.0) $object->duration_unit      	 = $duration_unit;

@@ -666,7 +666,7 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
                     $adherenttypes[$obj->rowid][note] = $langs->trans($obj->note);
                     $adherenttypes[$obj->rowid][label] = $langs->trans($obj->label);
                     $adherenttypes[$obj->rowid][price] = $obj->price;
-                    $adherenttypes[$obj->rowid][ederal] = $obj->federal;
+                    $adherenttypes[$obj->rowid][federal] = $obj->federal;
                     $adherenttypes[$obj->rowid][morphy] = $obj->morphy;
                     $adherenttypes[$obj->rowid][welcome] = $obj->welcome;
                     $adherenttypes[$obj->rowid][automatic] = $obj->automatic;
