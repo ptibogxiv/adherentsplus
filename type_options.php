@@ -304,6 +304,13 @@ if ($rowid > 0)
 		print price($object->price);
     print ' '.$langs->trans("Currency".$conf->currency);
 		print '</tr>';
+    
+if (! empty($conf->global->ADHERENT_FEDERAL_PART)){    
+    print '<tr><td>'.$langs->trans("FederalPart").'</td><td>';
+		print price($object->federal);
+    print ' '.$langs->trans("Currency".$conf->currency);
+		print '</tr>';
+}    
     }
 
 if (! empty($conf->global->PRODUIT_MULTIPRICES)){
@@ -413,6 +420,13 @@ if ((float) DOL_VERSION < 11.0) {
 		print '<input size="10" type="text" value="' . price($object->price) . '" name="price">';   
     print ' '.$langs->trans("Currency".$conf->currency);    
 		print '</td></tr>';
+    
+if (! empty($conf->global->ADHERENT_FEDERAL_PART)){    
+    print '<tr ><td>'.$langs->trans("FederalPart").'</td><td>';
+		print '<input size="10" type="text" value="' . price($object->federal) . '" name="federal">';   
+    print ' '.$langs->trans("Currency".$conf->currency);    
+		print '</td></tr>';
+} 
     } else {
     print '<input size="10" type="text" value="0" name="welcome"><input size="10" type="text" value="0" name="price">';
     }
@@ -448,39 +462,7 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
 		print $formother->selectAutoManual("automatic_renew",$object->automatic_renew,1);
 		print '</td></tr>';
 
-		// Other attributes
-		$parameters=array();
-		$reshook=$hookmanager->executeHooks('formObjectOptions',$parameters,$act,$action);    // Note that $action and $object may have been modified by hook
-        print $hookmanager->resPrint;
-		if (empty($reshook) && ! empty($extrafields->attribute_label))
-		{
-		    print $object->showOptionals($extrafields,'edit');
-		}
-
 		print '</table>';
-
-		// Extra field
-		if (empty($reshook) && ! empty($extrafields->attribute_label))
-		{
-			print '<br><br><table class="border" width="100%">';
-			foreach($extrafields->attribute_label as $key=>$label)
-			{
-				if (isset($_POST["options_" . $key])) {
-					if (is_array($_POST["options_" . $key])) {
-						// $_POST["options"] is an array but following code expects a comma separated string
-						$value = implode(",", $_POST["options_" . $key]);
-					} else {
-						$value = $_POST["options_" . $key];
-					}
-				} else {
-					$value = $adht->array_options["options_" . $key];
-				}
-				print '<tr><td width="30%">'.$label.'</td><td>';
-				print $extrafields->showInputField($key,$value);
-				print "</td></tr>\n";
-			}
-			print '</table><br><br>';
-		}
 
 		dol_fiche_end();
 
