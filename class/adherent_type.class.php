@@ -91,6 +91,7 @@ class AdherentTypePlus extends CommonObject
 	public $mail_valid;
   public $welcome;
 	public $price;
+	public $federal;  
   public $price_level;
 	public $automatic;
   public $automatic_renew;
@@ -396,6 +397,7 @@ class AdherentTypePlus extends CommonObject
     $sql.= "subscription = '".$this->subscription."',";
     $sql.= "welcome = '".$this->welcome."',";
     $sql.= "price = '".$this->price."',";
+    $sql.= "federal= '".$this->federal."',";
     $sql.= "price_level = '".$this->price_level."',";
     $sql.= "duration = '" . $this->db->escape($this->duration_value . $this->duration_unit) ."',";
     $sql.= "note = '".$this->db->escape($this->note)."',";
@@ -537,7 +539,7 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
 	{
         global $langs, $conf;
   
-        $sql = "SELECT d.rowid, d.tms as datem, d.libelle as label, d.statut as status, d.morphy, d.subscription, d.welcome, d.price, d.price_level, d.duration, d.automatic, d.automatic_renew, d.family, d.mail_valid, d.note, d.vote";
+        $sql = "SELECT d.rowid, d.tms as datem, d.libelle as label, d.statut as status, d.morphy, d.subscription, d.welcome, d.price, d.federal, d.price_level, d.duration, d.automatic, d.automatic_renew, d.family, d.mail_valid, d.note, d.vote";
         $sql .= " FROM ".MAIN_DB_PREFIX."adherent_type as d";
         $sql .= " WHERE d.rowid = ".$rowid;
 
@@ -556,6 +558,7 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
                 $this->ref            = $obj->rowid;
                 $this->welcome        = $obj->welcome;
                 $this->price          = $obj->price;
+                $this->federal        = $obj->federal; 
                 $this->price_level    = $obj->price_level;
                 $this->label          = $obj->label;
                 $this->libelle        = $obj->label;	// For backward compatibility
@@ -645,7 +648,7 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
 
         $adherenttypes = array();
 
-        $sql = "SELECT rowid, libelle as label, welcome, price, morphy, automatic, automatic_renew, use_default, note";
+        $sql = "SELECT rowid, libelle as label, welcome, price, federal, morphy, automatic, automatic_renew, use_default, note";
         $sql.= " FROM ".MAIN_DB_PREFIX."adherent_type";
 	      $sql.= " WHERE entity IN (".getEntity('adherent').")";
 
@@ -663,6 +666,7 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
                     $adherenttypes[$obj->rowid][note] = $langs->trans($obj->note);
                     $adherenttypes[$obj->rowid][label] = $langs->trans($obj->label);
                     $adherenttypes[$obj->rowid][price] = $obj->price;
+                    $adherenttypes[$obj->rowid][ederal] = $obj->federal;
                     $adherenttypes[$obj->rowid][morphy] = $obj->morphy;
                     $adherenttypes[$obj->rowid][welcome] = $obj->welcome;
                     $adherenttypes[$obj->rowid][automatic] = $obj->automatic;
