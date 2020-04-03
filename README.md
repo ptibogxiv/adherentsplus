@@ -18,15 +18,15 @@ download then unzip then copy in htdocs/custom folder
 Add the following fields in dolibarr database
 Il vous faut ajouter les champs suivants dans la base de données:
 
-Pour les versions avant la V11 / develop:
-
- ALTER TABLE `llx_adherent_type` ADD COLUMN `duration` varchar(6) DEFAULT NULL;
-
-Pour les versions avant la V10:
+Pour les versions avant la V10 (inclus à partir de la v10):
 
  ALTER TABLE `llx_subscription` ADD COLUMN `fk_type` int(11) DEFAULT NULL;
  
  ALTER TABLE `llx_adherent_type` ADD COLUMN `morphy` varchar(3) DEFAULT NULL;
+ 
+Pour les versions avant la V11 (inclus à partir de la v11):
+
+ ALTER TABLE `llx_adherent_type` ADD COLUMN `duration` varchar(6) DEFAULT NULL;
 
 pour toutes versions de Dolibarr:
 
