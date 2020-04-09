@@ -207,66 +207,6 @@ class modAdherentsPlus extends DolibarrModules
         // Permissions
         //------------
         $this->rights = array();
-        $this->rights_class = 'adherent';
-        $r=0;
-
-        // $this->rights[$r][0]     Id permission (unique tous modules confondus)
-        // $this->rights[$r][1]     Libelle par defaut si traduction de cle "PermissionXXX" non trouvee (XXX = Id permission)
-        // $this->rights[$r][2]     Non utilise
-        // $this->rights[$r][3]     1=Permis par defaut, 0=Non permis par defaut
-        // $this->rights[$r][4]     Niveau 1 pour nommer permission dans code
-        // $this->rights[$r][5]     Niveau 2 pour nommer permission dans code
-
-        $r++;
-        $this->rights[$r][0] = 71;
-        $this->rights[$r][1] = 'Read members\' card';
-        $this->rights[$r][2] = 'r';
-        $this->rights[$r][3] = 0;
-        $this->rights[$r][4] = 'lire';
-
-        $r++;
-        $this->rights[$r][0] = 72;
-        $this->rights[$r][1] = 'Create/modify members (need also user module permissions if member linked to a user)';
-        $this->rights[$r][2] = 'w';
-        $this->rights[$r][3] = 0;
-        $this->rights[$r][4] = 'creer';
-
-        $r++;
-        $this->rights[$r][0] = 74;
-        $this->rights[$r][1] = 'Remove members';
-        $this->rights[$r][2] = 'd';
-        $this->rights[$r][3] = 0;
-        $this->rights[$r][4] = 'supprimer';
-
-        $r++;
-        $this->rights[$r][0] = 76;
-        $this->rights[$r][1] = 'Export members';
-        $this->rights[$r][2] = 'r';
-        $this->rights[$r][3] = 0;
-        $this->rights[$r][4] = 'export';
-
-        $r++;
-        $this->rights[$r][0] = 75;
-        $this->rights[$r][1] = 'Setup types of membership';
-        $this->rights[$r][2] = 'w';
-        $this->rights[$r][3] = 0;
-        $this->rights[$r][4] = 'configurer';
-
-        $r++;
-        $this->rights[$r][0] = 78;
-        $this->rights[$r][1] = 'Read subscriptions';
-        $this->rights[$r][2] = 'r';
-        $this->rights[$r][3] = 0;
-        $this->rights[$r][4] = 'cotisation';
-        $this->rights[$r][5] = 'lire';
-
-        $r++;
-        $this->rights[$r][0] = 79;
-        $this->rights[$r][1] = 'Create/modify/remove subscriptions';
-        $this->rights[$r][2] = 'w';
-        $this->rights[$r][3] = 0;
-        $this->rights[$r][4] = 'cotisation';
-        $this->rights[$r][5] = 'creer';
 
          // New pages on tabs
         // -----------------
