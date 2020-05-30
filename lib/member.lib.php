@@ -38,7 +38,7 @@ function memberplus_prepare_head(AdherentPlus $object)
 	$head = array();
 
 	$head[$h][0] = DOL_URL_ROOT.'/adherents/card.php?rowid='.$object->id;
-	$head[$h][1] = $langs->trans("Card");
+	$head[$h][1] = $langs->trans("Member");
 	$head[$h][2] = 'general';
 	$h++;
 
@@ -124,7 +124,7 @@ function memberplus_type_prepare_head(AdherentTypePlus $object)
 	$head = array();
 
 	$head[$h][0] = DOL_URL_ROOT.'/adherents/type.php?rowid='.$object->id;
-	$head[$h][1] = $langs->trans("Card");
+	$head[$h][1] = $langs->trans("MemberType");
 	$head[$h][2] = 'card';
 	$h++;
   
