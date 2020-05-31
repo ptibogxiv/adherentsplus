@@ -180,7 +180,6 @@ if ($id)
       print '<table class="tagtable liste'.($moreforfilter?" listwithfilterbefore":"").'">'."\n";
 
             print '<tr class="liste_titre">';
-            print '<td>'.$langs->trans("Ref").'</td>';
             print '<td align="center">'.$langs->trans("Date").'</td>';
             print '<td align="center">'.$langs->trans("Product/Service").'</td>';
             print '<td align="center">'.$langs->trans("Quantity").'</td>';
@@ -193,8 +192,7 @@ if ($id)
 
                 print "<tr ".$bc[$var].">";
 
-                print '<td>'.$consumption->id.'</td>';
-                print '<td align="center">'.dol_print_date($consumption->date_creation,'dayhour')."</td>\n";
+                print '<td>'.dol_print_date($consumption->date_consumption,'dayhour')."</td>\n";
                 print '<td align="center">';
                 $prodtmp=new Product($db);
                 $prodtmp->fetch($consumption->fk_product);

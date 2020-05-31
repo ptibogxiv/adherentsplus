@@ -1660,7 +1660,7 @@ dol_include_once('/adherentsplus/class/subscription.class.php');
 dol_include_once('/adherentsplus/class/consumption.class.php');
 require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 
-    $sql = "SELECT c.rowid, c.fk_member, c.fk_product, c.qty";    
+    $sql = "SELECT c.rowid, c.fk_member, c.fk_product, c.qty, c.date_creation, c.date_consumption, c.tms";    
     $sql.= " FROM ".MAIN_DB_PREFIX."adherent_consumption as c";
     $sql.= " WHERE c.fk_member=".$this->id;
 		$sql.= " ORDER BY c.rowid DESC";
@@ -1685,6 +1685,7 @@ require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
                 $consumption->qty=$obj->qty;
                 $consumption->fk_invoice=$obj->fk_invoice;
                 $consumption->date_creation=$this->db->jdate($obj->date_creation);
+                $consumption->date_consumption=$this->db->jdate($obj->date_consumption);
     if ($prodtmp->isService() && $prodtmp->duration_value > 0)
     {        
                 $consumption->value          = $obj->qty*$prodtmp->duration_value;
