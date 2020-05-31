@@ -1663,7 +1663,7 @@ require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
     $sql = "SELECT c.rowid, c.fk_member, c.fk_product, c.qty, c.date_creation, c.date_consumption, c.tms";    
     $sql.= " FROM ".MAIN_DB_PREFIX."adherent_consumption as c";
     $sql.= " WHERE c.fk_member=".$this->id;
-		$sql.= " ORDER BY c.rowid DESC";
+		$sql.= " ORDER BY c.date_consumption DESC";
 		dol_syslog(get_class($this)."::fetch_consumptions", LOG_DEBUG);
 
 		$resql=$this->db->query($sql);

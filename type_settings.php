@@ -280,7 +280,7 @@ if ($rowid > 0)
 
 		$head = memberplus_type_prepare_head($object);
 
-		dol_fiche_head($head, 'options', $langs->trans("MemberType"), -1, 'group');
+		dol_fiche_head($head, 'settings', $langs->trans("MemberType"), -1, 'group');
 
 		$linkback = '<a href="'.DOL_URL_ROOT.'/adherents/type.php?restore_lastsearch_values=1">'.$langs->trans("BackToList").'</a>';
 
@@ -403,7 +403,7 @@ if ((float) DOL_VERSION < 11.0) {
 		print '<input type="hidden" name="rowid" value="'.$rowid.'">';
 		print '<input type="hidden" name="action" value="update">';
 
-		dol_fiche_head($head, 'options', $langs->trans("MemberType"), 0, 'group');
+		dol_fiche_head($head, 'settings', $langs->trans("MemberType"), 0, 'group');
 
 		print '<table class="border" width="100%">';
 
