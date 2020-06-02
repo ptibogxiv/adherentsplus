@@ -371,7 +371,7 @@ if ((float) DOL_VERSION < 11.0) {
         
         // Create a new DateTime object
 $abo = null;
-//$abo = "2019-07-05";
+$abo = "2019-07-05";
 $date = new DateTime($abo);  
  $monthName = date("F", mktime(0, 0, 0, $conf->global->SOCIETE_SUBSCRIBE_MONTH_START, 10));
 $date->modify('FIRST DAY OF '.$monthName.' MIDNIGHT');
@@ -398,7 +398,14 @@ $date = new DateTime($dateto);
 $date->modify('NEXT DAY MIDNIGHT');
 $date->modify('- '.$conf->global->SOCIETE_SUBSCRIBE_MONTH_PRESTART.' MONTHS');  
 print 'date_renew: '.$date->format('Y-m-d H:i').'<br>';
-$date = new DateTime($dateto);
+
+if (!empty($abo) && $abo < $dateto) { 
+$datewf = $abo;   
+} else {
+$datewf = $dateto;   
+}
+
+$date = new DateTime($datewf);
 $date->modify('NEXT DAY MIDNIGHT');
 $date->modify('+ '.$conf->global->ADHERENT_WELCOME_MONTH.' MONTHS');  
 print 'date_welcomefee: '.$date->format('Y-m-d H:i').'<br>';
