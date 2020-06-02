@@ -353,6 +353,18 @@ if ((float) DOL_VERSION < 11.0) {
         
         // Create a new DateTime object
 $date = new DateTime();
+//forced date
+if ($object->duration_unit == 'd') { 
+$date->modify('MIDNIGHT');
+} elseif ($object->duration_unit == 'w') { 
+$date->modify('LAST MONDAY MIDNIGHT');
+} elseif ($object->duration_unit == 'm') {
+$date->modify('FIRST DAY OF THIS MONTH MIDNIGHT');
+} else {
+$date->modify('FIRST DAY OF JANUARY MIDNIGHT');
+}
+
+// current dates
 print 'begin: '.$date->format('Y-m-d H:i').'<br>';
 // Modify the date it contains
 if ($object->duration_unit == 'd') { 
@@ -379,9 +391,12 @@ $date->modify('+'.$value.' YEAR');
 }
 
 $date->modify('-1 SECONDS');
-// Output
-print 'end: '.$date->format('Y-m-d H:i').'<br>';
 
+print 'end: '.$date->format('Y-m-d H:i').'<br>';
+print 'price: '.price($object->welcome + $object->price);
+print ' '.$langs->trans("Currency".$conf->currency).'<br>';
+
+// next dates
 $date2 = new DateTime($date->format('Y-m-d H:i'));
 $date2->modify('NEXT DAY MIDNIGHT');
 print 'nextbegin: '.$date2->format('Y-m-d H:i').'<br>';
@@ -408,8 +423,12 @@ $date2->modify('+'.$value.' YEAR');
 }
 }
 
-$date2->modify('-1 SECONDS'); 
+$date2->modify('-1 SECONDS');
+ 
 print 'nextend: '.$date2->format('Y-m-d H:i').'<br>';
+print 'nextprice: '.price($object->price);
+print ' '.$langs->trans("Currency".$conf->currency);
+//print $date2->getTimestamp();
 		
     dol_fiche_end();
 
