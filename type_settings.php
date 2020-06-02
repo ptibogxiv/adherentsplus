@@ -413,7 +413,8 @@ $date->modify('LAST YEAR');
 
 // current dates
 print 'begin: '.$date->format('Y-m-d H:i').'<br>';
-// Modify the date it contains
+if (!empty($conf->global->ADHERENT_SUBSCRIPTION_PRORATA)) {
+//forced date
 if ($object->duration_unit == 'd') { 
 $date->modify('NEXT DAY MIDNIGHT');
 } elseif ($object->duration_unit == 'w') { 
@@ -422,6 +423,17 @@ $date->modify('NEXT MONDAY MIDNIGHT');
 $date->modify('FIRST DAY OF NEXT MONTH MIDNIGHT');
 } else {
 $date->modify('FIRST DAY OF NEXT YEAR MIDNIGHT');
+}
+} else {
+if ($object->duration_unit == 'd') { 
+$date->modify('NEXT DAY MIDNIGHT');
+} elseif ($object->duration_unit == 'w') { 
+$date->modify('+1 WEEK MIDNIGHT');
+} elseif ($object->duration_unit == 'm') {
+$date->modify('NEXT MONTH MIDNIGHT');
+} else {
+$date->modify('NEXT YEAR MIDNIGHT');
+}
 }
 
 $value = $object->duration_value - 1;
