@@ -350,8 +350,68 @@ if ((float) DOL_VERSION < 11.0) {
 
 		print '</table>';
         print '</div>';
+        
+        // Create a new DateTime object
+$date = new DateTime();
+print 'begin: '.$date->format('Y-m-d H:i').'<br>';
+// Modify the date it contains
+if ($object->duration_unit == 'd') { 
+$date->modify('NEXT DAY MIDNIGHT');
+} elseif ($object->duration_unit == 'w') { 
+$date->modify('NEXT MONDAY MIDNIGHT');
+} elseif ($object->duration_unit == 'm') {
+$date->modify('FIRST DAY OF NEXT MONTH MIDNIGHT');
+} else {
+$date->modify('FIRST DAY OF NEXT YEAR MIDNIGHT');
+}
 
-		dol_fiche_end();
+$value = $object->duration_value - 1;
+if ($value>0) {
+if ($object->duration_unit == 'd') { 
+$date->modify('+'.$value.' DAY');
+} elseif ($object->duration_unit == 'w') { 
+$date->modify('+'.$value.' WEEK');
+} elseif ($object->duration_unit == 'm') {
+$date->modify('+'.$value.' MONTH');
+} else {
+$date->modify('+'.$value.' YEAR');
+}
+}
+
+$date->modify('-1 SECONDS');
+// Output
+print 'end: '.$date->format('Y-m-d H:i').'<br>';
+
+$date2 = new DateTime($date->format('Y-m-d H:i'));
+$date2->modify('NEXT DAY MIDNIGHT');
+print 'nextbegin: '.$date2->format('Y-m-d H:i').'<br>';
+// Modify the date it contains
+if ($object->duration_unit == 'd') { 
+$date2->modify('NEXT DAY');
+} elseif ($object->duration_unit == 'w') { 
+$date2->modify('NEXT MONDAY');
+} elseif ($object->duration_unit == 'm') {
+$date2->modify('FIRST DAY OF NEXT MONTH');
+} else {
+$date2->modify('FIRST DAY OF NEXT YEAR');
+}
+
+if ($value>0) {
+if ($object->duration_unit == 'd') { 
+$date2->modify('+'.$value.' DAY');
+} elseif ($object->duration_unit == 'w') { 
+$date2->modify('+'.$value.' WEEK');
+} elseif ($object->duration_unit == 'm') {
+$date2->modify('+'.$value.' MONTH');
+} else {
+$date2->modify('+'.$value.' YEAR');
+}
+}
+
+$date2->modify('-1 SECONDS'); 
+print 'nextend: '.$date2->format('Y-m-d H:i').'<br>';
+		
+    dol_fiche_end();
 
 		/*
 		 * Buttons
