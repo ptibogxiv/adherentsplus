@@ -363,6 +363,9 @@ $date->modify('FIRST DAY OF THIS MONTH MIDNIGHT');
 } else {
  $monthName = date("F", mktime(0, 0, 0, $conf->global->SOCIETE_SUBSCRIBE_MONTH_START, 10));
 $date->modify('FIRST DAY OF '.$monthName.' MIDNIGHT');
+if ($date->getTimestamp() > dol_now()) {
+$date->modify('LAST YEAR');
+}
 }
 
 // current dates
