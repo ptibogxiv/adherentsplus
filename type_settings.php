@@ -361,7 +361,8 @@ $date->modify('LAST MONDAY MIDNIGHT');
 } elseif ($object->duration_unit == 'm') {
 $date->modify('FIRST DAY OF THIS MONTH MIDNIGHT');
 } else {
-$date->modify('FIRST DAY OF JANUARY MIDNIGHT');
+ $monthName = date("F", mktime(0, 0, 0, $conf->global->SOCIETE_SUBSCRIBE_MONTH_START, 10));
+$date->modify('FIRST DAY OF '.$monthName.' MIDNIGHT');
 }
 
 // current dates
