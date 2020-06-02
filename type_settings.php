@@ -349,12 +349,54 @@ if ((float) DOL_VERSION < 11.0) {
     	include DOL_DOCUMENT_ROOT . '/core/tpl/extrafields_view.tpl.php';
 
 		print '</table>';
-        print '</div>';
+    print '</div>';
         
         // Create a new DateTime object
-$date = new DateTime();
+$abo = null;
+//$abo = "2019-07-05";
+$date = new DateTime($abo);  
+ $monthName = date("F", mktime(0, 0, 0, $conf->global->SOCIETE_SUBSCRIBE_MONTH_START, 10));
+$date->modify('FIRST DAY OF '.$monthName.' MIDNIGHT');
+if ($date->getTimestamp() > dol_now()) {
+$date->modify('LAST YEAR');
+}
+$prestart = 12 - $conf->global->SOCIETE_SUBSCRIBE_MONTH_PRESTART;
+$date->modify(' + '.$prestart.' MONTHS'); 
+//print 'renew: '.$date->format('Y-m-d H:i').'<br>'; 
+$daterenew = $date->getTimestamp();
+if ($date->getTimestamp() <= dol_now()) {
+$date->modify('NEXT YEAR');
+} 
+$date->modify(' - '.$prestart.' MONTHS'); 
+$datefrom = $date->format('Y-m-d H:i');
+$date = new DateTime($datefrom);
+print 'from '.$date->format('Y-m-d H:i');
+$date->modify('NEXT YEAR');
+$date->modify('-1 SECONDS');
+$dateto = $date->format('Y-m-d H:i');
+print ' to '.$date->format('Y-m-d H:i').'<br>';
+
+$date = new DateTime($dateto);
+$date->modify('NEXT DAY MIDNIGHT');
+$date->modify('- '.$conf->global->SOCIETE_SUBSCRIBE_MONTH_PRESTART.' MONTHS');  
+print 'renew: '.$date->format('Y-m-d H:i').'<br>';
+$date = new DateTime($dateto);
+$date->modify('NEXT DAY MIDNIGHT');
+$date->modify('+ '.$conf->global->ADHERENT_WELCOME_MONTH.' MONTHS');  
+print 'newwelcome: '.$date->format('Y-m-d H:i').'<br>';
+print '<hr>';
+
+if (!empty($abo) && $abo > $datefrom) { 
+$date = new DateTime($abo);   
+} else {
+$date = new DateTime();   
+}
+
+if (!empty($conf->global->ADHERENT_SUBSCRIPTION_PRORATA)) {
 //forced date
-if ($object->duration_unit == 'd') { 
+if ($daterenew <= dol_now() && $abo > $datefrom) {
+$date->modify('NOW');
+} elseif ($object->duration_unit == 'd') { 
 $date->modify('MIDNIGHT');
 } elseif ($object->duration_unit == 'w') { 
 $date->modify('LAST MONDAY MIDNIGHT');
@@ -363,8 +405,9 @@ $date->modify('FIRST DAY OF THIS MONTH MIDNIGHT');
 } else {
  $monthName = date("F", mktime(0, 0, 0, $conf->global->SOCIETE_SUBSCRIBE_MONTH_START, 10));
 $date->modify('FIRST DAY OF '.$monthName.' MIDNIGHT');
-if ($date->getTimestamp() > dol_now()) {
+if ($date->getTimestamp() > dol_now() && $daterenew > dol_now()) {
 $date->modify('LAST YEAR');
+}
 }
 }
 
@@ -394,12 +437,16 @@ $date->modify('+'.$value.' YEAR');
 }
 }
 
+if ($daterenew <= dol_now() && (empty($object->duration_unit) || $object->duration_unit == 'y')) {
+$date->modify($dateto);
+} else {
 $date->modify('-1 SECONDS');
+}
 
 print 'end: '.$date->format('Y-m-d H:i').'<br>';
 print 'price: '.price($object->welcome + $object->price);
 print ' '.$langs->trans("Currency".$conf->currency).'<br>';
-
+print '<hr>';
 // next dates
 $date2 = new DateTime($date->format('Y-m-d H:i'));
 $date2->modify('NEXT DAY MIDNIGHT');

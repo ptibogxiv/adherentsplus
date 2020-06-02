@@ -286,7 +286,7 @@ print "</tr>\n";
 // time before renewing welcome fee
 print '<tr class="oddeven"><td>'.$langs->trans("ADHERENT_WELCOME_MONTH").'</td>';
 print '<td>';
-print $form->selectarray('ADHERENT_WELCOME_MONTH', array('0'=>'Uniquement la première fois','1'=>'Exigés 1 mois après la fin d\'adhésion','2'=>'Exigés 2 mois après la fin d\'adhésion','3'=>'Exigés 3 mois après la fin d\'adhésion','4'=>'Exigés 4 mois après la fin d\'adhésion','5'=>'Exigés 5 mois après la fin d\'adhésion','6'=>'Exigés 6 mois après la fin d\'adhésion','18'=>'Exigés 18 mois après la fin d\'adhésion','24'=>'Exigés 24 mois après la fin d\'adhésion','36'=>'Exigés 36 mois après la fin d\'adhésion'), (empty($conf->global->ADHERENT_WELCOME_MONTH)?'0':$conf->global->ADHERENT_WELCOME_MONTH), 0);
+print $form->selectarray('ADHERENT_WELCOME_MONTH', array('0'=>'Uniquement la première fois','1'=>'Exigés 1 mois après la fin d\'adhésion','2'=>'Exigés 2 mois après la fin d\'adhésion','3'=>'Exigés 3 mois après la fin d\'adhésion','4'=>'Exigés 4 mois après la fin d\'adhésion','5'=>'Exigés 5 mois après la fin d\'adhésion','6'=>'Exigés 6 mois après la fin d\'adhésion','12'=>'Exigés 12 mois après la fin d\'adhésion','18'=>'Exigés 18 mois après la fin d\'adhésion','24'=>'Exigés 24 mois après la fin d\'adhésion','36'=>'Exigés 36 mois après la fin d\'adhésion'), (empty($conf->global->ADHERENT_WELCOME_MONTH)?'0':$conf->global->ADHERENT_WELCOME_MONTH), 0);
 print '</td>';
 print "</tr>\n";
 
