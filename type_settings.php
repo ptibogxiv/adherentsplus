@@ -337,6 +337,24 @@ if ((float) DOL_VERSION < 11.0) {
     print (! empty($object->duration_unit) && isset($dur[$object->duration_unit]) ? $langs->trans($dur[$object->duration_unit]) : '')."&nbsp;";
     print '</td></tr>';
 }
+
+    print '<tr><td class="titlefield">'.$langs->trans("Commitment").'</td><td colspan="2">';
+    if (empty($object->commitment_value)) {
+    print $langs->trans("None");
+    } else {
+    print $object->commitment_value.'&nbsp;';
+    if ($object->commitment_value > 1)
+    {
+    $dur=array("i"=>$langs->trans("Minute"),"h"=>$langs->trans("Hours"),"d"=>$langs->trans("Days"),"w"=>$langs->trans("Weeks"),"m"=>$langs->trans("Months"),"y"=>$langs->trans("Years"));
+    }
+    elseif ($object->commitment_value > 0)
+    {
+    $dur=array("i"=>$langs->trans("Minute"),"h"=>$langs->trans("Hour"),"d"=>$langs->trans("Day"),"w"=>$langs->trans("Week"),"m"=>$langs->trans("Month"),"y"=>$langs->trans("Year"));
+    }
+    print (! empty($object->commitment_unit) && isset($dur[$object->commitment_unit]) ? $langs->trans($dur[$object->commitment_unit]) : '')."&nbsp;";
+    }
+    print '</td></tr>';
+
     print '<tr><td>'.$langs->trans("Validation").'</td><td>';
 		print autoOrManual($object->automatic);
 		print '</tr>';
@@ -379,11 +397,11 @@ print ' to '.$date->format('Y-m-d H:i').'<br>';
 $date = new DateTime($dateto);
 $date->modify('NEXT DAY MIDNIGHT');
 $date->modify('- '.$conf->global->SOCIETE_SUBSCRIBE_MONTH_PRESTART.' MONTHS');  
-print 'renew: '.$date->format('Y-m-d H:i').'<br>';
+print 'date_renew: '.$date->format('Y-m-d H:i').'<br>';
 $date = new DateTime($dateto);
 $date->modify('NEXT DAY MIDNIGHT');
 $date->modify('+ '.$conf->global->ADHERENT_WELCOME_MONTH.' MONTHS');  
-print 'newwelcome: '.$date->format('Y-m-d H:i').'<br>';
+print 'date_welcomefee: '.$date->format('Y-m-d H:i').'<br>';
 print '<hr>';
 
 if (!empty($abo) && $abo > $datefrom) { 
@@ -597,9 +615,15 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
 	  print '</td></tr>';
  }
  
+if ((float) DOL_VERSION < 11.0) {
     print '<tr><td>'.$langs->trans("Duration").'</td><td colspan="3">';
     print '<input name="duration_value" size="5" value="'.$object->duration_value.'"> ';
     print $formproduct->selectMeasuringUnits("duration_unit", "time", $object->duration_unit, 0, 1);
+    print '</td></tr>';
+}
+    
+    print '<tr><td>'.$langs->trans("Commitment").'</td><td colspan="3">';
+    print "<input type='text' name='commitment_value' value='".GETPOST('commitment_value', 'int')."' size='4' />&nbsp;".$form->selectarray('commitment_unit', array(''=>$langs->trans('None'), 'd'=>$langs->trans('Day'), 'm'=>$langs->trans('Month'), 'y'=>$langs->trans('Year')), (GETPOST('commitment_unit') ?GETPOST('commitment_unit') : null));
     print '</td></tr>';
     
     print '<tr><td>'.$langs->trans("Validation").'</td><td>';
