@@ -371,7 +371,7 @@ if ((float) DOL_VERSION < 11.0) {
         
         // Create a new DateTime object
 $abo = null;
-$abo = "2019-07-05";
+$abo = "2018-07-05";
 $date = new DateTime($abo);  
  $monthName = date("F", mktime(0, 0, 0, $conf->global->SOCIETE_SUBSCRIBE_MONTH_START, 10));
 $date->modify('FIRST DAY OF '.$monthName.' MIDNIGHT');
@@ -409,6 +409,7 @@ $date = new DateTime($datewf);
 $date->modify('NEXT DAY MIDNIGHT');
 $date->modify('+ '.$conf->global->ADHERENT_WELCOME_MONTH.' MONTHS');  
 print 'date_welcomefee: '.$date->format('Y-m-d H:i').'<br>';
+$datewf = $date->getTimestamp();
 print '<hr>';
 
 if (!empty($abo) && $abo > $datefrom) { 
@@ -438,6 +439,7 @@ $date->modify('LAST YEAR');
 
 // current dates
 print 'begin: '.$date->format('Y-m-d H:i').'<br>';
+$datebegin = $date->getTimestamp();
 if (!empty($conf->global->ADHERENT_SUBSCRIPTION_PRORATA)) {
 //forced date
 if ($object->duration_unit == 'd') { 
@@ -481,7 +483,13 @@ $date->modify('-1 SECONDS');
 }
 
 print 'end: '.$date->format('Y-m-d H:i').'<br>';
-print 'price: '.price($object->welcome + $object->price);
+$dateend = $date->getTimestamp();
+if ( $datewf <= $datebegin) {
+$price = price($object->welcome + $object->price);
+} else {
+$price = price($object->price);
+}
+print 'price: '.$price;
 print ' '.$langs->trans("Currency".$conf->currency).'<br>';
 print '<hr>';
 // next dates
