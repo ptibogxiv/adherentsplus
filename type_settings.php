@@ -371,7 +371,7 @@ if ((float) DOL_VERSION < 11.0) {
         
         // Create a new DateTime object
 $abo = null;
-$abo = "2019-07-05";
+//$abo = "2020-06-01";
 $date = new DateTime($abo);  
  $monthName = date("F", mktime(0, 0, 0, $conf->global->SOCIETE_SUBSCRIBE_MONTH_START, 10));
 $date->modify('FIRST DAY OF '.$monthName.' MIDNIGHT');
@@ -463,7 +463,7 @@ $date->modify('NEXT YEAR MIDNIGHT');
 }
 }
 
-$value = $object->duration_value - 1;
+$value = (!empty($object->duration_value)?$object->duration_value:0) - 1;
 if ($value>0) {
 if ($object->duration_unit == 'd') { 
 $date->modify('+'.$value.' DAY');
@@ -493,35 +493,47 @@ print 'price: '.$price;
 print ' '.$langs->trans("Currency".$conf->currency).'<br>';
 print '<hr>';
 // next dates
-$date2 = new DateTime($date->format('Y-m-d H:i'));
-$date2->modify('NEXT DAY MIDNIGHT');
-print 'nextbegin: '.$date2->format('Y-m-d H:i').'<br>';
-// Modify the date it contains
+$date = new DateTime($date->format('Y-m-d H:i'));
+$date->modify('NEXT DAY MIDNIGHT');
+print 'nextbegin: '.$date->format('Y-m-d H:i').'<br>';
+if (!empty($conf->global->ADHERENT_SUBSCRIPTION_PRORATA)) {
+//forced date
 if ($object->duration_unit == 'd') { 
-$date2->modify('NEXT DAY');
+$date->modify('NEXT DAY MIDNIGHT');
 } elseif ($object->duration_unit == 'w') { 
-$date2->modify('NEXT MONDAY');
+$date->modify('NEXT MONDAY MIDNIGHT');
 } elseif ($object->duration_unit == 'm') {
-$date2->modify('FIRST DAY OF NEXT MONTH');
+$date->modify('FIRST DAY OF NEXT MONTH MIDNIGHT');
 } else {
-$date2->modify('FIRST DAY OF NEXT YEAR');
+$date->modify('FIRST DAY OF NEXT YEAR MIDNIGHT');
+}
+} else {
+if ($object->duration_unit == 'd') { 
+$date->modify('NEXT DAY MIDNIGHT');
+} elseif ($object->duration_unit == 'w') { 
+$date->modify('+1 WEEK MIDNIGHT');
+} elseif ($object->duration_unit == 'm') {
+$date->modify('NEXT MONTH MIDNIGHT');
+} else {
+$date->modify('NEXT YEAR MIDNIGHT');
+}
 }
 
 if ($value>0) {
 if ($object->duration_unit == 'd') { 
-$date2->modify('+'.$value.' DAY');
+$date->modify('+'.$value.' DAY');
 } elseif ($object->duration_unit == 'w') { 
-$date2->modify('+'.$value.' WEEK');
+$date->modify('+'.$value.' WEEK');
 } elseif ($object->duration_unit == 'm') {
-$date2->modify('+'.$value.' MONTH');
+$date->modify('+'.$value.' MONTH');
 } else {
-$date2->modify('+'.$value.' YEAR');
+$date->modify('+'.$value.' YEAR');
 }
 }
 
-$date2->modify('-1 SECONDS');
+$date->modify('-1 SECONDS');
  
-print 'nextend: '.$date2->format('Y-m-d H:i').'<br>';
+print 'nextend: '.$date->format('Y-m-d H:i').'<br>';
 print 'nextprice: '.price($object->price);
 print ' '.$langs->trans("Currency".$conf->currency);
 //print $date2->getTimestamp();
