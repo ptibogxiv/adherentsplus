@@ -371,33 +371,33 @@ if ((float) DOL_VERSION < 11.0) {
         
         // Create a new DateTime object
 $abo = null;
-$abo = "2020-06-03";
+$abo = "2020-06-03 15:46:45";
 $date = new DateTime($abo);  
- $monthName = date("F", mktime(0, 0, 0, $conf->global->SOCIETE_SUBSCRIBE_MONTH_START, 10));
+$monthName = date("F", mktime(0, 0, 0, $conf->global->SOCIETE_SUBSCRIBE_MONTH_START, 10));
 $date->modify('FIRST DAY OF '.$monthName.' MIDNIGHT');
 if ($date->getTimestamp() > dol_now()) {
 $date->modify('LAST YEAR');
 }
 $prestart = 12 - $conf->global->SOCIETE_SUBSCRIBE_MONTH_PRESTART;
 $date->modify(' + '.$prestart.' MONTHS'); 
-//print 'renew: '.$date->format('Y-m-d H:i').'<br>'; 
+//print 'renew: '.$date->format('Y-m-d H:i:s').'<br>'; 
 $daterenew = $date->getTimestamp();
 if ($date->getTimestamp() <= dol_now()) {
 $date->modify('NEXT YEAR');
 } 
 $date->modify(' - '.$prestart.' MONTHS'); 
-$datefrom = $date->format('Y-m-d H:i');
+$datefrom = $date->format('Y-m-d H:i:s');
 $date = new DateTime($datefrom);
-print 'from '.$date->format('Y-m-d H:i');
+print 'from '.$date->format('Y-m-d H:i:s');
 $date->modify('NEXT YEAR');
 $date->modify('-1 SECONDS');
-$dateto = $date->format('Y-m-d H:i');
-print ' to '.$date->format('Y-m-d H:i').'<br>';
+$dateto = $date->format('Y-m-d H:i:s');
+print ' to '.$date->format('Y-m-d H:i:s').'<br>';
 
 $date = new DateTime($dateto);
 $date->modify('NEXT DAY MIDNIGHT');
 $date->modify('- '.$conf->global->SOCIETE_SUBSCRIBE_MONTH_PRESTART.' MONTHS');  
-print 'date_renew: '.$date->format('Y-m-d H:i').'<br>';
+print 'date_renew: '.$date->format('Y-m-d H:i:s').'<br>';
 
 if (!empty($abo) && $abo < $dateto) { 
 $datewf = $abo;   
@@ -406,9 +406,10 @@ $datewf = $dateto;
 }
 
 $date = new DateTime($datewf);
-$date->modify('NEXT DAY MIDNIGHT');
+$date->modify('+1 SECONDS');
+//$date->modify('NEXT DAY MIDNIGHT');
 $date->modify('+ '.$conf->global->ADHERENT_WELCOME_MONTH.' MONTHS');  
-print 'date_welcomefee: '.$date->format('Y-m-d H:i').'<br>';
+print 'date_welcomefee: '.$date->format('Y-m-d H:i:s').'<br>';
 $datewf = $date->getTimestamp();
 print '<hr>';
 
@@ -438,7 +439,7 @@ $date->modify('LAST YEAR');
 }
 
 // current dates
-print 'begin: '.$date->format('Y-m-d H:i').'<br>';
+print 'begin: '.$date->format('Y-m-d H:i:s').'<br>';
 $datebegin = $date->getTimestamp();
 if (!empty($conf->global->ADHERENT_SUBSCRIPTION_PRORATA)) {
 //forced date
@@ -482,7 +483,7 @@ $date->modify($dateto);
 $date->modify('-1 SECONDS');
 }
 
-print 'end: '.$date->format('Y-m-d H:i').'<br>';
+print 'end: '.$date->format('Y-m-d H:i:s').'<br>';
 $dateend = $date->getTimestamp();
 if ( $datewf <= $datebegin) {
 $price = price($object->welcome + $object->price);
@@ -493,9 +494,9 @@ print 'price: '.$price;
 print ' '.$langs->trans("Currency".$conf->currency).'<br>';
 print '<hr>';
 // next dates
-$date = new DateTime($date->format('Y-m-d H:i'));
+$date = new DateTime($date->format('Y-m-d H:i:s'));
 $date->modify('NEXT DAY MIDNIGHT');
-print 'nextbegin: '.$date->format('Y-m-d H:i').'<br>';
+print 'nextbegin: '.$date->format('Y-m-d H:i:s').'<br>';
 if (!empty($conf->global->ADHERENT_SUBSCRIPTION_PRORATA)) {
 //forced date
 if ($object->duration_unit == 'd') { 
@@ -533,7 +534,7 @@ $date->modify('+'.$value.' YEAR');
 
 $date->modify('-1 SECONDS');
  
-print 'nextend: '.$date->format('Y-m-d H:i').'<br>';
+print 'nextend: '.$date->format('Y-m-d H:i:s').'<br>';
 print 'nextprice: '.price($object->price);
 print ' '.$langs->trans("Currency".$conf->currency);
 //print $date2->getTimestamp();
