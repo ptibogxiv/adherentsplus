@@ -371,7 +371,7 @@ if ((float) DOL_VERSION < 11.0) {
         
         // Create a new DateTime object
 $abo = null;
-$abo = "2020-06-03 15:46:24";
+//$abo = "2019-11-03 15:46:24";
 $date = new DateTime($abo);  
 $monthName = date("F", mktime(0, 0, 0, $conf->global->SOCIETE_SUBSCRIBE_MONTH_START, 10));
 $date->modify('FIRST DAY OF '.$monthName.' MIDNIGHT');
@@ -400,15 +400,18 @@ $date->modify('- '.$conf->global->SOCIETE_SUBSCRIBE_MONTH_PRESTART.' MONTHS');
 print 'date_renew: '.$date->format('Y-m-d H:i:s').'<br>';
 
 if (!empty($abo) && $abo < $dateto) { 
-$datewf = $abo;   
-} else {
-$datewf = $dateto;   
-}
-
+$datewf = $abo;
 $date = new DateTime($datewf);
 $date->modify('+1 SECONDS');
 //$date->modify('NEXT DAY MIDNIGHT');
-$date->modify('+ '.$conf->global->ADHERENT_WELCOME_MONTH.' MONTHS');  
+$date->modify('+ '.$conf->global->ADHERENT_WELCOME_MONTH.' MONTHS');     
+} else {
+$datewf = null;
+$date = new DateTime();
+$date->modify('+1 SECONDS');
+//$date->modify('NEXT DAY MIDNIGHT');
+$date->modify('- '.$conf->global->ADHERENT_WELCOME_MONTH.' MONTHS');       
+}
 print 'date_welcomefee: '.$date->format('Y-m-d H:i:s').'<br>';
 $datewf = $date->getTimestamp();
 print '<hr>';
@@ -422,11 +425,11 @@ $date = new DateTime();
 
 if (!empty($conf->global->ADHERENT_SUBSCRIPTION_PRORATA)) {
 //forced date
-//$abo2 = date_timestamp_get(date_create($abo));
-//$datefrom2 = date_timestamp_get(date_create($datefrom));
-if ($daterenew > dol_now() && $abo > $datefrom) {
+if ($daterenew > dol_now()) {
+$date = new DateTime(); 
 $date->modify('NOW');
-} elseif ($daterenew <= dol_now() && $abo2 > $datefrom2) {
+} elseif ($daterenew <= dol_now() && $abo > $datefrom) {
+$date = new DateTime(); 
 $date->modify('NOW');
 } elseif ($object->duration_unit == 'd') { 
 $date->modify('MIDNIGHT');
