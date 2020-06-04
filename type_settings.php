@@ -371,7 +371,7 @@ if ((float) DOL_VERSION < 11.0) {
         
         // Create a new DateTime object
 $abo = null;
-//$abo = "2020-06-03 15:46:45";
+$abo = "2020-06-03 15:46:24";
 $date = new DateTime($abo);  
 $monthName = date("F", mktime(0, 0, 0, $conf->global->SOCIETE_SUBSCRIBE_MONTH_START, 10));
 $date->modify('FIRST DAY OF '.$monthName.' MIDNIGHT');
@@ -414,7 +414,8 @@ $datewf = $date->getTimestamp();
 print '<hr>';
 
 if (!empty($abo) && $abo > $datefrom) { 
-$date = new DateTime($abo);   
+$date = new DateTime($abo);
+$date->modify('+1 SECONDS');   
 } else {
 $date = new DateTime();   
 }
@@ -425,7 +426,6 @@ if (!empty($conf->global->ADHERENT_SUBSCRIPTION_PRORATA)) {
 //$datefrom2 = date_timestamp_get(date_create($datefrom));
 if ($daterenew > dol_now() && $abo > $datefrom) {
 $date->modify('NOW');
-$date->modify('+1 SECONDS');
 } elseif ($daterenew <= dol_now() && $abo2 > $datefrom2) {
 $date->modify('NOW');
 } elseif ($object->duration_unit == 'd') { 
@@ -486,6 +486,16 @@ $date->modify('+'.$value.' YEAR');
 }
 }
 
+if ($object->duration_unit == 'd') { 
+$duration = 86400*(!empty($object->duration_value)?$object->duration_value:1);
+} elseif ($object->duration_unit == 'w') { 
+$duration = 604800*(!empty($object->duration_value)?$object->duration_value:1);
+} elseif ($object->duration_unit == 'm') {
+$duration = 2629872*(!empty($object->duration_value)?$object->duration_value:1);
+} else {
+$duration = 31558464*(!empty($object->duration_value)?$object->duration_value:1);
+}
+
 if ($daterenew <= dol_now() && (empty($object->duration_unit) || $object->duration_unit == 'y')) {
 $date->modify($dateto);
 } else {
@@ -502,6 +512,12 @@ $price = $object->price;
 if ($price < 0) $price = 0;
 print 'price: '.price($price);
 print ' '.$langs->trans("Currency".$conf->currency).'<br>';
+if (!empty($conf->global->ADHERENT_SUBSCRIPTION_PRORATA)) { 
+$rate = 100*(round((($dateend-$datebegin)/$duration)*$conf->global->ADHERENT_SUBSCRIPTION_PRORATA, 2)/$conf->global->ADHERENT_SUBSCRIPTION_PRORATA);
+} else {
+$rate = 100;
+}
+print 'prorata: '.$rate.'%'; 
 print '<hr>';
 // next dates
 $date = new DateTime($date->format('Y-m-d H:i:s'));
