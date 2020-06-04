@@ -495,11 +495,12 @@ $date->modify('-1 SECONDS');
 print 'end: '.$date->format('Y-m-d H:i:s').'<br>';
 $dateend = $date->getTimestamp();
 if ( $datewf <= $datebegin) {
-$price = price($object->welcome + $object->price);
+$price = $object->welcome + $object->price;
 } else {
-$price = price($object->price);
+$price = $object->price;
 }
-print 'price: '.$price;
+if ($price < 0) $price = 0;
+print 'price: '.price($price);
 print ' '.$langs->trans("Currency".$conf->currency).'<br>';
 print '<hr>';
 // next dates
