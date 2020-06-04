@@ -371,7 +371,7 @@ if ((float) DOL_VERSION < 11.0) {
         
         // Create a new DateTime object
 $abo = null;
-$abo = "2020-06-03 15:46:45";
+//$abo = "2020-06-03 15:46:45";
 $date = new DateTime($abo);  
 $monthName = date("F", mktime(0, 0, 0, $conf->global->SOCIETE_SUBSCRIBE_MONTH_START, 10));
 $date->modify('FIRST DAY OF '.$monthName.' MIDNIGHT');
@@ -421,7 +421,12 @@ $date = new DateTime();
 
 if (!empty($conf->global->ADHERENT_SUBSCRIPTION_PRORATA)) {
 //forced date
-if ($daterenew <= dol_now() && $abo > $datefrom) {
+//$abo2 = date_timestamp_get(date_create($abo));
+//$datefrom2 = date_timestamp_get(date_create($datefrom));
+if ($daterenew > dol_now() && $abo > $datefrom) {
+$date->modify('NOW');
+$date->modify('+1 SECONDS');
+} elseif ($daterenew <= dol_now() && $abo2 > $datefrom2) {
 $date->modify('NOW');
 } elseif ($object->duration_unit == 'd') { 
 $date->modify('MIDNIGHT');
@@ -451,6 +456,10 @@ $date->modify('NEXT MONDAY MIDNIGHT');
 $date->modify('FIRST DAY OF NEXT MONTH MIDNIGHT');
 } else {
 $date->modify('FIRST DAY OF NEXT YEAR MIDNIGHT');
+if ($date->format('Y-m-d H:i:s') > $dateto) {
+$date->modify($dateto);
+$date->modify('+1 SECONDS');
+}
 }
 } else {
 if ($object->duration_unit == 'd') { 
