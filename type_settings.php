@@ -82,7 +82,10 @@ $family=GETPOST("family","int");
 $welcome=GETPOST("welcome","alpha");
 $price=GETPOST("price","alpha");
 $federal=GETPOST("federal","alpha");
+$prorata=GETPOST("prorata","alpha");
 $price_level=GETPOST("price_level","int");
+$commitment_value = GETPOST('commitment_value', 'int');
+$commitment_unit = GETPOST('commitment_unit', 'alpha');
 $duration_value = GETPOST('duration_value', 'int');
 $duration_unit = GETPOST('duration_unit', 'alpha');
 $automatic=GETPOST("automatic","int");
@@ -136,7 +139,10 @@ if ($action == 'update' && $user->rights->adherent->configurer)
     $object->welcome     = price2num($welcome);
     $object->price       = price2num($price);
     $object->federal       = price2num($federal);
+    $object->prorata       = trim($prorata?$prorata:null);
     $object->price_level       = trim($price_level?$price_level:'1');
+    $object->commitment_value     	 = $commitment_value;
+    $object->commitment_unit      	 = $commitment_unit;
     if ((float) DOL_VERSION < 11.0) $object->duration_value     	 = $duration_value;
     if ((float) DOL_VERSION < 11.0) $object->duration_unit      	 = $duration_unit;
     $object->automatic   = (boolean) trim($automatic);
@@ -170,92 +176,6 @@ llxHeader('',$langs->trans("MembersTypeSetup"),'EN:Module_Foundations|FR:Module_
 $form=new Form($db);
 $formother=new FormOther($db);
 $formproduct = new FormProduct($db);
-
-// List of members type
-if (! $rowid && $action != 'create' && $action != 'edit')
-{
-	//dol_fiche_head('');
-
-	$sql = "SELECT d.rowid, d.libelle as label, d.subscription, d.vote, d.welcome, d.price, d.vote, d.automatic, d.automatic_renew, d.family, d.statut, d.morphy";
-	$sql.= " FROM ".MAIN_DB_PREFIX."adherent_type as d";
-	$sql.= " WHERE d.entity IN (".getEntity('adherent').")";
-
-	$result = $db->query($sql);
-	if ($result)
-	{
-		$num = $db->num_rows($result);
-		$nbtotalofrecords = $num;
-
-		$i = 0;
-
-		$param = '';
-
-		print '<form method="POST" action="'.$_SERVER["PHP_SELF"].'">';
-		if ($optioncss != '') print '<input type="hidden" name="optioncss" value="'.$optioncss.'">';
-		print '<input type="hidden" name="token" value="'.newToken().'">';
-		print '<input type="hidden" name="formfilteraction" id="formfilteraction" value="list">';
-		print '<input type="hidden" name="action" value="list">';
-		print '<input type="hidden" name="sortfield" value="'.$sortfield.'">';
-        print '<input type="hidden" name="page" value="'.$page.'">';
-		print '<input type="hidden" name="sortorder" value="'.$sortorder.'">';
-
-	    print_barre_liste($langs->trans("MembersTypes"), $page, $_SERVER["PHP_SELF"], $param, $sortfield, $sortorder, '', $num, $nbtotalofrecords, 'title_generic.png', 0, '', '', $limit);
-
-		$moreforfilter = '';
-
-		print '<div class="div-table-responsive">';
-		print '<table class="tagtable liste'.($moreforfilter?" listwithfilterbefore":"").'">'."\n";
-
-		print '<tr class="liste_titre">';
-		print '<th>'.$langs->trans("Ref").'</th>';
-		print '<th>'.$langs->trans("Label").'</th>';
-    print '<th class="center">'.$langs->trans("MemberNature").'</th>';
-    print '<th class="center">'.$langs->trans("GroupSubscription").'</th>';
-		print '<th class="center">'.$langs->trans("SubscriptionRequired").'</th>';
-		print '<th class="center">'.$langs->trans("VoteAllowed").'</th>';
-    print '<th class="center">'.$langs->trans("Validation").'</th>';
-    print '<th class="center">'.$langs->trans("Renewal").'</th>';
-    print '<th class="center">'.$langs->trans("Status").'</th>';
-		print '<th>&nbsp;</th>';
-		print "</tr>\n";
-
-		while ($i < $num)
-		{
-			$objp = $db->fetch_object($result);
-			print '<tr class="oddeven">';
-			print '<td><a href="'.$_SERVER["PHP_SELF"].'?rowid='.$objp->rowid.'">'.img_object($langs->trans("ShowType"),'group').' '.$objp->rowid.'</a></td>';
-			print '<td><a href="'.$_SERVER["PHP_SELF"].'?rowid='.$objp->rowid.'">'.dol_escape_htmltag($objp->label).'</a></td>';
-      print '<td align="center">';
-		if ($objp->morphy == 'phy') { print $langs->trans("Physical"); }
-		elseif ($objp->morphy == 'mor') { print $langs->trans("Moral"); } 
-    else print $langs->trans("Physical & Morale");    
-      print '</td>'; //'.$objp->getmorphylib($objp->morphy).'
-      print '<td class="center">'.yn($objp->family).'</td>';
-			print '<td class="center">'.yn($objp->subscription).'</td>';
-			print '<td class="center">'.yn($objp->vote).'</td>';
-      print '<td class="center">'.autoOrManual($objp->automatic).'</td>';
-      print '<td class="center">'.autoOrManual($objp->automatic_renew).'</td>';
-      print '<td class="center">';
-if ( !empty($objp->statut) ) print img_picto($langs->trans("InActivity"),'statut4');
-else print img_picto($langs->trans("ActivityCeased"),'statut5');     
-      print '</td>';
-			if ($user->rights->adherent->configurer)
-				print '<td class="right"><a href="'.$_SERVER["PHP_SELF"].'?action=edit&rowid='.$objp->rowid.'">'.img_edit().'</a></td>';
-			else
-				print '<td class="right">&nbsp;</td>';
-			print "</tr>";
-			$i++;
-		}
-		print "</table>";
-		print '</div>';
-
-		print '</form>';
-	}
-	else
-	{
-		dol_print_error($db);
-	}
-}
 
 /* ************************************************************************** */
 /*                                                                            */
@@ -316,6 +236,12 @@ if (! empty($conf->global->ADHERENT_FEDERAL_PART)){
 		print '</tr>';
 }    
     }
+    
+    print '<tr><td>'.$langs->trans("Prorata");
+		print $form->textwithpicto($s,$langs->trans("IncludeInSubscritionPrice"),1);
+    print '</td><td>';
+		print $langs->trans((!empty($object->prorata)?$object->prorata:'None'));
+		print '</tr>';
 
 if (! empty($conf->global->PRODUIT_MULTIPRICES)){
     print '<tr><td>'.$langs->trans("PriceLevel").'</td><td>';
@@ -508,10 +434,17 @@ $date->modify('-1 SECONDS');
 print 'end: '.$date->format('Y-m-d H:i:s').'<br>';
 $dateend = $date->getTimestamp();
 
-if (!empty($conf->global->ADHERENT_SUBSCRIPTION_PRORATA)) { 
-$rate = 100*(round((($dateend-$datebegin)/$duration)*$conf->global->ADHERENT_SUBSCRIPTION_PRORATA, 2)/$conf->global->ADHERENT_SUBSCRIPTION_PRORATA);
+if (!empty($object->prorata)) { 
+//$rate = 100*(round((($dateend-$datebegin)/$duration)*$conf->global->ADHERENT_SUBSCRIPTION_PRORATA, 2)/$conf->global->ADHERENT_SUBSCRIPTION_PRORATA);
+if ($object->prorata == 'daily') { $rate = ceil(($dateend-$datebegin)/86400) / round($duration/86400); }
+elseif ($object->prorata == 'weekly') { $rate = ceil(($dateend-$datebegin)/604800) / round($duration/604800); }
+elseif ($object->prorata == 'monthly') { $rate = ceil(($dateend-$datebegin)/2629872) / round($duration/2629872); }
+elseif ($object->prorata == 'quaterly') { $rate = ceil(($dateend-$datebegin)/(2629872*3)) / round($duration/(2629872*3)); }
+elseif ($object->prorata == 'semestery') { $rate = ceil(($dateend-$datebegin)/(2629872*3)) / round($duration/(2629872*3)); }
+elseif ($object->prorata == 'biannual') { $rate = ceil(($dateend-$datebegin)/(2629872*6)) / round($duration/(2629872*6)); }
+else { $rate = 1; }
 } else {
-$rate = 100;
+$rate = 1;
 }
 print 'prorata: '.$rate.'%<br>';
 print 'daily_prorata: '.ceil(($dateend-$datebegin)/86400).'/'.round($duration/86400).'<br>';
@@ -522,7 +455,7 @@ if ($duration >= (2629872*4)) print 'semester_prorata: '.ceil(($dateend-$datebeg
 if ($duration >= (2629872*6)) print 'biannual_prorata: '.ceil(($dateend-$datebegin)/(2629872*6)).'/'.round($duration/(2629872*6)).'<br>';
 
 if ( $datewf <= $datebegin) {
-$price = $object->welcome + ($object->price * $rate / 100);
+$price = $object->welcome + ($object->price * $rate);
 } else {
 $price = ($object->price * $rate / 100);
 }
@@ -662,6 +595,12 @@ if (! empty($conf->global->ADHERENT_FEDERAL_PART)){
     } else {
     print '<input size="10" type="text" value="0" name="welcome"><input size="10" type="text" value="0" name="price">';
     }
+    
+    print '<tr><td>'.$langs->trans("Prorata");
+		print $form->textwithpicto($s,$langs->trans("IncludeInSubscritionPrice"),1);
+    print '</td><td>';
+    print $form->selectarray('prorata', array(''=>$langs->trans("None"),'daily'=>$langs->trans("daily"),'weekly'=>$langs->trans("weekly"),'monthly'=>$langs->trans("monthly"),'quaterly'=>$langs->trans("quaterly"),'semester'=>$langs->trans("semester"),'biannual'=>$langs->trans("biannual")), (!empty($object->prorata)?$object->prorata:null), null);
+		print '</tr>';
 
 if (! empty($conf->global->PRODUIT_MULTIPRICES)){    
     print '<tr><td>';
@@ -689,7 +628,7 @@ if ((float) DOL_VERSION < 11.0) {
 }
     
     print '<tr><td>'.$langs->trans("Commitment").'</td><td colspan="3">';
-    print "<input type='text' name='commitment_value' value='".GETPOST('commitment_value', 'int')."' size='4' />&nbsp;".$form->selectarray('commitment_unit', array(''=>$langs->trans('None'), 'd'=>$langs->trans('Day'), 'm'=>$langs->trans('Month'), 'y'=>$langs->trans('Year')), (GETPOST('commitment_unit') ?GETPOST('commitment_unit') : null));
+    print "<input type='text' name='commitment_value' value='".$object->commitment_value."' size='4' />&nbsp;".$form->selectarray('commitment_unit', array(''=>$langs->trans('None'), 'd'=>$langs->trans('Day'), 'w'=>$langs->trans('Week'), 'm'=>$langs->trans('Month'), 'y'=>$langs->trans('Year')), $object->commitment_unit);
     print '</td></tr>';
     
     print '<tr><td>'.$langs->trans("Validation").'</td><td>';

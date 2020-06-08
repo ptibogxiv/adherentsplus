@@ -91,14 +91,18 @@ class AdherentTypePlus extends CommonObject
 	public $mail_valid;
   public $welcome;
 	public $price;
-	public $federal;  
+	public $federal;
+	public $prorata;
   public $price_level;
 	public $automatic;
   public $automatic_renew;
 	public $family;
   public $statut;
   public $duration;
-  
+  public $commitment;
+  public $commitment_value; 
+  public $commitment_unit;
+     
   public $multilangs=array();
 
     /*
@@ -400,6 +404,8 @@ class AdherentTypePlus extends CommonObject
     $sql.= "federal= '".$this->federal."',";
     $sql.= "price_level = '".$this->price_level."',";
     $sql.= "duration = '" . $this->db->escape($this->duration_value . $this->duration_unit) ."',";
+    $sql.= "commitment = '" . $this->db->escape($this->commitment_value . $this->commitment_unit) ."',";
+    $sql.= "prorata = '".$this->db->escape($this->prorata)."',";
     $sql.= "note = '".$this->db->escape($this->note)."',";
     $sql.= "vote = '".$this->vote."',";
     $sql.= "automatic = '".$this->automatic."',";
@@ -539,7 +545,7 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
 	{
         global $langs, $conf;
   
-        $sql = "SELECT d.rowid, d.tms as datem, d.libelle as label, d.statut as status, d.morphy, d.subscription, d.welcome, d.price, d.federal, d.price_level, d.duration, d.automatic, d.automatic_renew, d.family, d.mail_valid, d.note, d.vote";
+        $sql = "SELECT d.rowid, d.tms as datem, d.libelle as label, d.statut as status, d.morphy, d.subscription, d.welcome, d.price, d.federal, d.price_level, d.duration, d.commitment, d.prorata, d.automatic, d.automatic_renew, d.family, d.mail_valid, d.note, d.vote";
         $sql .= " FROM ".MAIN_DB_PREFIX."adherent_type as d";
         $sql .= " WHERE d.rowid = ".$rowid;
 
@@ -558,7 +564,8 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
                 $this->ref            = $obj->rowid;
                 $this->welcome        = $obj->welcome;
                 $this->price          = $obj->price;
-                $this->federal        = $obj->federal; 
+                $this->federal        = $obj->federal;
+                $this->prorata        = $obj->prorata; 
                 $this->price_level    = $obj->price_level;
                 $this->label          = $obj->label;
                 $this->libelle        = $obj->label;	// For backward compatibility
@@ -568,6 +575,9 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
                 $this->duration       = $obj->duration;
                 $this->duration_value = substr($obj->duration, 0, dol_strlen($obj->duration)-1);
                 $this->duration_unit  = substr($obj->duration, -1);
+                $this->commitment       = $obj->commitment;
+                $this->commitment_value = substr($obj->commitment, 0, dol_strlen($obj->commitment)-1);
+                $this->commitment_unit  = substr($obj->commitment, -1);  
                 $this->subscription   = $obj->subscription;
                 $this->automatic      = $obj->automatic;
                 $this->automatic_renew= $obj->automatic_renew;
