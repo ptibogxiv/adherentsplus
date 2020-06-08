@@ -520,7 +520,13 @@ $rate = 100*(round((($dateend-$datebegin)/$duration)*$conf->global->ADHERENT_SUB
 } else {
 $rate = 100;
 }
-print 'prorata: '.$rate.'%'; 
+print 'prorata: '.$rate.'%<br>';
+print 'daily_prorata: '.ceil(($dateend-$datebegin)/86400).'/'.round($duration/86400).'<br>';
+if ($duration >= 604800) print 'weekly_prorata: '.ceil(($dateend-$datebegin)/604800).'/'.round($duration/604800).'<br>';
+if ($duration >= 2629872) print 'monthly_prorata: '.ceil(($dateend-$datebegin)/2629872).'/'.round($duration/2629872).'<br>';
+if ($duration >= (2629872*3)) print 'quarterly_prorata: '.ceil(($dateend-$datebegin)/(2629872*3)).'/'.round($duration/(2629872*3)).'<br>'; 
+if ($duration >= (2629872*4)) print 'semester_prorata: '.ceil(($dateend-$datebegin)/(2629872*4)).'/'.round($duration/(2629872*4)).'<br>';
+if ($duration >= (2629872*6)) print 'biannual_prorata: '.ceil(($dateend-$datebegin)/(2629872*6)).'/'.round($duration/(2629872*6));    
 print '<hr>';
 // next dates
 $date = new DateTime($date->format('Y-m-d H:i:s'));
