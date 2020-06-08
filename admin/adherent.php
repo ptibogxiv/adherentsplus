@@ -265,7 +265,7 @@ print "</td></tr>\n";
 // type of adhesion flow
 print '<tr class="oddeven"><td>'.$langs->trans("ADHERENT_SUBSCRIPTION_PRORATA").'</td>';
 print '<td>';
-print $form->selectarray('ADHERENT_SUBSCRIPTION_PRORATA', array('0'=>$langs->trans("ADHERENT_SUBSCRIBE_NO_MONTH_START"),'1'=>$langs->trans("ADHERENT_SUBSCRIPTION_ANNUAL"),'2'=>$langs->trans("ADHERENT_SUBSCRIPTION_SEM"),'3'=>$langs->trans("ADHERENT_SUBSCRIPTION_QUA"),'4'=>$langs->trans("ADHERENT_SUBSCRIPTION_TRI"),'12'=>$langs->trans("ADHERENT_SUBSCRIPTION_MEN")), (empty($conf->global->ADHERENT_SUBSCRIPTION_PRORATA)?'0':$conf->global->ADHERENT_SUBSCRIPTION_PRORATA), 0);
+print $form->selectarray('ADHERENT_SUBSCRIPTION_PRORATA', array('0'=>$langs->trans("ADHERENT_SUBSCRIBE_NO_MONTH_START"),'1'=>$langs->trans("ADHERENT_SUBSCRIPTION_ANNUAL")), (empty($conf->global->ADHERENT_SUBSCRIPTION_PRORATA)?'0':$conf->global->ADHERENT_SUBSCRIPTION_PRORATA), 0);
 print '</td>';
 print "</tr>\n";
 
