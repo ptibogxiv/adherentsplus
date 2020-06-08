@@ -446,7 +446,7 @@ else { $rate = 1; }
 } else {
 $rate = 1;
 } 
-$rate2 = 100*(round((($dateend-$datebegin)/$duration), 2));
+$rate2 = round(100*($dateend-$datebegin)/$duration, 2);
 print 'timestamp_prorata: '.$rate2.'%<br>';
 print 'daily_prorata: '.ceil(($dateend-$datebegin)/86400).'/'.round($duration/86400).'<br>';
 if ($duration >= 604800) print 'weekly_prorata: '.ceil(($dateend-$datebegin)/604800).'/'.round($duration/604800).'<br>';
