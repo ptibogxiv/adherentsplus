@@ -647,7 +647,7 @@ if ((float) DOL_VERSION < 11.0) {
 }
     
     print '<tr><td>'.$langs->trans("Commitment").'</td><td colspan="3">';
-    print "<input type='text' name='commitment_value' value='".$object->commitment_value."' size='4' />&nbsp;".$form->selectarray('commitment_unit', array(''=>$langs->trans('None'), 'd'=>$langs->trans('Day'), 'w'=>$langs->trans('Week'), 'm'=>$langs->trans('Month'), 'y'=>$langs->trans('Year')), $object->commitment_unit);
+    print "<input type='text' name='commitment_value' value='".$object->commitment_value."' size='4' />&nbsp;".$form->selectarray('commitment_unit', array('d'=>$langs->trans('Day'), 'w'=>$langs->trans('Week'), 'm'=>$langs->trans('Month'), 'y'=>$langs->trans('Year')), $object->commitment_unit);
     print '</td></tr>';
     
     print '<tr><td>'.$langs->trans("Validation").'</td><td>';
