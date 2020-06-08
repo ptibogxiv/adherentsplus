@@ -755,8 +755,8 @@ if ($rowid > 0)
                     print $adht->getNomUrl(1);
                 }
                 print '</td>';
-                print '<td class="center">'.dol_print_date($db->jdate($objp->dateh), 'day')."</td>\n";
-                print '<td class="center">'.dol_print_date($db->jdate($objp->datef), 'day')."</td>\n";
+                print '<td class="center">'.dol_print_date($db->jdate($objp->dateh), 'dayhour')."</td>\n";
+                print '<td class="center">'.dol_print_date($db->jdate($objp->datef), 'dayhour')."</td>\n";
                 print '<td class="right">'.price($objp->subscription).'</td>';
 				if (!empty($conf->banque->enabled))
 				{

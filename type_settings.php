@@ -435,14 +435,13 @@ print 'end: '.$date->format('Y-m-d H:i:s').'<br>';
 $dateend = $date->getTimestamp();
 
 if (!empty($object->prorata)) { 
-
 if ($object->prorata == 'daily') { $rate = ceil(($dateend-$datebegin)/86400) / round($duration/86400); }
-elseif ($object->prorata == 'weekly') { $rate = ceil(($dateend-$datebegin)/604800) / round($duration/604800); }
-elseif ($object->prorata == 'monthly') { $rate = ceil(($dateend-$datebegin)/2629872) / round($duration/2629872); }
-elseif ($object->prorata == 'quaterly') { $rate = ceil(($dateend-$datebegin)/(2629872*3)) / round($duration/(2629872*3)); }
-elseif ($object->prorata == 'semestery') { $rate = ceil(($dateend-$datebegin)/(2629872*3)) / round($duration/(2629872*3)); }
-elseif ($object->prorata == 'biannual') { $rate = ceil(($dateend-$datebegin)/(2629872*6)) / round($duration/(2629872*6)); }
-else { $rate = 1; }
+elseif ($object->prorata == 'weekly' && $duration >= 604800) { $rate = ceil(($dateend-$datebegin)/604800) / round($duration/604800); }
+elseif ($object->prorata == 'monthly' && $duration >= 2629872) { $rate = ceil(($dateend-$datebegin)/2629872) / round($duration/2629872); }
+elseif ($object->prorata == 'quaterly' && $duration >= (2629872*3)) { $rate = ceil(($dateend-$datebegin)/(2629872*3)) / round($duration/(2629872*3)); }
+elseif ($object->prorata == 'semestery' && $duration >= (2629872*4)) { $rate = ceil(($dateend-$datebegin)/(2629872*3)) / round($duration/(2629872*3)); }
+elseif ($object->prorata == 'biannual' && $duration >= (2629872*6)) { $rate = ceil(($dateend-$datebegin)/(2629872*6)) / round($duration/(2629872*6)); }
+else { $rate = round(($dateend-$datebegin)/$duration, 2); }
 } else {
 $rate = 1;
 } 
@@ -600,7 +599,26 @@ if (! empty($conf->global->ADHERENT_FEDERAL_PART)){
     print '<tr><td>'.$langs->trans("Prorata");
 		print $form->textwithpicto($s,$langs->trans("IncludeInSubscritionPrice"),1);
     print '</td><td>';
-    print $form->selectarray('prorata', array(''=>$langs->trans("None"),'daily'=>$langs->trans("daily"),'weekly'=>$langs->trans("weekly"),'monthly'=>$langs->trans("monthly"),'quaterly'=>$langs->trans("quaterly"),'semester'=>$langs->trans("semester"),'biannual'=>$langs->trans("biannual")), (!empty($object->prorata)?$object->prorata:null), null);
+    
+if ($object->duration_unit == 'd') { 
+$duration = 86400*(!empty($object->duration_value)?$object->duration_value:1);
+} elseif ($object->duration_unit == 'w') { 
+$duration = 604800*(!empty($object->duration_value)?$object->duration_value:1);
+} elseif ($object->duration_unit == 'm') {
+$duration = 2629872*(!empty($object->duration_value)?$object->duration_value:1);
+} else {
+$duration = 31558464*(!empty($object->duration_value)?$object->duration_value:1);
+}
+    
+    $rate= array();
+    $rate[''] .= $langs->trans("None");
+if ($duration >= 86400) $rate['daily'] .= $langs->trans("daily");    
+if ($duration >= 604800) $rate['weekly'] .= $langs->trans("weekly");
+if ($duration >= 2629872) $rate['monthly'] .= $langs->trans("monthly");
+if ($duration >= (2629872*3)) $rate['quaterly'] .= $langs->trans("quaterly");
+if ($duration >= (2629872*4)) $rate['semester'] .= $langs->trans("semester");
+if ($duration >= (2629872*6)) $rate['biannual'] .= $langs->trans("biannual");
+    print $form->selectarray('prorata', $rate, (!empty($object->prorata)?$object->prorata:null), null);
 		print '</tr>';
 
 if (! empty($conf->global->PRODUIT_MULTIPRICES)){    
