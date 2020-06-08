@@ -271,11 +271,11 @@ if ((float) DOL_VERSION < 11.0) {
     print $object->commitment_value.'&nbsp;';
     if ($object->commitment_value > 1)
     {
-    $dur=array("i"=>$langs->trans("Minute"),"h"=>$langs->trans("Hours"),"d"=>$langs->trans("Days"),"w"=>$langs->trans("Weeks"),"m"=>$langs->trans("Months"),"y"=>$langs->trans("Years"));
+    $dur=array("d"=>$langs->trans("Days"),"w"=>$langs->trans("Weeks"),"m"=>$langs->trans("Months"),"y"=>$langs->trans("Years"));
     }
     elseif ($object->commitment_value > 0)
     {
-    $dur=array("i"=>$langs->trans("Minute"),"h"=>$langs->trans("Hour"),"d"=>$langs->trans("Day"),"w"=>$langs->trans("Week"),"m"=>$langs->trans("Month"),"y"=>$langs->trans("Year"));
+    $dur=array("d"=>$langs->trans("Day"),"w"=>$langs->trans("Week"),"m"=>$langs->trans("Month"),"y"=>$langs->trans("Year"));
     }
     print (! empty($object->commitment_unit) && isset($dur[$object->commitment_unit]) ? $langs->trans($dur[$object->commitment_unit]) : '')."&nbsp;";
     }
@@ -435,7 +435,7 @@ print 'end: '.$date->format('Y-m-d H:i:s').'<br>';
 $dateend = $date->getTimestamp();
 
 if (!empty($object->prorata)) { 
-//$rate = 100*(round((($dateend-$datebegin)/$duration)*$conf->global->ADHERENT_SUBSCRIPTION_PRORATA, 2)/$conf->global->ADHERENT_SUBSCRIPTION_PRORATA);
+
 if ($object->prorata == 'daily') { $rate = ceil(($dateend-$datebegin)/86400) / round($duration/86400); }
 elseif ($object->prorata == 'weekly') { $rate = ceil(($dateend-$datebegin)/604800) / round($duration/604800); }
 elseif ($object->prorata == 'monthly') { $rate = ceil(($dateend-$datebegin)/2629872) / round($duration/2629872); }
@@ -445,8 +445,9 @@ elseif ($object->prorata == 'biannual') { $rate = ceil(($dateend-$datebegin)/(26
 else { $rate = 1; }
 } else {
 $rate = 1;
-}
-print 'prorata: '.$rate.'%<br>';
+} 
+$rate2 = 100*(round((($dateend-$datebegin)/$duration), 2));
+print 'timestamp_prorata: '.$rate2.'%<br>';
 print 'daily_prorata: '.ceil(($dateend-$datebegin)/86400).'/'.round($duration/86400).'<br>';
 if ($duration >= 604800) print 'weekly_prorata: '.ceil(($dateend-$datebegin)/604800).'/'.round($duration/604800).'<br>';
 if ($duration >= 2629872) print 'monthly_prorata: '.ceil(($dateend-$datebegin)/2629872).'/'.round($duration/2629872).'<br>';
