@@ -358,4 +358,10 @@ class SubscriptionPlus extends CommonObject
 			dol_print_error($this->db);
 		}
 	}
+  
+  function AutoSubscriptionMember()
+  {
+  
+  
+  }
 }

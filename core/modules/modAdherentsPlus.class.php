@@ -223,7 +223,26 @@ class modAdherentsPlus extends DolibarrModules
 $this->menu = array();			// List of menus to add
 $r=0;
 
-    }
+    // Cronjobs
+    $arraydate=dol_getdate(dol_now());
+    $datestart=dol_mktime(06, 0, 0, $arraydate['mon'], $arraydate['mday'], $arraydate['year']);
+    $this->cronjobs = array(
+        0=>array(
+            'label'=>'AutoSubscriptionMember',
+            'jobtype'=>'method', 'class'=>'/adherentsplus/class/subscription.class.php',
+            'objectname'=>'SubscriptionPlus',
+            'method'=>'AutoSubscriptionMember',
+            'parameters'=>'3600',
+            'comment'=>'AutoSubscriptionMember',
+            'frequency'=>6,
+            'unitfrequency'=> 3600,
+            'priority'=>50,
+            'status'=>1,
+            'test'=>$conf->adherentsplus->enabled,
+            'datestart'=>$datestart
+        ),
+    );
+	}
 
 
     /**
