@@ -362,6 +362,6 @@ class SubscriptionPlus extends CommonObject
   function AutoSubscriptionMember()
   {
   
-  
+return 0; 
   }
 }
