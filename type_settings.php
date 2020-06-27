@@ -453,6 +453,7 @@ if ($duration >= 2629872) print 'monthly_prorata: '.ceil(($dateend-$datebegin)/2
 if ($duration >= (2629872*3)) print 'quarterly_prorata: '.ceil(($dateend-$datebegin)/(2629872*3)).'/'.round($duration/(2629872*3)).'<br>'; 
 if ($duration >= (2629872*4)) print 'semester_prorata: '.ceil(($dateend-$datebegin)/(2629872*4)).'/'.round($duration/(2629872*4)).'<br>';
 if ($duration >= (2629872*6)) print 'biannual_prorata: '.ceil(($dateend-$datebegin)/(2629872*6)).'/'.round($duration/(2629872*6)).'<br>';
+if ($duration >= (31557600)) print 'annual_prorata: '.ceil(($dateend-$datebegin)/(31557600)).'/'.round($duration/(31557600)).'<br>';
 
 if ( $datewf <= $datebegin) {
 $price = $object->welcome + ($object->price * $rate);
