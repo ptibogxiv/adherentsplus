@@ -446,7 +446,7 @@ else { $rate = round(($dateend-$datebegin)/$duration, 2); }
 $rate = 1;
 } 
 $rate2 = round(100*($dateend-$datebegin)/$duration, 2);
-print 'timestamp_prorata: '.$rate2.'%<br>';
+print 'timestamp_prorata: '.$rate2.'% - '.$rate.'<br>';
 print 'daily_prorata: '.ceil(($dateend-$datebegin)/86400).'/'.round($duration/86400).'<br>';
 if ($duration >= 604800) print 'weekly_prorata: '.ceil(($dateend-$datebegin)/604800).'/'.round($duration/604800).'<br>';
 if ($duration >= 2629872) print 'monthly_prorata: '.ceil(($dateend-$datebegin)/2629872).'/'.round($duration/2629872).'<br>';
@@ -458,7 +458,7 @@ if ($duration >= (31557600)) print 'annual_prorata: '.ceil(($dateend-$datebegin)
 if ( $datewf <= $datebegin) {
 $price = $object->welcome + ($object->price * $rate);
 } else {
-$price = ($object->price * $rate / 100);
+$price = ($object->price * $rate);
 }
 if ($price < 0) $price = 0;
 print 'price: '.price($price);
