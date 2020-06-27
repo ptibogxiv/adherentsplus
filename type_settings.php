@@ -441,6 +441,7 @@ elseif ($object->prorata == 'monthly' && $duration >= 2629872) { $rate = ceil(($
 elseif ($object->prorata == 'quaterly' && $duration >= (2629872*3)) { $rate = ceil(($dateend-$datebegin)/(2629872*3)) / round($duration/(2629872*3)); }
 elseif ($object->prorata == 'semestery' && $duration >= (2629872*4)) { $rate = ceil(($dateend-$datebegin)/(2629872*3)) / round($duration/(2629872*3)); }
 elseif ($object->prorata == 'biannual' && $duration >= (2629872*6)) { $rate = ceil(($dateend-$datebegin)/(2629872*6)) / round($duration/(2629872*6)); }
+elseif ($object->prorata == 'annual' && $duration >= (31557600)) { $rate = ceil(($dateend-$datebegin)/(31557600)) / round($duration/(31557600)); }
 else { $rate = round(($dateend-$datebegin)/$duration, 2); }
 } else {
 $rate = 1;
