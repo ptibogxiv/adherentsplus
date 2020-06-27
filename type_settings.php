@@ -55,7 +55,7 @@ require_once DOL_DOCUMENT_ROOT.'/product/class/html.formproduct.class.php';
 require_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';    
 require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
 
-$langs->load("adherentsplus@adherentsplus");
+$langs->loadLangs(array('members', 'adherentsplus@adherentsplus'));
 
 $rowid  = GETPOST('rowid','int');
 $action = GETPOST('action','alpha');
