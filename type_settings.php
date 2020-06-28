@@ -189,7 +189,7 @@ if ($rowid > 0)
 		$object = new AdherentTypePlus($db);
 		$object->fetch($rowid);
 		$object->fetch_optionals();
-    $object->fetch_calculator();
+		$object->subscription_calculator($rowid);
 
 		/*
 		 * Confirmation suppression
@@ -296,166 +296,18 @@ if ((float) DOL_VERSION < 11.0) {
 		print '</table>';
     print '</div>';
         
-        // Create a new DateTime object
-$abo = null;
-//$abo = "2020-04-03 15:46:24";
-$date = new DateTime($abo);  
-$monthName = date("F", mktime(0, 0, 0, $conf->global->SOCIETE_SUBSCRIBE_MONTH_START, 10));
-$date->modify('FIRST DAY OF '.$monthName.' MIDNIGHT');
-if ($date->getTimestamp() > dol_now()) {
-$date->modify('LAST YEAR');
-}
-$prestart = 12 - $conf->global->SOCIETE_SUBSCRIBE_MONTH_PRESTART;
-$date->modify(' + '.$prestart.' MONTHS'); 
-//print 'renew: '.$date->format('Y-m-d H:i:s').'<br>'; 
-$daterenew = $date->getTimestamp();
-if ($date->getTimestamp() <= dol_now()) {
-$date->modify('NEXT YEAR');
-} 
-$date->modify(' - '.$prestart.' MONTHS'); 
-$datefrom = $date->format('Y-m-d H:i:s');
-$datefrom2 = $date->format('Y');
-$date = new DateTime($datefrom);
-print 'from '.$date->format('Y-m-d H:i:s');
-$date->modify('NEXT YEAR');
-$date->modify('-1 SECONDS');
-$dateto = $date->format('Y-m-d H:i:s');
-$dateto2 = $date->format('Y');
-print ' to '.$date->format('Y-m-d H:i:s').'<br>';
-
-$date = new DateTime($dateto);
-$date->modify('NEXT DAY MIDNIGHT');
-$date->modify('- '.$conf->global->SOCIETE_SUBSCRIBE_MONTH_PRESTART.' MONTHS');  
-print 'date_renew: '.$date->format('Y-m-d H:i:s').'<br>';
-
-if (!empty($abo) && $abo < $dateto) { 
-$datewf = $abo;
-$date = new DateTime($datewf);
-$date->modify('+1 SECONDS');
-//$date->modify('NEXT DAY MIDNIGHT');
-$date->modify('+ '.$conf->global->ADHERENT_WELCOME_MONTH.' MONTHS');     
-} else {
-$datewf = null;
-$date = new DateTime();
-$date->modify('+1 SECONDS');
-//$date->modify('NEXT DAY MIDNIGHT');
-$date->modify('- '.$conf->global->ADHERENT_WELCOME_MONTH.' MONTHS');       
-}
-print 'date_welcomefee: '.$date->format('Y-m-d H:i:s').'<br>';
-$datewf = $date->getTimestamp();
-if ($datefrom2 != $dateto2) {
-$season = $datefrom2.'/'.$dateto2;
-} else {
-$season = $datefrom2;
-}
-print 'season: '.$season;
+print 'from '.$object->date_from;
+print ' to '.$object->date_to.'<br>';
+print 'date_renew: '.$object->date_renew.'<br>';
+print 'date_welcomefee: '.$object->date_welcomefee.'<br>';
+print 'season: '.$object->season;
 print '<hr>';
 
-if (!empty($abo) && $abo > $datefrom) { 
-$date = new DateTime($abo);
-$date->modify('+1 SECONDS');   
-} else {
-$date = new DateTime();   
-}
-
-if (!empty($conf->global->ADHERENT_SUBSCRIPTION_PRORATA)) {
-//forced date
-if ($daterenew > dol_now()) {
-$date = new DateTime(); 
-$date->modify('NOW');
-} elseif ($daterenew <= dol_now() && $abo > $datefrom) {
-$date = new DateTime(); 
-$date->modify('NOW');
-} elseif ($object->duration_unit == 'd') { 
-$date->modify('MIDNIGHT');
-} elseif ($object->duration_unit == 'w') { 
-$date->modify('LAST MONDAY MIDNIGHT');
-} elseif ($object->duration_unit == 'm') {
-$date->modify('FIRST DAY OF THIS MONTH MIDNIGHT');
-} else {
- $monthName = date("F", mktime(0, 0, 0, $conf->global->SOCIETE_SUBSCRIBE_MONTH_START, 10));
-$date->modify('FIRST DAY OF '.$monthName.' MIDNIGHT');
-if ($date->getTimestamp() > dol_now() && $daterenew > dol_now()) {
-$date->modify('LAST YEAR');
-}
-}
-}
-
 // current dates
-print 'begin: '.$date->format('Y-m-d H:i:s').'<br>';
-$datebegin = $date->getTimestamp();
-if (!empty($conf->global->ADHERENT_SUBSCRIPTION_PRORATA)) {
-//forced date
-if ($object->duration_unit == 'd') { 
-$date->modify('NEXT DAY MIDNIGHT');
-} elseif ($object->duration_unit == 'w') { 
-$date->modify('NEXT MONDAY MIDNIGHT');
-} elseif ($object->duration_unit == 'm') {
-$date->modify('FIRST DAY OF NEXT MONTH MIDNIGHT');
-} else {
-$date->modify('FIRST DAY OF NEXT YEAR MIDNIGHT');
-if ($date->format('Y-m-d H:i:s') > $dateto) {
-$date->modify($dateto);
-$date->modify('+1 SECONDS');
-}
-}
-} else {
-if ($object->duration_unit == 'd') { 
-$date->modify('NEXT DAY MIDNIGHT');
-} elseif ($object->duration_unit == 'w') { 
-$date->modify('+1 WEEK MIDNIGHT');
-} elseif ($object->duration_unit == 'm') {
-$date->modify('NEXT MONTH MIDNIGHT');
-} else {
-$date->modify('NEXT YEAR MIDNIGHT');
-}
-}
+print 'begin: '.$object->date_begin.'<br>';
+print 'end: '.$object->date_end.'<br>';
 
-$value = (!empty($object->duration_value)?$object->duration_value:0) - 1;
-if ($value>0) {
-if ($object->duration_unit == 'd') { 
-$date->modify('+'.$value.' DAY');
-} elseif ($object->duration_unit == 'w') { 
-$date->modify('+'.$value.' WEEK');
-} elseif ($object->duration_unit == 'm') {
-$date->modify('+'.$value.' MONTH');
-} else {
-$date->modify('+'.$value.' YEAR');
-}
-}
-
-if ($object->duration_unit == 'd') { 
-$duration = 86400*(!empty($object->duration_value)?$object->duration_value:1);
-} elseif ($object->duration_unit == 'w') { 
-$duration = 604800*(!empty($object->duration_value)?$object->duration_value:1);
-} elseif ($object->duration_unit == 'm') {
-$duration = 2629872*(!empty($object->duration_value)?$object->duration_value:1);
-} else {
-$duration = 31558464*(!empty($object->duration_value)?$object->duration_value:1);
-}
-
-if ($daterenew <= dol_now() && (empty($object->duration_unit) || $object->duration_unit == 'y')) {
-$date->modify($dateto);
-} else {
-$date->modify('-1 SECONDS');
-}
-
-print 'end: '.$date->format('Y-m-d H:i:s').'<br>';
-$dateend = $date->getTimestamp();
-
-if (!empty($object->prorata)) { 
-if ($object->prorata == 'daily') { $rate = ceil(($dateend-$datebegin)/86400) / round($duration/86400); }
-elseif ($object->prorata == 'weekly' && $duration >= 604800) { $rate = ceil(($dateend-$datebegin)/604800) / round($duration/604800); }
-elseif ($object->prorata == 'monthly' && $duration >= 2629872) { $rate = ceil(($dateend-$datebegin)/2629872) / round($duration/2629872); }
-elseif ($object->prorata == 'quaterly' && $duration >= (2629872*3)) { $rate = ceil(($dateend-$datebegin)/(2629872*3)) / round($duration/(2629872*3)); }
-elseif ($object->prorata == 'semestery' && $duration >= (2629872*4)) { $rate = ceil(($dateend-$datebegin)/(2629872*3)) / round($duration/(2629872*3)); }
-elseif ($object->prorata == 'biannual' && $duration >= (2629872*6)) { $rate = ceil(($dateend-$datebegin)/(2629872*6)) / round($duration/(2629872*6)); }
-else { $rate = round(($dateend-$datebegin)/$duration, 2); }
-} else {
-$rate = 1;
-} 
-$rate2 = round(100*($dateend-$datebegin)/$duration, 2);
-print 'timestamp_prorata: '.$rate2.'% - '.$rate.'<br>';
+print 'timestamp_prorata: '.$object->timestamp_prorata.'% <br>';
 print 'daily_prorata: '.ceil(($dateend-$datebegin)/86400).'/'.round($duration/86400).'<br>';
 if ($duration >= 604800) print 'weekly_prorata: '.ceil(($dateend-$datebegin)/604800).'/'.round($duration/604800).'<br>';
 if ($duration >= 2629872) print 'monthly_prorata: '.ceil(($dateend-$datebegin)/2629872).'/'.round($duration/2629872).'<br>';
@@ -464,61 +316,15 @@ if ($duration >= (2629872*4)) print 'semester_prorata: '.ceil(($dateend-$datebeg
 if ($duration >= (2629872*6)) print 'biannual_prorata: '.ceil(($dateend-$datebegin)/(2629872*6)).'/'.round($duration/(2629872*6)).'<br>';
 if ($duration >= (31557600)) print 'annual_prorata: '.ceil(($dateend-$datebegin)/(31557600)).'/'.round($duration/(31557600)).'<br>';
 
-if ( $datewf <= $datebegin) {
-$price = $object->welcome + ($object->price * $rate);
-} else {
-$price = ($object->price * $rate);
-}
-if ($price < 0) $price = 0;
-print 'price: '.price($price);
+print 'price: '.price($object->price_prorata);
 print ' '.$langs->trans("Currency".$conf->currency);
     
 print '<hr>';
 // next dates
-$date = new DateTime($date->format('Y-m-d H:i:s'));
-$date->modify('NEXT DAY MIDNIGHT');
-print 'nextbegin: '.$date->format('Y-m-d H:i:s').'<br>';
-if (!empty($conf->global->ADHERENT_SUBSCRIPTION_PRORATA)) {
-//forced date
-if ($object->duration_unit == 'd') { 
-$date->modify('NEXT DAY MIDNIGHT');
-} elseif ($object->duration_unit == 'w') { 
-$date->modify('NEXT MONDAY MIDNIGHT');
-} elseif ($object->duration_unit == 'm') {
-$date->modify('FIRST DAY OF NEXT MONTH MIDNIGHT');
-} else {
-$date->modify('FIRST DAY OF NEXT YEAR MIDNIGHT');
-}
-} else {
-if ($object->duration_unit == 'd') { 
-$date->modify('NEXT DAY MIDNIGHT');
-} elseif ($object->duration_unit == 'w') { 
-$date->modify('+1 WEEK MIDNIGHT');
-} elseif ($object->duration_unit == 'm') {
-$date->modify('NEXT MONTH MIDNIGHT');
-} else {
-$date->modify('NEXT YEAR MIDNIGHT');
-}
-}
-
-if ($value>0) {
-if ($object->duration_unit == 'd') { 
-$date->modify('+'.$value.' DAY');
-} elseif ($object->duration_unit == 'w') { 
-$date->modify('+'.$value.' WEEK');
-} elseif ($object->duration_unit == 'm') {
-$date->modify('+'.$value.' MONTH');
-} else {
-$date->modify('+'.$value.' YEAR');
-}
-}
-
-$date->modify('-1 SECONDS');
- 
-print 'nextend: '.$date->format('Y-m-d H:i:s').'<br>';
-print 'nextprice: '.price($object->price);
+print 'nextbegin: '.$object->date_nextbegin.'<br>'; 
+print 'nextend: '.$object->date_nextend.'<br>';
+print 'nextprice: '.price($object->nextprice);
 print ' '.$langs->trans("Currency".$conf->currency);
-//print $date2->getTimestamp();
 		
     dol_fiche_end();
 

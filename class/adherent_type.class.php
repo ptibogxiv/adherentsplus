@@ -613,13 +613,15 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
 	 *  @param 		int		$rowid			Id of member to load
 	 *  @return		int						<0 if KO, >0 if OK
 	 */
-	public function fetch_calculator($rowid = null)
+	public function subscription_calculator($rowid = null)
 	{
         global $langs, $conf;
+        
+        $typeid = $this->id;
   
         $sql = "SELECT d.rowid, d.tms as datem, d.libelle as label, d.statut as status, d.morphy, d.subscription, d.welcome, d.price, d.federal, d.price_level, d.duration, d.commitment, d.prorata, d.automatic, d.automatic_renew, d.family, d.mail_valid, d.note, d.vote";
         $sql .= " FROM ".MAIN_DB_PREFIX."adherent_type as d";
-        $sql .= " WHERE d.rowid = ".$rowid;
+        $sql .= " WHERE d.rowid = ".$typeid;
 
         dol_syslog("Adherent_type::fetch", LOG_DEBUG);
 
@@ -632,42 +634,226 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
 
                 if (empty($obj->duration)) $obj->duration="1y"; 
 
-                $this->id             = $obj->rowid;
-                $this->ref            = $obj->rowid;
                 $this->welcome        = $obj->welcome;
                 $this->price          = $obj->price;
                 $this->federal        = $obj->federal;
                 $this->prorata        = $obj->prorata; 
                 $this->price_level    = $obj->price_level;
-                $this->label          = $obj->label;
-                $this->libelle        = $obj->label;	// For backward compatibility
-                $this->statut         = $obj->status;
-                $this->status         = $obj->status;
-                $this->morphy         = $obj->morphy;
-                $this->duration       = $obj->duration;
-                $this->duration_value = substr($obj->duration, 0, dol_strlen($obj->duration)-1);
-                $this->duration_unit  = substr($obj->duration, -1);
-                $this->commitment       = $obj->commitment;
-                $this->commitment_value = substr($obj->commitment, 0, dol_strlen($obj->commitment)-1);
-                $this->commitment_unit  = substr($obj->commitment, -1);  
-                $this->subscription   = $obj->subscription;
                 $this->automatic      = $obj->automatic;
                 $this->automatic_renew= $obj->automatic_renew;
                 $this->family         = $obj->family;
-                $this->mail_valid     = $obj->mail_valid;
-                $this->note           = $obj->note;
-                $this->description    = $obj->note;  
-                $this->vote           = $obj->vote;
-                $this->status         = $obj->status;
-                $this->date_modification			= $this->db->jdate($obj->datem);
                 
-                // multilangs
-                if (! empty($conf->global->MAIN_MULTILANGS)) {
-                    $this->getMultiLangs();
-                }
+$abo = null;
+//$abo = "2020-04-03 15:46:24";
+$date = new DateTime($abo);  
+$monthName = date("F", mktime(0, 0, 0, $conf->global->SOCIETE_SUBSCRIBE_MONTH_START, 10));
+$date->modify('FIRST DAY OF '.$monthName.' MIDNIGHT');
+if ($date->getTimestamp() > dol_now()) {
+$date->modify('LAST YEAR');
+}
+$prestart = 12 - $conf->global->SOCIETE_SUBSCRIBE_MONTH_PRESTART;
+$date->modify(' + '.$prestart.' MONTHS'); 
+//print 'renew: '.$date->format('Y-m-d H:i:s').'<br>'; 
+$daterenew = $date->getTimestamp();
+if ($date->getTimestamp() <= dol_now()) {
+$date->modify('NEXT YEAR');
+} 
+$date->modify(' - '.$prestart.' MONTHS'); 
+$datefrom = $date->format('Y-m-d H:i:s');
+$datefrom2 = $date->format('Y');
+$date = new DateTime($datefrom);
+
+                $this->date_from        = $datefrom; 
                 
-	if (! empty($conf->global->PRODUIT_MULTIPRICES) && empty($this->price_level)) $this->price_level=1;
+$date->modify('NEXT YEAR');
+$date->modify('-1 SECONDS');
+$dateto = $date->format('Y-m-d H:i:s');
+$dateto2 = $date->format('Y');
+
+                $this->date_to        = $dateto; 
+                
+if ($datefrom2 != $dateto2) {
+$season = $datefrom2.'/'.$dateto2;
+} else {
+$season = $datefrom2;
+}  
+                $this->season         = $season; 
+                
+$date = new DateTime($dateto);
+$date->modify('NEXT DAY MIDNIGHT');
+$date->modify('- '.$conf->global->SOCIETE_SUBSCRIBE_MONTH_PRESTART.' MONTHS');  
+$daterenew = $date->format('Y-m-d H:i:s');
+                $this->date_renew         = $daterenew;
+                
+if (!empty($abo) && $abo < $dateto) { 
+$datewf = $abo;
+$date = new DateTime($datewf);
+$date->modify('+1 SECONDS');
+//$date->modify('NEXT DAY MIDNIGHT');
+$date->modify('+ '.$conf->global->ADHERENT_WELCOME_MONTH.' MONTHS');     
+} else {
+$datewf = null;
+$date = new DateTime();
+$date->modify('+1 SECONDS');
+//$date->modify('NEXT DAY MIDNIGHT');
+$date->modify('- '.$conf->global->ADHERENT_WELCOME_MONTH.' MONTHS');       
+}
+$datewelcomefee = $date->format('Y-m-d H:i:s');
+$datewf = $date->getTimestamp();
+                $this->date_welcomefee         = $datewelcomefee;
+                
+if (!empty($abo) && $abo > $datefrom) { 
+$date = new DateTime($abo);
+$date->modify('+1 SECONDS');   
+} else {
+$date = new DateTime();   
+}
+                
+if (!empty($conf->global->ADHERENT_SUBSCRIPTION_PRORATA)) {
+//forced date
+if ($daterenew > dol_now()) {
+$date = new DateTime(); 
+$date->modify('NOW');
+} elseif ($daterenew <= dol_now() && $abo > $datefrom) {
+$date = new DateTime(); 
+$date->modify('NOW');
+} elseif ($this->duration_unit == 'd') { 
+$date->modify('MIDNIGHT');
+} elseif ($this->duration_unit == 'w') { 
+$date->modify('LAST MONDAY MIDNIGHT');
+} elseif ($this->duration_unit == 'm') {
+$date->modify('FIRST DAY OF THIS MONTH MIDNIGHT');
+} else {
+ $monthName = date("F", mktime(0, 0, 0, $conf->global->SOCIETE_SUBSCRIBE_MONTH_START, 10));
+$date->modify('FIRST DAY OF '.$monthName.' MIDNIGHT');
+if ($date->getTimestamp() > dol_now() && $daterenew > dol_now()) {
+$date->modify('LAST YEAR');
+}
+}
+}
+$date_begin = $date->format('Y-m-d H:i:s');
+$datebegin = $date->getTimestamp();
+                $this->date_begin         = $date_begin;
+                
+if (!empty($conf->global->ADHERENT_SUBSCRIPTION_PRORATA)) {
+//forced date
+if ($this->duration_unit == 'd') { 
+$date->modify('NEXT DAY MIDNIGHT');
+} elseif ($this->duration_unit == 'w') { 
+$date->modify('NEXT MONDAY MIDNIGHT');
+} elseif ($this->duration_unit == 'm') {
+$date->modify('FIRST DAY OF NEXT MONTH MIDNIGHT');
+} else {
+$date->modify('FIRST DAY OF NEXT YEAR MIDNIGHT');
+if ($date->format('Y-m-d H:i:s') > $dateto) {
+$date->modify($dateto);
+$date->modify('+1 SECONDS');
+}
+}
+} else {
+if ($this->duration_unit == 'd') { 
+$date->modify('NEXT DAY MIDNIGHT');
+} elseif ($this->duration_unit == 'w') { 
+$date->modify('+1 WEEK MIDNIGHT');
+} elseif ($this->duration_unit == 'm') {
+$date->modify('NEXT MONTH MIDNIGHT');
+} else {
+$date->modify('NEXT YEAR MIDNIGHT');
+}
+}
+
+$value = (!empty($this->duration_value)?$this->duration_value:0) - 1;
+if ($value>0) {
+if ($this->duration_unit == 'd') { 
+$date->modify('+'.$value.' DAY');
+} elseif ($this->duration_unit == 'w') { 
+$date->modify('+'.$value.' WEEK');
+} elseif ($this->duration_unit == 'm') {
+$date->modify('+'.$value.' MONTH');
+} else {
+$date->modify('+'.$value.' YEAR');
+}
+}
+
+if ($this->duration_unit == 'd') { 
+$duration = 86400*(!empty($this->duration_value)?$this->duration_value:1);
+} elseif ($this->duration_unit == 'w') { 
+$duration = 604800*(!empty($this->duration_value)?$this->duration_value:1);
+} elseif ($this->duration_unit == 'm') {
+$duration = 2629872*(!empty($this->duration_value)?$this->duration_value:1);
+} else {
+$duration = 31558464*(!empty($this->duration_value)?$this->duration_value:1);
+}
+
+if ($daterenew <= dol_now() && (empty($this->duration_unit) || $this->duration_unit == 'y')) {
+$date->modify($dateto);
+} else {
+$date->modify('-1 SECONDS');
+}
+$date_end = $date->format('Y-m-d H:i:s');
+$dateend = $date->getTimestamp();
+                $this->date_end         = $date_end; 
+                
+if (!empty($this->prorata)) { 
+if ($this->prorata == 'daily') { $rate = ceil(($dateend-$datebegin)/86400) / round($duration/86400); }
+elseif ($this->prorata == 'weekly' && $duration >= 604800) { $rate = ceil(($dateend-$datebegin)/604800) / round($duration/604800); }
+elseif ($this->prorata == 'monthly' && $duration >= 2629872) { $rate = ceil(($dateend-$datebegin)/2629872) / round($duration/2629872); }
+elseif ($this->prorata == 'quaterly' && $duration >= (2629872*3)) { $rate = ceil(($dateend-$datebegin)/(2629872*3)) / round($duration/(2629872*3)); }
+elseif ($this->prorata == 'semestery' && $duration >= (2629872*4)) { $rate = ceil(($dateend-$datebegin)/(2629872*3)) / round($duration/(2629872*3)); }
+elseif ($this->prorata == 'biannual' && $duration >= (2629872*6)) { $rate = ceil(($dateend-$datebegin)/(2629872*6)) / round($duration/(2629872*6)); }
+else { $rate = round(($dateend-$datebegin)/$duration, 2); }
+} else {
+$rate = 1;
+} 
+$rate2 = round(100*($dateend-$datebegin)/$duration, 2);           
+                 $this->timestamp_prorata         = $rate2; 
                  
+if ( $datewf <= $datebegin) {
+$price = $this->welcome + ($this->price * $rate);
+} else {
+$price = ($this->price * $rate);
+}
+if ($price < 0) $price = 0;
+                 $this->price_prorata         = $price; 
+                 
+$date = new DateTime($date->format('Y-m-d H:i:s'));
+$date->modify('NEXT DAY MIDNIGHT');
+$date_nextbegin = $date->format('Y-m-d H:i:s');
+$datenextbegin = $date->getTimestamp();
+                $this->date_nextbegin         = $date_nextbegin;
+
+if (!empty($conf->global->ADHERENT_SUBSCRIPTION_PRORATA)) {
+//forced date
+if ($this->duration_unit == 'd') { 
+$date->modify('NEXT DAY MIDNIGHT');
+} elseif ($this->duration_unit == 'w') { 
+$date->modify('NEXT MONDAY MIDNIGHT');
+} elseif ($this->duration_unit == 'm') {
+$date->modify('FIRST DAY OF NEXT MONTH MIDNIGHT');
+} else {
+$date->modify('FIRST DAY OF NEXT YEAR MIDNIGHT');
+if ($date->format('Y-m-d H:i:s') > $dateto) {
+$date->modify($dateto);
+$date->modify('+1 SECONDS');
+}
+}
+} else {
+if ($this->duration_unit == 'd') { 
+$date->modify('NEXT DAY MIDNIGHT');
+} elseif ($this->duration_unit == 'w') { 
+$date->modify('+1 WEEK MIDNIGHT');
+} elseif ($this->duration_unit == 'm') {
+$date->modify('NEXT MONTH MIDNIGHT');
+} else {
+$date->modify('NEXT YEAR MIDNIGHT');
+}
+}                                 
+$date->modify('-1 SECONDS');    
+$date_nextend = $date->format('Y-m-d H:i:s');
+$datenextend = $date->getTimestamp();
+                $this->date_nextend         = $date_nextend;        
+                                         
+                $this->nextprice         = $this->price;                       
             }
             return 1;
         }
