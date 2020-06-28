@@ -102,6 +102,7 @@ class AdherentTypePlus extends CommonObject
   public $commitment;
   public $commitment_value; 
   public $commitment_unit;
+  public $season;  
      
   public $multilangs=array();
 
@@ -542,6 +543,77 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
 	 *  @return		int						<0 if KO, >0 if OK
 	 */
 	public function fetch($rowid)
+	{
+        global $langs, $conf;
+  
+        $sql = "SELECT d.rowid, d.tms as datem, d.libelle as label, d.statut as status, d.morphy, d.subscription, d.welcome, d.price, d.federal, d.price_level, d.duration, d.commitment, d.prorata, d.automatic, d.automatic_renew, d.family, d.mail_valid, d.note, d.vote";
+        $sql .= " FROM ".MAIN_DB_PREFIX."adherent_type as d";
+        $sql .= " WHERE d.rowid = ".$rowid;
+
+        dol_syslog("Adherent_type::fetch", LOG_DEBUG);
+
+        $resql=$this->db->query($sql);
+        if ($resql)
+        {
+            if ($this->db->num_rows($resql))
+            {
+                $obj = $this->db->fetch_object($resql);
+
+                if (empty($obj->duration)) $obj->duration="1y"; 
+
+                $this->id             = $obj->rowid;
+                $this->ref            = $obj->rowid;
+                $this->welcome        = $obj->welcome;
+                $this->price          = $obj->price;
+                $this->federal        = $obj->federal;
+                $this->prorata        = $obj->prorata; 
+                $this->price_level    = $obj->price_level;
+                $this->label          = $obj->label;
+                $this->libelle        = $obj->label;	// For backward compatibility
+                $this->statut         = $obj->status;
+                $this->status         = $obj->status;
+                $this->morphy         = $obj->morphy;
+                $this->duration       = $obj->duration;
+                $this->duration_value = substr($obj->duration, 0, dol_strlen($obj->duration)-1);
+                $this->duration_unit  = substr($obj->duration, -1);
+                $this->commitment       = $obj->commitment;
+                $this->commitment_value = substr($obj->commitment, 0, dol_strlen($obj->commitment)-1);
+                $this->commitment_unit  = substr($obj->commitment, -1);  
+                $this->subscription   = $obj->subscription;
+                $this->automatic      = $obj->automatic;
+                $this->automatic_renew= $obj->automatic_renew;
+                $this->family         = $obj->family;
+                $this->mail_valid     = $obj->mail_valid;
+                $this->note           = $obj->note;
+                $this->description    = $obj->note;  
+                $this->vote           = $obj->vote;
+                $this->status         = $obj->status;
+                $this->date_modification			= $this->db->jdate($obj->datem);
+                
+                // multilangs
+                if (! empty($conf->global->MAIN_MULTILANGS)) {
+                    $this->getMultiLangs();
+                }
+                
+	if (! empty($conf->global->PRODUIT_MULTIPRICES) && empty($this->price_level)) $this->price_level=1;
+                 
+            }
+            return 1;
+        }
+        else
+        {
+            $this->error=$this->db->lasterror();
+            return -1;
+        }
+    }
+    
+	/**
+	 *  Function that retrieves the data of a type
+	 *
+	 *  @param 		int		$rowid			Id of member to load
+	 *  @return		int						<0 if KO, >0 if OK
+	 */
+	public function fetch_calculator($rowid = null)
 	{
         global $langs, $conf;
   

@@ -189,6 +189,7 @@ if ($rowid > 0)
 		$object = new AdherentTypePlus($db);
 		$object->fetch($rowid);
 		$object->fetch_optionals();
+    $object->fetch_calculator();
 
 		/*
 		 * Confirmation suppression
@@ -313,11 +314,13 @@ $date->modify('NEXT YEAR');
 } 
 $date->modify(' - '.$prestart.' MONTHS'); 
 $datefrom = $date->format('Y-m-d H:i:s');
+$datefrom2 = $date->format('Y');
 $date = new DateTime($datefrom);
 print 'from '.$date->format('Y-m-d H:i:s');
 $date->modify('NEXT YEAR');
 $date->modify('-1 SECONDS');
 $dateto = $date->format('Y-m-d H:i:s');
+$dateto2 = $date->format('Y');
 print ' to '.$date->format('Y-m-d H:i:s').'<br>';
 
 $date = new DateTime($dateto);
@@ -340,6 +343,12 @@ $date->modify('- '.$conf->global->ADHERENT_WELCOME_MONTH.' MONTHS');
 }
 print 'date_welcomefee: '.$date->format('Y-m-d H:i:s').'<br>';
 $datewf = $date->getTimestamp();
+if ($datefrom2 != $dateto2) {
+$season = $datefrom2.'/'.$dateto2;
+} else {
+$season = $datefrom2;
+}
+print 'season: '.$season;
 print '<hr>';
 
 if (!empty($abo) && $abo > $datefrom) { 
@@ -441,7 +450,6 @@ elseif ($object->prorata == 'monthly' && $duration >= 2629872) { $rate = ceil(($
 elseif ($object->prorata == 'quaterly' && $duration >= (2629872*3)) { $rate = ceil(($dateend-$datebegin)/(2629872*3)) / round($duration/(2629872*3)); }
 elseif ($object->prorata == 'semestery' && $duration >= (2629872*4)) { $rate = ceil(($dateend-$datebegin)/(2629872*3)) / round($duration/(2629872*3)); }
 elseif ($object->prorata == 'biannual' && $duration >= (2629872*6)) { $rate = ceil(($dateend-$datebegin)/(2629872*6)) / round($duration/(2629872*6)); }
-elseif ($object->prorata == 'annual' && $duration >= (31557600)) { $rate = ceil(($dateend-$datebegin)/(31557600)) / round($duration/(31557600)); }
 else { $rate = round(($dateend-$datebegin)/$duration, 2); }
 } else {
 $rate = 1;
