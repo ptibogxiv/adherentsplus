@@ -667,9 +667,13 @@ $season = $datefrom2.'/'.$dateto2;
 $season = $datefrom2;
 }  
                 $this->season         = $season; 
-                
-$date = new DateTime($dateto);
+if (empty($conf->global->ADHERENT_SUBSCRIPTION_PRORATA) && $abo < $dateto) {
+$date = new DateTime($abo);
+$date->modify('MIDNIGHT');
+} else {
+$date = new DateTime($dateto); 
 $date->modify('NEXT DAY MIDNIGHT');
+}                
 $date->modify('- '.$conf->global->SOCIETE_SUBSCRIBE_MONTH_PRESTART.' MONTHS');  
 $daterenew = $date->format('Y-m-d H:i:s');
                 $this->date_renew         = $daterenew;
