@@ -624,7 +624,7 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
         $sql .= " FROM ".MAIN_DB_PREFIX."adherent as d";
         $sql .= " WHERE d.rowid = ".$rowid;
 
-        dol_syslog("Adherent_type::fetch", LOG_DEBUG);
+        dol_syslog("Adherent::fetch", LOG_DEBUG);
 
         $resql=$this->db->query($sql);
         if ($resql)
@@ -633,7 +633,7 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
             {
                 $obj = $this->db->fetch_object($resql);
 
-$abo = null; 
+$abo = $obj->datefin; 
 
             }
             
