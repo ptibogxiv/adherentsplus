@@ -189,7 +189,7 @@ if ($rowid > 0)
 		$object = new AdherentTypePlus($db);
 		$object->fetch($rowid);
 		$object->fetch_optionals();
-		$object->subscription_calculator($rowid);
+		$object->subscription_calculator();
 
 		/*
 		 * Confirmation suppression
