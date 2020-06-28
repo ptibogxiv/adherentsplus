@@ -297,10 +297,10 @@ if ((float) DOL_VERSION < 11.0) {
     print '</div>';
         
 print 'from '.$object->date_from;
-print ' to '.$object->date_to.'<br>';
+print ' to '.$object->date_to.'<br>'; 
+print 'season: '.$object->season.'<br>';
 print 'date_renew: '.$object->date_renew.'<br>';
-print 'date_welcomefee: '.$object->date_welcomefee.'<br>';
-print 'season: '.$object->season;
+print 'date_welcomefee: '.$object->date_welcomefee;
 print '<hr>';
 
 // current dates
