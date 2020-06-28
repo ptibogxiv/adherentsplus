@@ -633,7 +633,7 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
             {
                 $obj = $this->db->fetch_object($resql);
 
-$abo = $obj->datefin; 
+$abo = null; 
 
             }
             
