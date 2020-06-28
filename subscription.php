@@ -728,7 +728,7 @@ if ($rowid > 0)
 
             $accountstatic = new Account($db);
             $adh = new Adherent($db);
-            $adht = new AdherentType($db);
+            $adht = new AdherentTypePlus($db);
 
             $i = 0;
             while ($i < $num)
@@ -818,6 +818,41 @@ if ($rowid > 0)
 	    	print showOnlinePaymentUrl('membersubscription', $object->ref);
 	    	print '<br>';
 	    }
+      
+print '<br>';
+$adht->fetch($object2->type);
+$adht->subscription_calculator($rowid);
+    
+print 'from '.dol_print_date($adht->date_from, 'dayhour');
+print ' to '.dol_print_date($adht->date_to, 'dayhour').'<br>'; 
+print 'season: '.$adht->season.'<br>';
+print 'date_renew: '.dol_print_date($adht->date_renew, 'dayhour').'<br>';
+print 'date_welcomefee: '.dol_print_date($adht->date_welcomefee, 'dayhour');
+print '<hr>';
+
+// current dates
+print 'begin: '.dol_print_date($adht->date_begin, 'dayhour').'<br>';
+print 'end: '.dol_print_date($adht->date_end, 'dayhour').'<br>';
+
+//print 'timestamp_prorata: '.$object->timestamp_prorata.'% <br>';
+print 'daily_prorata: '.ceil(($dateend-$datebegin)/86400).'/'.round($duration/86400).'<br>';
+if ($duration >= 604800) print 'weekly_prorata: '.ceil(($dateend-$datebegin)/604800).'/'.round($duration/604800).'<br>';
+if ($duration >= 2629872) print 'monthly_prorata: '.ceil(($dateend-$datebegin)/2629872).'/'.round($duration/2629872).'<br>';
+if ($duration >= (2629872*3)) print 'quarterly_prorata: '.ceil(($dateend-$datebegin)/(2629872*3)).'/'.round($duration/(2629872*3)).'<br>'; 
+if ($duration >= (2629872*4)) print 'semester_prorata: '.ceil(($dateend-$datebegin)/(2629872*4)).'/'.round($duration/(2629872*4)).'<br>';
+if ($duration >= (2629872*6)) print 'biannual_prorata: '.ceil(($dateend-$datebegin)/(2629872*6)).'/'.round($duration/(2629872*6)).'<br>';
+if ($duration >= (31557600)) print 'annual_prorata: '.ceil(($dateend-$datebegin)/(31557600)).'/'.round($duration/(31557600)).'<br>';
+
+print 'price: '.price($adht->price_prorata);
+print ' '.$langs->trans("Currency".$conf->currency);
+    
+print '<hr>';
+// next dates
+print 'nextbegin: '.dol_print_date($adht->date_nextbegin, 'dayhour').'<br>'; 
+print 'nextend: '.dol_print_date($adht->date_nextend, 'dayhour').'<br>';
+print 'nextprice: '.price($adht->nextprice);
+print ' '.$langs->trans("Currency".$conf->currency);
+      
     }
 
     /*
@@ -1097,7 +1132,7 @@ if ($rowid > 0)
         }
         else
         {
-            $adht = new AdherentType($db);
+            $adht = new AdherentTypePlus($db);
             $adht->fetch($object->typeid);
 
             // Send subscription email
