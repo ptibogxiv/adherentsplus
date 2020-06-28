@@ -307,7 +307,7 @@ print '<hr>';
 print 'begin: '.dol_print_date($object->date_begin, 'dayhour').'<br>';
 print 'end: '.dol_print_date($object->date_end, 'dayhour').'<br>';
 
-print 'timestamp_prorata: '.$object->timestamp_prorata.'% <br>';
+//print 'timestamp_prorata: '.$object->timestamp_prorata.'% <br>';
 print 'daily_prorata: '.ceil(($dateend-$datebegin)/86400).'/'.round($duration/86400).'<br>';
 if ($duration >= 604800) print 'weekly_prorata: '.ceil(($dateend-$datebegin)/604800).'/'.round($duration/604800).'<br>';
 if ($duration >= 2629872) print 'monthly_prorata: '.ceil(($dateend-$datebegin)/2629872).'/'.round($duration/2629872).'<br>';

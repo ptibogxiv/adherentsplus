@@ -587,7 +587,7 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
                 $this->note           = $obj->note;
                 $this->description    = $obj->note;  
                 $this->vote           = $obj->vote;
-                $this->status         = $obj->status;
+                $this->status         = $obj->status;  
                 $this->date_modification			= $this->db->jdate($obj->datem);
                 
                 // multilangs
@@ -797,9 +797,9 @@ else { $rate = round(($dateend-$datebegin)/$duration, 2); }
 $rate = 1;
 }
 if ($rate > 1) $rate = 1; 
-$rate2 = round(100*($dateend-$datebegin)/$duration, 2);
-if ($rate2 > 100) $rate2 = 100;            
-                 $this->timestamp_prorata         = $rate2; 
+//$rate2 = round(100*($dateend-$datebegin)/$duration, 2);
+//if ($rate2 > 100) $rate2 = 100;            
+                 //$this->timestamp_prorata         = $rate2; 
                  
 if ( $datewf <= $datebegin) {
 $price = $this->welcome + ($this->price * $rate);
