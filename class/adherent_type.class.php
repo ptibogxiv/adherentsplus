@@ -620,7 +620,7 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
         $typeid = $this->id;
   
         if (!empty($rowid)) {
-        $sql = "SELECT d.rowid, d.type, d.datefin";
+        $sql = "SELECT d.rowid, d.fk_adherent_type, d.datefin";
         $sql .= " FROM ".MAIN_DB_PREFIX."adherent as d";
         $sql .= " WHERE d.rowid = ".$rowid;
 
