@@ -296,16 +296,16 @@ if ((float) DOL_VERSION < 11.0) {
 		print '</table>';
     print '</div>';
         
-print 'from '.$object->date_from;
-print ' to '.$object->date_to.'<br>'; 
+print 'from '.dol_print_date($object->date_from, 'dayhour');
+print ' to '.dol_print_date($object->date_to, 'dayhour').'<br>'; 
 print 'season: '.$object->season.'<br>';
-print 'date_renew: '.$object->date_renew.'<br>';
-print 'date_welcomefee: '.$object->date_welcomefee;
+print 'date_renew: '.dol_print_date($object->date_renew, 'dayhour').'<br>';
+print 'date_welcomefee: '.dol_print_date($object->date_welcomefee, 'dayhour');
 print '<hr>';
 
 // current dates
-print 'begin: '.$object->date_begin.'<br>';
-print 'end: '.$object->date_end.'<br>';
+print 'begin: '.dol_print_date($object->date_begin, 'dayhour').'<br>';
+print 'end: '.dol_print_date($object->date_end, 'dayhour').'<br>';
 
 print 'timestamp_prorata: '.$object->timestamp_prorata.'% <br>';
 print 'daily_prorata: '.ceil(($dateend-$datebegin)/86400).'/'.round($duration/86400).'<br>';
@@ -321,8 +321,8 @@ print ' '.$langs->trans("Currency".$conf->currency);
     
 print '<hr>';
 // next dates
-print 'nextbegin: '.$object->date_nextbegin.'<br>'; 
-print 'nextend: '.$object->date_nextend.'<br>';
+print 'nextbegin: '.dol_print_date($object->date_nextbegin, 'dayhour').'<br>'; 
+print 'nextend: '.dol_print_date($object->date_nextend, 'dayhour').'<br>';
 print 'nextprice: '.price($object->nextprice);
 print ' '.$langs->trans("Currency".$conf->currency);
 		

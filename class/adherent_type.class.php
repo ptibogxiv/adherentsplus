@@ -652,14 +652,14 @@ $datefrom = $date->format('Y-m-d H:i:s');
 $datefrom2 = $date->format('Y');
 $date = new DateTime($datefrom);
 
-                $this->date_from        = $datefrom; 
+                $this->date_from        = $this->db->jdate($datefrom); 
                 
 $date->modify('NEXT YEAR');
 $date->modify('-1 SECONDS');
 $dateto = $date->format('Y-m-d H:i:s');
 $dateto2 = $date->format('Y');
 
-                $this->date_to        = $dateto; 
+                $this->date_to        = $this->db->jdate($dateto); 
                 
 if ($datefrom2 != $dateto2) {
 $season = $datefrom2.'/'.$dateto2;
@@ -676,7 +676,7 @@ $date->modify('NEXT DAY MIDNIGHT');
 }                
 $date->modify('- '.$conf->global->SOCIETE_SUBSCRIBE_MONTH_PRESTART.' MONTHS');  
 $daterenew = $date->format('Y-m-d H:i:s');
-                $this->date_renew         = $daterenew;
+                $this->date_renew         = $this->db->jdate($daterenew);
                 
 if (!empty($abo) && $abo < $dateto) { 
 $date = new DateTime($abo);
@@ -689,9 +689,9 @@ $date = new DateTime($datefrom);
 //$date->modify('NEXT DAY MIDNIGHT');
 $date->modify('- '.$conf->global->ADHERENT_WELCOME_MONTH.' MONTHS');       
 }
-$datewelcomefee = $date->format('Y-m-d H:i:s');
+//$datewelcomefee = $date->format('Y-m-d H:i:s');
 $datewf = $date->getTimestamp();
-                $this->date_welcomefee         = $datewelcomefee; 
+                $this->date_welcomefee         = $datewf; 
                 
 if (!empty($abo) && $abo > $datefrom) { 
 $date = new DateTime($abo);
@@ -722,9 +722,9 @@ $date->modify('LAST YEAR');
 }
 }
 }  
-$date_begin = $date->format('Y-m-d H:i:s');
+//$date_begin = $date->format('Y-m-d H:i:s');
 $datebegin = $date->getTimestamp();
-                $this->date_begin         = $date_begin; 
+                $this->date_begin         = $datebegin; 
                 
 if (!empty($conf->global->ADHERENT_SUBSCRIPTION_PRORATA)) {
 //forced date
@@ -781,9 +781,9 @@ $date->modify($dateto);
 } else {
 $date->modify('-1 SECONDS');
 }
-$date_end = $date->format('Y-m-d H:i:s');
+//$date_end = $date->format('Y-m-d H:i:s');
 $dateend = $date->getTimestamp();
-                $this->date_end         = $date_end; 
+                $this->date_end         = $dateend; 
                 
 if (!empty($this->prorata)) { 
 if ($this->prorata == 'daily') { $rate = ceil(($dateend-$datebegin)/86400) / round($duration/86400); }
@@ -811,9 +811,9 @@ if ($price < 0) $price = 0;
                  
 $date = new DateTime($date->format('Y-m-d H:i:s'));
 $date->modify('NEXT DAY MIDNIGHT');
-$date_nextbegin = $date->format('Y-m-d H:i:s');
+//$date_nextbegin = $date->format('Y-m-d H:i:s');
 $datenextbegin = $date->getTimestamp();
-                $this->date_nextbegin         = $date_nextbegin;
+                $this->date_nextbegin         = $datenextbegin;
 
 if (!empty($conf->global->ADHERENT_SUBSCRIPTION_PRORATA)) {
 //forced date
@@ -842,9 +842,9 @@ $date->modify('NEXT YEAR MIDNIGHT');
 }
 }                                 
 $date->modify('-1 SECONDS');    
-$date_nextend = $date->format('Y-m-d H:i:s');
+//$date_nextend = $date->format('Y-m-d H:i:s');
 $datenextend = $date->getTimestamp();
-                $this->date_nextend         = $date_nextend;        
+                $this->date_nextend         = $datenextend;        
                                          
                 $this->nextprice         = $this->price;                       
             }

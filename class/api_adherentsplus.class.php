@@ -296,7 +296,7 @@ class AdherentsPlus extends DolibarrApi
         if( ! DolibarrApi::_checkAccessToResource('member',$membertype->id,'adherent_type')) {
             throw new RestException(401, 'Access not allowed for login '.DolibarrApiAccess::$user->login);
         }
-
+        $membertype->subscription_calculator();
         return $this->_cleanObjectDatas($membertype);
     }
 
