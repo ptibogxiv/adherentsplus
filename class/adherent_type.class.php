@@ -825,10 +825,6 @@ $date->modify('NEXT MONDAY MIDNIGHT');
 $date->modify('FIRST DAY OF NEXT MONTH MIDNIGHT');
 } else {
 $date->modify('FIRST DAY OF NEXT YEAR MIDNIGHT');
-if ($date->format('Y-m-d H:i:s') > $dateto) {
-$date->modify($dateto);
-$date->modify('+1 SECONDS');
-}
 }
 } else {
 if ($this->duration_unit == 'd') { 
