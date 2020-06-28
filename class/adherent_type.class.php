@@ -698,7 +698,7 @@ $date = new DateTime();
                 
 if (!empty($conf->global->ADHERENT_SUBSCRIPTION_PRORATA)) {
 //forced date
-if ($daterenew > dol_now()) {
+if ($daterenew < dol_now()) {
 $date = new DateTime(); 
 $date->modify('NOW');
 } elseif ($daterenew <= dol_now() && $abo > $datefrom) {
@@ -717,7 +717,7 @@ if ($date->getTimestamp() > dol_now() && $daterenew > dol_now()) {
 $date->modify('LAST YEAR');
 }
 }
-}
+}  
 $date_begin = $date->format('Y-m-d H:i:s');
 $datebegin = $date->getTimestamp();
                 $this->date_begin         = $date_begin; 
@@ -793,7 +793,8 @@ else { $rate = round(($dateend-$datebegin)/$duration, 2); }
 $rate = 1;
 }
 if ($rate > 1) $rate = 1; 
-$rate2 = round(100*($dateend-$datebegin)/$duration, 2);           
+$rate2 = round(100*($dateend-$datebegin)/$duration, 2);
+if ($rate2 > 100) $rate2 = 100;            
                  $this->timestamp_prorata         = $rate2; 
                  
 if ( $datewf <= $datebegin) {
