@@ -702,8 +702,8 @@ if ($daterenew < dol_now()) {
 $date = new DateTime(); 
 $date->modify('NOW');
 } elseif ($daterenew <= dol_now() && $abo > $datefrom) {
-$date = new DateTime(); 
-$date->modify('NOW');
+$date = new DateTime($abo);
+$date->modify('+1 SECONDS');  
 } elseif ($this->duration_unit == 'd') { 
 $date->modify('MIDNIGHT');
 } elseif ($this->duration_unit == 'w') { 
