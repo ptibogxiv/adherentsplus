@@ -772,7 +772,7 @@ $duration = 2629872*(!empty($this->duration_value)?$this->duration_value:1);
 $duration = 31558464*(!empty($this->duration_value)?$this->duration_value:1);
 }
 
-if ($daterenew <= dol_now() && (empty($this->duration_unit) || $this->duration_unit == 'y')) {
+if ($daterenew <= dol_now() && !empty($conf->global->ADHERENT_SUBSCRIPTION_PRORATA) && (empty($this->duration_unit) || $this->duration_unit == 'y')) {
 $date->modify($dateto);
 } else {
 $date->modify('-1 SECONDS');
@@ -791,7 +791,8 @@ elseif ($this->prorata == 'biannual' && $duration >= (2629872*6)) { $rate = ceil
 else { $rate = round(($dateend-$datebegin)/$duration, 2); }
 } else {
 $rate = 1;
-} 
+}
+if ($rate > 1) $rate = 1; 
 $rate2 = round(100*($dateend-$datebegin)/$duration, 2);           
                  $this->timestamp_prorata         = $rate2; 
                  
