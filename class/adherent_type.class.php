@@ -632,17 +632,6 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
             {
                 $obj = $this->db->fetch_object($resql);
 
-                if (empty($obj->duration)) $obj->duration="1y"; 
-
-                $this->welcome        = $obj->welcome;
-                $this->price          = $obj->price;
-                $this->federal        = $obj->federal;
-                $this->prorata        = $obj->prorata; 
-                $this->price_level    = $obj->price_level;
-                $this->automatic      = $obj->automatic;
-                $this->automatic_renew= $obj->automatic_renew;
-                $this->family         = $obj->family;
-                
 $abo = null;
 //$abo = "2020-04-03 15:46:24";
 $date = new DateTime($abo);  
@@ -686,21 +675,19 @@ $daterenew = $date->format('Y-m-d H:i:s');
                 $this->date_renew         = $daterenew;
                 
 if (!empty($abo) && $abo < $dateto) { 
-$datewf = $abo;
-$date = new DateTime($datewf);
+$date = new DateTime($abo);
 $date->modify('+1 SECONDS');
 //$date->modify('NEXT DAY MIDNIGHT');
 $date->modify('+ '.$conf->global->ADHERENT_WELCOME_MONTH.' MONTHS');     
 } else {
-$datewf = null;
-$date = new DateTime();
-$date->modify('+1 SECONDS');
+$date = new DateTime($datefrom);
+//$date->modify('+1 SECONDS');
 //$date->modify('NEXT DAY MIDNIGHT');
 $date->modify('- '.$conf->global->ADHERENT_WELCOME_MONTH.' MONTHS');       
 }
 $datewelcomefee = $date->format('Y-m-d H:i:s');
 $datewf = $date->getTimestamp();
-                $this->date_welcomefee         = $datewelcomefee;
+                $this->date_welcomefee         = $datewelcomefee; 
                 
 if (!empty($abo) && $abo > $datefrom) { 
 $date = new DateTime($abo);
@@ -733,7 +720,7 @@ $date->modify('LAST YEAR');
 }
 $date_begin = $date->format('Y-m-d H:i:s');
 $datebegin = $date->getTimestamp();
-                $this->date_begin         = $date_begin;
+                $this->date_begin         = $date_begin; 
                 
 if (!empty($conf->global->ADHERENT_SUBSCRIPTION_PRORATA)) {
 //forced date
