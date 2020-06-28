@@ -619,9 +619,10 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
         
         $typeid = $this->id;
   
-        $sql = "SELECT d.rowid, d.tms as datem, d.libelle as label, d.statut as status, d.morphy, d.subscription, d.welcome, d.price, d.federal, d.price_level, d.duration, d.commitment, d.prorata, d.automatic, d.automatic_renew, d.family, d.mail_valid, d.note, d.vote";
-        $sql .= " FROM ".MAIN_DB_PREFIX."adherent_type as d";
-        $sql .= " WHERE d.rowid = ".$typeid;
+        if (!empty($rowid)) {
+        $sql = "SELECT d.rowid, d.type, d.datefin";
+        $sql .= " FROM ".MAIN_DB_PREFIX."adherent as d";
+        $sql .= " WHERE d.rowid = ".$rowid;
 
         dol_syslog("Adherent_type::fetch", LOG_DEBUG);
 
@@ -632,8 +633,20 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
             {
                 $obj = $this->db->fetch_object($resql);
 
-$abo = null;
-//$abo = "2020-04-03 15:46:24";
+$abo = $obj->datefin; 
+
+            }
+            
+        }
+        else
+        {
+            $this->error=$this->db->lasterror();
+            return -1;
+        }
+        } else {
+$abo = null; 
+        }
+
 $date = new DateTime($abo);  
 $monthName = date("F", mktime(0, 0, 0, $conf->global->SOCIETE_SUBSCRIBE_MONTH_START, 10));
 $date->modify('FIRST DAY OF '.$monthName.' MIDNIGHT');
@@ -843,14 +856,7 @@ $datenextend = $date->getTimestamp();
                 $this->date_nextend         = $datenextend;        
                                          
                 $this->nextprice         = $this->price;                       
-            }
-            return 1;
-        }
-        else
-        {
-            $this->error=$this->db->lasterror();
-            return -1;
-        }
+return 1;
     }
 
     // phpcs:disable PEAR.NamingConventions.ValidFunctionName.ScopeNotCamelCaps
