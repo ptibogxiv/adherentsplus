@@ -235,7 +235,7 @@ if ($user->rights->adherent->cotisation->creer && $action == 'subscription' && !
     $paymentdate=0;
     if ($_POST["reyear"] && $_POST["remonth"] && $_POST["reday"])
     {
-        $datesubscription=dol_mktime($_POST["rehour"], $_POST["remin"],, 0, $_POST["remonth"], $_POST["reday"], $_POST["reyear"]);
+        $datesubscription=dol_mktime($_POST["rehour"], $_POST["remin"], 0, $_POST["remonth"], $_POST["reday"], $_POST["reyear"]);
     }
     if ($_POST["endyear"] && $_POST["endmonth"] && $_POST["endday"])
     {
