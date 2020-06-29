@@ -239,7 +239,7 @@ if ($user->rights->adherent->cotisation->creer && $action == 'subscription' && !
     }
     if ($_POST["endyear"] && $_POST["endmonth"] && $_POST["endday"])
     {
-        $datesubend=dol_mktime(0, 0, 0, $_POST["endmonth"], $_POST["endday"], $_POST["endyear"]);
+        $datesubend=dol_mktime($_POST["endhour"], $_POST["endmin"], 59, $_POST["endmonth"], $_POST["endday"], $_POST["endyear"]);
     }
     if ($_POST["paymentyear"] && $_POST["paymentmonth"] && $_POST["paymentday"])
     {
