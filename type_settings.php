@@ -296,8 +296,7 @@ if ((float) DOL_VERSION < 11.0) {
 		print '</table>';
     print '</div><br>';
         
-print '<br><br>from '.dol_print_date($object->date_from, 'dayhour');
-print ' to '.dol_print_date($object->date_to, 'dayhour').'<br>'; 
+print 'from '.dol_print_date($object->date_from, 'dayhour').' to '.dol_print_date($object->date_to, 'dayhour').'<br>'; 
 print 'season: '.$object->season.'<br>';
 print 'date_renew: '.dol_print_date($object->date_renew, 'dayhour').'<br>';
 print 'date_welcomefee: '.dol_print_date($object->date_welcomefee, 'dayhour');
