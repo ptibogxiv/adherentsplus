@@ -647,7 +647,7 @@ $abo = $obj->datefin;
 $abo = null; 
         }
 
-$date = new DateTime($abo);  
+$date = new DateTime();  
 $monthName = date("F", mktime(0, 0, 0, $conf->global->SOCIETE_SUBSCRIBE_MONTH_START, 10));
 $date->modify('FIRST DAY OF '.$monthName.' MIDNIGHT');
 if ($date->getTimestamp() > dol_now()) {
