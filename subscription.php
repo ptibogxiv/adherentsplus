@@ -834,13 +834,14 @@ print 'begin: '.dol_print_date($adht->date_begin, 'dayhour').'<br>';
 print 'end: '.dol_print_date($adht->date_end, 'dayhour').'<br>';
 
 //print 'timestamp_prorata: '.$object->timestamp_prorata.'% <br>';
-print 'daily_prorata: '.ceil(($adht->date_end-$adht->date_begin)/86400).'/'.round($adht->duration_timestamp/86400).'<br>';
-if ($adht->duration_timestamp >= 604800) print 'weekly_prorata: '.ceil(($adht->date_end-$adht->date_begin)/604800).'/'.round($adht->duration_timestamp/604800).'<br>';
-if ($adht->duration_timestamp >= 2629872) print 'monthly_prorata: '.ceil(($adht->date_end-$adht->date_begin)/2629872).'/'.round($adht->duration_timestamp/2629872).'<br>';
-if ($adht->duration_timestamp >= (2629872*3)) print 'quarterly_prorata: '.ceil(($adht->date_end-$adht->date_begin)/(2629872*3)).'/'.round($adht->duration_timestamp/(2629872*3)).'<br>'; 
-if ($adht->duration_timestamp >= (2629872*4)) print 'semester_prorata: '.ceil(($adht->date_end-$adht->date_begin)/(2629872*4)).'/'.round($adht->duration_timestamp/(2629872*4)).'<br>';
-if ($adht->duration_timestamp >= (2629872*6)) print 'biannual_prorata: '.ceil(($adht->date_end-$adht->date_begin)/(2629872*6)).'/'.round($adht->duration_timestamp/(2629872*6)).'<br>';
-if ($adht->duration_timestamp >= (31557600)) print 'annual_prorata: '.ceil(($adht->date_end-$adht->date_begin)/(31557600)).'/'.round($adht->duration_timestamp/(31557600)).'<br>';
+$year = $adht->date_to-$adht->date_from;
+print 'daily_prorata: '.ceil(($adht->date_end-$adht->date_begin)/86400).'/'.ceil($adht->duration_timestamp/86400).'<br>';
+if ($adht->duration_timestamp >= 604800) print 'weekly_prorata: '.ceil(($adht->date_end-$adht->date_begin)/604800).'/'.ceil($adht->duration_timestamp/604800).'<br>';
+if ($adht->duration_timestamp >= ($year/12)) print 'monthly_prorata: '.ceil(($adht->date_end-$adht->date_begin)/($year/12)).'/'.ceil($adht->duration_timestamp/($year/12)).'<br>';
+if ($adht->duration_timestamp >= ($year/4)) print 'quarterly_prorata: '.ceil(($adht->date_end-$adht->date_begin)/($year/4)).'/'.ceil($adht->duration_timestamp/($year/4)).'<br>'; 
+if ($adht->duration_timestamp >= ($year/3)) print 'semester_prorata: '.ceil(($adht->date_end-$adht->date_begin)/($year/3)).'/'.ceil($adht->duration_timestamp/($year/3)).'<br>';
+if ($adht->duration_timestamp >= ($year/2)) print 'biannual_prorata: '.ceil(($adht->date_end-$adht->date_begin)/($year/2)).'/'.ceil($adht->duration_timestamp/($year/2)).'<br>';
+if ($adht->duration_timestamp >= $year) print 'annual_prorata: '.ceil(($adht->date_end-$adht->date_begin)/$year).'/'.ceil($adht->duration_timestamp/$year).'<br>';
 
 print 'price: '.price($adht->price_prorata);
 print ' '.$langs->trans("Currency".$conf->currency);

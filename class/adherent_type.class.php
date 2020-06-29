@@ -789,14 +789,16 @@ $date->modify('+'.$value.' YEAR');
 }
 }
 
+$year = $this->db->jdate($dateto) - $this->db->jdate($datefrom);
+
 if ($this->duration_unit == 'd') { 
 $duration = 86400*(!empty($this->duration_value)?$this->duration_value:1);
 } elseif ($this->duration_unit == 'w') { 
 $duration = 604800*(!empty($this->duration_value)?$this->duration_value:1);
 } elseif ($this->duration_unit == 'm') {
-$duration = 2629872*(!empty($this->duration_value)?$this->duration_value:1);
+$duration = ($year/12)*(!empty($this->duration_value)?$this->duration_value:1);
 } else {
-$duration = 31558464*(!empty($this->duration_value)?$this->duration_value:1);
+$duration = $year*(!empty($this->duration_value)?$this->duration_value:1);
 }
                 $this->duration_timestamp     = $duration; 
                 
@@ -810,12 +812,13 @@ $dateend = $date->getTimestamp();
                 $this->date_end         = $dateend; 
                 
 if (!empty($this->prorata)) { 
-if ($this->prorata == 'daily') { $rate = ceil(($dateend-$datebegin)/86400) / round($duration/86400); }
-elseif ($this->prorata == 'weekly' && $duration >= 604800) { $rate = ceil(($dateend-$datebegin)/604800) / round($duration/604800); }
-elseif ($this->prorata == 'monthly' && $duration >= 2629872) { $rate = ceil(($dateend-$datebegin)/2629872) / round($duration/2629872); }
-elseif ($this->prorata == 'quaterly' && $duration >= (2629872*3)) { $rate = ceil(($dateend-$datebegin)/(2629872*3)) / round($duration/(2629872*3)); }
-elseif ($this->prorata == 'semestery' && $duration >= (2629872*4)) { $rate = ceil(($dateend-$datebegin)/(2629872*3)) / round($duration/(2629872*3)); }
-elseif ($this->prorata == 'biannual' && $duration >= (2629872*6)) { $rate = ceil(($dateend-$datebegin)/(2629872*6)) / round($duration/(2629872*6)); }
+
+if ($this->prorata == 'daily') { $rate = ceil(($dateend-$datebegin)/86400) / ceil($duration/86400); }
+elseif ($this->prorata == 'weekly' && $duration >= 604800) { $rate = ceil(($dateend-$datebegin)/604800) / ceil($duration/604800); }
+elseif ($this->prorata == 'monthly' && $duration >= ($year/12)) { $rate = ceil(($dateend-$datebegin)/($year/12)) / ceil($duration/($year/12)); }
+elseif ($this->prorata == 'quaterly' && $duration >= ($year/4)) { $rate = ceil(($dateend-$datebegin)/($year/4)) / ceil($duration/($year/4)); }
+elseif ($this->prorata == 'semestery' && $duration >= ($year/3)) { $rate = ceil(($dateend-$datebegin)/($year/4)) / ceil($duration/($year/4)); }
+elseif ($this->prorata == 'biannual' && $duration >= ($year/2)) { $rate = ceil(($dateend-$datebegin)/($year/2)) / ceil($duration/($year/2)); }
 else { $rate = round(($dateend-$datebegin)/$duration, 2); }
 } else {
 $rate = 1;

@@ -307,13 +307,14 @@ print 'begin: '.dol_print_date($object->date_begin, 'dayhour').'<br>';
 print 'end: '.dol_print_date($object->date_end, 'dayhour').'<br>';
 
 //print 'timestamp_prorata: '.$object->timestamp_prorata.'% <br>';
-print 'daily_prorata: '.ceil(($object->date_end-$object->date_begin)/86400).'/'.round($object->duration_timestamp/86400).'<br>';
-if ($object->duration_timestamp >= 604800) print 'weekly_prorata: '.ceil(($object->date_end-$object->date_begin)/604800).'/'.round($object->duration_timestamp/604800).'<br>';
-if ($object->duration_timestamp >= 2629872) print 'monthly_prorata: '.ceil(($object->date_end-$object->date_begin)/2629872).'/'.round($object->duration_timestamp/2629872).'<br>';
-if ($object->duration_timestamp >= (2629872*3)) print 'quarterly_prorata: '.ceil(($object->date_end-$object->date_begin)/(2629872*3)).'/'.round($object->duration_timestamp/(2629872*3)).'<br>'; 
-if ($object->duration_timestamp >= (2629872*4)) print 'semester_prorata: '.ceil(($object->date_end-$object->date_begin)/(2629872*4)).'/'.round($object->duration_timestamp/(2629872*4)).'<br>';
-if ($object->duration_timestamp >= (2629872*6)) print 'biannual_prorata: '.ceil(($object->date_end-$object->date_begin)/(2629872*6)).'/'.round($object->duration_timestamp/(2629872*6)).'<br>';
-if ($object->duration_timestamp >= (31557600)) print 'annual_prorata: '.ceil(($object->date_end-$object->date_begin)/(31557600)).'/'.round($object->duration_timestamp/(31557600)).'<br>';
+$year = $object->date_to-$object->date_from;
+print 'daily_prorata: '.ceil(($object->date_end-$object->date_begin)/86400).'/'.ceil($object->duration_timestamp/86400).'<br>';
+if ($object->duration_timestamp >= 604800) print 'weekly_prorata: '.ceil(($object->date_end-$object->date_begin)/604800).'/'.ceil($object->duration_timestamp/604800).'<br>';
+if ($object->duration_timestamp >= ($year/12)) print 'monthly_prorata: '.ceil(($object->date_end-$object->date_begin)/($year/12)).'/'.ceil($object->duration_timestamp/($year/12)).'<br>';
+if ($object->duration_timestamp >= ($year/4)) print 'quarterly_prorata: '.ceil(($object->date_end-$object->date_begin)/($year/4)).'/'.ceil($object->duration_timestamp/($year/4)).'<br>'; 
+if ($object->duration_timestamp >= ($year/3)) print 'semester_prorata: '.ceil(($object->date_end-$object->date_begin)/($year/3)).'/'.ceil($object->duration_timestamp/($year/3)).'<br>';
+if ($object->duration_timestamp >= ($year/2)) print 'biannual_prorata: '.ceil(($object->date_end-$object->date_begin)/($year/2)).'/'.ceil($object->duration_timestamp/($year/2)).'<br>';
+if ($object->duration_timestamp >= $year) print 'annual_prorata: '.ceil(($object->date_end-$object->date_begin)/$year).'/'.ceil($object->duration_timestamp/$year).'<br>';
 
 print 'price: '.price($object->price_prorata);
 print ' '.$langs->trans("Currency".$conf->currency);
