@@ -713,7 +713,7 @@ if (!empty($conf->global->ADHERENT_SUBSCRIPTION_PRORATA)) {
 if (!empty($this->prorata)) {
 $date = new DateTime(); 
 $date->modify('NOW');
-} elseif ($daterenew > dol_now() && $abo > $datefrom) {
+} elseif ($daterenew > $abo && $abo > $datefrom) {
 $date = new DateTime($abo);
 $date->modify('+1 SECONDS');  
 } elseif ($this->duration_unit == 'y') {
