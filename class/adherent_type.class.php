@@ -573,9 +573,9 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
                 $this->statut         = $obj->status;
                 $this->status         = $obj->status;
                 $this->morphy         = $obj->morphy;
-                $this->duration       = $obj->duration;
-                $this->duration_value = substr($obj->duration, 0, dol_strlen($obj->duration)-1);
-                $this->duration_unit  = substr($obj->duration, -1);
+                $this->duration       = (!empty($obj->duration)?$obj->duration:'1y');
+                $this->duration_value = (!empty($obj->duration)?substr($obj->duration, 0, dol_strlen($obj->duration)-1):'1');
+                $this->duration_unit  = (!empty($obj->duration)?substr($obj->duration, -1):'y');
                 $this->commitment       = $obj->commitment;
                 $this->commitment_value = substr($obj->commitment, 0, dol_strlen($obj->commitment)-1);
                 $this->commitment_unit  = substr($obj->commitment, -1);  
