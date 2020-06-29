@@ -691,7 +691,7 @@ $date->modify('- '.$conf->global->SOCIETE_SUBSCRIBE_MONTH_PRESTART.' MONTHS');
 $daterenew = $date->format('Y-m-d H:i:s');
                 $this->date_renew         = $this->db->jdate($daterenew);
                 
-if (!empty($abo) && $abo < $dateto) { 
+if (!empty($abo)) {
 $date = new DateTime($abo);
 $date->modify('+1 SECONDS');
 //$date->modify('NEXT DAY MIDNIGHT');
