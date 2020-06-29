@@ -705,19 +705,14 @@ $date->modify('- '.$conf->global->ADHERENT_WELCOME_MONTH.' MONTHS');
 //$datewelcomefee = $date->format('Y-m-d H:i:s');
 $datewf = $date->getTimestamp();
                 $this->date_welcomefee         = $datewf; 
-                
-if (!empty($abo) && $abo > $datefrom) { 
-$date = new DateTime($abo);
-$date->modify('+1 SECONDS');   
-} else {
-$date = new DateTime();   
-}
-                
+                               
 if (!empty($conf->global->ADHERENT_SUBSCRIPTION_PRORATA)) {
 //forced date
-if ($daterenew < dol_now()) {
+if (!empty($this->prorata)) {
 $date = new DateTime(); 
 $date->modify('NOW');
+} elseif ($this->duration_unit == 'y') {
+$date = new DateTime($datefrom);
 } elseif ($daterenew <= dol_now() && $abo > $datefrom) {
 $date = new DateTime($abo);
 $date->modify('+1 SECONDS');  
@@ -734,7 +729,15 @@ if ($date->getTimestamp() > dol_now() && $daterenew > dol_now()) {
 $date->modify('LAST YEAR');
 }
 }
-}  
+} else {
+if (!empty($abo) && $abo > $datefrom) { 
+$date = new DateTime($abo);
+$date->modify('+1 SECONDS');   
+} else {
+$date = new DateTime();   
+}
+} 
+
 //$date_begin = $date->format('Y-m-d H:i:s');
 $datebegin = $date->getTimestamp();
                 $this->date_begin         = $datebegin; 
