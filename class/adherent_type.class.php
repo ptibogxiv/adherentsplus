@@ -734,7 +734,8 @@ if (!empty($abo) && $abo > $datefrom) {
 $date = new DateTime($abo);
 $date->modify('+1 SECONDS');   
 } else {
-$date = new DateTime();   
+$date = new DateTime();
+$date->modify('NOW');   
 }
 } 
 
