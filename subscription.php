@@ -820,7 +820,7 @@ if ($rowid > 0)
 	    }
       
 print '<br>';
-$adht->fetch($object2->type);
+$adht->fetch($object2->typeid);
 $adht->subscription_calculator($rowid);
     
 print 'from '.dol_print_date($adht->date_from, 'dayhour').' to '.dol_print_date($adht->date_to, 'dayhour').'<br>'; 
