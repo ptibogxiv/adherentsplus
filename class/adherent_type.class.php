@@ -707,7 +707,6 @@ $datewf = $date->getTimestamp();
                 $this->date_welcomefee         = $datewf; 
                                
 if (!empty($conf->global->ADHERENT_SUBSCRIPTION_PRORATA)) {
-//forced date
 if (!empty($this->prorata)) {
 $date = new DateTime(); 
 $date->modify('NOW');
@@ -716,13 +715,17 @@ $date = new DateTime($datefrom);
 } elseif ($daterenew <= dol_now() && $abo > $datefrom) {
 $date = new DateTime($abo);
 $date->modify('+1 SECONDS');  
-} elseif ($this->duration_unit == 'd') { 
+} elseif ($this->duration_unit == 'd') {
+$date = new DateTime();  
 $date->modify('MIDNIGHT');
-} elseif ($this->duration_unit == 'w') { 
-$date->modify('LAST MONDAY MIDNIGHT');
+} elseif ($this->duration_unit == 'w') {
+$date = new DateTime();  
+$date->modify('THIS MONDAY MIDNIGHT');
 } elseif ($this->duration_unit == 'm') {
+$date = new DateTime(); 
 $date->modify('FIRST DAY OF THIS MONTH MIDNIGHT');
 } else {
+$date = new DateTime(); 
  $monthName = date("F", mktime(0, 0, 0, $conf->global->SOCIETE_SUBSCRIBE_MONTH_START, 10));
 $date->modify('FIRST DAY OF '.$monthName.' MIDNIGHT');
 if ($date->getTimestamp() > dol_now() && $daterenew > dol_now()) {
