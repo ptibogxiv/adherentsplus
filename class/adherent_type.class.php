@@ -693,9 +693,7 @@ $daterenew = $date->format('Y-m-d H:i:s');
                 
 if (!empty($abo) && empty($conf->global->ADHERENT_WELCOME_MONTH) ) {
 $date = new DateTime($dateto);
-$date->modify('+1 SECONDS');
-//$date->modify('NEXT DAY MIDNIGHT');
-$date->modify('+ '.$conf->global->ADHERENT_WELCOME_MONTH.' MONTHS');     
+$date->modify('+1 SECONDS');   
 } elseif (!empty($abo) && !empty($conf->global->ADHERENT_WELCOME_MONTH) ) {
 $date = new DateTime($abo);
 $date->modify('+1 SECONDS');
