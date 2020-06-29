@@ -798,7 +798,8 @@ $duration = 2629872*(!empty($this->duration_value)?$this->duration_value:1);
 } else {
 $duration = 31558464*(!empty($this->duration_value)?$this->duration_value:1);
 }
-
+                $this->duration_timestamp     = $duration; 
+                
 if ($daterenew <= dol_now() && !empty($conf->global->ADHERENT_SUBSCRIPTION_PRORATA) && (empty($this->duration_unit) || $this->duration_unit == 'y')) {
 $date->modify($dateto);
 } else {
