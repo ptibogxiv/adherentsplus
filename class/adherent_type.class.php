@@ -713,11 +713,11 @@ if (!empty($conf->global->ADHERENT_SUBSCRIPTION_PRORATA)) {
 if (!empty($this->prorata)) {
 $date = new DateTime(); 
 $date->modify('NOW');
-} elseif ($this->duration_unit == 'y') {
-$date = new DateTime($datefrom);
-} elseif ($daterenew <= dol_now() && $abo > $datefrom) {
+} elseif ($daterenew > dol_now() && $abo > $datefrom) {
 $date = new DateTime($abo);
 $date->modify('+1 SECONDS');  
+} elseif ($this->duration_unit == 'y') {
+$date = new DateTime($datefrom);
 } elseif ($this->duration_unit == 'd') {
 $date = new DateTime();  
 $date->modify('MIDNIGHT');
