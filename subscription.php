@@ -823,8 +823,7 @@ print '<br>';
 $adht->fetch($object2->type);
 $adht->subscription_calculator($rowid);
     
-print 'from '.dol_print_date($adht->date_from, 'dayhour');
-print ' to '.dol_print_date($adht->date_to, 'dayhour').'<br>'; 
+print 'from '.dol_print_date($adht->date_from, 'dayhour').' to '.dol_print_date($adht->date_to, 'dayhour').'<br>'; 
 print 'season: '.$adht->season.'<br>';
 print 'date_renew: '.dol_print_date($adht->date_renew, 'dayhour').'<br>';
 print 'date_welcomefee: '.dol_print_date($adht->date_welcomefee, 'dayhour');
