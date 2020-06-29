@@ -978,7 +978,8 @@ print ' '.$langs->trans("Currency".$conf->currency);
         $datefrom=0;
         $dateto=0;
         $paymentdate=-1;
-        $result=$object2->fetch($rowid);
+        $adht->fetch($object2->typeid);
+        $adht->subscription_calculator($rowid);
 
         // Date payment
         if (GETPOST('paymentyear') && GETPOST('paymentmonth') && GETPOST('paymentday'))
@@ -988,30 +989,24 @@ print ' '.$langs->trans("Currency".$conf->currency);
 
         // Date start subscription
         print '<tr><td width="30%" class="fieldrequired">'.$langs->trans("DateSubscription").'</td><td>';
-        print $form->select_date($object2->next_subscription_date_start,'',1,1,'',"subscription",1,0,1);
+        print $form->select_date($adht->date_begin,'',1,1,'',"subscription",1,0,1);
         print "</td></tr>";
 
         //Date end subscription
         print '<tr><td>'.$langs->trans("DateEndSubscription").'</td><td>';
-        print $form->select_date($object2->next_subscription_date_end,'end',1,1,'',"subscription",1,0,1);
+        print $form->select_date($adht->date_end,'end',1,1,'',"subscription",1,0,1);
         print "</td></tr>";
 
         if ($adht->subscription)
         {
-        if ($conf->global->ADHERENT_SUBSCRIPTION_PRORATA < '2') { 
-        $montant=$adht->price;
-        }
-        else {     
-        $montant=$object2->next_subscription_prorata*$adht->price;
-        }
-        if ($object2->datefin > 0) {$amount=$montant;} else  {$amount=$montant+$adht->welcome;}
+ 
             // Amount
-            print '<tr><td class="fieldrequired">'.$langs->trans("Amount").'</td><td><input type="text" name="subscription" size="10" value="' . price2num($amount) . '"> '.$langs->trans("Currency".$conf->currency).'</td></tr>';
+            print '<tr><td class="fieldrequired">'.$langs->trans("Amount").'</td><td><input type="text" name="subscription" size="10" value="' . price2num($adht->price_prorata) . '"> '.$langs->trans("Currency".$conf->currency).'</td></tr>';
 
             // Label
             print '<tr><td>'.$langs->trans("Label").'</td>';
             print '<td><input name="label" type="text" size="32" value="';
-            if (empty($conf->global->MEMBER_NO_DEFAULT_LABEL)) print $langs->trans("Subscription").' '.$object2->next_subscription_season;
+            if (empty($conf->global->MEMBER_NO_DEFAULT_LABEL)) print $langs->trans("Subscription").' '.$adht->season;
             print '"></td></tr>';
 
             // Complementary action
