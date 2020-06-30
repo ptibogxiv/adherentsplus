@@ -811,7 +811,11 @@ if (!empty($prorata)) {
 $year = $this->db->jdate($dateto) - $this->db->jdate($datefrom);
 $month = cal_days_in_month(CAL_GREGORIAN, $date->format('m'), $date->format('Y'))*86400;
 } else {
+if ($this->duration_unit == 'y') {
 $year = $dateend - $datebegin;
+} else {
+$year = $this->db->jdate($dateto) - $this->db->jdate($datefrom);
+}
 $month = $year/12;
 }
 

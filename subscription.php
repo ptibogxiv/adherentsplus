@@ -838,6 +838,11 @@ $year = $adht->date_to-$adht->date_from;
 if (!empty($prorata)) {
 $month = cal_days_in_month(CAL_GREGORIAN, dol_print_date($adht->date_begin, '%m'), dol_print_date($adht->date_begin, '%Y'))*86400;
 } else {
+if ($object->duration_unit == 'y') {
+$year = $adht->date_end-$adht->date_begin;
+} else {
+$year = $adht->date_to-$adht->date_from;
+}
 $month = $year/12;
 }
 print 'daily_prorata: '.ceil(($adht->date_end-$adht->date_begin)/86400).'/'.ceil($adht->duration_timestamp/86400).'<br>';

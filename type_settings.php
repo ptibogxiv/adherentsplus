@@ -350,10 +350,16 @@ $prorata = $object->prorata_date;
 } else {
 $prorata = $conf->global->ADHERENT_SUBSCRIPTION_PRORATA;  
 } 
-$year = $object->date_to-$object->date_from;
+
 if (!empty($prorata)) {
+$year = $object->date_to-$object->date_from;
 $month = cal_days_in_month(CAL_GREGORIAN, dol_print_date($object->date_begin, '%m'), dol_print_date($object->date_begin, '%Y'))*86400;
 } else {
+if ($object->duration_unit == 'y') {
+$year = $object->date_end-$object->date_begin;
+} else {
+$year = $object->date_to-$object->date_from;
+}
 $month = $year/12;
 }
 print 'daily_prorata: '.ceil(($object->date_end-$object->date_begin)/86400).'/'.ceil($object->duration_timestamp/86400).'<br>';
