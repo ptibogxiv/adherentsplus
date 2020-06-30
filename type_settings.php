@@ -422,7 +422,7 @@ if (! empty($conf->global->ADHERENT_FEDERAL_PART)){
     
 if (!empty($conf->global->ADHERENT_SUBSCRIPTION_PRORATA) && $conf->global->ADHERENT_SUBSCRIPTION_PRORATA == '2') {    
     print '<tr><td>'.$langs->trans("BeginningFixedDate").'</td><td>';
-    print $form->selectyesno("prorata_date", $object->prorata_date, 0);
+    print $form->selectyesno("prorata_date", $object->prorata_date, 1);
 		print '</tr>';
     }
     
