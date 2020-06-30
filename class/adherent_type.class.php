@@ -798,10 +798,20 @@ $date->modify('+'.$value.' YEAR');
 }
 }
 
-$year = $this->db->jdate($dateto) - $this->db->jdate($datefrom);
+if ($daterenew <= dol_now() && !empty($prorata) && (empty($this->duration_unit) || $this->duration_unit == 'y')) {
+$date->modify($dateto);
+} else {
+$date->modify('-1 SECONDS');
+}
+//$date_end = $date->format('Y-m-d H:i:s');
+$dateend = $date->getTimestamp();
+                $this->date_end         = $dateend;
+                 
 if (!empty($prorata)) {
+$year = $this->db->jdate($dateto) - $this->db->jdate($datefrom);
 $month = cal_days_in_month(CAL_GREGORIAN, $date->format('m'), $date->format('Y'))*86400;
 } else {
+$year = $dateend - $datebegin;
 $month = $year/12;
 }
 
@@ -816,14 +826,7 @@ $duration = $year*(!empty($this->duration_value)?$this->duration_value:1);
 }
                 $this->duration_timestamp     = $duration; 
                 
-if ($daterenew <= dol_now() && !empty($prorata) && (empty($this->duration_unit) || $this->duration_unit == 'y')) {
-$date->modify($dateto);
-} else {
-$date->modify('-1 SECONDS');
-}
-//$date_end = $date->format('Y-m-d H:i:s');
-$dateend = $date->getTimestamp();
-                $this->date_end         = $dateend; 
+
                 
 if (!empty($this->prorata)) { 
 
