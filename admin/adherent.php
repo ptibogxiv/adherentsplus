@@ -55,8 +55,7 @@ dol_include_once('/adherentsplus/lib/member.lib.php');
 require_once DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php';
 require_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';
 
-$langs->load("admin");
-$langs->load("adherentsplus@adherentsplus");
+$langs->loadLangs(array('admin', 'members', 'adherentsplus@adherentsplus'));
 
 if (! $user->admin) accessforbidden();
 
