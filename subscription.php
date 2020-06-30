@@ -835,9 +835,14 @@ print 'end: '.dol_print_date($adht->date_end, 'dayhour').'<br>';
 
 //print 'timestamp_prorata: '.$object->timestamp_prorata.'% <br>';
 $year = $adht->date_to-$adht->date_from;
+if (!empty($prorata)) {
+$month = cal_days_in_month(CAL_GREGORIAN, dol_print_date($adht->date_begin, '%m'), dol_print_date($adht->date_begin, '%Y'))*86400;
+} else {
+$month = $year/12;
+}
 print 'daily_prorata: '.ceil(($adht->date_end-$adht->date_begin)/86400).'/'.ceil($adht->duration_timestamp/86400).'<br>';
 if ($adht->duration_timestamp >= 604800) print 'weekly_prorata: '.ceil(($adht->date_end-$adht->date_begin)/604800).'/'.ceil($adht->duration_timestamp/604800).'<br>';
-if ($adht->duration_timestamp >= ($year/12)) print 'monthly_prorata: '.ceil(($adht->date_end-$adht->date_begin)/($year/12)).'/'.ceil($adht->duration_timestamp/($year/12)).'<br>';
+if ($adht->duration_timestamp >= ($month)) print 'monthly_prorata: '.ceil(($adht->date_end-$adht->date_begin)/($month)).'/'.ceil($adht->duration_timestamp/($month)).'<br>';
 if ($adht->duration_timestamp >= ($year/4)) print 'quarterly_prorata: '.ceil(($adht->date_end-$adht->date_begin)/($year/4)).'/'.ceil($adht->duration_timestamp/($year/4)).'<br>'; 
 if ($adht->duration_timestamp >= ($year/3)) print 'semester_prorata: '.ceil(($adht->date_end-$adht->date_begin)/($year/3)).'/'.ceil($adht->duration_timestamp/($year/3)).'<br>';
 if ($adht->duration_timestamp >= ($year/2)) print 'biannual_prorata: '.ceil(($adht->date_end-$adht->date_begin)/($year/2)).'/'.ceil($adht->duration_timestamp/($year/2)).'<br>';

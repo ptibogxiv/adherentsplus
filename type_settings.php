@@ -345,10 +345,20 @@ print 'begin: '.dol_print_date($object->date_begin, 'dayhour').'<br>';
 print 'end: '.dol_print_date($object->date_end, 'dayhour').'<br>';
 
 //print 'timestamp_prorata: '.$object->timestamp_prorata.'% <br>';
+if (!empty($conf->global->ADHERENT_SUBSCRIPTION_PRORATA) && $conf->global->ADHERENT_SUBSCRIPTION_PRORATA == '2') { 
+$prorata = $object->prorata_date;  
+} else {
+$prorata = $conf->global->ADHERENT_SUBSCRIPTION_PRORATA;  
+} 
 $year = $object->date_to-$object->date_from;
+if (!empty($prorata)) {
+$month = cal_days_in_month(CAL_GREGORIAN, dol_print_date($object->date_begin, '%m'), dol_print_date($object->date_begin, '%Y'))*86400;
+} else {
+$month = $year/12;
+}
 print 'daily_prorata: '.ceil(($object->date_end-$object->date_begin)/86400).'/'.ceil($object->duration_timestamp/86400).'<br>';
 if ($object->duration_timestamp >= 604800) print 'weekly_prorata: '.ceil(($object->date_end-$object->date_begin)/604800).'/'.ceil($object->duration_timestamp/604800).'<br>';
-if ($object->duration_timestamp >= ($year/12)) print 'monthly_prorata: '.ceil(($object->date_end-$object->date_begin)/($year/12)).'/'.ceil($object->duration_timestamp/($year/12)).'<br>';
+if ($object->duration_timestamp >= ($month)) print 'monthly_prorata: '.ceil(($object->date_end-$object->date_begin)/($month)).'/'.ceil($object->duration_timestamp/($month)).'<br>';
 if ($object->duration_timestamp >= ($year/4)) print 'quarterly_prorata: '.ceil(($object->date_end-$object->date_begin)/($year/4)).'/'.ceil($object->duration_timestamp/($year/4)).'<br>'; 
 if ($object->duration_timestamp >= ($year/3)) print 'semester_prorata: '.ceil(($object->date_end-$object->date_begin)/($year/3)).'/'.ceil($object->duration_timestamp/($year/3)).'<br>';
 if ($object->duration_timestamp >= ($year/2)) print 'biannual_prorata: '.ceil(($object->date_end-$object->date_begin)/($year/2)).'/'.ceil($object->duration_timestamp/($year/2)).'<br>';
