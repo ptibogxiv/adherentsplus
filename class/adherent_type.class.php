@@ -722,8 +722,9 @@ $date = new DateTime($datefrom);
 $date = new DateTime();  
 $date->modify('MIDNIGHT');
 } elseif ($this->duration_unit == 'w') {
-$date = new DateTime();  
-$date->modify('THIS MONDAY MIDNIGHT');
+$date = new DateTime();
+$date->modify('TOMORROW');  
+$date->modify('LAST MONDAY MIDNIGHT');
 } elseif ($this->duration_unit == 'm') {
 $date = new DateTime(); 
 $date->modify('FIRST DAY OF THIS MONTH MIDNIGHT');
