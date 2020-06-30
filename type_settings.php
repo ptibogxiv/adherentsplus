@@ -302,37 +302,7 @@ if ((float) DOL_VERSION < 11.0) {
     	include DOL_DOCUMENT_ROOT . '/core/tpl/extrafields_view.tpl.php';
 
 		print '</table>';
-    print '</div><br>';
-        
-print 'from '.dol_print_date($object->date_from, 'dayhour').' to '.dol_print_date($object->date_to, 'dayhour').'<br>'; 
-print 'season: '.$object->season.'<br>';
-print 'date_renew: '.dol_print_date($object->date_renew, 'dayhour').'<br>';
-print 'date_welcomefee: '.dol_print_date($object->date_welcomefee, 'dayhour');
-print '<hr>';
-
-// current dates
-print 'begin: '.dol_print_date($object->date_begin, 'dayhour').'<br>';
-print 'end: '.dol_print_date($object->date_end, 'dayhour').'<br>';
-
-//print 'timestamp_prorata: '.$object->timestamp_prorata.'% <br>';
-$year = $object->date_to-$object->date_from;
-print 'daily_prorata: '.ceil(($object->date_end-$object->date_begin)/86400).'/'.round($object->duration_timestamp/86400).'<br>';
-if ($object->duration_timestamp >= 604800) print 'weekly_prorata: '.ceil(($object->date_end-$object->date_begin)/604800).'/'.ceil($object->duration_timestamp/604800).'<br>';
-if ($object->duration_timestamp >= ($year/12)) print 'monthly_prorata: '.ceil(($object->date_end-$object->date_begin)/($year/12)).'/'.ceil($object->duration_timestamp/($year/12)).'<br>';
-if ($object->duration_timestamp >= ($year/4)) print 'quarterly_prorata: '.ceil(($object->date_end-$object->date_begin)/($year/4)).'/'.ceil($object->duration_timestamp/($year/4)).'<br>'; 
-if ($object->duration_timestamp >= ($year/3)) print 'semester_prorata: '.ceil(($object->date_end-$object->date_begin)/($year/3)).'/'.ceil($object->duration_timestamp/($year/3)).'<br>';
-if ($object->duration_timestamp >= ($year/2)) print 'biannual_prorata: '.ceil(($object->date_end-$object->date_begin)/($year/2)).'/'.ceil($object->duration_timestamp/($year/2)).'<br>';
-if ($object->duration_timestamp >= $year) print 'annual_prorata: '.ceil(($object->date_end-$object->date_begin)/$year).'/'.ceil($object->duration_timestamp/$year).'<br>';
-
-print 'price: '.price($object->price_prorata);
-print ' '.$langs->trans("Currency".$conf->currency);
-    
-print '<hr>';
-// next dates
-print 'nextbegin: '.dol_print_date($object->date_nextbegin, 'dayhour').'<br>'; 
-print 'nextend: '.dol_print_date($object->date_nextend, 'dayhour').'<br>';
-print 'nextprice: '.price($object->nextprice);
-print ' '.$langs->trans("Currency".$conf->currency);
+    print '</div>';
 		
     dol_fiche_end();
 
@@ -363,6 +333,36 @@ print ' '.$langs->trans("Currency".$conf->currency);
 		//}
 
 		print "</div>";
+    
+print 'from '.dol_print_date($object->date_from, 'dayhour').' to '.dol_print_date($object->date_to, 'dayhour').'<br>'; 
+print 'season: '.$object->season.'<br>';
+print 'date_renew: '.dol_print_date($object->date_renew, 'dayhour').'<br>';
+print 'date_welcomefee: '.dol_print_date($object->date_welcomefee, 'dayhour');
+print '<hr>';
+
+// current dates
+print 'begin: '.dol_print_date($object->date_begin, 'dayhour').'<br>';
+print 'end: '.dol_print_date($object->date_end, 'dayhour').'<br>';
+
+//print 'timestamp_prorata: '.$object->timestamp_prorata.'% <br>';
+$year = $object->date_to-$object->date_from;
+print 'daily_prorata: '.ceil(($object->date_end-$object->date_begin)/86400).'/'.round($object->duration_timestamp/86400).'<br>';
+if ($object->duration_timestamp >= 604800) print 'weekly_prorata: '.ceil(($object->date_end-$object->date_begin)/604800).'/'.ceil($object->duration_timestamp/604800).'<br>';
+if ($object->duration_timestamp >= ($year/12)) print 'monthly_prorata: '.ceil(($object->date_end-$object->date_begin)/($year/12)).'/'.ceil($object->duration_timestamp/($year/12)).'<br>';
+if ($object->duration_timestamp >= ($year/4)) print 'quarterly_prorata: '.ceil(($object->date_end-$object->date_begin)/($year/4)).'/'.ceil($object->duration_timestamp/($year/4)).'<br>'; 
+if ($object->duration_timestamp >= ($year/3)) print 'semester_prorata: '.ceil(($object->date_end-$object->date_begin)/($year/3)).'/'.ceil($object->duration_timestamp/($year/3)).'<br>';
+if ($object->duration_timestamp >= ($year/2)) print 'biannual_prorata: '.ceil(($object->date_end-$object->date_begin)/($year/2)).'/'.ceil($object->duration_timestamp/($year/2)).'<br>';
+if ($object->duration_timestamp >= $year) print 'annual_prorata: '.ceil(($object->date_end-$object->date_begin)/$year).'/'.ceil($object->duration_timestamp/$year).'<br>';
+
+print 'price: '.price($object->price_prorata);
+print ' '.$langs->trans("Currency".$conf->currency);
+    
+print '<hr>';
+// next dates
+print 'nextbegin: '.dol_print_date($object->date_nextbegin, 'dayhour').'<br>'; 
+print 'nextend: '.dol_print_date($object->date_nextend, 'dayhour').'<br>';
+print 'nextprice: '.price($object->nextprice);
+print ' '.$langs->trans("Currency".$conf->currency);
 
 	}
 
