@@ -990,12 +990,12 @@ print ' '.$langs->trans("Currency".$conf->currency);
 
         // Date start subscription
         print '<tr><td width="30%" class="fieldrequired">'.$langs->trans("DateSubscription").'</td><td>';
-        print $form->select_date($adht->date_begin,'',1,1,'',"subscription",1,0,1);
+        print $form->select_date($adht->date_begin,'',1,1,'',"subscription",1,0,1).dol_print_date($adht->date_begin, '%S');
         print "</td></tr>";
 
         //Date end subscription
         print '<tr><td>'.$langs->trans("DateEndSubscription").'</td><td>';
-        print $form->select_date($adht->date_end,'end',1,1,'',"subscription",1,0,1);
+        print $form->select_date($adht->date_end,'end',1,1,'',"subscription",1,0,1).dol_print_date($adht->date_end, '%S');
         print "</td></tr>";
 
         if ($adht->subscription)
