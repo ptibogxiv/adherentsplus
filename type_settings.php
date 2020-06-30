@@ -240,7 +240,7 @@ if (! empty($conf->global->ADHERENT_FEDERAL_PART)){
 
 if (!empty($conf->global->ADHERENT_SUBSCRIPTION_PRORATA) && $conf->global->ADHERENT_SUBSCRIPTION_PRORATA == '2') {    
     print '<tr><td>'.$langs->trans("BeginningDate").'</td><td>';
-		print $langs->trans((!empty($object->prorata)?$object->prorata:'None'));
+		print $langs->trans((!empty($object->prorata)?'Fixed':'Free'));
 		print '</tr>';
     }
     
