@@ -238,6 +238,10 @@ if (! empty($conf->global->ADHERENT_FEDERAL_PART)){
 }    
     }
     
+    print '<tr><td>'.$langs->trans("BeginningDate").'</td><td>';
+		print $langs->trans((!empty($object->prorata)?$object->prorata:'None'));
+		print '</tr>';
+    
     print '<tr><td>'.$langs->trans("Prorata");
 		print $form->textwithpicto($s,$langs->trans("IncludeInSubscritionPrice"),1);
     print '</td><td>';

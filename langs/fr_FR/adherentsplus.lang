@@ -6,6 +6,7 @@ Member=Adhérent
 Members=Adhérents
 Members+=Adhérents+
 License=Licence
+BeginningDate=Date de début
 FederalPart=Part fédéral
 IncludeInSubscritionPrice=Inclus dans la cotisation
 Renewal=Renouvellement
