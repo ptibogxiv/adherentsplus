@@ -93,6 +93,7 @@ class AdherentTypePlus extends CommonObject
 	public $price;
 	public $federal;
 	public $prorata;
+  public $prorata_date;
   public $price_level;
 	public $automatic;
   public $automatic_renew;
@@ -546,7 +547,7 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
 	{
         global $langs, $conf;
   
-        $sql = "SELECT d.rowid, d.tms as datem, d.libelle as label, d.statut as status, d.morphy, d.subscription, d.welcome, d.price, d.federal, d.price_level, d.duration, d.commitment, d.prorata, d.automatic, d.automatic_renew, d.family, d.mail_valid, d.note, d.vote";
+        $sql = "SELECT d.rowid, d.tms as datem, d.libelle as label, d.statut as status, d.morphy, d.subscription, d.welcome, d.price, d.federal, d.price_level, d.duration, d.commitment, d.prorata, d.prorata_date, d.automatic, d.automatic_renew, d.family, d.mail_valid, d.note, d.vote";
         $sql .= " FROM ".MAIN_DB_PREFIX."adherent_type as d";
         $sql .= " WHERE d.rowid = ".$rowid;
 
@@ -566,7 +567,8 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
                 $this->welcome        = $obj->welcome;
                 $this->price          = $obj->price;
                 $this->federal        = $obj->federal;
-                $this->prorata        = $obj->prorata; 
+                $this->prorata        = $obj->prorata;
+                $this->prorata_date   = $obj->prorata_date; 
                 $this->price_level    = $obj->price_level;
                 $this->label          = $obj->label;
                 $this->libelle        = $obj->label;	// For backward compatibility
@@ -646,8 +648,11 @@ $abo = $obj->datefin;
         } else {
 $abo = null; 
         }
-        
-$prorata = $conf->global->ADHERENT_SUBSCRIPTION_PRORATA;       
+if (!empty($conf->global->ADHERENT_SUBSCRIPTION_PRORATA) && $conf->global->ADHERENT_SUBSCRIPTION_PRORATA == '2') { 
+$prorata = $this->prorata_date;  
+} else {
+$prorata = $conf->global->ADHERENT_SUBSCRIPTION_PRORATA;  
+}              
 
 $date = new DateTime();  
 $monthName = date("F", mktime(0, 0, 0, $conf->global->SOCIETE_SUBSCRIBE_MONTH_START, 10));
