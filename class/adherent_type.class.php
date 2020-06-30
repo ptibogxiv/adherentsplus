@@ -866,7 +866,20 @@ $date->modify('NEXT MONTH MIDNIGHT');
 } else {
 $date->modify('NEXT YEAR MIDNIGHT');
 }
-}                                 
+} 
+
+$value = (!empty($this->duration_value)?$this->duration_value:0) - 1;
+if ($value>0) {
+if ($this->duration_unit == 'd') { 
+$date->modify('+'.$value.' DAY');
+} elseif ($this->duration_unit == 'w') { 
+$date->modify('+'.$value.' WEEK');
+} elseif ($this->duration_unit == 'm') {
+$date->modify('+'.$value.' MONTH');
+} else {
+$date->modify('+'.$value.' YEAR');
+}
+}                                
 $date->modify('-1 SECONDS');    
 //$date_nextend = $date->format('Y-m-d H:i:s');
 $datenextend = $date->getTimestamp();
