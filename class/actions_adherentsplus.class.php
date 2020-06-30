@@ -85,10 +85,11 @@ class Actionsadherentsplus
 	 */
 	function ActionButtons($parameters)
 	{
-
-  //print array('title'=>'<span class="far fa-money-bill-alt paddingrightonly"></span><div class="trunc">'.$langs->trans("Payment").'</div>');
+  global $langs;
+   
+  $reshook = array('title'=>'<span class="fas fa-users paddingrightonly"></span><div class="trunc">'.$langs->trans("Subscription").'</div>', 'action'=>'CloseBill();');
   
-  return 0;
+  return $reshook;
   }
 
 }
