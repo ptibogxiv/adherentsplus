@@ -646,6 +646,8 @@ $abo = $obj->datefin;
         } else {
 $abo = null; 
         }
+        
+$prorata = $conf->global->ADHERENT_SUBSCRIPTION_PRORATA;       
 
 $date = new DateTime();  
 $monthName = date("F", mktime(0, 0, 0, $conf->global->SOCIETE_SUBSCRIBE_MONTH_START, 10));
@@ -680,7 +682,7 @@ $season = $datefrom2.'/'.$dateto2;
 $season = $datefrom2;
 }  
                 $this->season         = $season; 
-if (empty($conf->global->ADHERENT_SUBSCRIPTION_PRORATA) && $abo < $dateto) {
+if (empty($prorata) && $abo < $dateto) {
 $date = new DateTime($abo);
 $date->modify('MIDNIGHT');
 } else {
@@ -709,7 +711,7 @@ $date->modify('- '.$conf->global->ADHERENT_WELCOME_MONTH.' MONTHS');
 $datewf = $date->getTimestamp();
                 $this->date_welcomefee         = $datewf; 
                                
-if (!empty($conf->global->ADHERENT_SUBSCRIPTION_PRORATA)) {
+if (!empty($prorata)) {
 if (!empty($this->prorata)) {
 $date = new DateTime(); 
 $date->modify('NOW');
@@ -750,7 +752,7 @@ $date->modify('NOW');
 $datebegin = $date->getTimestamp();
                 $this->date_begin         = $datebegin; 
                 
-if (!empty($conf->global->ADHERENT_SUBSCRIPTION_PRORATA)) {
+if (!empty($prorata)) {
 //forced date
 if ($this->duration_unit == 'd') { 
 $date->modify('NEXT DAY MIDNIGHT');
@@ -803,7 +805,7 @@ $duration = $year*(!empty($this->duration_value)?$this->duration_value:1);
 }
                 $this->duration_timestamp     = $duration; 
                 
-if ($daterenew <= dol_now() && !empty($conf->global->ADHERENT_SUBSCRIPTION_PRORATA) && (empty($this->duration_unit) || $this->duration_unit == 'y')) {
+if ($daterenew <= dol_now() && !empty($prorata) && (empty($this->duration_unit) || $this->duration_unit == 'y')) {
 $date->modify($dateto);
 } else {
 $date->modify('-1 SECONDS');
@@ -843,7 +845,7 @@ $date->modify('NEXT DAY MIDNIGHT');
 $datenextbegin = $date->getTimestamp();
                 $this->date_nextbegin         = $datenextbegin;
 
-if (!empty($conf->global->ADHERENT_SUBSCRIPTION_PRORATA)) {
+if (!empty($prorata)) {
 //forced date
 if ($this->duration_unit == 'd') { 
 $date->modify('NEXT DAY MIDNIGHT');
