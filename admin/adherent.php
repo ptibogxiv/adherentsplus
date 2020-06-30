@@ -262,7 +262,7 @@ print "</td></tr>\n";
 
 
 // type of adhesion flow
-print '<tr class="oddeven"><td>'.$langs->trans("BeginningDate").'</td>';
+print '<tr class="oddeven"><td>'.$langs->trans("BeginningFixedDate").'</td>';
 print '<td>';
 print $form->selectarray('ADHERENT_SUBSCRIPTION_PRORATA', array('0'=>$langs->trans("ADHERENT_PRORATA_SUBSCRIPTION_FREE"),'1'=>$langs->trans("ADHERENT_PRORATA_SUBSCRIPTION_BLOCK"),'2'=>$langs->trans("ADHERENT_PRORATA_SUBSCRIPTION_TYPE")), (empty($conf->global->ADHERENT_SUBSCRIPTION_PRORATA)?'0':$conf->global->ADHERENT_SUBSCRIPTION_PRORATA), 0);
 print '</td>';
