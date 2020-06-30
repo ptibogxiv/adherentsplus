@@ -835,7 +835,7 @@ print 'end: '.dol_print_date($adht->date_end, 'dayhour').'<br>';
 
 //print 'timestamp_prorata: '.$object->timestamp_prorata.'% <br>';
 $year = $adht->date_to-$adht->date_from;
-print 'daily_prorata: '.ceil(($adht->date_end-$adht->date_begin)/86400).'/'.round($adht->duration_timestamp/86400).'<br>';
+print 'daily_prorata: '.ceil(($adht->date_end-$adht->date_begin)/86400).'/'.ceil($adht->duration_timestamp/86400).'<br>';
 if ($adht->duration_timestamp >= 604800) print 'weekly_prorata: '.ceil(($adht->date_end-$adht->date_begin)/604800).'/'.ceil($adht->duration_timestamp/604800).'<br>';
 if ($adht->duration_timestamp >= ($year/12)) print 'monthly_prorata: '.ceil(($adht->date_end-$adht->date_begin)/($year/12)).'/'.ceil($adht->duration_timestamp/($year/12)).'<br>';
 if ($adht->duration_timestamp >= ($year/4)) print 'quarterly_prorata: '.ceil(($adht->date_end-$adht->date_begin)/($year/4)).'/'.ceil($adht->duration_timestamp/($year/4)).'<br>'; 

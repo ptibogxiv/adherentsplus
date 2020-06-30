@@ -822,7 +822,7 @@ $dateend = $date->getTimestamp();
                 
 if (!empty($this->prorata)) { 
 
-if ($this->prorata == 'daily') { $rate = ceil(($dateend-$datebegin)/86400) / round($duration/86400); }
+if ($this->prorata == 'daily') { $rate = ceil(($dateend-$datebegin)/86400) / ceil($duration/86400); }
 elseif ($this->prorata == 'weekly' && $duration >= 604800) { $rate = ceil(($dateend-$datebegin)/604800) / ceil($duration/604800); }
 elseif ($this->prorata == 'monthly' && $duration >= ($year/12)) { $rate = ceil(($dateend-$datebegin)/($year/12)) / ceil($duration/($year/12)); }
 elseif ($this->prorata == 'quaterly' && $duration >= ($year/4)) { $rate = ceil(($dateend-$datebegin)/($year/4)) / ceil($duration/($year/4)); }
