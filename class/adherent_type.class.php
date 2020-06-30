@@ -408,6 +408,7 @@ class AdherentTypePlus extends CommonObject
     $sql.= "duration = '" . $this->db->escape($this->duration_value . $this->duration_unit) ."',";
     $sql.= "commitment = '" . $this->db->escape($this->commitment_value . $this->commitment_unit) ."',";
     $sql.= "prorata = '".$this->db->escape($this->prorata)."',";
+    $sql.= "prorata_date = '".$this->prorata_date."',";
     $sql.= "note = '".$this->db->escape($this->note)."',";
     $sql.= "vote = '".$this->vote."',";
     $sql.= "automatic = '".$this->automatic."',";

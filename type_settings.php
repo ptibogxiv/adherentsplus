@@ -83,6 +83,7 @@ $welcome=GETPOST("welcome","alpha");
 $price=GETPOST("price","alpha");
 $federal=GETPOST("federal","alpha");
 $prorata=GETPOST("prorata","alpha");
+$prorata_date=GETPOST("prorata_date","int");
 $price_level=GETPOST("price_level","int");
 $commitment_value = GETPOST('commitment_value', 'int');
 $commitment_unit = GETPOST('commitment_unit', 'alpha');
@@ -140,6 +141,7 @@ if ($action == 'update' && $user->rights->adherent->configurer)
     $object->price       = price2num($price);
     $object->federal       = price2num($federal);
     $object->prorata       = trim($prorata?$prorata:null);
+    $object->prorata_date  = (int) $prorata_date;
     $object->price_level       = trim($price_level?$price_level:'1');
     $object->commitment_value     	 = $commitment_value;
     $object->commitment_unit      	 = $commitment_unit;
@@ -239,8 +241,8 @@ if (! empty($conf->global->ADHERENT_FEDERAL_PART)){
     }
 
 if (!empty($conf->global->ADHERENT_SUBSCRIPTION_PRORATA) && $conf->global->ADHERENT_SUBSCRIPTION_PRORATA == '2') {    
-    print '<tr><td>'.$langs->trans("BeginningDate").'</td><td>';
-		print $langs->trans((!empty($object->prorata_date)?'Fixed':'Free'));
+    print '<tr><td>'.$langs->trans("BeginningFixedDate").'</td><td>';
+    print yn($object->prorata_date);
 		print '</tr>';
     }
     
@@ -416,6 +418,12 @@ if (! empty($conf->global->ADHERENT_FEDERAL_PART)){
 } 
     } else {
     print '<input size="10" type="text" value="0" name="welcome"><input size="10" type="text" value="0" name="price">';
+    }
+    
+if (!empty($conf->global->ADHERENT_SUBSCRIPTION_PRORATA) && $conf->global->ADHERENT_SUBSCRIPTION_PRORATA == '2') {    
+    print '<tr><td>'.$langs->trans("BeginningFixedDate").'</td><td>';
+    print $form->selectyesno("prorata_date", $object->prorata_date, 0);
+		print '</tr>';
     }
     
     print '<tr><td>'.$langs->trans("Prorata");
