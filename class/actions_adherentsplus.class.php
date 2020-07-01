@@ -25,7 +25,7 @@
  */
  
 require_once DOL_DOCUMENT_ROOT.'/adherents/class/adherent.class.php';
-$langs->loadLangs(array("members"));
+$langs->loadLangs(array("members", 'adherentsplus@adherentsplus'));
 
 /**
  *	\class      ActionsMulticompany
@@ -94,9 +94,14 @@ if ($conf->global->MAIN_FEATURES_LEVEL) {
 	console.log("Open box to select the thirdparty place="+place);
 	$.colorbox({href:"../societe/list.php?contextpage=poslist&nomassaction=1&place="+place, width:"90%", height:"80%", transition:"none", iframe:"true", title:"<?php echo $langs->trans("Subscription"); ?>"});
 }
+function CloseBillConsumption() {
+	invoiceid = $("#invoiceid").val();
+	console.log("Open popup to enter payment on invoiceid="+invoiceid);
+	$.colorbox({href:"../custom/adherentsplus/pay.php?place="+place+"&invoiceid="+invoiceid, width:"80%", height:"90%", transition:"none", iframe:"true", title:"<?php echo $langs->trans("Consumptions"); ?>"});
+}
 </script>
 <?php   
-  $reshook = array(array('title'=>'<span class="fas fa-users paddingrightonly"></span><div class="trunc">'.$langs->trans("Subscription").'</div>', 'action'=>'Customer33();'), array('title'=>'<span class="fas fa-users paddingrightonly"></span><div class="trunc">'.$langs->trans("Consumption").'</div>', 'action'=>'Customer33();'));
+  $reshook = array(array('title'=>'<span class="fas fa-users paddingrightonly"></span><div class="trunc">'.$langs->trans("Subscription").'</div>', 'action'=>'Customer33();'), array('title'=>'<span class="fas fa-users paddingrightonly"></span><div class="trunc">'.$langs->trans("Consumptions").'</div>', 'action'=>'CloseBillConsumption();'));
   //$reshook = array('title'=>'<span class="fas fa-users paddingrightonly"></span><div class="trunc">'.$langs->trans("Subscription").'</div>', 'action'=>'Customer33();');
  
   return $reshook;
