@@ -843,7 +843,7 @@ $year = $adht->date_end-$adht->date_begin;
 } else {
 $year = $adht->date_to-$adht->date_from;
 }
-$month = $year/12;
+$month = ceil((ceil(($adht->date_end-$adht->date_begin)/86400)*86400)/$adht->duration_value);
 }
 print 'daily_prorata: '.ceil(($adht->date_end-$adht->date_begin)/86400).'/'.ceil($adht->duration_timestamp/86400).'<br>';
 if ($adht->duration_timestamp >= 604800) print 'weekly_prorata: '.ceil(($adht->date_end-$adht->date_begin)/604800).'/'.ceil($adht->duration_timestamp/604800).'<br>';
