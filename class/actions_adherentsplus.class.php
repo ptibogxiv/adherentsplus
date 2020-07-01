@@ -96,10 +96,9 @@ if ($conf->global->MAIN_FEATURES_LEVEL) {
 }
 </script>
 <?php   
-  $reshook = array('title'=>'<span class="fas fa-users paddingrightonly"></span><div class="trunc">'.$langs->trans("Subscription").'</div>', 'action'=>'Customer33();');
-  
-  //$reshook .= array('title'=>'<span class="fas fa-users paddingrightonly"></span><div class="trunc">'.$langs->trans("Consumption").'</div>', 'action'=>'Customer33();');
-  
+  $reshook = array(array('title'=>'<span class="fas fa-users paddingrightonly"></span><div class="trunc">'.$langs->trans("Subscription").'</div>', 'action'=>'Customer33();'), array('title'=>'<span class="fas fa-users paddingrightonly"></span><div class="trunc">'.$langs->trans("Consumption").'</div>', 'action'=>'Customer33();'));
+  //$reshook = array('title'=>'<span class="fas fa-users paddingrightonly"></span><div class="trunc">'.$langs->trans("Subscription").'</div>', 'action'=>'Customer33();');
+ 
   return $reshook;
 }
 
