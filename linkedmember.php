@@ -355,7 +355,7 @@ print '</SELECT>';
 			}
 			else
 			{
-				print $langs->trans("Free");
+				print $langs->trans("None");
 			}
 		}     
     print '</td>';
