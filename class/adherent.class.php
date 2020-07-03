@@ -1917,6 +1917,7 @@ require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 	 *  @param	string		$option					Which action ('bankdirect', 'bankviainvoice', 'invoiceonly', ...)
 	 *	@param	int			$accountid				Id bank account
 	 *	@param	int			$datesubscription		Date of subscription
+	 *	@param	int			$datesubend		Date of subscription end
 	 *	@param	int			$paymentdate			Date of payment
 	 *	@param	string		$operation				Code of type of operation (if Id bank account provided). Example 'CB', ...
 	 *	@param	string		$label					Label operation (if Id bank account provided)
@@ -1927,7 +1928,7 @@ require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 	 *  @param	string		$autocreatethirdparty	Auto create new thirdparty if member not yet linked to a thirdparty and we request an option that generate invoice.
 	 *	@return int									<0 if KO, >0 if OK
 	 */
-	public function subscriptionComplementaryActions($subscriptionid, $option, $accountid, $datesubscription, $paymentdate, $operation, $label, $amount, $num_chq, $emetteur_nom = '', $emetteur_banque = '', $autocreatethirdparty = 0)
+	public function subscriptionComplementaryActions($subscriptionid, $option, $accountid, $datesubscription, $datesubend, $paymentdate, $operation, $label, $amount, $num_chq, $emetteur_nom = '', $emetteur_banque = '', $autocreatethirdparty = 0)
 	{
 		global $conf, $langs, $user, $mysoc;
 
@@ -2065,7 +2066,7 @@ require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 					$vattouse = get_default_tva($mysoc, $mysoc, $idprodsubscription);
 				}
 				//print xx".$vattouse." - ".$mysoc." - ".$customer;exit;
-				$result = $invoice->addline($label, 0, 1, $vattouse, 0, 0, $idprodsubscription, 0, $datesubscription, '', 0, 0, '', 'TTC', $amount, 1);
+				$result = $invoice->addline($label, 0, 1, $vattouse, 0, 0, $idprodsubscription, 0, $datesubscription, $datesubend, 0, 0, '', 'TTC', $amount, 1);
 				if ($result <= 0) {
 					$this->error = $invoice->error;
 					$this->errors = $invoice->errors;

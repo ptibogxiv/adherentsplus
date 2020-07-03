@@ -339,7 +339,7 @@ if ($user->rights->adherent->cotisation->creer && $action == 'subscription' && !
 
         if (! $error)
         {
-        	$result = $object->subscriptionComplementaryActions($crowid, $option, $accountid, $datesubscription, $paymentdate, $operation, $label, $amount, $num_chq, $emetteur_nom, $emetteur_banque);
+        	$result = $object->subscriptionComplementaryActions($crowid, $option, $accountid, $datesubscription, $datesubend, $paymentdate, $operation, $label, $amount, $num_chq, $emetteur_nom, $emetteur_banque);
 			if ($result < 0)
 			{
 				$error++;
