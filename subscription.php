@@ -598,7 +598,7 @@ if ($rowid > 0)
 		}
 		else
 		{
-				print $langs->trans("Free");
+				print $langs->trans("None");
 		}     
     print '</td>';
 
