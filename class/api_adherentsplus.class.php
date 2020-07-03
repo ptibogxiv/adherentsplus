@@ -74,37 +74,7 @@ class AdherentsPlus extends DolibarrApi
 
         return $this->_cleanObjectDatas($member);
     }
-    
-    /**
-     * Get properties of a member object by license
-     *
-     * Return an array with member informations
-     *
-     * @param string      $license   License
-     * @return 	array|mixed data without useless information
-     * 
-     * @url	GET license/{license}
-     * 
-     * @throws    RestException
-     */
-    function getLicense($license)
-    {
-        if(! DolibarrApiAccess::$user->rights->adherent->lire) {
-            throw new RestException(401);
-        }
-
-        $member = new AdherentPlus($this->db);
-        $result = $member->fetch('', '', '', $license);
-        if( ! $result ) {
-            throw new RestException(404, 'member not found');
-        }
-
-        if( ! DolibarrApi::_checkAccessToResource('adherent', $member->id)) {
-            throw new RestException(401, 'Access not allowed for login '.DolibarrApiAccess::$user->login);
-        }
-
-        return $this->_cleanObjectDatas($member);
-    }    
+       
 
     /**
      * List members
