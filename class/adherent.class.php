@@ -2442,7 +2442,7 @@ require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 		global $langs;
 		$langs->load("dict");
 
-		$code=(empty($this->civility_id)?'':$this->civility_id);
+		$code = (empty($this->civility_id) ? '' : $this->civility_id);
 		if (empty($code)) return '';
 		return $langs->getLabelFromKey($this->db, "Civility".$code, "c_civility", "code", "label", $code);
 	}
@@ -2453,90 +2453,105 @@ require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 	 *	@param	int		$withpictoimg				0=No picto, 1=Include picto into link, 2=Only picto, -1=Include photo into link, -2=Only picto photo, -3=Only photo very small)
 	 *	@param	int		$maxlen						length max label
 	 *	@param	string	$option						Page for link ('card', 'category', 'subscription', ...)
-	 *  @param  string  $mode           			''=Show firstname+lastname as label (using default order), 'firstname'=Show only firstname, 'login'=Show login, 'ref'=Show ref
-	 *  @param  string  $morecss        			Add more css on link
-	 *  @param  int     $save_lastsearch_value    	-1=Auto, 0=No save of lastsearch_values when clicking, 1=Save lastsearch_values whenclicking
+	 *	@param  string  $mode           			''=Show firstname+lastname as label (using default order), 'firstname'=Show only firstname, 'login'=Show login, 'ref'=Show ref
+	 *	@param  string  $morecss        			Add more css on link
+	 *	@param  int		$save_lastsearch_value    	-1=Auto, 0=No save of lastsearch_values when clicking, 1=Save lastsearch_values whenclicking
+	 *	@param	int		$notooltip					1=Disable tooltip
+	 *	@param  int		$addlinktonotes			1=Add link to notes
 	 *	@return	string								Chaine avec URL
 	 */
-	function getNomUrl($withpictoimg=0, $maxlen=0, $option='card', $mode='', $morecss='', $save_lastsearch_value=-1)
+	public function getNomUrl($withpictoimg = 0, $maxlen = 0, $option = 'card', $mode = '', $morecss = '', $save_lastsearch_value = -1, $notooltip = 0, $addlinktonotes = 0)
 	{
 		global $conf, $langs;
 
-		if (! empty($conf->global->MAIN_OPTIMIZEFORTEXTBROWSER) && $withpictoimg) $withpictoimg=0;
+		if (!empty($conf->global->MAIN_OPTIMIZEFORTEXTBROWSER) && $withpictoimg) $withpictoimg = 0;
 
-		$notooltip=0;
+		$result = '';
+		$label = '';
+		$linkstart = '';
+		$linkend = '';
 
-		$result=''; $label='';
-		$link=''; $linkstart=''; $linkend='';
-
-		if (! empty($this->photo))
-		{
-			$label.= '<div class="photointooltip">';
-			$label.= Form::showphoto('memberphoto', $this, 80, 0, 0, 'photowithmargin photologintooltip', 'small', 0, 1);
-			$label.= '</div><div style="clear: both;"></div>';
+		if (!empty($this->photo)) {
+			$label .= '<div class="photointooltip">';
+			$label .= Form::showphoto('memberphoto', $this, 80, 0, 0, 'photowithmargin photologintooltip', 'small', 0, 1);
+			$label .= '</div><div style="clear: both;"></div>';
 		}
 
-		$label.= '<div class="centpercent">';
-		$label.= '<u>' . $langs->trans("Member") . '</u>';
-		if (! empty($this->ref))
-			$label.= '<br><b>' . $langs->trans('Ref') . ':</b> ' . $this->ref;
-		if (! empty($this->firstname) || ! empty($this->lastname))
-			$label.= '<br><b>' . $langs->trans('Name') . ':</b> ' . $this->getFullName($langs);
-		$label.='</div>';
+		$label .= '<div class="centpercent">';
+		$label .= '<u>'.$langs->trans("Member").'</u>';
+		if (!empty($this->ref)) $label .= '<br><b>'.$langs->trans('Ref').':</b> '.$this->ref;
+		if (!empty($this->firstname) || !empty($this->lastname)) $label .= '<br><b>'.$langs->trans('Name').':</b> '.$this->getFullName($langs);
+		if (!empty($this->company)) $label .= '<br><b>'.$langs->trans('Company').':</b> '.$this->company;
+		$label .= '</div>';
 
-		$url = dol_buildpath('/adherentsplus/card.php?rowid='.$this->id.'', 1);
-		if ($option == 'subscription')
-		{
-			$url = dol_buildpath('/adherentsplus/subscription.php?rowid='.$this->id.'', 1);
+		$url = DOL_URL_ROOT.'/adherents/card.php?rowid='.$this->id;
+		if ($option == 'subscription') {
+			$url = DOL_URL_ROOT.'/adherents/subscription.php?rowid='.$this->id;
 		}
 
-		if ($option != 'nolink')
-		{
+		if ($option != 'nolink') {
 			// Add param to save lastsearch_values or not
-			$add_save_lastsearch_values=($save_lastsearch_value == 1 ? 1 : 0);
-			if ($save_lastsearch_value == -1 && preg_match('/list\.php/',$_SERVER["PHP_SELF"])) $add_save_lastsearch_values=1;
-			if ($add_save_lastsearch_values) $url.='&save_lastsearch_values=1';
+			$add_save_lastsearch_values = ($save_lastsearch_value == 1 ? 1 : 0);
+			if ($save_lastsearch_value == -1 && preg_match('/list\.php/', $_SERVER["PHP_SELF"])) $add_save_lastsearch_values = 1;
+			if ($add_save_lastsearch_values) $url .= '&save_lastsearch_values=1';
 		}
 
-		$link = '<a href="'.$url.'"';
-		$linkclose="";
-		if (empty($notooltip))
-		{
-			if (! empty($conf->global->MAIN_OPTIMIZEFORTEXTBROWSER))
-			{
+		$linkstart .= '<a href="'.$url.'"';
+		$linkclose = "";
+		if (empty($notooltip)) {
+			if (!empty($conf->global->MAIN_OPTIMIZEFORTEXTBROWSER)) {
 				$langs->load("users");
-				$label=$langs->trans("ShowUser");
-				$linkclose.=' alt="'.dol_escape_htmltag($label, 1).'"';
+				$label = $langs->trans("ShowUser");
+				$linkclose .= ' alt="'.dol_escape_htmltag($label, 1).'"';
 			}
-			$linkclose.= ' title="'.dol_escape_htmltag($label, 1).'"';
-			$linkclose.= ' class="classfortooltip'.($morecss?' '.$morecss:'').'"';
+			$linkclose .= ' title="'.dol_escape_htmltag($label, 1).'"';
+			$linkclose .= ' class="classfortooltip'.($morecss ? ' '.$morecss : '').'"';
 		}
 
-		$link.=$linkclose.'>';
-		$linkend='</a>';
+		$linkstart .= $linkclose.'>';
+		$linkend = '</a>';
 
-		//if ($withpictoimg == -1) $result.='<div class="nowrap">';
-		$result.=$link;
-		if ($withpictoimg)
-		{
-			$paddafterimage='';
-			if (abs($withpictoimg) == 1) $paddafterimage='style="margin-right: 3px;"';
+		$result .= $linkstart;
+		if ($withpictoimg) $result .= '<div class="inline-block nopadding valignmiddle">';
+		if ($withpictoimg) {
+			$paddafterimage = '';
+			if (abs($withpictoimg) == 1) $paddafterimage = 'style="margin-right: 3px;"';
 			// Only picto
-			if ($withpictoimg > 0) $picto='<div class="inline-block nopadding valignmiddle'.($morecss?' userimg'.$morecss:'').'">'.img_object('', 'user', $paddafterimage.' '.($notooltip?'':'class="classfortooltip"'), 0, 0, $notooltip?0:1).'</div>';
+			if ($withpictoimg > 0)
+				$picto = '<span class="nopadding'.($morecss ? ' userimg'.$morecss : '').'">'.
+					img_object('', 'user', $paddafterimage.' '.($notooltip ? '' : 'class="classfortooltip"'), 0, 0, $notooltip ? 0 : 1).'</span>';
 			// Picto must be a photo
-			else $picto='<div class="inline-block nopadding valignmiddle'.($morecss?' userimg'.$morecss:'').'"'.($paddafterimage?' '.$paddafterimage:'').'>'.Form::showphoto('memberphoto', $this, 0, 0, 0, 'userphoto'.($withpictoimg==-3?'small':''), 'mini', 0, 1).'</div>';
-			$result.=$picto;
+			else {
+				$picto = '<span class="nopadding'.($morecss ? ' userimg'.$morecss : '').'"'.($paddafterimage ? ' '.$paddafterimage : '').'>';
+				$picto .= Form::showphoto('memberphoto', $this, 0, 0, 0, 'userphoto'.($withpictoimg == -3 ? 'small' : ''), 'mini', 0, 1);
+				$picto .= '</span>';
+			}
+			$result .= $picto;
 		}
-		if ($withpictoimg > -2 && $withpictoimg != 2)
-		{
-			if (empty($conf->global->MAIN_OPTIMIZEFORTEXTBROWSER)) $result.='<div class="inline-block nopadding valignmiddle'.((! isset($this->statut) || $this->statut)?'':' strikefordisabled').($morecss?' usertext'.$morecss:'').'">';
-			if ($mode == 'login') $result.=dol_trunc($this->login, $maxlen);
-			elseif ($mode == 'ref') $result.=$this->id;
-			else $result.=$this->getFullName($langs,'',($mode == 'firstname' ? 2 : -1),$maxlen);
-			if (empty($conf->global->MAIN_OPTIMIZEFORTEXTBROWSER)) $result.='</div>';
+		if ($withpictoimg > -2 && $withpictoimg != 2) {
+			if (empty($conf->global->MAIN_OPTIMIZEFORTEXTBROWSER)) $result .= '<span class="nopadding valignmiddle'.((!isset($this->statut) || $this->statut) ? '' : ' strikefordisabled').
+				($morecss ? ' usertext'.$morecss : '').'">';
+			if ($mode == 'login')
+				$result .= dol_trunc($this->login, $maxlen);
+			elseif ($mode == 'ref')
+				$result .= $this->id;
+			else
+				$result .= $this->getFullName($langs, '', ($mode == 'firstname' ? 2 : -1), $maxlen);
+			if (empty($conf->global->MAIN_OPTIMIZEFORTEXTBROWSER)) $result .= '</span>';
 		}
-		$result.=$linkend;
-		//if ($withpictoimg == -1) $result.='</div>';
+		if ($withpictoimg) $result .= '</div>';
+		$result .= $linkend;
+
+		if ($addlinktonotes) {
+			if ($this->note_private) {
+				$notetoshow = $langs->trans("ViewPrivateNote").':<br>'.dol_string_nohtmltag($this->note_private, 1);
+				$result .= ' <span class="note inline-block">';
+				$result .= '<a href="'.DOL_URL_ROOT.'/adherents/note.php?id='.$this->id.'" class="classfortooltip" title="'.dol_escape_htmltag($notetoshow).'">';
+				$result .= img_picto('', 'note');
+				$result .= '</a>';
+				$result .= '</span>';
+			}
+		}
 
 		return $result;
 	}
@@ -2552,96 +2567,55 @@ require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 		return $this->LibStatut($this->statut, $this->need_subscription, $this->datefin, $mode);
 	}
 
+	// phpcs:disable PEAR.NamingConventions.ValidFunctionName.ScopeNotCamelCaps
 	/**
 	 *  Renvoi le libelle d'un statut donne
 	 *
-	 *  @param	int			$statut      			Id statut
+	 *  @param	int			$status      			Id status
 	 *	@param	int			$need_subscription		1 if member type need subscription, 0 otherwise
 	 *	@param	int     	$date_end_subscription	Date fin adhesion
-	 *  @param  int			$mode        			0=libelle long, 1=libelle court, 2=Picto + Libelle court, 3=Picto, 4=Picto + Libelle long, 5=Libelle court + Picto
+	 *  @param  int		    $mode                   0=long label, 1=short label, 2=Picto + short label, 3=Picto, 4=Picto + long label, 5=Short label + Picto, 6=Long label + Picto
 	 *  @return string      						Label
 	 */
-	function LibStatut($statut,$need_subscription,$date_end_subscription,$mode=0)
+	public function LibStatut($status, $need_subscription, $date_end_subscription, $mode = 0)
 	{
+		// phpcs:enable
 		global $langs;
 		$langs->load("members");
-		if ($mode == 0)
-		{
-			if ($statut == -1) return $langs->trans("MemberStatusDraft");
-			if ($statut >= 1)
-			{
-				if (! $date_end_subscription)            return $langs->trans("MemberStatusActive");
-				elseif ($date_end_subscription < time()) return $langs->trans("MemberStatusActiveLate");
-				else                                     return $langs->trans("MemberStatusPaid");
+
+		$statusType = '';
+		$labelStatus = '';
+		$labelStatusShort = '';
+
+		if ($status == -1) {
+			$statusType = 'status0';
+			$labelStatus = $langs->trans("MemberStatusDraft");
+			$labelStatusShort = $langs->trans("MemberStatusDraftShort");
+		} elseif ($status >= 1) {
+			if ($need_subscription == 0) {
+				$statusType = 'status4';
+				$labelStatus = $langs->trans("MemberStatusNoSubscription");
+				$labelStatusShort = $langs->trans("MemberStatusNoSubscriptionShort");
+			} elseif (!$date_end_subscription) {
+				$statusType = 'status1';
+				$labelStatus = $langs->trans("MemberStatusActive");
+				$labelStatusShort = $langs->trans("MemberStatusActiveShort");
+			} elseif ($date_end_subscription < time()) {
+				$statusType = 'status3';
+				$labelStatus = $langs->trans("MemberStatusActiveLate");
+				$labelStatusShort = $langs->trans("MemberStatusActiveLateShort");
+			} else {
+				$statusType = 'status4';
+				$labelStatus = $langs->trans("MemberStatusPaid");
+				$labelStatusShort = $langs->trans("MemberStatusPaidShort");
 			}
-			if ($statut == 0)  return $langs->trans("MemberStatusResiliated");
+		} elseif ($status == 0) {
+			$statusType = 'status6';
+			$labelStatus = $langs->trans("MemberStatusResiliated");
+			$labelStatusShort = $langs->trans("MemberStatusResiliatedShort");
 		}
-		if ($mode == 1)
-		{
-			if ($statut == -1) return $langs->trans("MemberStatusDraftShort");
-			if ($statut >= 1)
-			{
-				if (! $date_end_subscription)            return $langs->trans("MemberStatusActiveShort");
-				elseif ($date_end_subscription < time()) return $langs->trans("MemberStatusActiveLateShort");
-				else                                     return $langs->trans("MemberStatusPaidShort");
-			}
-			if ($statut == 0)  return $langs->trans("MemberStatusResiliatedShort");
-		}
-		if ($mode == 2)
-		{
-			if ($statut == -1) return img_picto($langs->trans('MemberStatusDraft'),'statut0').' '.$langs->trans("MemberStatusDraftShort");
-			if ($statut >= 1)
-			{
-				if (! $date_end_subscription)            return img_picto($langs->trans('MemberStatusActive'),'statut1').' '.$langs->trans("MemberStatusActiveShort");
-				elseif ($date_end_subscription < time()) return img_picto($langs->trans('MemberStatusActiveLate'),'statut3').' '.$langs->trans("MemberStatusActiveLateShort");
-				else                                     return img_picto($langs->trans('MemberStatusPaid'),'statut4').' '.$langs->trans("MemberStatusPaidShort");
-			}
-			if ($statut == 0)  return img_picto($langs->trans('MemberStatusResiliated'),'statut5').' '.$langs->trans("MemberStatusResiliatedShort");
-		}
-		if ($mode == 3)
-		{
-			if ($statut == -1) return img_picto($langs->trans('MemberStatusDraft'),'statut0');
-			if ($statut >= 1)
-			{
-				if (! $date_end_subscription)            return img_picto($langs->trans('MemberStatusActive'),'statut1');
-				elseif ($date_end_subscription < time()) return img_picto($langs->trans('MemberStatusActiveLate'),'statut3');
-				else                                     return img_picto($langs->trans('MemberStatusPaid'),'statut4');
-			}
-			if ($statut == 0)  return img_picto($langs->trans('MemberStatusResiliated'),'statut5');
-		}
-		if ($mode == 4)
-		{
-			if ($statut == -1) return img_picto($langs->trans('MemberStatusDraft'),'statut0').' '.$langs->trans("MemberStatusDraft");
-			if ($statut >= 1)
-			{
-				if (! $date_end_subscription)            return img_picto($langs->trans('MemberStatusActive'),'statut1').' '.$langs->trans("MemberStatusActive");
-				elseif ($date_end_subscription < time()) return img_picto($langs->trans('MemberStatusActiveLate'),'statut3').' '.$langs->trans("MemberStatusActiveLate");
-				else                                     return img_picto($langs->trans('MemberStatusPaid'),'statut4').' '.$langs->trans("MemberStatusPaid");
-			}
-			if ($statut == 0)  return img_picto($langs->trans('MemberStatusResiliated'),'statut5').' '.$langs->trans("MemberStatusResiliated");
-		}
-		if ($mode == 5)
-		{
-			if ($statut == -1) return $langs->trans("MemberStatusDraft").' '.img_picto($langs->trans('MemberStatusDraft'),'statut0');
-			if ($statut >= 1)
-			{
-				if (! $date_end_subscription)            return '<span class="hideonsmartphone">'.$langs->trans("MemberStatusActiveShort").' </span>'.img_picto($langs->trans('MemberStatusActive'),'statut1');
-				elseif ($date_end_subscription < time()) return '<span class="hideonsmartphone">'.$langs->trans("MemberStatusActiveLateShort").' </span>'.img_picto($langs->trans('MemberStatusActiveLate'),'statut3');
-				else                                     return '<span class="hideonsmartphone">'.$langs->trans("MemberStatusPaidShort").' </span>'.img_picto($langs->trans('MemberStatusPaid'),'statut4');
-			}
-			if ($statut == 0)  return '<span class="hideonsmartphone">'.$langs->trans("MemberStatusResiliated").' </span>'.img_picto($langs->trans('MemberStatusResiliated'),'statut5');
-		}
-		if ($mode == 6)
-		{
-			if ($statut == -1) return $langs->trans("MemberStatusDraft").' '.img_picto($langs->trans('MemberStatusDraft'),'statut0');
-			if ($statut >= 1)
-			{
-				if (! $date_end_subscription)            return '<span class="hideonsmartphone">'.$langs->trans("MemberStatusActive").' </span>'.img_picto($langs->trans('MemberStatusActive'),'statut1');
-				elseif ($date_end_subscription < time()) return '<span class="hideonsmartphone">'.$langs->trans("MemberStatusActiveLate").' </span>'.img_picto($langs->trans('MemberStatusActiveLate'),'statut3');
-				else                                     return '<span class="hideonsmartphone">'.$langs->trans("MemberStatusPaid").' </span>'.img_picto($langs->trans('MemberStatusPaid'),'statut4');
-			}
-			if ($statut == 0)  return '<span class="hideonsmartphone">'.$langs->trans("MemberStatusResiliated").' </span>'.img_picto($langs->trans('MemberStatusResiliated'),'statut5');
-		}
+
+		return dolGetStatus($labelStatus, $labelStatusShort, '', $statusType, $mode);
 	}
 
 
