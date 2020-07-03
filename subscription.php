@@ -586,6 +586,21 @@ if ($rowid > 0)
 	    }
 	}
 	print '</td></tr>';
+  
+    // Commitment
+    print '<tr><td>'.$langs->trans("Commitment").'</td><td class="valeur">';
+		if ($object->datecommitment)
+		{
+			print dol_print_date($object->datecommitment,'day');
+			if ($object->hasDelay()) {
+				print " ".img_warning($langs->trans("Late"));
+			}
+		}
+		else
+		{
+				print $langs->trans("Free");
+		}     
+    print '</td>';
 
 	// Third party Dolibarr
 	if (!empty($conf->societe->enabled))

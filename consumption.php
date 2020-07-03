@@ -128,7 +128,7 @@ if ($id)
     // Company
     print '<tr><td>'.$langs->trans("NextInvoice").'</td><td class="valeur">'.dol_print_date($object->nextinvoice,'day').'</td></tr>';
 
-    // Civility
+    // Commitment
     print '<tr><td>'.$langs->trans("Commitment").'</td><td class="valeur">';
 		if ($object->datecommitment)
 		{
@@ -139,15 +139,7 @@ if ($id)
 		}
 		else
 		{
-			if (! $adht->subscription)
-			{
-				print $langs->trans("SubscriptionNotRecorded");
-				if ($object->statut > 0) print " ".img_warning($langs->trans("Late")); // displays delay Pictogram only if not a draft and not terminated
-			}
-			else
-			{
 				print $langs->trans("Free");
-			}
 		}     
     print '</td>';
     print '</tr>';
