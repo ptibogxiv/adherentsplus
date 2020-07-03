@@ -2103,7 +2103,7 @@ dol_include_once('/adherentsplus/class/subscription.class.php');
 					$vattouse=get_default_tva($mysoc, $mysoc, $idprodsubscription);
 				}
 				//print xx".$vattouse." - ".$mysoc." - ".$customer;exit;
-				$result=$invoice->addline($label, 0, 1, $vattouse, 0, 0, $idprodsubscription, 0, $datesubscription, $datesubscription_end, 0, 0, '', 'TTC', $amount, 1);
+				$result=$invoice->addline($label, 0, 1, $vattouse, 0, 0, $idprodsubscription, 0, $datesubscription, '', 0, 0, '', 'TTC', $amount, 1);
 				if ($result <= 0)
 				{
 					$this->error=$invoice->error;
