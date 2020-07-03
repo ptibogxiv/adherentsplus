@@ -1842,9 +1842,9 @@ require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 	 *	Insert subscription into database and eventually add links to banks, mailman, etc...
 	 *
 	 *	@param	int	        $date        		Date of effect of subscription
-	 *	@param	double		$montant     		Amount of subscription (0 accepted for some members)
+	 *	@param	double		$amount     		Amount of subscription (0 accepted for some members)
 	 *	@param	int			$accountid			Id bank account
-	 *	@param	string		$operation			Type operation (if Id bank account provided)
+	 *	@param	string		$operation			Type of payment (if Id bank account provided). Example: 'CB', ...
 	 *	@param	string		$label				Label operation (if Id bank account provided)
 	 *	@param	string		$num_chq			Numero cheque (if Id bank account provided)
 	 *	@param	string		$emetteur_nom		Name of cheque writer
@@ -1852,67 +1852,59 @@ require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 	 *	@param	int     	$datesubend			Date end subscription
 	 *	@return int         					rowid of record added, <0 if KO
 	 */
-	function subscription($date, $montant, $accountid=0, $operation='', $label='', $num_chq='', $emetteur_nom='', $emetteur_banque='', $datesubend=0)
+	public function subscription($date, $amount, $accountid = 0, $operation = '', $label = '', $num_chq = '', $emetteur_nom = '', $emetteur_banque = '', $datesubend = 0)
 	{
-		global $conf,$langs,$user;
+		global $conf, $langs, $user;
 
-dol_include_once('/adherentsplus/class/subscription.class.php');
+		require_once DOL_DOCUMENT_ROOT.'/adherents/class/subscription.class.php';
 
-		$error=0;
+		$error = 0;
 
 		// Clean parameters
-		if (! $montant) $montant=0;
+		if (!$amount) $amount = 0;
 
 		$this->db->begin();
 
-		if ($datesubend)
-		{
-			$datefin=$datesubend;
-		}
-		else
-		{
+		if ($datesubend) {
+			$datefin = $datesubend;
+		} else {
 			// If no end date, end date = date + 1 year - 1 day
-			$datefin = dol_time_plus_duree($date,1,'y');
-			$datefin = dol_time_plus_duree($datefin,-1,'d');
+			$datefin = dol_time_plus_duree($date, 1, 'y');
+			$datefin = dol_time_plus_duree($datefin, -1, 'd');
 		}
 
 		// Create subscription
-		$subscription=new SubscriptionPlus($this->db);
-		$subscription->fk_adherent=$this->id;
-		$subscription->dateh=$date;		// Date of new subscription
-		$subscription->datef=$datefin;	// End data of new subscription
-		$subscription->amount=$montant;
-		$subscription->note=$label;
+		$subscription = new Subscription($this->db);
+		$subscription->fk_adherent = $this->id;
+		$subscription->dateh = $date; // Date of new subscription
+		$subscription->datef = $datefin; // End data of new subscription
+		$subscription->amount = $amount;
+		$subscription->note = $label; // deprecated
+		$subscription->note_public = $label;
 
-		$rowid=$subscription->create($user);
-		if ($rowid > 0)
-		{
+		$rowid = $subscription->create($user);
+		if ($rowid > 0) {
 			// Update denormalized subscription end date (read database subscription to find values)
 			// This will also update this->datefin
-			$result=$this->update_end_date($user);
-			if ($result > 0)
-			{
+			$result = $this->update_end_date($user);
+			if ($result > 0) {
 				// Change properties of object (used by triggers)
-				$this->last_subscription_date=dol_now();
-				$this->last_subscription_amount=$montant;
-				$this->last_subscription_date_start=$date;
-				$this->last_subscription_date_end=$datefin;
+				$this->last_subscription_date = dol_now();
+				$this->last_subscription_date_start = $date;
+				$this->last_subscription_date_end = $datefin;
+				$this->last_subscription_amount = $amount;
 			}
 
-			if (! $error)
-			{
+			if (!$error) {
 				$this->db->commit();
 				return $rowid;
-			}
-			else
-			{
+			} else {
 				$this->db->rollback();
 				return -2;
 			}
-		}
-		else
-		{
-			$this->error=$subscription->error;
+		} else {
+			$this->error = $subscription->error;
+			$this->errors = $subscription->errors;
 			$this->db->rollback();
 			return -1;
 		}
