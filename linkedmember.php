@@ -313,6 +313,9 @@ print '</SELECT>';
 			print '</td></tr>';
 		}
 
+    // Type
+    print '<tr><td>'.$langs->trans("Type").'</td><td class="valeur">'.$adht->getNomUrl(1).'</td></tr>';
+
     // Company
     print '<tr><td>'.$langs->trans("SubscriptionEndDate").'</td><td class="valeur">';
     if ($object->datefin)
