@@ -1925,6 +1925,7 @@ dol_include_once('/adherentsplus/class/subscription.class.php');
 	 *  @param	string		$option					Which action ('bankdirect', 'bankviainvoice', 'invoiceonly', ...)
 	 *	@param	int			$accountid				Id bank account
 	 *	@param	int			$datesubscription		Date of subscription
+	 *	@param	int			$datesubscription_end		Date of subscription end
 	 *	@param	int			$paymentdate			Date of payment
 	 *	@param	string		$operation				Code of type of operation (if Id bank account provided). Example 'CB', ...
 	 *	@param	string		$label					Label operation (if Id bank account provided)
@@ -2102,7 +2103,7 @@ dol_include_once('/adherentsplus/class/subscription.class.php');
 					$vattouse=get_default_tva($mysoc, $mysoc, $idprodsubscription);
 				}
 				//print xx".$vattouse." - ".$mysoc." - ".$customer;exit;
-				$result=$invoice->addline($label, 0, 1, $vattouse, 0, 0, $idprodsubscription, 0, $datesubscription, '', 0, 0, '', 'TTC', $amount, 1);
+				$result=$invoice->addline($label, 0, 1, $vattouse, 0, 0, $idprodsubscription, 0, $datesubscription, $datesubscription_end, 0, 0, '', 'TTC', $amount, 1);
 				if ($result <= 0)
 				{
 					$this->error=$invoice->error;
