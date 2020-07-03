@@ -11,6 +11,7 @@ FederalPart=Part fédéral
 IncludeInSubscritionPrice=Inclus dans la cotisation
 Renewal=Renouvellement
 AdherentLinkedMember=Membres liés
+LinkedToDolibarrThirdParty=Lien tiers Dolibarr
 AdherentConsumption=Consommations
 LinkedToDolibarrMember+=Lien adhérent+
 ShowMember=Afficher fiche adhérent
