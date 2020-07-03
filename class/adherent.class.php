@@ -1925,7 +1925,6 @@ dol_include_once('/adherentsplus/class/subscription.class.php');
 	 *  @param	string		$option					Which action ('bankdirect', 'bankviainvoice', 'invoiceonly', ...)
 	 *	@param	int			$accountid				Id bank account
 	 *	@param	int			$datesubscription		Date of subscription
-	 *	@param	int			$datesubscription_end		Date of subscription end
 	 *	@param	int			$paymentdate			Date of payment
 	 *	@param	string		$operation				Code of type of operation (if Id bank account provided). Example 'CB', ...
 	 *	@param	string		$label					Label operation (if Id bank account provided)
@@ -1942,196 +1941,162 @@ dol_include_once('/adherentsplus/class/subscription.class.php');
 
 		$error = 0;
 
-		$this->invoice = null;	// This will contains invoice if an invoice is created
+		$this->invoice = null; // This will contains invoice if an invoice is created
 
-		dol_syslog("subscriptionComplementaryActions subscriptionid=".$subscriptionid." option=".$option." accountid=".$accountid." datesubscription=".$datesubscription." paymentdate=".$paymentdate." label=".$label." amount=".$amount." num_chq=".$num_chq." autocreatethirdparty=".$autocreatethirdparty);
+		dol_syslog("subscriptionComplementaryActions subscriptionid=".$subscriptionid." option=".$option." accountid=".$accountid." datesubscription=".$datesubscription." paymentdate=".
+			$paymentdate." label=".$label." amount=".$amount." num_chq=".$num_chq." autocreatethirdparty=".$autocreatethirdparty);
 
 		// Insert into bank account directlty (if option choosed for) + link to llx_subscription if option is 'bankdirect'
-		if ($option == 'bankdirect' && $accountid)
-		{
+		if ($option == 'bankdirect' && $accountid) {
 			require_once DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php';
 
-			$acct=new Account($this->db);
-			$result=$acct->fetch($accountid);
+			$acct = new Account($this->db);
+			$result = $acct->fetch($accountid);
 
-			$dateop=$paymentdate;
+			$dateop = $paymentdate;
 
-			$insertid=$acct->addline($dateop, $operation, $label, $amount, $num_chq, '', $user, $emetteur_nom, $emetteur_banque);
-			if ($insertid > 0)
-			{
-				$inserturlid=$acct->add_url_line($insertid, $this->id, DOL_URL_ROOT.'/adherents/card.php?rowid=', $this->getFullname($langs), 'member');
-				if ($inserturlid > 0)
-				{
+			$insertid = $acct->addline($dateop, $operation, $label, $amount, $num_chq, '', $user, $emetteur_nom, $emetteur_banque);
+			if ($insertid > 0) {
+				$inserturlid = $acct->add_url_line($insertid, $this->id, DOL_URL_ROOT.'/adherents/card.php?rowid=', $this->getFullname($langs), 'member');
+				if ($inserturlid > 0) {
 					// Update table subscription
-					$sql ="UPDATE ".MAIN_DB_PREFIX."subscription SET fk_bank=".$insertid;
-					$sql.=" WHERE rowid=".$subscriptionid;
+					$sql = "UPDATE ".MAIN_DB_PREFIX."subscription SET fk_bank=".$insertid;
+					$sql .= " WHERE rowid=".$subscriptionid;
 
 					dol_syslog("subscription::subscription", LOG_DEBUG);
 					$resql = $this->db->query($sql);
-					if (! $resql)
-					{
+					if (!$resql) {
 						$error++;
-						$this->error=$this->db->lasterror();
-						$this->errors[]=$this->error;
+						$this->error = $this->db->lasterror();
+						$this->errors[] = $this->error;
 					}
-				}
-				else
-				{
+				} else {
 					$error++;
-					$this->error=$acct->error;
-					$this->errors=$acct->errors;
+					$this->error = $acct->error;
+					$this->errors = $acct->errors;
 				}
-			}
-			else
-			{
+			} else {
 				$error++;
-				$this->error=$acct->error;
-				$this->errors=$acct->errors;
+				$this->error = $acct->error;
+				$this->errors = $acct->errors;
 			}
 		}
 
 		// If option choosed, we create invoice
-		if (($option == 'bankviainvoice' && $accountid) || $option == 'invoiceonly')
-		{
+		if (($option == 'bankviainvoice' && $accountid) || $option == 'invoiceonly') {
 			require_once DOL_DOCUMENT_ROOT.'/compta/facture/class/facture.class.php';
 			require_once DOL_DOCUMENT_ROOT.'/compta/facture/class/paymentterm.class.php';
 
-			$invoice=new Facture($this->db);
-			$customer=new Societe($this->db);
+			$invoice = new Facture($this->db);
+			$customer = new Societe($this->db);
 
-			if (! $error)
-			{
-				if (! ($this->fk_soc > 0))	// If not yet linked to a company
+			if (!$error) {
+				if (!($this->fk_soc > 0)) // If not yet linked to a company
 				{
-					if ($autocreatethirdparty)
-					{
+					if ($autocreatethirdparty) {
 						// Create a linked thirdparty to member
-						$companyalias='';
+						$companyalias = '';
 						$fullname = $this->getFullName($langs);
 
-						if ($this->morphy == 'mor')
-						{
-							$companyname=$this->societe;
-							if (! empty($fullname)) $companyalias=$fullname;
-						}
-						else
-						{
-							$companyname=$fullname;
-							if (! empty($this->societe)) $companyalias=$this->societe;
+						if ($this->morphy == 'mor') {
+							$companyname = $this->company;
+							if (!empty($fullname)) $companyalias = $fullname;
+						} else {
+							$companyname = $fullname;
+							if (!empty($this->company)) $companyalias = $this->company;
 						}
 
-						$result=$customer->create_from_member($this, $companyname, $companyalias);
-						if ($result < 0)
-						{
+						$result = $customer->create_from_member($this, $companyname, $companyalias);
+						if ($result < 0) {
 							$this->error = $customer->error;
 							$this->errors = $customer->errors;
 							$error++;
-						}
-						else
-						{
+						} else {
 							$this->fk_soc = $result;
 						}
-					}
-					else
-					{
-						 $langs->load("errors");
-						 $this->error=$langs->trans("ErrorMemberNotLinkedToAThirpartyLinkOrCreateFirst");
-						 $this->errors[]=$this->error;
-						 $error++;
+					} else {
+						$langs->load("errors");
+						$this->error = $langs->trans("ErrorMemberNotLinkedToAThirpartyLinkOrCreateFirst");
+						$this->errors[] = $this->error;
+						$error++;
 					}
 				}
 			}
-			if (! $error)
-			{
-				$result=$customer->fetch($this->fk_soc);
-				if ($result <= 0)
-				{
-					$this->error=$customer->error;
-					$this->errors=$customer->errors;
+			if (!$error) {
+				$result = $customer->fetch($this->fk_soc);
+				if ($result <= 0) {
+					$this->error = $customer->error;
+					$this->errors = $customer->errors;
 					$error++;
 				}
 			}
 
-			if (! $error)
-			{
+			if (!$error) {
 				// Create draft invoice
-				$invoice->type=Facture::TYPE_STANDARD;
-				$invoice->cond_reglement_id=$customer->cond_reglement_id;
-				if (empty($invoice->cond_reglement_id))
-				{
-					$paymenttermstatic=new PaymentTerm($this->db);
-					$invoice->cond_reglement_id=$paymenttermstatic->getDefaultId();
-					if (empty($invoice->cond_reglement_id))
-					{
+				$invoice->type = Facture::TYPE_STANDARD;
+				$invoice->cond_reglement_id = $customer->cond_reglement_id;
+				if (empty($invoice->cond_reglement_id)) {
+					$paymenttermstatic = new PaymentTerm($this->db);
+					$invoice->cond_reglement_id = $paymenttermstatic->getDefaultId();
+					if (empty($invoice->cond_reglement_id)) {
 						$error++;
-						$this->error='ErrorNoPaymentTermRECEPFound';
-						$this->errors[]=$this->error;
+						$this->error = 'ErrorNoPaymentTermRECEPFound';
+						$this->errors[] = $this->error;
 					}
 				}
-				$invoice->socid=$this->fk_soc;
-				$invoice->date=$datesubscription;
+				$invoice->socid = $this->fk_soc;
+				$invoice->date = $datesubscription;
 
 				// Possibility to add external linked objects with hooks
 				$invoice->linked_objects['subscription'] = $subscriptionid;
-				if (! empty($_POST['other_linked_objects']) && is_array($_POST['other_linked_objects']))
-				{
+				if (!empty($_POST['other_linked_objects']) && is_array($_POST['other_linked_objects'])) {
 					$invoice->linked_objects = array_merge($invoice->linked_objects, $_POST['other_linked_objects']);
 				}
 
-				$result=$invoice->create($user);
-				if ($result <= 0)
-				{
-					$this->error=$invoice->error;
-					$this->errors=$invoice->errors;
+				$result = $invoice->create($user);
+				if ($result <= 0) {
+					$this->error = $invoice->error;
+					$this->errors = $invoice->errors;
 					$error++;
-				}
-				else
-				{
+				} else {
 					$this->invoice = $invoice;
 				}
 			}
 
-			if (! $error)
-			{
+			if (!$error) {
 				// Add line to draft invoice
-				$idprodsubscription=0;
-				if (! empty($conf->global->ADHERENT_PRODUCT_ID_FOR_SUBSCRIPTIONS) && (! empty($conf->product->enabled) || ! empty($conf->service->enabled))) $idprodsubscription = $conf->global->ADHERENT_PRODUCT_ID_FOR_SUBSCRIPTIONS;
+				$idprodsubscription = 0;
+				if (!empty($conf->global->ADHERENT_PRODUCT_ID_FOR_SUBSCRIPTIONS) && (!empty($conf->product->enabled) || !empty($conf->service->enabled))) $idprodsubscription = $conf->global->ADHERENT_PRODUCT_ID_FOR_SUBSCRIPTIONS;
 
-				$vattouse=0;
-				if (isset($conf->global->ADHERENT_VAT_FOR_SUBSCRIPTIONS) && $conf->global->ADHERENT_VAT_FOR_SUBSCRIPTIONS == 'defaultforfoundationcountry')
-				{
-					$vattouse=get_default_tva($mysoc, $mysoc, $idprodsubscription);
+				$vattouse = 0;
+				if (isset($conf->global->ADHERENT_VAT_FOR_SUBSCRIPTIONS) && $conf->global->ADHERENT_VAT_FOR_SUBSCRIPTIONS == 'defaultforfoundationcountry') {
+					$vattouse = get_default_tva($mysoc, $mysoc, $idprodsubscription);
 				}
 				//print xx".$vattouse." - ".$mysoc." - ".$customer;exit;
-				$result=$invoice->addline($label, 0, 1, $vattouse, 0, 0, $idprodsubscription, 0, $datesubscription, '', 0, 0, '', 'TTC', $amount, 1);
-				if ($result <= 0)
-				{
-					$this->error=$invoice->error;
-					$this->errors=$invoice->errors;
+				$result = $invoice->addline($label, 0, 1, $vattouse, 0, 0, $idprodsubscription, 0, $datesubscription, '', 0, 0, '', 'TTC', $amount, 1);
+				if ($result <= 0) {
+					$this->error = $invoice->error;
+					$this->errors = $invoice->errors;
 					$error++;
 				}
 			}
 
-			if (! $error)
-			{
+			if (!$error) {
 				// Validate invoice
-				$result=$invoice->validate($user);
-				if ($result <= 0)
-				{
-					$this->error=$invoice->error;
-					$this->errors=$invoice->errors;
+				$result = $invoice->validate($user);
+				if ($result <= 0) {
+					$this->error = $invoice->error;
+					$this->errors = $invoice->errors;
 					$error++;
 				}
 			}
 
-			if (! $error)
-			{
+			if (!$error) {
 				// TODO Link invoice with subscription ?
 			}
 
 			// Add payment onto invoice
-			if (! $error && $option == 'bankviainvoice' && $accountid)
-			{
+			if (!$error && $option == 'bankviainvoice' && $accountid) {
 				require_once DOL_DOCUMENT_ROOT.'/compta/paiement/class/paiement.class.php';
 				require_once DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php';
 				require_once DOL_DOCUMENT_ROOT.'/core/lib/functions.lib.php';
@@ -2140,68 +2105,57 @@ dol_include_once('/adherentsplus/class/subscription.class.php');
 				$amounts[$invoice->id] = price2num($amount);
 
 				$paiement = new Paiement($this->db);
-				$paiement->datepaye     = $paymentdate;
-				$paiement->amounts      = $amounts;
-				$paiement->paiementid   = dol_getIdFromCode($this->db, $operation, 'c_paiement', 'code', 'id', 1);
-				$paiement->num_paiement = $num_chq;
-				$paiement->note         = $label;
-				$paiement->note_public  = $label;
+				$paiement->datepaye = $paymentdate;
+				$paiement->amounts = $amounts;
+				$paiement->paiementid = dol_getIdFromCode($this->db, $operation, 'c_paiement', 'code', 'id', 1);
+				$paiement->num_payment = $num_chq;
+				$paiement->note_public = $label;
 
-				if (! $error)
-				{
+				if (!$error) {
 					// Create payment line for invoice
 					$paiement_id = $paiement->create($user);
-					if (! $paiement_id > 0)
-					{
-						$this->error=$paiement->error;
-						$this->errors=$paiement->errors;
+					if (!$paiement_id > 0) {
+						$this->error = $paiement->error;
+						$this->errors = $paiement->errors;
 						$error++;
 					}
 				}
 
-				if (! $error)
-				{
+				if (!$error) {
 					// Add transaction into bank account
-					$bank_line_id=$paiement->addPaymentToBank($user, 'payment', '(SubscriptionPayment)', $accountid, $emetteur_nom, $emetteur_banque);
-					if (! ($bank_line_id > 0))
-					{
-						$this->error=$paiement->error;
-						$this->errors=$paiement->errors;
+					$bank_line_id = $paiement->addPaymentToBank($user, 'payment', '(SubscriptionPayment)', $accountid, $emetteur_nom, $emetteur_banque);
+					if (!($bank_line_id > 0)) {
+						$this->error = $paiement->error;
+						$this->errors = $paiement->errors;
 						$error++;
 					}
 				}
 
-				if (! $error && !empty($bank_line_id))
-				{
+				if (!$error && !empty($bank_line_id)) {
 					// Update fk_bank into subscription table
 					$sql = 'UPDATE '.MAIN_DB_PREFIX.'subscription SET fk_bank='.$bank_line_id;
-					$sql.= ' WHERE rowid='.$subscriptionid;
+					$sql .= ' WHERE rowid='.$subscriptionid;
 
 					$result = $this->db->query($sql);
-					if (! $result)
-					{
+					if (!$result) {
 						$error++;
 					}
 				}
 
-				if (! $error)
-				{
+				if (!$error) {
 					// Set invoice as paid
 					$invoice->set_paid($user);
 				}
 			}
 
-			if (! $error)
-			{
+			if (!$error) {
 				// Define output language
 				$outputlangs = $langs;
 				$newlang = '';
-				$lang_id=GETPOST('lang_id');
-				if ($conf->global->MAIN_MULTILANGS && empty($newlang) && ! empty($lang_id))
-					$newlang = $lang_id;
-				if ($conf->global->MAIN_MULTILANGS && empty($newlang))
-					$newlang = $customer->default_lang;
-				if (! empty($newlang)) {
+				$lang_id = GETPOST('lang_id');
+				if ($conf->global->MAIN_MULTILANGS && empty($newlang) && !empty($lang_id)) $newlang = $lang_id;
+				if ($conf->global->MAIN_MULTILANGS && empty($newlang)) $newlang = $customer->default_lang;
+				if (!empty($newlang)) {
 					$outputlangs = new Translate("", $conf);
 					$outputlangs->setDefaultLang($newlang);
 				}
@@ -2212,15 +2166,13 @@ dol_include_once('/adherentsplus/class/subscription.class.php');
 			}
 		}
 
-		if ($error)
-		{
+		if ($error) {
 			return -1;
-		}
-		else
-		{
+		} else {
 			return 1;
 		}
 	}
+
   
 	/**
 	 *		Function that validate a member

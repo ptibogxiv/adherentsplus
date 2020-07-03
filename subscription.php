@@ -84,7 +84,7 @@ if (!$sortorder) $sortorder = "DESC";
 // Security check
 $result = restrictedArea($user, 'adherent', $rowid, '', 'cotisation');
 
-$object = new AdherentPlus($db);
+$object = new Adherent($db);
 $object2 = new AdherentPlus($db);
 $extrafields = new ExtraFields($db);
 $adht = new AdherentTypePlus($db);
