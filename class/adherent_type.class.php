@@ -809,7 +809,7 @@ $dateend = $date->getTimestamp();
                 
 $date = new DateTime($commitment);
 $value = (!empty($this->commitment_value)?$this->commitment_value:0);
-if (empty($commitment) && $value>0) {
+if (empty($commitment) && !empty($value)) {
 if ($this->commitment_unit == 'd') { 
 $date->modify('+'.$value.' DAY');
 } elseif ($this->commitment_unit == 'w') { 
@@ -822,7 +822,11 @@ $date->modify('+'.$value.' YEAR');
 $date->modify('MIDNIGHT');
 $date->modify('-1 SECONDS');
 }
-$datecommitment = $date->getTimestamp();                                 
+if (empty($commitment) && empty($value)) {
+$datecommitment = $date->getTimestamp(); 
+} else {
+$datecommitment = null; 
+}                                
                 $this->date_commitment         = $datecommitment;
                      
 $date = new DateTime($date_end);                            
