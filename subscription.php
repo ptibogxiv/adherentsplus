@@ -1023,6 +1023,11 @@ print ' '.$langs->trans("Currency".$conf->currency);
         print '<tr><td>'.$langs->trans("DateEndSubscription").'</td><td>';
         print $form->select_date($adht->date_end,'end',1,1,'',"subscription",1,0,1).dol_print_date($adht->date_end, '%S');
         print "</td></tr>";
+        
+        //Date end subscription
+        print '<tr><td>'.$langs->trans("Commitment").'</td><td>';
+        print $form->select_date($adht->date_commitment,'commitment',0,0,1,"subscription",1,0,1).dol_print_date($adht->date_commitment, '%S');
+        print "</td></tr>";
 
         if ($adht->subscription)
         {
