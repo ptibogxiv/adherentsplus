@@ -343,6 +343,7 @@ print '<hr>';
 // current dates
 print 'begin: '.dol_print_date($object->date_begin, 'dayhour').'<br>';
 print 'end: '.dol_print_date($object->date_end, 'dayhour').'<br>';
+print 'commitment: '.dol_print_date($object->date_commitment, 'dayhour').'<br>';
 
 //print 'timestamp_prorata: '.$object->timestamp_prorata.'% <br>';
 if (!empty($conf->global->ADHERENT_SUBSCRIPTION_PRORATA) && $conf->global->ADHERENT_SUBSCRIPTION_PRORATA == '2') { 

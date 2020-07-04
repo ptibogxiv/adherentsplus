@@ -848,6 +848,7 @@ print '<hr>';
 print 'begin: '.dol_print_date($adht->date_begin, 'dayhour').'<br>';
 print 'end: '.dol_print_date($adht->date_end, 'dayhour').'<br>';
 print 'commitment: '.dol_print_date($adht->date_commitment, 'dayhour').'<br>';
+
 //print 'timestamp_prorata: '.$object->timestamp_prorata.'% <br>';
 $year = $adht->date_to-$adht->date_from;
 if (!empty($prorata)) {
