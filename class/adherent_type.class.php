@@ -822,7 +822,7 @@ $date->modify('+'.$value.' YEAR');
 $date->modify('MIDNIGHT');
 $date->modify('-1 SECONDS');
 }
-if (empty($commitment) && empty($value)) {
+if (!empty($commitment)) {
 $datecommitment = $date->getTimestamp(); 
 } else {
 $datecommitment = null; 
