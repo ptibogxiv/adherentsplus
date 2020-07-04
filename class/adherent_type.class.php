@@ -623,7 +623,7 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
         $typeid = $this->id;
   
         if (!empty($rowid)) {
-        $sql = "SELECT d.rowid, d.fk_adherent_type, d.datefin";
+        $sql = "SELECT d.rowid, d.fk_adherent_type, d.datefin, d.datecommitment";
         $sql .= " FROM ".MAIN_DB_PREFIX."adherent as d";
         $sql .= " WHERE d.rowid = ".$rowid;
 
@@ -637,7 +637,7 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
                 $obj = $this->db->fetch_object($resql);
 
 $abo = $obj->datefin; 
-
+$commitment = $obj->datecommitment;
             }
             
         }
@@ -738,7 +738,7 @@ $date = new DateTime();
 $date->modify('FIRST DAY OF THIS MONTH MIDNIGHT');
 } else {
 $date = new DateTime(); 
- $monthName = date("F", mktime(0, 0, 0, $conf->global->SOCIETE_SUBSCRIBE_MONTH_START, 10));
+$monthName = date("F", mktime(0, 0, 0, $conf->global->SOCIETE_SUBSCRIBE_MONTH_START, 10));
 $date->modify('FIRST DAY OF '.$monthName.' MIDNIGHT');
 if ($date->getTimestamp() > dol_now() && $daterenew > dol_now()) {
 $date->modify('LAST YEAR');
@@ -803,10 +803,29 @@ $date->modify($dateto);
 } else {
 $date->modify('-1 SECONDS');
 }
-//$date_end = $date->format('Y-m-d H:i:s');
+$date_end = $date->format('Y-m-d H:i:s');
 $dateend = $date->getTimestamp();
                 $this->date_end         = $dateend;
-                 
+                
+$date = new DateTime($commitment);
+$value = (!empty($this->commitment_value)?$this->commitment_value:0);
+if (empty($commitment) && $value>0) {
+if ($this->commitment_unit == 'd') { 
+$date->modify('+'.$value.' DAY');
+} elseif ($this->commitment_unit == 'w') { 
+$date->modify('+'.$value.' WEEK');
+} elseif ($this->commitment_unit == 'm') {
+$date->modify('+'.$value.' MONTH');
+} else {
+$date->modify('+'.$value.' YEAR');
+}
+$date->modify('MIDNIGHT');
+$date->modify('-1 SECONDS');
+}
+$datecommitment = $date->getTimestamp();                                 
+                $this->date_commitment         = $datecommitment;
+                     
+$date = new DateTime($date_end);                            
 if (!empty($prorata)) {
 $year = $this->db->jdate($dateto) - $this->db->jdate($datefrom);
 $month = cal_days_in_month(CAL_GREGORIAN, $date->format('m'), $date->format('Y'))*86400;
@@ -829,9 +848,7 @@ $duration = ($month)*(!empty($this->duration_value)?$this->duration_value:1);
 $duration = $year*(!empty($this->duration_value)?$this->duration_value:1);
 }
                 $this->duration_timestamp     = $duration; 
-                
-
-                
+                               
 if (!empty($this->prorata)) { 
 
 if ($this->prorata == 'daily') { $rate = ceil(($dateend-$datebegin)/86400) / ceil($duration/86400); }
