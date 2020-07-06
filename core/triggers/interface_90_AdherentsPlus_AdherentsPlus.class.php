@@ -89,20 +89,20 @@ class InterfaceAdherentsplus extends DolibarrTriggers
 		else return $langs->trans("Unknown");
 	}
 
-	/**
-	 * Function called when a Dolibarrr business event is done.
-	 * All functions "run_trigger" are triggered if file
-	 * is inside directory core/triggers
-	 *
-	 * 	@param		string		$action		Event action code
-	 * 	@param		Object		$object		Object
-	 * 	@param		User		$user		Object user
-	 * 	@param		Translate	$langs		Object langs
-	 * 	@param		conf		$conf		Object conf
-	 * 	@return		int						<0 if KO, 0 if no triggered ran, >0 if OK
-	 */
-	public function runTrigger($action, $object, User $user, Translate $langs, Conf $conf)
-	{
+    /**
+     * Function called when a Dolibarrr business event is done.
+     * All functions "runTrigger" are triggered if file
+     * is inside directory core/triggers
+     *
+     * @param string        $action     Event action code
+     * @param CommonObject  $object     Object
+     * @param User          $user       Object user
+     * @param Translate     $langs      Object langs
+     * @param Conf          $conf       Object conf
+     * @return int                      <0 if KO, 0 if no triggered ran, >0 if OK
+     */
+    public function runTrigger($action, $object, User $user, Translate $langs, Conf $conf)
+    {
 		// Put here code you want to execute when a Dolibarr business events occurs.
 		// Data and type of action are stored into $object and $action
 global $db, $conf, $mysoc, $langs;
