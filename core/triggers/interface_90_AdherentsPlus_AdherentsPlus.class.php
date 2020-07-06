@@ -28,9 +28,12 @@
  *      \brief      Classe des fonctions triggers des actions personnalisees du module adherentsplus
  */
 
-class InterfaceAdherentsplus
+class InterfaceAdherentsplus extends DolibarrTriggers
 {
-	private $db;
+    /**
+     * @var DoliDB Database handler
+     */
+    protected $db;
 
 	/**
 	 *   Constructor
