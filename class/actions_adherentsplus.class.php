@@ -87,20 +87,26 @@ class Actionsadherentsplus
 	{
   global $conf, $langs;
   
-if ($conf->global->MAIN_FEATURES_LEVEL) {
+if ($conf->global->MAIN_FEATURES_LEVEL == '2') {
 ?>
 <script language="javascript"> 
   function Customer33() {
 	console.log("Open box to select the thirdparty place="+place);
 	$.colorbox({href:"../societe/list.php?contextpage=poslist&nomassaction=1&place="+place, width:"90%", height:"80%", transition:"none", iframe:"true", title:"<?php echo $langs->trans("Subscription"); ?>"});
 }
+</script>
+<?php
+if (!empty($conf->global->ADHERENT_CONSUMPTION)) {
+?>
+<script language="javascript"> 
 function CloseBillConsumption() {
 	invoiceid = $("#invoiceid").val();
 	console.log("Open popup to enter payment on invoiceid="+invoiceid);
 	$.colorbox({href:"../custom/adherentsplus/pay.php?place="+place+"&invoiceid="+invoiceid, width:"80%", height:"90%", transition:"none", iframe:"true", title:"<?php echo $langs->trans("Consumptions"); ?>"});
 }
 </script>
-<?php   
+<?php
+}   
   $reshook = array(array('title'=>'<span class="fas fa-users paddingrightonly"></span><div class="trunc">'.$langs->trans("Subscription").'</div>', 'action'=>'Customer33();'), array('title'=>'<span class="fas fa-users paddingrightonly"></span><div class="trunc">'.$langs->trans("Consumptions").'</div>', 'action'=>'CloseBillConsumption();'));
   //$reshook = array('title'=>'<span class="fas fa-users paddingrightonly"></span><div class="trunc">'.$langs->trans("Subscription").'</div>', 'action'=>'Customer33();');
  
