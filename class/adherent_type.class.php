@@ -839,7 +839,7 @@ $year = $dateend - $datebegin;
 } else {
 $year = $this->db->jdate($dateto) - $this->db->jdate($datefrom);
 }
-$month = ceil((ceil(($this->date_end-$this->date_begin)/86400)*86400)/$this->duration_value);
+$month = ceil((ceil(($this->date_end-$this->date_begin)/86400)*86400)/(!empty($this->duration_value)?$this->duration_value:1));
 }
 
 if ($this->duration_unit == 'd') { 

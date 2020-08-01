@@ -361,7 +361,7 @@ $year = $object->date_end-$object->date_begin;
 } else {
 $year = $object->date_to-$object->date_from;
 }
-$month = ceil((ceil(($object->date_end-$object->date_begin)/86400)*86400)/$object->duration_value);
+$month = ceil((ceil(($object->date_end-$object->date_begin)/86400)*86400)/(!empty($object->duration_value)?$object->duration_value:1));
 }
 print 'daily_prorata: '.ceil(($object->date_end-$object->date_begin)/86400).'/'.ceil($object->duration_timestamp/86400).'<br>';
 if ($object->duration_timestamp >= 604800) print 'weekly_prorata: '.ceil(($object->date_end-$object->date_begin)/604800).'/'.ceil($object->duration_timestamp/604800).'<br>';
