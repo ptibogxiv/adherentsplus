@@ -233,7 +233,7 @@ else print "var received=0;";
         }, 2500);
     }
 </script>
-
+<?php echo $invoice->socid; ?>
 <div style="position:relative; padding-top: 10px; left:5%; height:150px; width:91%;">
 <center>
 <div class="paymentbordline paymentbordlinetotal">

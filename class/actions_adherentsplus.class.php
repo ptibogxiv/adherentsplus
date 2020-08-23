@@ -94,7 +94,7 @@ if ($conf->global->MAIN_FEATURES_LEVEL > 1) {
 <script language="javascript"> 
   function Customer33() {
 	console.log("Open box to select the thirdparty place="+place);
-	$.colorbox({href:"../societe/list.php?contextpage=poslist&nomassaction=1&place="+place, width:"90%", height:"80%", transition:"none", iframe:"true", title:"<?php echo $langs->trans("Subscription"); ?>"});
+	$.colorbox({href:"../custom/adherentsplus/pay.php?place="+place+"&invoiceid="+invoiceid, width:"80%", height:"90%", transition:"none", iframe:"true", title:"<?php echo $langs->trans("Subscription"); ?>"});
 }
 </script>
 <?php
