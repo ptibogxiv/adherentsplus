@@ -58,6 +58,7 @@ if (empty($user->rights->takepos->run)) {
 	accessforbidden();
 }
 
+$constforcompanyid = $conf->global->{'CASHDESK_ID_THIRDPARTY'.$_SESSION["takeposterminal"]};
 
 /*
  * View
@@ -233,7 +234,8 @@ else print "var received=0;";
         }, 2500);
     }
 </script>
-<?php echo $invoice->socid; ?>
+<?php echo $invoice->socid.'/'.$constforcompanyid; ?>
+<?php if ($constforcompanyid != $invoice->socid) { ?>
 <div style="position:relative; padding-top: 10px; left:5%; height:150px; width:91%;">
 <center>
 <div class="paymentbordline paymentbordlinetotal">
@@ -370,6 +372,7 @@ foreach ($action_buttons as $button) {
 }
 ?>
 </div>
+<?php } ?>
 
 </body>
 </html>
