@@ -89,7 +89,7 @@ class Actionsadherentsplus
   
 $reshook = array();
   
-if ($conf->global->MAIN_FEATURES_LEVEL == '2') {
+if ($conf->global->MAIN_FEATURES_LEVEL > 1) {
 ?>
 <script language="javascript"> 
   function Customer33() {
