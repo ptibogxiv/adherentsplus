@@ -130,6 +130,21 @@ $alreadypayed = (is_object($invoice) ? ($invoice->total_ttc - $remaintopay) : 0)
 		});
 	}
   
+function ClickProduct(position) {
+	console.log("ClickProduct");
+    $('#proimg'+position).animate({opacity: '0.5'}, 1);
+	$('#proimg'+position).animate({opacity: '1'}, 100);
+
+		idproduct=$('#prodiv'+position).data('rowid');
+		console.log("Click on product at position "+position+" for idproduct "+idproduct);
+		// Call page invoice.php to generate the section with product lines
+		$("#poslines").load("invoice.php?action=addline&place=0&idproduct=4", function() {
+			//$('#poslines').scrollTop($('#poslines')[0].scrollHeight);
+		});
+
+	parent.$.colorbox.close();
+}
+  
   	function Resiliate()
 	{
 		parent.$.colorbox.close();
@@ -215,7 +230,7 @@ print "calcbutton poscolorblue";
 } else {
 print "calcbutton poscolordelete";
 }
-print '" onclick="">'.dol_escape_htmltag($membertype->label).'<br><small>';
+print '" onclick="ClickProduct(3);">'.dol_escape_htmltag($membertype->label).'<br><small>';
 print '('.price($membertype->price_prorata).' '.$langs->trans("Currency".$conf->currency);
 if ($membertype->price_prorata != $membertype->nextprice) { print ' '.$langs->trans("then").' '.price($membertype->nextprice).' '.$langs->trans("Currency".$conf->currency); }
 print ')<br>';
