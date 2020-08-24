@@ -239,10 +239,32 @@ else print "var received=0;";
 <div style="position:relative; padding-top: 10px; left:5%; height:150px; width:91%;">
 <center>
 <div class="paymentbordline paymentbordlinetotal">
-<center><span class="takepospay"><font color="white"><?php echo $langs->trans("SubscriptionEndDate"); ?>: </font><span id="totaldisplay" class="colorwhite"><?php echo price($invoice->total_ttc, 1, '', 1, -1, -1) ?></span></font></span></center>
+<center><span class="takepospay"><font color="white"><?php echo $langs->trans("SubscriptionEndDate"); ?>: </font><span id="totaldisplay" class="colorwhite"><?php 
+	if ($object->datefin)
+	{
+	    echo dol_print_date($object->datefin, 'day');
+	    if ($object->hasDelay()) {
+	        echo " ".img_warning($langs->trans("Late"));
+	    }
+	}
+	else
+	{
+	    if (!$adht->subscription)
+	    {
+	        echo $langs->trans("SubscriptionNotRecorded");
+	        if ($object->statut > 0) echo " ".img_warning($langs->trans("Late")); // Display a delay picto only if it is not a draft and is not canceled
+	    }
+	    else
+	    {
+	        echo $langs->trans("SubscriptionNotReceived");
+	        if ($object->statut > 0) echo " ".img_warning($langs->trans("Late")); // Display a delay picto only if it is not a draft and is not canceled
+	    }
+	} ?></span></font></span></center>
 </div>
 <div class="paymentbordline paymentbordlinereceived">
     <center><span class="takepospay"><font color="white"><?php echo $langs->trans("Commitment"); ?>: </font><span class="change1 colorred"><?php echo price(0) ?></span><input type="hidden" id="change1" class="change1" value="0"></font></span></center>
+</div>
+</center>
 </div>
 
 <div style="position:absolute; left:5%; height:52%; width:92%;">
