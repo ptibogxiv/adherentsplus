@@ -93,6 +93,7 @@ if ($conf->global->MAIN_FEATURES_LEVEL > 1) {
 ?>
 <script language="javascript"> 
   function Customer33() {
+	invoiceid = $("#invoiceid").val();
 	console.log("Open box to select the thirdparty place="+place);
 	$.colorbox({href:"../custom/adherentsplus/pay.php?place="+place+"&invoiceid="+invoiceid, width:"80%", height:"90%", transition:"none", iframe:"true", title:"<?php echo $langs->trans("Subscription"); ?>"});
 }
