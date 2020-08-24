@@ -93,7 +93,7 @@ $arrayofjs = array();
 
 top_htmlhead($head, $title, $disablejs, $disablehead, $arrayofjs, $arrayofcss);
 
-$langs->loadLangs(array("main", "bills", "cashdesk"));
+$langs->loadLangs(array("main", "bills", "cashdesk", "adherentsplus@adherentsplus"));
 
 $sql = "SELECT code, libelle as label FROM ".MAIN_DB_PREFIX."c_paiement";
 $sql .= " WHERE entity IN (".getEntity('c_paiement').")";
@@ -359,7 +359,7 @@ if ($conf->global->TAKEPOS_ENABLE_SUMUP) {
 	if (!empty($conf->global->$keyforsumupbank)) {
 		print '<button type="button" class="calcbutton2" onclick="ValidateSumup();">Sumup</button>';
 	} else {
-		$langs->loadLangs(array("errors", "admin", "adherentsplus@adherentsplus");
+		$langs->loadLangs(array("errors", "admin"));
 		print '<button type="button" class="calcbutton2 disabled" title="'.$langs->trans("SetupNotComplete").'">Sumup</button>';
 	}
 }
