@@ -331,8 +331,12 @@ print "calcbutton poscolorblue";
 } else {
 print "calcbutton poscolordelete";
 }
-print '" onclick="">'.dol_escape_htmltag($membertype->label).'<br>('.price($membertype->price_prorata).' '.$langs->trans("Currency".$conf->currency).')<br>';
-print '<small>'.dol_print_date($membertype->date_begin, 'day').' - '.dol_print_date($membertype->date_end, 'day').'</small></button>';
+print '" onclick="">'.dol_escape_htmltag($membertype->label).'<br><small>';
+print '('.price($membertype->price_prorata).' '.$langs->trans("Currency".$conf->currency);
+if ($membertype->price_prorata != $membertype->nextprice) { ' '.$langs->trans("then").' '.price($membertype->nextprice).' '.$langs->trans("Currency".$conf->currency).; }
+print ')<br>';
+print ''.dol_print_date($membertype->date_begin, 'day').' - '.dol_print_date($membertype->date_end, 'day');
+print '</small></button>';
 			$i++;
 		}
 		print "</table>";
