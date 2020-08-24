@@ -403,10 +403,39 @@ foreach ($action_buttons as $button) {
     $newclass = $class.($button["class"] ? " ".$button["class"] : "");
 	print '<button type="button" class="'.$newclass.'" onclick="'.$button["function"].'"><span '.$button["span"].'>'.$button["text"].'</span></button>';
 }
-$result = $adht->liste_array(); 
-foreach ($result as $type) {
-	print '<button type="button" class="calcbutton2" onclick="ValidateSumup();">'.$type->id.'<br> hfhzefzeg zeg zeg zeg ze</button>';
-}
+	
+	$sql = "SELECT d.rowid, d.libelle as label, d.subscription, d.vote, d.statut as status, d.morphy";
+	$sql .= " FROM ".MAIN_DB_PREFIX."adherent_type as d";
+	$sql .= " WHERE d.entity IN (".getEntity('member_type').")";
+
+	$result = $db->query($sql);
+	if ($result)
+	{
+		$num = $db->num_rows($result);
+		$nbtotalofrecords = $num;
+
+		$i = 0;
+
+		while ($i < $num) {
+			$objp = $db->fetch_object($result);
+
+			$membertype->id = $objp->rowid;
+			$membertype->ref = $objp->rowid;
+			$membertype->label = $objp->rowid;
+			$membertype->status = $objp->status;
+      
+print '<button type="button" class="calcbutton2" onclick="ValidateSumup();">'.$type->id.'<br> hfhzefzeg zeg zeg zeg ze</button>';
+			$i++;
+		}
+		print "</table>";
+		print '</div>';
+
+		print '</form>';
+	}
+	else
+	{
+		dol_print_error($db);
+	}
 ?>
 </div>
 <?php } else {
