@@ -402,8 +402,11 @@ $class = ($i == 3) ? "calcbutton3" : "calcbutton2";
 foreach ($action_buttons as $button) {
     $newclass = $class.($button["class"] ? " ".$button["class"] : "");
 	print '<button type="button" class="'.$newclass.'" onclick="'.$button["function"].'"><span '.$button["span"].'>'.$button["text"].'</span></button>';
-} 
-print '<button type="button" class="calcbutton2" onclick="ValidateSumup();">adhesion type 1<br> hfhzefzeg zeg zeg zeg ze</button>';
+}
+$result = $adht->liste_array(); 
+foreach ($result as $type) {
+	print '<button type="button" class="calcbutton2" onclick="ValidateSumup();">'.$type->id.'<br> hfhzefzeg zeg zeg zeg ze</button>';
+}
 ?>
 </div>
 <?php } else {
