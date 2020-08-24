@@ -274,7 +274,7 @@ $result = $adh->fetch('', '', $invoice->socid);
 				echo " ".img_warning($langs->trans("Late"));
 			}
 		}
-    ?><</span></font></span></center>
+    ?></span></font></span></center>
 </div>
 </center>
 </div>
