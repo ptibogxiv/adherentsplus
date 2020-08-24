@@ -339,15 +339,12 @@ print ''.dol_print_date($membertype->date_begin, 'day').' - '.dol_print_date($me
 print '</small></button>';
 			$i++;
 		}
-		print "</table>";
-		print '</div>';
-
-		print '</form>';
 	}
 	else
 	{
 		dol_print_error($db);
 	}
+print '<button type="button" class="calcbutton2" onclick="">'.$langs->trans("Resiliate").'</button>';
 ?>
 </div>
 <?php } else {
