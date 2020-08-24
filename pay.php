@@ -327,12 +327,12 @@ $action_buttons = array(
       
 print '<button type="button" class="';
 if ($membertype->id == $adh->typeid) { 
-print "calcbutton";
+print "calcbutton poscolorblue";
 } else {
-print "calcbutton2";
+print "calcbutton poscolordelete";
 }
-print '" onclick="">'.dol_escape_htmltag($membertype->label).' ('.price($membertype->price_prorata).' '.$langs->trans("Currency".$conf->currency).')<br>';
-print dol_print_date($membertype->date_begin, 'day').' - '.dol_print_date($membertype->date_end, 'day').'</button>';
+print '" onclick="">'.dol_escape_htmltag($membertype->label).'<br>('.price($membertype->price_prorata).' '.$langs->trans("Currency".$conf->currency).')<br>';
+print '<small>'.dol_print_date($membertype->date_begin, 'day').' - '.dol_print_date($membertype->date_end, 'day').'</small></button>';
 			$i++;
 		}
 		print "</table>";
