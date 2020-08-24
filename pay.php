@@ -107,49 +107,18 @@ if ($conf->global->TAKEPOS_COLOR_THEME == 1) print '<link rel="stylesheet" href=
 <body>
 
 <script>
+<?php
+$remaintopay = 0;
+if ($invoice->id > 0)
+{
+    $remaintopay = $invoice->getRemainToPay();
+}
+$alreadypayed = (is_object($invoice) ? ($invoice->total_ttc - $remaintopay) : 0);
 
-	function addreceived(price)
-	{
-    	<?php
-    	if (empty($conf->global->TAKEPOS_NUMPAD)) print 'received+=String(price);'."\n";
-    	else print 'received+=parseFloat(price);'."\n";
-    	?>
-    	$('.change1').html(pricejs(parseFloat(received), 'MT'));
-    	$('.change1').val(parseFloat(received));
-		alreadypaydplusreceived=price2numjs(alreadypayed + parseFloat(received));
-    	//console.log("already+received = "+alreadypaydplusreceived);
-    	//console.log("total_ttc = "+<?php echo $invoice->total_ttc; ?>);
-    	if (alreadypaydplusreceived > <?php echo $invoice->total_ttc; ?>)
-   		{
-			var change=parseFloat(alreadypayed + parseFloat(received) - <?php echo $invoice->total_ttc; ?>);
-			$('.change2').html(pricejs(change, 'MT'));
-	    	$('.change2').val(change);
-	    	$('.change1').removeClass('colorred');
-	    	$('.change1').addClass('colorgreen');
-	    	$('.change2').removeClass('colorwhite');
-	    	$('.change2').addClass('colorred');
-		}
-    	else
-    	{
-			$('.change2').html(pricejs(0, 'MT'));
-	    	$('.change2').val(0);
-	    	if (alreadypaydplusreceived == <?php echo $invoice->total_ttc; ?>)
-	    	{
-		    	$('.change1').removeClass('colorred');
-		    	$('.change1').addClass('colorgreen');
-	    		$('.change2').removeClass('colorred');
-	    		$('.change2').addClass('colorwhite');
-	    	}
-	    	else
-	    	{
-		    	$('.change1').removeClass('colorgreen');
-		    	$('.change1').addClass('colorred');
-	    		$('.change2').removeClass('colorred');
-	    		$('.change2').addClass('colorwhite');
-	    	}
-    	}
-	}
+if ($conf->global->TAKEPOS_NUMPAD == 0) print "var received='';";
+else print "var received=0;";
 
+?>
 	function Validate(payment)
 	{
 		var invoiceid = <?php echo ($invoiceid > 0 ? $invoiceid : 0); ?>;
@@ -168,7 +137,9 @@ if ($conf->global->TAKEPOS_COLOR_THEME == 1) print '<link rel="stylesheet" href=
 	{
 		parent.$.colorbox.close();
 	}
+
 </script>
+<?php //echo $invoice->socid.'/'.$constforcompanyid; ?>
 <?php if ($constforcompanyid != $invoice->socid) { 
 $adh = new AdherentPlus($db);
 $result = $adh->fetch('', '', $invoice->socid);
@@ -222,20 +193,6 @@ echo $langs->trans("None");
 
 <div style="position:absolute; left:5%; height:52%; width:92%;">
 <?php
-$action_buttons = array(
-	array(
-		"function" =>"reset()",
-		"span" => "style='font-size: 150%;'",
-		"text" => "C",
-	    "class" => "poscolorblue"
-	),
-	array(
-		"function" => "parent.$.colorbox.close();",
-		"span" => "id='printtext' style='font-weight: bold; font-size: 18pt;'",
-		"text" => "X",
-	    "class" => "poscolordelete"
-	),
-);
 	
 	$sql = "SELECT d.rowid, d.libelle as label, d.subscription, d.vote, d.statut as status, d.morphy";
 	$sql .= " FROM ".MAIN_DB_PREFIX."adherent_type as d";
@@ -248,10 +205,12 @@ $action_buttons = array(
 		$nbtotalofrecords = $num;
 
 		$i = 0;
-    $membertype = new AdherentTypePlus($db); 
+    
 		while ($i < $num) {
 			$objp = $db->fetch_object($result);
+      $membertype = new AdherentTypePlus($db); 
       $membertype->fetch($objp->rowid);
+      $membertype->fetch_optionals();
       $membertype->subscription_calculator();
       
 print '<button type="button" class="';
