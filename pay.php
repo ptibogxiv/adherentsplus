@@ -139,7 +139,6 @@ else print "var received=0;";
 	}
 
 </script>
-<?php //echo $invoice->socid.'/'.$constforcompanyid; ?>
 <?php if ($constforcompanyid != $invoice->socid) { 
 $adh = new AdherentPlus($db);
 $result = $adh->fetch('', '', $invoice->socid);
