@@ -325,7 +325,7 @@ $action_buttons = array(
       $membertype->fetch_optionals();
       $membertype->subscription_calculator();
       
-print '<button type="button" class="calcbutton2" onclick="ValidateSumup();">'.dol_escape_htmltag($membertype->label).' ('.price($membertype->price_prorata).' '.$langs->trans("Currency".$conf->currency).')<br>';
+print '<button type="button" class="calcbutton2" onclick="">'.dol_escape_htmltag($membertype->label).' ('.price($membertype->price_prorata).' '.$langs->trans("Currency".$conf->currency).')<br>';
 print dol_print_date($membertype->date_begin, 'dayhour').' - '.dol_print_date($membertype->date_end, 'dayhour').'</button>';
 			$i++;
 		}
