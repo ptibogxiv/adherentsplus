@@ -51,6 +51,7 @@ if (! $res)
 require_once DOL_DOCUMENT_ROOT.'/compta/facture/class/facture.class.php';
 require_once DOL_DOCUMENT_ROOT.'/adherents/class/adherent.class.php';
 dol_include_once('/adherentsplus/class/adherent.class.php');
+dol_include_once('/adherentsplus/class/adherent_type.class.php');
 
 $place = (GETPOST('place', 'aZ09') ? GETPOST('place', 'aZ09') : '0'); // $place is id of table for Bar or Restaurant
 
@@ -237,13 +238,20 @@ else print "var received=0;";
     }
 </script>
 <?php //echo $invoice->socid.'/'.$constforcompanyid; ?>
-<?php if ($constforcompanyid != $invoice->socid) { ?>
+<?php if ($constforcompanyid != $invoice->socid) { 
+$adh = new AdherentPlus($db);
+$result = $adh->fetch('', '', $invoice->socid);
+$adht = new AdherentTypePlus($db);
+$result=$adht->fetch($adh->typeid);
+?>
 <div style="position:relative; padding-top: 10px; left:5%; height:150px; width:91%;">
 <center>
 <div class="paymentbordline paymentbordlinetotal">
+<center><span class="takepospay"><font color="white"><?php echo $langs->trans("Type"); ?>: </font><span id="totaldisplay" class="colorwhite"><?php 
+echo $adht->getNomUrl(1); ?></span></font></span></center>
+</div>
+<div class="paymentbordline paymentbordlinetotal">
 <center><span class="takepospay"><font color="white"><?php echo $langs->trans("SubscriptionEndDate"); ?>: </font><span id="totaldisplay" class="colorwhite"><?php 
-$adh = new AdherentPlus($db);
-$result = $adh->fetch('', '', $invoice->socid);
 	if ($adh->datefin)
 	{
 	    echo dol_print_date($adh->datefin, 'day');
