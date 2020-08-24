@@ -281,7 +281,9 @@ echo $adht->libelle; ?></span></font></span></center>
 			if ($adh->hasDelay()) {
 				echo " ".img_warning($langs->trans("Late"));
 			}
-		}
+		} else {
+echo $langs->trans("None");
+    }
     ?></span></font></span></center>
 </div>
 </center>
