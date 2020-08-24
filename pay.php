@@ -98,23 +98,6 @@ top_htmlhead($head, $title, $disablejs, $disablehead, $arrayofjs, $arrayofcss);
 
 $langs->loadLangs(array("main", "bills", "cashdesk", "members", "adherentsplus@adherentsplus"));
 
-$sql = "SELECT code, libelle as label FROM ".MAIN_DB_PREFIX."c_paiement";
-$sql .= " WHERE entity IN (".getEntity('c_paiement').")";
-$sql .= " AND active = 1";
-$sql .= " ORDER BY libelle";
-$resql = $db->query($sql);
-$paiements = array();
-if ($resql) {
-	while ($obj = $db->fetch_object($resql)) {
-        $paycode = $obj->code;
-        if ($paycode == 'LIQ') $paycode = 'CASH';
-        if ($paycode == 'CB')  $paycode = 'CB';
-        if ($paycode == 'CHQ') $paycode = 'CHEQUE';
-
-        $accountname = "CASHDESK_ID_BANKACCOUNT_".$paycode.$_SESSION["takeposterminal"];
-		if (!empty($conf->global->$accountname) && $conf->global->$accountname > 0) array_push($paiements, $obj);
-	}
-}
 ?>
 <link rel="stylesheet" href="css/pos.css.php">
 <?php
@@ -124,19 +107,6 @@ if ($conf->global->TAKEPOS_COLOR_THEME == 1) print '<link rel="stylesheet" href=
 <body>
 
 <script>
-<?php
-$remaintopay = 0;
-if ($invoice->id > 0)
-{
-    $remaintopay = $invoice->getRemainToPay();
-}
-$alreadypayed = (is_object($invoice) ? ($invoice->total_ttc - $remaintopay) : 0);
-
-if ($conf->global->TAKEPOS_NUMPAD == 0) print "var received='';";
-else print "var received=0;";
-
-?>
-	var alreadypayed = <?php echo $alreadypayed ?>;
 
 	function addreceived(price)
 	{
@@ -180,19 +150,6 @@ else print "var received=0;";
     	}
 	}
 
-	function reset()
-	{
-		received=0;
-		$('.change1').html(pricejs(received, 'MT'));
-		$('.change1').val(price2numjs(received));
-		$('.change2').html(pricejs(received, 'MT'));
-		$('.change2').val(price2numjs(received));
-    	$('.change1').removeClass('colorgreen');
-    	$('.change1').addClass('colorred');
-    	$('.change2').removeClass('colorred');
-    	$('.change2').addClass('colorwhite');
-	}
-
 	function Validate(payment)
 	{
 		var invoiceid = <?php echo ($invoiceid > 0 ? $invoiceid : 0); ?>;
@@ -206,38 +163,12 @@ else print "var received=0;";
 			else location.reload();
 		});
 	}
-
-	function ValidateSumup() {
-		console.log("Launch ValidateSumup");
-		<?php $_SESSION['SMP_CURRENT_PAYMENT'] = "NEW" ?>
-        var invoiceid = <?php echo($invoiceid > 0 ? $invoiceid : 0); ?>;
-        var amountpayed = $("#change1").val();
-        if (amountpayed > <?php echo $invoice->total_ttc; ?>) {
-            amountpayed = <?php echo $invoice->total_ttc; ?>;
-        }
-
-        // Starting sumup app
-        window.open('sumupmerchant://pay/1.0?affiliate-key=<?php echo $conf->global->TAKEPOS_SUMUP_AFFILIATE ?>&app-id=<?php echo $conf->global->TAKEPOS_SUMUP_APPID ?>&total=' + amountpayed + '&currency=EUR&title=' + invoiceid + '&callback=<?php echo DOL_MAIN_URL_ROOT ?>/takepos/smpcb.php');
-
-        var loop = window.setInterval(function () {
-            $.ajax('/takepos/smpcb.php?status').done(function (data) {
-                console.log(data);
-                if (data === "SUCCESS") {
-                    parent.$("#poslines").load("invoice.php?place=<?php echo $place; ?>&action=valid&pay=CB&amount=" + amountpayed + "&invoiceid=" + invoiceid, function () {
-                        //parent.$("#poslines").scrollTop(parent.$("#poslines")[0].scrollHeight);
-                        parent.$.colorbox.close();
-                        //parent.setFocusOnSearchField();	// This does not have effect
-                    });
-                    clearInterval(loop);
-                } else if (data === "FAILED") {
-                    parent.$.colorbox.close();
-                    clearInterval(loop);
-                }
-            });
-        }, 2500);
-    }
+  
+  	function Resiliate()
+	{
+		parent.$.colorbox.close();
+	}
 </script>
-<?php //echo $invoice->socid.'/'.$constforcompanyid; ?>
 <?php if ($constforcompanyid != $invoice->socid) { 
 $adh = new AdherentPlus($db);
 $result = $adh->fetch('', '', $invoice->socid);
@@ -317,12 +248,10 @@ $action_buttons = array(
 		$nbtotalofrecords = $num;
 
 		$i = 0;
-    
+    $membertype = new AdherentTypePlus($db); 
 		while ($i < $num) {
 			$objp = $db->fetch_object($result);
-      $membertype = new AdherentTypePlus($db); 
       $membertype->fetch($objp->rowid);
-      $membertype->fetch_optionals();
       $membertype->subscription_calculator();
       
 print '<button type="button" class="';
@@ -345,7 +274,7 @@ print '</small></button>';
 		dol_print_error($db);
 	}
 if ($adh->statut != 0) {
-print '<button type="button" class="calcbutton2" onclick="">'.$langs->trans("Resiliate").'</button>';
+print '<button type="button" class="calcbutton2" onclick="Resiliate();">'.$langs->trans("Resiliate").'</button>';
 }
 ?>
 </div>
