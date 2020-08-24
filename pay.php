@@ -255,7 +255,7 @@ echo $adht->libelle; ?></span></font></span></center>
 	if ($adh->datefin)
 	{
 	    echo dol_print_date($adh->datefin, 'day');
-	    if ($object->hasDelay()) {
+	    if ($adh->hasDelay()) {
 	        echo " ".img_warning($langs->trans("Late"));
 	    }
 	}
