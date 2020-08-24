@@ -305,104 +305,6 @@ $action_buttons = array(
 	    "class" => "poscolordelete"
 	),
 );
-$numpad = $conf->global->TAKEPOS_NUMPAD;
-
-print '<button type="button" class="calcbutton" onclick="addreceived('.($numpad == 0 ? '7' : '10').');">'.($numpad == 0 ? '7' : '10').'</button>';
-print '<button type="button" class="calcbutton" onclick="addreceived('.($numpad == 0 ? '8' : '20').');">'.($numpad == 0 ? '8' : '20').'</button>';
-print '<button type="button" class="calcbutton" onclick="addreceived('.($numpad == 0 ? '9' : '50').');">'.($numpad == 0 ? '9' : '50').'</button>';
-?>
-<?php if (count($paiements) > 0) {
-    $paycode = $paiements[0]->code;
-	$payIcon = '';
-	if ($paycode == 'LIQ') {
-		$paycode = 'cash';
-		if (!empty($conf->global->TAKEPOS_NUMPAD_USE_PAYMENT_ICON))	$payIcon = 'coins';
-	} elseif ($paycode == 'CB') {
-		$paycode = 'card';
-		if (!empty($conf->global->TAKEPOS_NUMPAD_USE_PAYMENT_ICON))	$payIcon = 'credit-card';
-	} elseif ($paycode == 'CHQ') {
-		$paycode = 'cheque';
-		if (!empty($conf->global->TAKEPOS_NUMPAD_USE_PAYMENT_ICON))	$payIcon = 'money-check';
-	}
-
-	print '<button type="button" class="calcbutton2" onclick="Validate(\''.$langs->trans($paycode).'\');">'.(!empty($payIcon) ? '<span class="fa fa-2x fa-'.$payIcon.'"></span>' : $langs->trans("PaymentTypeShort".$paiements[0]->code)).'</button>';
-} else {
-	print '<button type="button" class="calcbutton2">'.$langs->trans("NoPaimementModesDefined").'</button>';
-}
-
-print '<button type="button" class="calcbutton" onclick="addreceived('.($numpad == 0 ? '4' : '1').');">'.($numpad == 0 ? '4' : '1').'</button>';
-print '<button type="button" class="calcbutton" onclick="addreceived('.($numpad == 0 ? '5' : '2').');">'.($numpad == 0 ? '5' : '2').'</button>';
-print '<button type="button" class="calcbutton" onclick="addreceived('.($numpad == 0 ? '6' : '5').');">'.($numpad == 0 ? '6' : '5').'</button>';
-?>
-<?php if (count($paiements) > 1) {
-    $paycode = $paiements[1]->code;
-	$payIcon = '';
-	if ($paycode == 'LIQ') {
-		$paycode = 'cash';
-		if (!empty($conf->global->TAKEPOS_NUMPAD_USE_PAYMENT_ICON))	$payIcon = 'coins';
-	} elseif ($paycode == 'CB') {
-		$paycode = 'card';
-		if (!empty($conf->global->TAKEPOS_NUMPAD_USE_PAYMENT_ICON))	$payIcon = 'credit-card';
-	} elseif ($paycode == 'CHQ') {
-		$paycode = 'cheque';
-		if (!empty($conf->global->TAKEPOS_NUMPAD_USE_PAYMENT_ICON))	$payIcon = 'money-check';
-	}
-
-	print '<button type="button" class="calcbutton2" onclick="Validate(\''.$langs->trans($paycode).'\');">'.(!empty($payIcon) ? '<span class="fa fa-2x fa-'.$payIcon.'"></span>' : $langs->trans("PaymentTypeShort".$paiements[1]->code)).'</button>';
-} else {
-	$button = array_pop($action_buttons);
-	print '<button type="button" class="calcbutton2" onclick="'.$button["function"].'"><span '.$button["span"].'>'.$button["text"].'</span></button>';
-}
-
-print '<button type="button" class="calcbutton" onclick="addreceived('.($numpad == 0 ? '1' : '0.10').');">'.($numpad == 0 ? '1' : '0.10').'</button>';
-print '<button type="button" class="calcbutton" onclick="addreceived('.($numpad == 0 ? '2' : '0.20').');">'.($numpad == 0 ? '2' : '0.20').'</button>';
-print '<button type="button" class="calcbutton" onclick="addreceived('.($numpad == 0 ? '3' : '0.50').');">'.($numpad == 0 ? '3' : '0.50').'</button>';
-?>
-<?php if (count($paiements) > 2) {
-    $paycode = $paiements[2]->code;
-	$payIcon = '';
-	if ($paycode == 'LIQ') {
-		$paycode = 'cash';
-		if (!empty($conf->global->TAKEPOS_NUMPAD_USE_PAYMENT_ICON))	$payIcon = 'coins';
-	} elseif ($paycode == 'CB') {
-		$paycode = 'card';
-		if (!empty($conf->global->TAKEPOS_NUMPAD_USE_PAYMENT_ICON))	$payIcon = 'credit-card';
-	} elseif ($paycode == 'CHQ') {
-		$paycode = 'cheque';
-		if (!empty($conf->global->TAKEPOS_NUMPAD_USE_PAYMENT_ICON))	$payIcon = 'money-check';
-	}
-
-	print '<button type="button" class="calcbutton2" onclick="Validate(\''.$langs->trans($paycode).'\');">'.(!empty($payIcon) ? '<span class="fa fa-2x fa-'.$payIcon.'"></span>' : $langs->trans("PaymentTypeShort".$paiements[2]->code)).'</button>';
-} else {
-    $button = array_pop($action_buttons);
-	print '<button type="button" class="calcbutton2" onclick="'.$button["function"].'"><span '.$button["span"].'>'.$button["text"].'</span></button>';
-}
-
-print '<button type="button" class="calcbutton" onclick="addreceived('.($numpad == 0 ? '0' : '0.01').');">'.($numpad == 0 ? '0' : '0.01').'</button>';
-print '<button type="button" class="calcbutton" onclick="addreceived('.($numpad == 0 ? '\'000\'' : '0.02').');">'.($numpad == 0 ? '000' : '0.02').'</button>';
-print '<button type="button" class="calcbutton" onclick="addreceived('.($numpad == 0 ? '\'.\'' : '0.05').');">'.($numpad == 0 ? '.' : '0.05').'</button>';
-
-$i = 3;
-while ($i < count($paiements)) {
-	print '<button type="button" class="calcbutton2" onclick="Validate(\''.$langs->trans($paiements[$i]->code).'\');">'.$langs->trans("PaymentTypeShort".$paiements[$i]->code).'</button>';
-	$i = $i + 1;
-}
-
-$keyforsumupbank = "CASHDESK_ID_BANKACCOUNT_SUMUP".$_SESSION["takeposterminal"];
-if ($conf->global->TAKEPOS_ENABLE_SUMUP) {
-	if (!empty($conf->global->$keyforsumupbank)) {
-		print '<button type="button" class="calcbutton2" onclick="ValidateSumup();">Sumup</button>';
-	} else {
-		$langs->loadLangs(array("errors", "admin"));
-		print '<button type="button" class="calcbutton2 disabled" title="'.$langs->trans("SetupNotComplete").'">Sumup</button>';
-	}
-}
-
-$class = ($i == 3) ? "calcbutton3" : "calcbutton2";
-foreach ($action_buttons as $button) {
-    $newclass = $class.($button["class"] ? " ".$button["class"] : "");
-	print '<button type="button" class="'.$newclass.'" onclick="'.$button["function"].'"><span '.$button["span"].'>'.$button["text"].'</span></button>';
-}
 	
 	$sql = "SELECT d.rowid, d.libelle as label, d.subscription, d.vote, d.statut as status, d.morphy";
 	$sql .= " FROM ".MAIN_DB_PREFIX."adherent_type as d";
@@ -415,16 +317,16 @@ foreach ($action_buttons as $button) {
 		$nbtotalofrecords = $num;
 
 		$i = 0;
-
+    
 		while ($i < $num) {
 			$objp = $db->fetch_object($result);
-
-			$membertype->id = $objp->rowid;
-			$membertype->ref = $objp->rowid;
-			$membertype->label = $objp->rowid;
-			$membertype->status = $objp->status;
+      $membertype = new AdherentTypePlus($db); 
+      $membertype->fetch($objp->rowid);
+      $membertype->fetch_optionals();
+      $membertype->subscription_calculator();
       
-print '<button type="button" class="calcbutton2" onclick="ValidateSumup();">'.$type->id.'<br> hfhzefzeg zeg zeg zeg ze</button>';
+print '<button type="button" class="calcbutton2" onclick="ValidateSumup();">'.dol_escape_htmltag($membertype->label).' ('.price($membertype->price_prorata).' '.$langs->trans("Currency".$conf->currency).')<br>';
+print dol_print_date($membertype->date_begin, 'dayhour').' - '.dol_print_date($membertype->date_end, 'dayhour').'</button>';
 			$i++;
 		}
 		print "</table>";
