@@ -234,7 +234,7 @@ else print "var received=0;";
         }, 2500);
     }
 </script>
-<?php echo $invoice->socid.'/'.$constforcompanyid; ?>
+<?php //echo $invoice->socid.'/'.$constforcompanyid; ?>
 <?php if ($constforcompanyid != $invoice->socid) { ?>
 <div style="position:relative; padding-top: 10px; left:5%; height:150px; width:91%;">
 <center>
@@ -359,8 +359,7 @@ if ($conf->global->TAKEPOS_ENABLE_SUMUP) {
 	if (!empty($conf->global->$keyforsumupbank)) {
 		print '<button type="button" class="calcbutton2" onclick="ValidateSumup();">Sumup</button>';
 	} else {
-		$langs->load("errors");
-		$langs->load("admin");
+		$langs->loadLangs(array("errors", "admin", "adherentsplus@adherentsplus");
 		print '<button type="button" class="calcbutton2 disabled" title="'.$langs->trans("SetupNotComplete").'">Sumup</button>';
 	}
 }
@@ -372,7 +371,8 @@ foreach ($action_buttons as $button) {
 }
 ?>
 </div>
-<?php } ?>
-
+<?php } else {
+print '<center>'.$langs->trans('MembershipNotAllowedForGenericCustomer').'</center>';
+ } ?>
 </body>
 </html>
