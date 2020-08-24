@@ -248,7 +248,7 @@ $result=$adht->fetch($adh->typeid);
 <center>
 <div class="paymentbordline paymentbordlinetotal">
 <center><span class="takepospay"><font color="white"><?php echo $langs->trans("Type"); ?>: </font><span id="totaldisplay" class="colorwhite"><?php 
-echo $adht->getNomUrl(1); ?></span></font></span></center>
+echo $adht->libelle; ?></span></font></span></center>
 </div>
 <div class="paymentbordline paymentbordlinetotal">
 <center><span class="takepospay"><font color="white"><?php echo $langs->trans("SubscriptionEndDate"); ?>: </font><span id="totaldisplay" class="colorwhite"><?php 
