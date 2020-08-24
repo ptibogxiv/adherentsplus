@@ -115,9 +115,6 @@ if ($invoice->id > 0)
 }
 $alreadypayed = (is_object($invoice) ? ($invoice->total_ttc - $remaintopay) : 0);
 
-if ($conf->global->TAKEPOS_NUMPAD == 0) print "var received='';";
-else print "var received=0;";
-
 ?>
 	function Validate(payment)
 	{
