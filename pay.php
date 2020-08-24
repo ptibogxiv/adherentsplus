@@ -332,7 +332,7 @@ print "calcbutton";
 print "calcbutton2";
 }
 print '" onclick="">'.dol_escape_htmltag($membertype->label).' ('.price($membertype->price_prorata).' '.$langs->trans("Currency".$conf->currency).')<br>';
-print dol_print_date($membertype->date_begin, 'dayhour').' - '.dol_print_date($membertype->date_end, 'dayhour').'</button>';
+print dol_print_date($membertype->date_begin, 'day').' - '.dol_print_date($membertype->date_end, 'day').'</button>';
 			$i++;
 		}
 		print "</table>";
