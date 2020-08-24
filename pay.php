@@ -344,7 +344,9 @@ print '</small></button>';
 	{
 		dol_print_error($db);
 	}
+if ($adh->statut != 0) {
 print '<button type="button" class="calcbutton2" onclick="">'.$langs->trans("Resiliate").'</button>';
+}
 ?>
 </div>
 <?php } else {
