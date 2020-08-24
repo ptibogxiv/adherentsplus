@@ -49,6 +49,8 @@ if (! $res)
 	die("Main include failed");
 }
 require_once DOL_DOCUMENT_ROOT.'/compta/facture/class/facture.class.php';
+require_once DOL_DOCUMENT_ROOT.'/adherents/class/adherent.class.php';
+dol_include_once('/adherentsplus/class/adherent.class.php');
 
 $place = (GETPOST('place', 'aZ09') ? GETPOST('place', 'aZ09') : '0'); // $place is id of table for Bar or Restaurant
 
@@ -93,7 +95,7 @@ $arrayofjs = array();
 
 top_htmlhead($head, $title, $disablejs, $disablehead, $arrayofjs, $arrayofcss);
 
-$langs->loadLangs(array("main", "bills", "cashdesk", "adherentsplus@adherentsplus"));
+$langs->loadLangs(array("main", "bills", "cashdesk", "members", "adherentsplus@adherentsplus"));
 
 $sql = "SELECT code, libelle as label FROM ".MAIN_DB_PREFIX."c_paiement";
 $sql .= " WHERE entity IN (".getEntity('c_paiement').")";
@@ -240,9 +242,11 @@ else print "var received=0;";
 <center>
 <div class="paymentbordline paymentbordlinetotal">
 <center><span class="takepospay"><font color="white"><?php echo $langs->trans("SubscriptionEndDate"); ?>: </font><span id="totaldisplay" class="colorwhite"><?php 
-	if ($object->datefin)
+$adh = new AdherentPlus($db);
+$result = $adh->fetch('', '', $invoice->socid);
+	if ($adh->datefin)
 	{
-	    echo dol_print_date($object->datefin, 'day');
+	    echo dol_print_date($adh->datefin, 'day');
 	    if ($object->hasDelay()) {
 	        echo " ".img_warning($langs->trans("Late"));
 	    }
@@ -252,17 +256,25 @@ else print "var received=0;";
 	    if (!$adht->subscription)
 	    {
 	        echo $langs->trans("SubscriptionNotRecorded");
-	        if ($object->statut > 0) echo " ".img_warning($langs->trans("Late")); // Display a delay picto only if it is not a draft and is not canceled
+	        if ($adh->statut > 0) echo " ".img_warning($langs->trans("Late")); // Display a delay picto only if it is not a draft and is not canceled
 	    }
 	    else
 	    {
 	        echo $langs->trans("SubscriptionNotReceived");
-	        if ($object->statut > 0) echo " ".img_warning($langs->trans("Late")); // Display a delay picto only if it is not a draft and is not canceled
+	        if ($adh->statut > 0) echo " ".img_warning($langs->trans("Late")); // Display a delay picto only if it is not a draft and is not canceled
 	    }
 	} ?></span></font></span></center>
 </div>
 <div class="paymentbordline paymentbordlinereceived">
-    <center><span class="takepospay"><font color="white"><?php echo $langs->trans("Commitment"); ?>: </font><span class="change1 colorred"><?php echo price(0) ?></span><input type="hidden" id="change1" class="change1" value="0"></font></span></center>
+    <center><span class="takepospay"><font color="white"><?php echo $langs->trans("Commitment"); ?>: </font><span id="totaldisplay" class="colorwhite"><?php 
+    		if ($adh->datecommitment)
+		{
+			echo dol_print_date($adh->datecommitment,'day');
+			if ($adh->hasDelay()) {
+				echo " ".img_warning($langs->trans("Late"));
+			}
+		}
+    ?><</span></font></span></center>
 </div>
 </center>
 </div>
