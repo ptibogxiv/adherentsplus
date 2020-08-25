@@ -225,6 +225,7 @@ echo $langs->trans("None");
 	$sql = "SELECT d.rowid, d.libelle as label, d.subscription, d.vote, d.statut as status, d.morphy";
 	$sql .= " FROM ".MAIN_DB_PREFIX."adherent_type as d";
 	$sql .= " WHERE d.entity IN (".getEntity('member_type').")";
+  $sql .= " ORDER BY d.libelle ASC";
 
 	$result = $db->query($sql);
 	if ($result)
