@@ -238,7 +238,7 @@ echo $langs->trans("None");
       $membertype = new AdherentTypePlus($db); 
       $membertype->fetch($objp->rowid);
       $membertype->subscription_calculator($adh->id);
-if (($adh->datefin <= dol_now()) || ($membertype->date_renew <= dol_now())) {     
+//if (($adh->datefin <= dol_now()) || ($membertype->date_renew <= dol_now()) || ($adh->datefin < $membertype->date_renew)) {     
 print '<button type="button" class="';
 if ($membertype->id == $adh->typeid) { 
 print "calcbutton poscolorblue";
@@ -251,7 +251,7 @@ if ($membertype->price_prorata != $membertype->nextprice) { print ' '.$langs->tr
 print ')<br>';
 print ''.dol_print_date($membertype->date_begin, 'day').' - '.dol_print_date($membertype->date_end, 'day');
 print '</small></button>';
-}
+//}
 			$i++;
 		}
 	}
