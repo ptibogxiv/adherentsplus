@@ -212,7 +212,7 @@ echo $langs->trans("None");
       $membertype = new AdherentTypePlus($db); 
       $membertype->fetch($objp->rowid);
       $membertype->fetch_optionals();
-      $membertype->subscription_calculator();
+      $membertype->subscription_calculator($adh->id);
       
 print '<button type="button" class="';
 if ($membertype->id == $adh->typeid) { 
