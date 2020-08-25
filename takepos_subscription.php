@@ -130,6 +130,7 @@ if ($action == "change") // change member from POS
         $membertype->subscription_calculator($adh->id);
 				// Add line to draft invoice
 				$idprodsubscription = 0;
+        $label = $langs->trans("Subscription").' '.$membertype->season;
 				if (!empty($conf->global->ADHERENT_PRODUCT_ID_FOR_SUBSCRIPTIONS) && (!empty($conf->product->enabled) || !empty($conf->service->enabled))) $idprodsubscription = $conf->global->ADHERENT_PRODUCT_ID_FOR_SUBSCRIPTIONS;
 
 				$vattouse = 0;
