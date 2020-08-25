@@ -53,9 +53,10 @@ require_once DOL_DOCUMENT_ROOT.'/adherents/class/adherent.class.php';
 dol_include_once('/adherentsplus/class/adherent.class.php');
 dol_include_once('/adherentsplus/class/adherent_type.class.php');
 
+$action = GETPOST('action', 'alpha');
 $place = (GETPOST('place', 'aZ09') ? GETPOST('place', 'aZ09') : '0'); // $place is id of table for Bar or Restaurant
-
 $invoiceid = GETPOST('invoiceid', 'int');
+$type = GETPOST('type', 'int');
 
 if (empty($user->rights->takepos->run)) {
 	accessforbidden();
@@ -63,9 +64,6 @@ if (empty($user->rights->takepos->run)) {
 
 $constforcompanyid = $conf->global->{'CASHDESK_ID_THIRDPARTY'.$_SESSION["takeposterminal"]};
 
-/*
- * View
- */
 
 $invoice = new Facture($db);
 if ($invoiceid > 0)
@@ -99,53 +97,40 @@ top_htmlhead($head, $title, $disablejs, $disablehead, $arrayofjs, $arrayofcss);
 $langs->loadLangs(array("main", "bills", "cashdesk", "members", "adherentsplus@adherentsplus"));
 
 ?>
-<link rel="stylesheet" href="css/pos.css.php">
+<link rel="stylesheet" href="/takepos/css/pos.css.php">
 <?php
 if ($conf->global->TAKEPOS_COLOR_THEME == 1) print '<link rel="stylesheet" href="css/colorful.css">';
 ?>
 </head>
 <body>
+<?php 
 
-<script>
-<?php
-$remaintopay = 0;
-if ($invoice->id > 0)
+if ($action == "change") // change member from POS
 {
-    $remaintopay = $invoice->getRemainToPay();
-}
-$alreadypayed = (is_object($invoice) ? ($invoice->total_ttc - $remaintopay) : 0);
-
-?>
-	function Validate(payment)
-	{
-		var invoiceid = <?php echo ($invoiceid > 0 ? $invoiceid : 0); ?>;
-		var amountpayed = $("#change1").val();
-		if (amountpayed > <?php echo $invoice->total_ttc; ?>) {
-			amountpayed = <?php echo $invoice->total_ttc; ?>;
-		}
-		console.log("We click on the payment mode to pay amount = "+amountpayed);
-		parent.$("#poslines").load("invoice.php?place=<?php echo $place; ?>&action=valid&pay="+payment+"&amount="+amountpayed+"&invoiceid="+invoiceid, function() {
-		    if (amountpayed > <?php echo $remaintopay; ?> || amountpayed == <?php echo $remaintopay; ?> || amountpayed==0 ) parent.$.colorbox.close();
-			else location.reload();
-		});
-	}
-  
-function ClickProduct(position) {
-	    console.log("Reload page invoice.php with place=1");
-	    parent.$("#poslines").load("invoice.php?place=1", function() {
+		$idmember = GETPOST('$idmember', 'int');
+    
+    $adh = new AdherentPlus($db);
+    $adh->fetch('', '', $invoice->socid);
+    if (empty($type)) {
+    $result = $adh->resiliate($user);    
+    }
+    
+    ?>
+	    <script>
+	    console.log("Reload page invoice.php with place=<?php print $place; ?>");
+	    parent.$("#poslines").load("invoice.php?place=<?php print $place; ?>", function() {
 	        //parent.$("#poslines").scrollTop(parent.$("#poslines")[0].scrollHeight);
-
+			<?php if (!$result) { ?>
+				alert('Error failed to update member on draft invoice.');
+			<?php } ?>
 	        parent.$.colorbox.close(); /* Close the popup */
 	    });
+	    </script>
+    <?php
+    exit;
 }
-  
-  	function Resiliate()
-	{
-		parent.$.colorbox.close();
-	}
 
-</script>
-<?php if ($constforcompanyid != $invoice->socid) { 
+if ($constforcompanyid != $invoice->socid) { 
 $adh = new AdherentPlus($db);
 $result = $adh->fetch('', '', $invoice->socid);
 $adht = new AdherentTypePlus($db);
@@ -224,7 +209,7 @@ print "calcbutton poscolorblue";
 } else {
 print "calcbutton poscolordelete";
 }
-print '" onclick="location.href=\'pay.php?action=change&idmember='.$adht->id.'&type='.$membertype->id.'&place='.urlencode($place).'\'">'.dol_escape_htmltag($membertype->label).'<br><small>';
+print '" onclick="location.href=\'pay.php?action=change&idmember='.$adh->id.'&type='.$membertype->id.'&invoiceid='.$invoiceid.'&place='.urlencode($place).'\'">'.dol_escape_htmltag($membertype->label).'<br><small>';
 print '('.price($membertype->price_prorata).' '.$langs->trans("Currency".$conf->currency);
 if ($membertype->price_prorata != $membertype->nextprice) { print ' '.$langs->trans("then").' '.price($membertype->nextprice).' '.$langs->trans("Currency".$conf->currency); }
 print ')<br>';
@@ -238,7 +223,7 @@ print '</small></button>';
 		dol_print_error($db);
 	}
 if ($adh->statut != 0) {
-print '<button type="button" class="calcbutton2" onclick="location.href=\'pay.php?action=change&idmember='.$adht->id.'&type=resiliate&place='.urlencode($place).'\'">'.$langs->trans("Resiliate").'</button>';
+print '<button type="button" class="calcbutton2" onclick="location.href=\'pay.php?action=change&idmember='.$adh->id.'&type=0&invoiceid='.$invoiceid.'&place='.urlencode($place).'\'">'.$langs->trans("Resiliate").'</button>';
 }
 ?>
 </div>
