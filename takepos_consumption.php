@@ -16,7 +16,7 @@
  */
 
 /**
- *	\file       htdocs/takepos/pay.php
+ *	\file       htdocs/takepos/takepos_consumption.php
  *	\ingroup	takepos
  *	\brief      Page with the content of the popup to enter payments
  */
@@ -130,6 +130,7 @@ if ($action == "change") // change member from POS
         $membertype->subscription_calculator($adh->id);
 				// Add line to draft invoice
 				$idprodsubscription = 0;
+        $label = $langs->trans("Subscription").' '.$membertype->season;
 				if (!empty($conf->global->ADHERENT_PRODUCT_ID_FOR_SUBSCRIPTIONS) && (!empty($conf->product->enabled) || !empty($conf->service->enabled))) $idprodsubscription = $conf->global->ADHERENT_PRODUCT_ID_FOR_SUBSCRIPTIONS;
 
 				$vattouse = 0;
@@ -238,20 +239,20 @@ echo $langs->trans("None");
       $membertype = new AdherentTypePlus($db); 
       $membertype->fetch($objp->rowid);
       $membertype->subscription_calculator($adh->id);
-if (($adh->datefin <= dol_now()) || ($membertype->date_renew <= dol_now())) {     
+//if (($adh->datefin <= dol_now()) || ($membertype->date_renew <= dol_now()) || ($adh->datefin < $membertype->date_renew)) {     
 print '<button type="button" class="';
 if ($membertype->id == $adh->typeid) { 
 print "calcbutton poscolorblue";
 } else {
 print "calcbutton poscolordelete";
 }
-print '" onclick="location.href=\'takepos_member.php?action=change&idmember='.$adh->id.'&type='.$membertype->id.'&invoiceid='.$invoiceid.'&place='.urlencode($place).'\'">'.dol_escape_htmltag($membertype->label).'<br><small>';
+print '" onclick="location.href=\'takepos_consumption.php?action=change&idmember='.$adh->id.'&type='.$membertype->id.'&invoiceid='.$invoiceid.'&place='.urlencode($place).'\'">'.dol_escape_htmltag($membertype->label).'<br><small>';
 print '('.price($membertype->price_prorata).' '.$langs->trans("Currency".$conf->currency);
 if ($membertype->price_prorata != $membertype->nextprice) { print ' '.$langs->trans("then").' '.price($membertype->nextprice).' '.$langs->trans("Currency".$conf->currency); }
 print ')<br>';
 print ''.dol_print_date($membertype->date_begin, 'day').' - '.dol_print_date($membertype->date_end, 'day');
 print '</small></button>';
-}
+//}
 			$i++;
 		}
 	}
@@ -260,7 +261,7 @@ print '</small></button>';
 		dol_print_error($db);
 	}
 if ($adh->statut != 0) {
-print '<button type="button" class="calcbutton2" onclick="location.href=\'pay.php?action=change&idmember='.$adh->id.'&type=0&invoiceid='.$invoiceid.'&place='.urlencode($place).'\'">'.$langs->trans("Resiliate").'</button>';
+print '<button type="button" class="calcbutton2" onclick="location.href=\'takepos_consumption.php?action=change&idmember='.$adh->id.'&type=0&invoiceid='.$invoiceid.'&place='.urlencode($place).'\'">'.$langs->trans("Resiliate").'</button>';
 }
 ?>
 </div>

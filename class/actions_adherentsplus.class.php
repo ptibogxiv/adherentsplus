@@ -107,7 +107,7 @@ if (!empty($conf->global->ADHERENT_CONSUMPTION)) {
 function CloseBillConsumption() {
 	invoiceid = $("#invoiceid").val();
 	console.log("Open popup to enter payment on invoiceid="+invoiceid);
-	$.colorbox({href:"../custom/adherentsplus/takepos_subscription.php?place="+place+"&invoiceid="+invoiceid, width:"80%", height:"90%", transition:"none", iframe:"true", title:"<?php echo $langs->trans("Consumptions"); ?>"});
+	$.colorbox({href:"../custom/adherentsplus/takepos_consumption.php?place="+place+"&invoiceid="+invoiceid, width:"80%", height:"90%", transition:"none", iframe:"true", title:"<?php echo $langs->trans("Consumptions"); ?>"});
 }
 </script>
 <?php 
