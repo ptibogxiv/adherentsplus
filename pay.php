@@ -120,8 +120,34 @@ if ($action == "change") // change member from POS
     } elseif ($adh->typeid != $type) {
     $adh->typeid = $type;
     $result = $adh->update($user);  
+    } else {
+    $result = 1;
     }
     
+    if (!empty($type) && $result) {
+        $membertype = new AdherentTypePlus($db); 
+        $membertype->fetch($type);
+        $membertype->subscription_calculator($adh->id);
+				// Add line to draft invoice
+				$idprodsubscription = 0;
+				if (!empty($conf->global->ADHERENT_PRODUCT_ID_FOR_SUBSCRIPTIONS) && (!empty($conf->product->enabled) || !empty($conf->service->enabled))) $idprodsubscription = $conf->global->ADHERENT_PRODUCT_ID_FOR_SUBSCRIPTIONS;
+
+				$vattouse = 0;
+				if (isset($conf->global->ADHERENT_VAT_FOR_SUBSCRIPTIONS) && $conf->global->ADHERENT_VAT_FOR_SUBSCRIPTIONS == 'defaultforfoundationcountry') {
+					$vattouse = get_default_tva($mysoc, $mysoc, $idprodsubscription);
+				}
+
+			$sql = "SELECT rowid FROM ".MAIN_DB_PREFIX."facturedet where fk_facture=$invoiceid AND fk_product=$idprodsubscription";
+			$resql = $db->query($sql);
+			$row = $db->fetch_array($resql);
+        if (!empty($row[0])) {
+        $result = $invoice->updateline($row[0], $label, $membertype->price_prorata, 1, 0, $membertype->date_begin, $membertype->date_end, $vattouse, '', '', 'TTC', '', 1);
+        } else {
+        $result = $invoice->addline($label, 0, 1, $vattouse, 0, 0, $idprodsubscription, 0, $membertype->date_begin, $membertype->date_end, 0, 0, '', 'TTC', $membertype->price_prorata, 1);
+        }
+        
+    }
+
     ?>
 	    <script>
 	    console.log("Reload page invoice.php with place=<?php print $place; ?>");
