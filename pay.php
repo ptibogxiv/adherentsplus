@@ -113,6 +113,9 @@ if ($action == "change") // change member from POS
     $adh->fetch('', '', $invoice->socid);
     if (empty($type)) {
     $result = $adh->resiliate($user);    
+    } else {
+    $adh->typeid = $type;
+    $result = $adh->update($user);  
     }
     
     ?>
