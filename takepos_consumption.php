@@ -164,7 +164,7 @@ if ($action == "change") // change member from POS
     exit;
 }
 
-if ($constforcompanyid != $invoice->socid) { 
+if ($constforcompanyid != $invoice->socid && !empty($invoice->socid)) { 
 $adh = new AdherentPlus($db);
 $result = $adh->fetch('', '', $invoice->socid);
 $adht = new AdherentTypePlus($db);
