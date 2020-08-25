@@ -2618,7 +2618,6 @@ require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 		return dolGetStatus($labelStatus, $labelStatusShort, '', $statusType, $mode);
 	}
 
-
 	/**
 	 *      Charge indicateurs this->nb de tableau de bord
 	 *

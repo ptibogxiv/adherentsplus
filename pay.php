@@ -50,6 +50,7 @@ if (! $res)
 }
 require_once DOL_DOCUMENT_ROOT.'/compta/facture/class/facture.class.php';
 require_once DOL_DOCUMENT_ROOT.'/adherents/class/adherent.class.php';
+require_once DOL_DOCUMENT_ROOT.'/adherents/class/adherent_type.class.php';
 dol_include_once('/adherentsplus/class/adherent.class.php');
 dol_include_once('/adherentsplus/class/adherent_type.class.php');
 
@@ -180,7 +181,8 @@ echo $adht->libelle; ?></span></font></span></center>
 echo $langs->trans("None");
     }
     ?></span></font></span></center>
-</div>
+    </div>
+<?php echo $adh->LibStatut($adh->statut, $adh->subscription, $db->jdate($adh->datefin), 0); ?>
 </center>
 </div>
 
