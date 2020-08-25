@@ -143,6 +143,10 @@ $result=$adht->fetch($adh->typeid);
 <div style="position:relative; padding-top: 10px; left:5%; height:150px; width:91%;">
 <center>
 <div class="paymentbordline paymentbordlinetotal">
+<center><span class="takepospay"><font color="white"><?php echo $langs->trans("Status"); ?>: </font><span id="totaldisplay" class="colorwhite"><?php 
+echo $adh->getLibStatut(0); ?></span></font></span></center>
+</div>
+<div class="paymentbordline paymentbordlinetotal">
 <center><span class="takepospay"><font color="white"><?php echo $langs->trans("Type"); ?>: </font><span id="totaldisplay" class="colorwhite"><?php 
 echo $adht->libelle; ?></span></font></span></center>
 </div>
@@ -182,7 +186,6 @@ echo $langs->trans("None");
     }
     ?></span></font></span></center>
     </div>
-<?php echo $adh->LibStatut($adh->statut, $adh->subscription, $db->jdate($adh->datefin), 0); ?>
 </center>
 </div>
 
