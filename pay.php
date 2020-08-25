@@ -131,18 +131,12 @@ $alreadypayed = (is_object($invoice) ? ($invoice->total_ttc - $remaintopay) : 0)
 	}
   
 function ClickProduct(position) {
-	console.log("ClickProduct");
-    $('#proimg'+position).animate({opacity: '0.5'}, 1);
-	$('#proimg'+position).animate({opacity: '1'}, 100);
+	    console.log("Reload page invoice.php with place=1");
+	    parent.$("#poslines").load("invoice.php?place=1", function() {
+	        //parent.$("#poslines").scrollTop(parent.$("#poslines")[0].scrollHeight);
 
-		idproduct=$('#prodiv'+position).data('rowid');
-		console.log("Click on product at position "+position+" for idproduct "+idproduct);
-		// Call page invoice.php to generate the section with product lines
-		$("#poslines").load("invoice.php?action=addline&place=0&idproduct=4", function() {
-			//$('#poslines').scrollTop($('#poslines')[0].scrollHeight);
-		});
-
-	parent.$.colorbox.close();
+	        parent.$.colorbox.close(); /* Close the popup */
+	    });
 }
   
   	function Resiliate()
@@ -230,7 +224,7 @@ print "calcbutton poscolorblue";
 } else {
 print "calcbutton poscolordelete";
 }
-print '" onclick="ClickProduct(3);">'.dol_escape_htmltag($membertype->label).'<br><small>';
+print '" onclick="location.href=\'pay.php?action=change&idmember='.$adht->id.'&type='.$membertype->id.'&place='.urlencode($place).'\'">'.dol_escape_htmltag($membertype->label).'<br><small>';
 print '('.price($membertype->price_prorata).' '.$langs->trans("Currency".$conf->currency);
 if ($membertype->price_prorata != $membertype->nextprice) { print ' '.$langs->trans("then").' '.price($membertype->nextprice).' '.$langs->trans("Currency".$conf->currency); }
 print ')<br>';
@@ -244,7 +238,7 @@ print '</small></button>';
 		dol_print_error($db);
 	}
 if ($adh->statut != 0) {
-print '<button type="button" class="calcbutton2" onclick="Resiliate();">'.$langs->trans("Resiliate").'</button>';
+print '<button type="button" class="calcbutton2" onclick="location.href=\'pay.php?action=change&idmember='.$adht->id.'&type=resiliate&place='.urlencode($place).'\'">'.$langs->trans("Resiliate").'</button>';
 }
 ?>
 </div>
