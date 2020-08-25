@@ -112,6 +112,9 @@ if ($action == "change") // change member from POS
     
     $adh = new AdherentPlus($db);
     $adh->fetch('', '', $invoice->socid);
+    if (!empty($type) && empty($adh->statut)) {
+    $result = $adh->validate($user); 
+    }
     if (empty($type)) {
     $result = $adh->resiliate($user);    
     } elseif ($adh->typeid != $type) {
