@@ -17,7 +17,8 @@
 
 use Luracast\Restler\RestException;
 
-dol_include_once('/adherentsplus/class/adherent.class.php');
+require_once DOL_DOCUMENT_ROOT.'/societe/class/societe.class.php';
+dol_include_once('/adherentsplus/class/adherent.class.php');	
 dol_include_once('/adherentsplus/class/subscription.class.php');
 dol_include_once('/adherentsplus/class/adherent_type.class.php');
 
@@ -47,6 +48,78 @@ class AdherentsPlus extends DolibarrApi
     }
 
     /**
+     * Get properties of a member object by thirdparties ID
+     *
+     * Return an array with member informations
+     *
+     * @param     int     $thirdparty ID of third party
+     * 
+     * @return array|mixed Data without useless information
+     *
+     * @url GET byThirdparty/{thirdparty}
+     *
+     * @throws RestException 401
+     * @throws RestException 404
+     */
+    function getByThirdparty($thirdparty)
+    {
+        if(! DolibarrApiAccess::$user->rights->adherent->lire) {
+            throw new RestException(401);
+        }
+
+        $member = new AdherentPlus($this->db);
+        $result = $member->fetch('', '', $thirdparty);
+        if( ! $result ) {
+            throw new RestException(404, 'member not found');
+        }
+
+        if( ! DolibarrApi::_checkAccessToResource('adherent', $member->id)) {
+            throw new RestException(401, 'Access not allowed for login '.DolibarrApiAccess::$user->login);
+        }
+
+        return $this->_cleanObjectDatas($member);
+    }
+    
+    /**
+     * Get properties of a member object by thirdparties barcode
+     *
+     * Return an array with member informations
+     *
+     * @param     int     $barcode Barcode of thirdparty
+     * 
+     * @return array|mixed Data without useless information
+     *
+     * @url GET byThirdpartyBarcode/{barcode}
+     *
+     * @throws RestException 401
+     * @throws RestException 404
+     */
+    function getByThirdpartyBarcode($barcode)
+    {
+        if(! DolibarrApiAccess::$user->rights->adherent->lire) {
+            throw new RestException(401);
+        }
+
+        $thirdparty = new Societe($this->db);
+        $result = $thirdparty->fetch('', '', '', $barcode);
+        if( ! $result ) {
+            throw new RestException(404, 'thirdparty not found');
+        }
+        
+        $member = new AdherentPlus($this->db);
+        $result = $member->fetch('', '', $thirdparty->id);
+        if( ! $result ) {
+            throw new RestException(404, 'member not found');
+        }
+
+        if( ! DolibarrApi::_checkAccessToResource('adherent', $member->id)) {
+            throw new RestException(401, 'Access not allowed for login '.DolibarrApiAccess::$user->login);
+        }
+
+        return $this->_cleanObjectDatas($member);
+    }
+    
+    /**
      * Get properties of a member object by id
      *
      * Return an array with member informations
@@ -73,8 +146,7 @@ class AdherentsPlus extends DolibarrApi
         }
 
         return $this->_cleanObjectDatas($member);
-    }
-       
+    }     
 
     /**
      * List members
