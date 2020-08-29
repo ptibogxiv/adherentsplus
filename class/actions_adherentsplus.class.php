@@ -113,7 +113,7 @@ function CloseBillConsumption() {
 <?php 
 $reshook[] = array('title'=>'<span class="fas fa-users paddingrightonly"></span><div class="trunc">'.$langs->trans("Consumptions").'</div>', 'action'=>'CloseBillConsumption();');
 }  
-//$reshook = array('title'=>'<span class="fas fa-users paddingrightonly"></span><div class="trunc">'.$langs->trans("Subscription").'</div>', 'action'=>'Customer33();');
+
 } 
 
   return $reshook;
