@@ -81,15 +81,54 @@ class AdherentsPlus extends DolibarrApi
     }
     
     /**
-     * Get properties of a member object by linked thirdparty's barcode
+     * Get properties of a member object by linked thirdparty email
      *
      * Return an array with member informations
      *
-     * @param  string $barcode            Barcode of thirdparty
+     * @param  string $email            Email of third party
      * 
      * @return array|mixed Data without useless information
      *
-     * @url GET byThirdpartyBarcode/{barcode}
+     * @url GET thirdparty/email/{email}
+     *
+     * @throws RestException 401
+     * @throws RestException 404
+     */
+    function getByThirdpartyEmail($email)
+    {
+        if(! DolibarrApiAccess::$user->rights->adherent->lire) {
+            throw new RestException(401);
+        }
+
+        $thirdparty = new Societe($this->db);
+        $result = $thirdparty->fetch('', '', '', '', '', '', '', '', '', '', $email);
+        if( ! $result ) {
+            throw new RestException(404, 'thirdparty not found');
+        }
+        
+        $member = new AdherentPlus($this->db);
+        $result = $member->fetch('', '', $thirdparty->id);
+        if( ! $result ) {
+            throw new RestException(404, 'member not found');
+        }
+
+        if( ! DolibarrApi::_checkAccessToResource('adherent', $member->id)) {
+            throw new RestException(401, 'Access not allowed for login '.DolibarrApiAccess::$user->login);
+        }
+
+        return $this->_cleanObjectDatas($member);
+    } 
+    
+    /**
+     * Get properties of a member object by linked thirdparty barcode
+     *
+     * Return an array with member informations
+     *
+     * @param  string $barcode            Barcode of third party
+     * 
+     * @return array|mixed Data without useless information
+     *
+     * @url GET thirdparty/barcode/{barcode}
      *
      * @throws RestException 401
      * @throws RestException 404
