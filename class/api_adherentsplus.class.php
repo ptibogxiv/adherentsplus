@@ -48,7 +48,7 @@ class AdherentsPlus extends DolibarrApi
     }
 
     /**
-     * Get properties of a member object by thirdparties ID
+     * Get properties of a member object by linked thirdparty
      *
      * Return an array with member informations
      *
@@ -56,7 +56,7 @@ class AdherentsPlus extends DolibarrApi
      * 
      * @return array|mixed Data without useless information
      *
-     * @url GET byThirdparty/{thirdparty}
+     * @url GET thirdparty/{thirdparty}
      *
      * @throws RestException 401
      * @throws RestException 404
@@ -81,11 +81,11 @@ class AdherentsPlus extends DolibarrApi
     }
     
     /**
-     * Get properties of a member object by thirdparties barcode
+     * Get properties of a member object by linked thirdparty's barcode
      *
      * Return an array with member informations
      *
-     * @param     int     $barcode Barcode of thirdparty
+     * @param  string $barcode            Barcode of thirdparty
      * 
      * @return array|mixed Data without useless information
      *
