@@ -19,17 +19,17 @@
  */
 
 /**
- *	\file       htdocs/multicompany/actions_multicompany.class.php
+ *	\file       htdocs/adherentsplus/actions_adherentsplus.class.php
  *	\ingroup    multicompany
- *	\brief      File Class multicompany
+ *	\brief      File Class Adherentsplus
  */
  
 require_once DOL_DOCUMENT_ROOT.'/adherents/class/adherent.class.php';
 $langs->loadLangs(array("members", 'adherentsplus@adherentsplus'));
 
 /**
- *	\class      ActionsMulticompany
- *	\brief      Class Actions of the module multicompany
+ *	\class      ActionsAdherentsplus
+ *	\brief      Class Actions of the module Adherentsplus
  */
 class Actionsadherentsplus
 {
