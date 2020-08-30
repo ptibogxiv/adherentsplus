@@ -412,18 +412,16 @@ print $formconfirm;
             print '<td align="left">'.$langs->trans("Type").'</td>';
             print '<td align="left">'.$langs->trans("Email").'</td>';
             print '<td align="left">'.$langs->trans("Status").'</td>';
-            print '<td align="left">'.$langs->trans("EndSubscription").'</td>';
+            print '<td align="center">'.$langs->trans("EndSubscription").'</td>';
             print '<td align="right">'.$langs->trans('Action').'</td>';
             print "</tr>\n";
             
             foreach ($object->linkedmembers as $linkedmember)
             {
 
-            $datefin=$db->jdate($linkedmember->datefin);
-
 		        $adh=new Adherent($db);
             $adh->fetch($linkedmember->id);
-
+            
 		        // Lastname
 		        print '<tr class="oddeven">';
             print '<td class="nowrap">';
@@ -431,34 +429,33 @@ print $formconfirm;
                 print '<td align="left">'.$adh->login.'</td>';    
                 print '<td align="left">'.$adh->getmorphylib($linkedmember->morphy).'</td>';        
                 print '<td align="left">'.dol_print_email($linkedmember->email,0,0,1).'</td>';
-                print '<td align="left">'.$adh->getLibStatut(2).'</td>';
+                print '<td align="left">'.$adh->getLibStatut(2).'</td>'; 
+                print '<td align="center" class="nowrap">';
 		        // Date end subscription
-		        if ($datefin)
+		        if ($adh->datefin)
 		        {
-			        print '<td align="center" class="nowrap">';
-		            if ($datefin < dol_now() && $linkedmember->statut > 0)
+
+		            if ($adh->datefin < dol_now() && $adh->statut > 0)
 		            {
-		                print dol_print_date($datefin,'day')." ".img_warning($langs->trans("SubscriptionLate"));
+		                print dol_print_date($adh->datefin,'day')." ".img_warning($langs->trans("SubscriptionLate"));
 		            }
 		            else
 		            {
-		                print dol_print_date($datefin,'day');
+		                print dol_print_date($adh->datefin,'day');
 		            }
-		            print '</td>';
 		        }
 		        else
 		        {
-			        print '<td align="left" class="nowrap">';
-			        if ($linkedmember->subscription == 'yes')
+			        if ($adh->subscription == 'yes')
 			        {
 		                print $langs->trans("SubscriptionNotReceived");
-		                if ($linkedmember->statut > 0) print " ".img_warning();
+		                if ($adh->statut > 0) print " ".img_warning();
 			        }
 			        else
 			        {
 			            print $langs->trans("SubscriptionNotReceived");
 			        }
-		            print '</td>';
+
 		        }                
                 print '<td align="right"><a href="'. $_SERVER['PHP_SELF'] .'?action=deletelinkedmember&rowid=' . $object->id . '&link=' . $linkedmember->rowid . '" class="deletefilelink">';
                 print img_picto($langs->transnoentitiesnoconv("RemoveLink"), 'unlink');
