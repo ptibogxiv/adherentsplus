@@ -908,14 +908,14 @@ class AdherentsPlus extends DolibarrApi
             throw new RestException(401);
         }
         
-    	if (empty($consumptionid)) {
-    		throw new RestException(400, 'Consumption ID is mandatory');
-    	}
-        
         $member = new AdherentPlus($this->db);
         $result = $member->fetch($id);
         if( ! $result ) {
             throw new RestException(404, 'member not found');
+        }         	
+        
+        if (empty($consumptionid)) {
+    		throw new RestException(400, 'Consumption ID is mandatory');
         }
         
         $result = $member->fetchconsumption($consumptionid);
