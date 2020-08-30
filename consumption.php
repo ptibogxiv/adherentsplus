@@ -57,7 +57,7 @@ $id=GETPOST('rowid','int');
 $result=restrictedArea($user, 'adherent', $id);
 
 $object = new AdherentPlus($db);
-$result=$object->fetch($id);
+$result=$object->fetch($id, '', '', '', '', '', 1);
 if ($result > 0)
 {
     $adht = new AdherentTypePlus($db);

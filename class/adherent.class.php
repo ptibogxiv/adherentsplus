@@ -1332,9 +1332,11 @@ class AdherentPlus extends CommonObject
 	 * 	@param	string	$ref_ext				External reference
 	 *  @param	bool	$fetch_optionals		To load optionals (extrafields)
 	 *  @param	bool	$fetch_subscriptions	To load member subscriptions
+	 *  @param	bool	$fetch_consumptions	To load member consumptions
+	 *  @param	bool	$fetch_linkedmembers	To load member linkedmembers
 	 *	@return int								>0 if OK, 0 if not found, <0 if KO
 	 */
-	public function fetch($rowid, $ref = '', $fk_soc = '', $ref_ext = '', $fetch_optionals = true, $fetch_subscriptions = true)
+	public function fetch($rowid, $ref = '', $fk_soc = '', $ref_ext = '', $fetch_optionals = true, $fetch_subscriptions = true, $fetch_consumptions = false, $fetch_linkedmembers = false)
 	{
 		global $conf, $langs;
 
@@ -1555,12 +1557,16 @@ $tx = ceil((($dateto-$today)/31558464)*$conf->global->ADHERENT_SUBSCRIPTION_PROR
 				if ($fetch_subscriptions) {
 					$result=$this->fetch_subscriptions();
 				}
-
-        // Load other properties
-				$this->fetch_consumptions();   
         
-        // Load other properties
-				$this->fetch_linkedmembers();
+				// Load other properties
+				if ($fetch_consumptions) {
+					$this->fetch_consumptions();
+				}
+        
+				// Load other properties
+				if ($fetch_linkedmembers) {
+					$this->fetch_linkedmembers();
+				}
 
 				return $this->id;
 			}
@@ -1634,69 +1640,6 @@ dol_include_once('/adherentsplus/class/subscription.class.php');
                 $subscription->datef=$this->db->jdate($obj->datef);
 
                 $this->subscriptions[]=$subscription;
-
-                $i++;
-            }
-            return 1;
-		}
-		else
-		{
-			$this->error=$this->db->error().' sql='.$sql;
-			return -1;
-		}
-	}
-
-  	/**
-	 *	Fonction qui recupere pour un adherent les parametres
-	 *
-	 *	@return		int			<0 si KO, >0 si OK
-	 */
-	function fetch_consumptions()
-	{
-		global $langs;
-
-dol_include_once('/adherentsplus/class/consumption.class.php');
-require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
-
-    $sql = "SELECT c.rowid, c.fk_member, c.fk_product, c.qty, c.date_creation, c.date_consumption, c.tms";    
-    $sql.= " FROM ".MAIN_DB_PREFIX."adherent_consumption as c";
-    $sql.= " WHERE c.fk_member=".$this->id;
-		$sql.= " ORDER BY c.date_consumption DESC";
-		dol_syslog(get_class($this)."::fetch_consumptions", LOG_DEBUG);
-
-		$resql=$this->db->query($sql);
-		if ($resql)
-		{
-			$this->consumptions=array();
-
-			$i=0;
-            while ($obj = $this->db->fetch_object($resql))
-            {
-
-                $consumption=new Consumption($this->db);
-                $consumption->id=$obj->rowid;
-                $consumption->fk_member=$obj->fk_member;
-                $consumption->fk_product=$obj->fk_product;
-                $prodtmp=new Product($this->db);
-                $prodtmp->fetch($obj->fk_product);
-                $consumption->label=$prodtmp->label;
-                $consumption->qty=$obj->qty;
-                $consumption->fk_invoice=$obj->fk_invoice;
-                $consumption->date_creation=$this->db->jdate($obj->date_creation);
-                $consumption->date_consumption=$this->db->jdate($obj->date_consumption);
-    if ($prodtmp->isService() && $prodtmp->duration_value > 0)
-    {        
-                $consumption->value          = $obj->qty*$prodtmp->duration_value;
-                $consumption->unit           = $prodtmp->duration_unit;
-    } else {
-    
-    }
-		if ($prodtmp->price_base_type == 'TTC') {
-                $consumption->amount           =price($prodtmp->price_ttc*$obj->qty);
-		} else {
-                $consumption->amount           =price($prodtmp->price*$obj->qty);
-		}
-                $this->consumptions[]=$consumption;
 
                 $i++;
             }
@@ -2313,48 +2256,66 @@ require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 		}
 	}
   
-	/**
-	 *  Method to load a consumption
+  	/**
+	 *	Fonction qui recupere pour un adherent les parametres
 	 *
-	 *  @param	int		$rowid		Id consumption
-	 *  @return	int					<0 if KO, =0 if not found, >0 if OK
+	 *  @param	int		$rowid		Id of consumption to delete
+	 *  @return	int					<0 if KO, 0=nothing to do, >0 if OK
 	 */
-	public function fetchconsumption($rowid)
+	function fetch_consumptions($rowid = '')
 	{
-    $sql = "SELECT t.rowid, t.entity, t.date_creation, t.tms, t.fk_member, t.fk_product, t.qty";    
-    $sql.= " FROM ".MAIN_DB_PREFIX."adherent_consumption as t";
-    $sql.= " WHERE t.entity IN (" . getEntity('adherent').")";
-    $sql.= " AND t.fk_member = ".$this->id;
-    $sql.= " AND t.rowid = ".$rowid;
+		global $langs;
 
-		dol_syslog(get_class($this)."::fetch", LOG_DEBUG);
+dol_include_once('/adherentsplus/class/consumption.class.php');
+require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
+
+    $sql = "SELECT c.rowid, c.fk_member, c.fk_product, c.qty, c.date_creation, c.date_consumption, c.tms";    
+    $sql.= " FROM ".MAIN_DB_PREFIX."adherent_consumption as c";
+    $sql.= " WHERE c.fk_member=".$this->id;
+		$sql.= " ORDER BY c.date_consumption DESC";
+		dol_syslog(get_class($this)."::fetch_consumptions", LOG_DEBUG);
+
 		$resql=$this->db->query($sql);
 		if ($resql)
 		{
-			if ($this->db->num_rows($resql))
-			{
-				$obj = $this->db->fetch_object($resql);
+			$this->consumptions=array();
 
-				$this->id             = $obj->rowid;
-				$this->fk_member      = $obj->fk_member;
-				$this->date_creation  = $this->db->jdate($obj->date_creation);
-				$this->date_modification  = $this->db->jdate($obj->tms);
-				$this->fk_product     = $obj->fk_product;
-        $prodtmp=new Product($this->db);
-        $prodtmp->fetch($obj->fk_product);
-        $this->label          = $prodtmp->label;
-        $this->qty            = $obj->qty;
+			$i=0;
+            while ($obj = $this->db->fetch_object($resql))
+            {
 
-				return $this->id;
-			}
-			else
-			{
-				return 0;
-			}
+                $consumption=new Consumption($this->db);
+                $consumption->id=$obj->rowid;
+                $consumption->fk_member=$obj->fk_member;
+                $consumption->fk_product=$obj->fk_product;
+                $prodtmp=new Product($this->db);
+                $prodtmp->fetch($obj->fk_product);
+                $consumption->label=$prodtmp->label;
+                $consumption->qty=$obj->qty;
+                $consumption->fk_invoice=$obj->fk_invoice;
+                $consumption->date_creation=$this->db->jdate($obj->date_creation);
+                $consumption->date_consumption=$this->db->jdate($obj->date_consumption);
+    if ($prodtmp->isService() && $prodtmp->duration_value > 0)
+    {        
+                $consumption->value          = $obj->qty*$prodtmp->duration_value;
+                $consumption->unit           = $prodtmp->duration_unit;
+    } else {
+    
+    }
+		if ($prodtmp->price_base_type == 'TTC') {
+                $consumption->amount           =price($prodtmp->price_ttc*$obj->qty);
+		} else {
+                $consumption->amount           =price($prodtmp->price*$obj->qty);
+		}
+                $this->consumptions[]=$consumption;
+
+                $i++;
+            }
+            return 1;
 		}
 		else
 		{
-			$this->error=$this->db->lasterror();
+			$this->error=$this->db->error().' sql='.$sql;
 			return -1;
 		}
 	}

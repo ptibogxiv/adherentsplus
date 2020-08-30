@@ -674,7 +674,7 @@ class AdherentsPlus extends DolibarrApi
         }
 
         $member = new AdherentPlus($this->db);
-        $result = $member->fetch($id);
+        $result = $member->fetch($id, '', '', '', '', '', '', 1);
         if( ! $result ) {
             throw new RestException(404, 'member not found');
         }
@@ -786,14 +786,14 @@ class AdherentsPlus extends DolibarrApi
         }
 
         $member = new AdherentPlus($this->db);
-        $result = $member->fetch($id);
+        $result = $member->fetch($id, '', '', '', '', '', 1);
         if( ! $result ) {
             throw new RestException(404, 'member not found');
         }
 
         $obj_ret = array();
-        foreach ($member->consumptions as $consumption) {
-            $obj_ret[] = $this->_cleanObjectDatas($consumption);
+        foreach ($member->consumptions as $linkedmembers) {
+            $obj_ret[] = $this->_cleanObjectDatas($linkedmembers);
         }
         return $obj_ret;
     } 
@@ -916,7 +916,7 @@ class AdherentsPlus extends DolibarrApi
     		throw new RestException(400, 'Consumption ID is mandatory');
         }
         
-        $result = $member->fetchconsumption($consumptionid);
+        $result = $member->fetch_consumptions($consumptionid);
         if( ! $result ) {
             throw new RestException(404, 'consumption not found');
         }
@@ -927,7 +927,7 @@ class AdherentsPlus extends DolibarrApi
 
     	$updateRes = $member->deleteconsumption($consumptionid);
     	if ($updateRes > 0) {
-    		return $this->get($id);
+    		return $updateRes;
     	} else {
     		throw new RestException(405, $this->invoice->error);
     	}
