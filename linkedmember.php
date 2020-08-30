@@ -428,10 +428,10 @@ print $formconfirm;
 		        print '<tr class="oddeven">';
             print '<td class="nowrap">';
             print $adh->getNomUrl(1, 32).'</td>';
-                print '<td align="left">'.$linkedmember->login.'</td>';    
+                print '<td align="left">'.$adh->login.'</td>';    
                 print '<td align="left">'.$adh->getmorphylib($linkedmember->morphy).'</td>';        
                 print '<td align="left">'.dol_print_email($linkedmember->email,0,0,1).'</td>';
-                print '<td align="left">'.$adh->LibStatut($linkedmember->statut,$linkedmember->subscription,$datefin,2).'</td>';
+                print '<td align="left">'.$adh->getLibStatut(2).'</td>';
 		        // Date end subscription
 		        if ($datefin)
 		        {
