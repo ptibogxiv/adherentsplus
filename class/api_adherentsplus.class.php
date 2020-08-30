@@ -732,15 +732,15 @@ class AdherentsPlus extends DolibarrApi
      * Return an array with wish informations
      *
      * @param  int    $id               Id of member
-     * @param  int    $consumption      Id of consumption line
+     * @param  int    $consumptionid      Id of consumption line
      * @return array|mixed                 Data without useless information
      *
      * @throws 401
      * @throws 404
      *
-     * @url GET {id}/consumptions/{consumption}
+     * @url GET {id}/consumptions/{consumptionid}
      */
-    public function getConsumption($id, $consumption)
+    public function getConsumption($id, $consumptionid)
     {
         if(! DolibarrApiAccess::$user->rights->societe->lire) {
             throw new RestException(401);
@@ -752,17 +752,17 @@ class AdherentsPlus extends DolibarrApi
             throw new RestException(404, 'member not found');
         }
 
-        $consumptions = new Consumption($this->db);
-        $result = $consumptions->fetch($consumption);
+        $consumption = new Consumption($this->db);
+        $result = $consumption->fetch($consumptionid);
         if( ! $result ) {
             throw new RestException(404, 'consumption not found');
         }
         
-        if( ! DolibarrApi::_checkAccessToResource('consumption', $consumptions->id)) {
+        if( ! DolibarrApi::_checkAccessToResource('consumption', $consumption->id)) {
             throw new RestException(401, 'Access not allowed for login '.DolibarrApiAccess::$user->login);
         }
 
-        return $this->_cleanObjectDatas($consumptions);
+        return $this->_cleanObjectDatas($consumption);
     }      
  
     /**
@@ -840,16 +840,16 @@ class AdherentsPlus extends DolibarrApi
      * Update consumption of a member
      *
      * @param  int    $id               Id of member
-     * @param  int    $consumption      Id of consumption line
+     * @param  int    $consumptionid      Id of consumption line
      * @param array $request_data   Datas
      * @return array|mixed                 Data without useless information
      *
      * @throws 401
      * @throws 404
      *
-     * @url PUT {id}/consumptions/{consumption}
+     * @url PUT {id}/consumptions/{consumptionid}
      */
-    public function putConsumption($id, $consumption, $request_data = null)
+    public function putConsumption($id, $consumptionid, $request_data = null)
     {
         if(! DolibarrApiAccess::$user->rights->societe->creer) {
             throw new RestException(401);
@@ -861,13 +861,13 @@ class AdherentsPlus extends DolibarrApi
             throw new RestException(404, 'member not found');
         }
 
-        $consumptions = new Consumption($this->db);
-        $result = $consumptions->fetch($consumption);
+        $consumption = new Consumption($this->db);
+        $result = $consumption->fetch($consumption);
         if( ! $result ) {
             throw new RestException(404, 'consumption not found');
         }
 
-        if( ! DolibarrApi::_checkAccessToResource('consumption', $consumptions->id)) {
+        if( ! DolibarrApi::_checkAccessToResource('consumption', $consumption->id)) {
             throw new RestException(401, 'Access not allowed for login '.DolibarrApiAccess::$user->login);
         }
 
@@ -878,13 +878,13 @@ class AdherentsPlus extends DolibarrApi
 
         // If there is no error, update() returns the number of affected rows
         // so if the update is a no op, the return value is zero.
-        if ($consumptions->update(DolibarrApiAccess::$user) >= 0)
+        if ($consumption->update(DolibarrApiAccess::$user) >= 0)
         {
             return $this->get($id);
         }
         else
         {
-        	throw new RestException(500, $consumptions->error);
+        	throw new RestException(500, $consumption->error);
         }
     } 
     
@@ -892,20 +892,24 @@ class AdherentsPlus extends DolibarrApi
      * Delete consumption of a member
      *
      * @param  int    $id               Id of member
-     * @param  int    $consumption      Id of consumption line
+     * @param  int    $consumptionid      Id of consumption line
      * @return array
      * 
      * @throws 401
      * @throws 404
      * @throws 500
      *
-     * @url DELETE {id}/consumptions/{consumption}
+     * @url DELETE {id}/consumptions/{consumptionid}
      */
-    public function deleteConsumption($id, $consumption)
+    public function deleteConsumption($id, $consumptionid)
     {
         if(! DolibarrApiAccess::$user->rights->societe->creer) {
             throw new RestException(401);
         }
+        
+    	if (empty($consumptionid)) {
+    		throw new RestException(400, 'Consumption ID is mandatory');
+    	}
         
         $member = new AdherentPlus($this->db);
         $result = $member->fetch($id);
@@ -913,26 +917,21 @@ class AdherentsPlus extends DolibarrApi
             throw new RestException(404, 'member not found');
         }
         
-        $consumptions = new Consumption($this->db);
-        $result = $consumptions->fetch($consumption);
+        $result = $member->fetchconsumption($consumptionid);
         if( ! $result ) {
             throw new RestException(404, 'consumption not found');
         }
         
-        if( ! DolibarrApi::_checkAccessToResource('consumption', $consumptions->id)) {
+        if( ! DolibarrApi::_checkAccessToResource('member', $id)) {
             throw new RestException(401, 'Access not allowed for login '.DolibarrApiAccess::$user->login);
         }
 
-        if (! $consumptions->delete($consumptions->id, DolibarrApiAccess::$user)) {
-            throw new RestException(401,'error when deleting wish');
-        }
-
-        return array(
-            'success' => array(
-                'code' => 200,
-                'message' => 'consumption deleted'
-            )
-        );
+    	$updateRes = $member->deleteconsumption($consumptionid);
+    	if ($updateRes > 0) {
+    		return $this->get($id);
+    	} else {
+    		throw new RestException(405, $this->invoice->error);
+    	}
     }
     
     /**

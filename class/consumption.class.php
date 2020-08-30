@@ -103,52 +103,6 @@ dol_include_once('/adherentsplus/class/adherent.class.php');
 
 
 	/**
-	 *  Method to load a consumption
-	 *
-	 *  @param	int		$rowid		Id consumption
-	 *  @return	int					<0 if KO, =0 if not found, >0 if OK
-	 */
-	public function fetch($rowid)
-	{
-    $sql = "SELECT t.rowid, t.entity, t.date_creation, t.tms, t.fk_member, t.fk_product, t.qty";    
-    $sql.= " FROM ".MAIN_DB_PREFIX."adherent_consumption as t";
-    $sql.= " WHERE t.entity IN (" . getEntity('adherent').")";
-    $sql.= " AND t.rowid = ".$rowid;
-
-		dol_syslog(get_class($this)."::fetch", LOG_DEBUG);
-		$resql=$this->db->query($sql);
-		if ($resql)
-		{
-			if ($this->db->num_rows($resql))
-			{
-				$obj = $this->db->fetch_object($resql);
-
-				$this->id             = $obj->rowid;
-				$this->fk_member      = $obj->fk_member;
-				$this->date_creation  = $this->db->jdate($obj->date_creation);
-				$this->date_modification  = $this->db->jdate($obj->tms);
-				$this->fk_product     = $obj->fk_product;
-        $prodtmp=new Product($this->db);
-        $prodtmp->fetch($obj->fk_product);
-        $this->label          = $prodtmp->label;
-        $this->qty            = $obj->qty;
-
-				return 1;
-			}
-			else
-			{
-				return 0;
-			}
-		}
-		else
-		{
-			$this->error=$this->db->lasterror();
-			return -1;
-		}
-	}
-
-
-	/**
 	 *	Update subscription
 	 *
 	 *	@param	User	$user			User who updated
@@ -188,48 +142,5 @@ dol_include_once('/adherentsplus/class/adherent.class.php');
 		}
 	}
 
-	/**
-	 *  Fonction qui supprime le souhait
-	 *
-	 *  @param	int		$rowid		Id of consumption to delete
-	 *	@param	User		$user		User object
-	 *	@param	int		$notrigger	1=Does not execute triggers, 0= execute triggers
-	 *  @return	int					<0 if KO, 0=nothing to do, >0 if OK
-	 */
-	public function delete($rowid, $user, $notrigger = 0)
-	{
-		global $conf, $langs;
-
-		$result = 0;
-		$error=0;
-		$errorflag=0;
-
-		// Check parameters
-		if (empty($rowid)) $rowid=$this->id;
-
-		$this->db->begin();
-
-		// Remove wish
-			$sql = "DELETE FROM ".MAIN_DB_PREFIX."adherent_consumption WHERE rowid = ".$rowid;
-			dol_syslog(get_class($this)."::delete", LOG_DEBUG);
-			$resql=$this->db->query($sql);
-			if (! $resql)
-			{
-				$error++;
-				$this->error .= $this->db->lasterror();
-				$errorflag=-5;
-			}
-
-		if (! $error)
-		{
-			$this->db->commit();
-			return 1;
-		}
-		else
-		{
-			$this->db->rollback();
-			return $errorflag;
-		}
-	}
 
 }
