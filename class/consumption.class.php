@@ -121,7 +121,9 @@ dol_include_once('/adherentsplus/class/adherent.class.php');
 		$sql .= " datef='".$this->db->idate($this->datef)."',";
 		$sql .= " datec='".$this->db->idate($this->datec)."',";
 		$sql .= " fk_bank = ".($this->fk_bank ? $this->fk_bank : 'null');
-		$sql .= " WHERE rowid = ".$this->id;
+    $sql.= " WHERE entity IN (" . getEntity('adherent').")";
+    $sql.= " AND fk_member = ".$this->id;
+    $sql.= " AND rowid = ".$rowid;
 
 		dol_syslog(get_class($this)."::update", LOG_DEBUG);
 		$resql = $this->db->query($sql);
