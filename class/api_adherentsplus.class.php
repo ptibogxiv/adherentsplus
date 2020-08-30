@@ -816,14 +816,21 @@ class AdherentsPlus extends DolibarrApi
         if(! DolibarrApiAccess::$user->rights->societe->creer) {
             throw new RestException(401);
         }
+        
+        $member = new AdherentPlus($this->db);
+        $result = $member->fetch($id);
+        if( ! $result ) {
+            throw new RestException(404, 'member not found');
+        }
+        
         // Check mandatory fields
-        $result = $this->_validate($request_data);
+        //$result = $this->_validate($request_data);
 
         $consumptions = new Consumption($this->db);
         foreach($request_data as $field => $value) {
             $wish->$field = $value;
         }
-        if ($consumption->create(DolibarrApiAccess::$user) < 0) {
+        if ($consumptions->create(DolibarrApiAccess::$user) < 0) {
             throw new RestException(500, 'Error creating consumption', array_merge(array($consumptions->error), $consumptions->errors));
         }
         return $consumptions->id;
