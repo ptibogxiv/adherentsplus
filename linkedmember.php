@@ -408,8 +408,8 @@ print $formconfirm;
 
             print '<tr class="liste_titre">';
             print '<td>'.$langs->trans("Name")." / ".$langs->trans("Company").'</td>';
-            print '<td align="left">'.$langs->trans("Login").'</td>';
             print '<td align="left">'.$langs->trans("Type").'</td>';
+            print '<td align="left">'.$langs->trans("MemberNature").'</td>';
             print '<td align="left">'.$langs->trans("Email").'</td>';
             print '<td align="left">'.$langs->trans("Status").'</td>';
             print '<td align="center">'.$langs->trans("EndSubscription").'</td>';
@@ -422,11 +422,14 @@ print $formconfirm;
 		        $adh=new Adherent($db);
             $adh->fetch($linkedmember->id);
             
+            $adht = new AdherentTypePlus($db);
+            $adht->fetch($adh->typeid);
+            
 		        // Lastname
 		        print '<tr class="oddeven">';
             print '<td class="nowrap">';
             print $adh->getNomUrl(1, 32).'</td>';
-                print '<td align="left">'.$adh->login.'</td>';    
+                print '<td align="left">'.$adht->getNomUrl(1).'</td>';    
                 print '<td align="left">'.$adh->getmorphylib($linkedmember->morphy).'</td>';        
                 print '<td align="left">'.dol_print_email($linkedmember->email,0,0,1).'</td>';
                 print '<td align="left">'.$adh->getLibStatut(2).'</td>'; 
