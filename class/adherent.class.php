@@ -2324,6 +2324,7 @@ require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
     $sql = "SELECT t.rowid, t.entity, t.date_creation, t.tms, t.fk_member, t.fk_product, t.qty";    
     $sql.= " FROM ".MAIN_DB_PREFIX."adherent_consumption as t";
     $sql.= " WHERE t.entity IN (" . getEntity('adherent').")";
+    $sql.= " AND t.fk_member = ".$this->id;
     $sql.= " AND t.rowid = ".$rowid;
 
 		dol_syslog(get_class($this)."::fetch", LOG_DEBUG);
