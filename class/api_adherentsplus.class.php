@@ -750,19 +750,20 @@ class AdherentsPlus extends DolibarrApi
         $result = $member->fetch($id);
         if( ! $result ) {
             throw new RestException(404, 'member not found');
+        } 
+        
+        if( ! DolibarrApi::_checkAccessToResource('member', $member->id)) {
+            throw new RestException(401, 'Access not allowed for login '.DolibarrApiAccess::$user->login);
         }
 
-        $consumption = new Consumption($this->db);
-        $result = $consumption->fetch($consumptionid);
+        $result = $member->fetchconsumption($consumptionid);
         if( ! $result ) {
             throw new RestException(404, 'consumption not found');
         }
         
-        if( ! DolibarrApi::_checkAccessToResource('consumption', $consumption->id)) {
-            throw new RestException(401, 'Access not allowed for login '.DolibarrApiAccess::$user->login);
-        }
 
-        return $this->_cleanObjectDatas($consumption);
+
+        return $this->_cleanObjectDatas($result);
     }      
  
     /**
