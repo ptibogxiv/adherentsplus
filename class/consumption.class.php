@@ -116,39 +116,32 @@ dol_include_once('/adherentsplus/class/adherent.class.php');
     $sql.= " AND t.rowid = ".$rowid;
 
 		dol_syslog(get_class($this)."::fetch", LOG_DEBUG);
-		$resql = $this->db->query($sql);
+		$resql=$this->db->query($sql);
 		if ($resql)
 		{
 			if ($this->db->num_rows($resql))
 			{
 				$obj = $this->db->fetch_object($resql);
-        $this->id             = $obj->id;
-        $this->socid          = $obj->fk_soc;
-        $this->fk_product     = $obj->product;
-        $this->ref            = $obj->ref;
-        $this->label          = $obj->label;
-        $this->fk_type        = $obj->type;
-        $this->qty            = $obj->qty;
-        $this->target         = $obj->target;
-        $this->rang           = $obj->rang;
-        $this->priv           = $obj->priv;
-        $this->date_creation  = $this->db->jdate($obj->datec);
-        $this->date_modification = $this->db->jdate($obj->datem);
-        $this->user_author_id    = $obj->fk_user_author;
-        $this->user_modification = $obj->fk_user_mod;
 
-				$this->db->free($resql);
+				$this->id             = $obj->rowid;
+				$this->fk_member      = $obj->fk_member;
+				$this->date_creation  = $this->db->jdate($obj->date_creation);
+				$this->fk_product     = $obj->fk_product;
+        $prodtmp=new Product($this->db);
+        $prodtmp->fetch($obj->fk_product);
+        $this->label          = $prodtmp->label;
+        $this->qty            = $obj->qty;
+
 				return 1;
 			}
 			else
 			{
-				$this->db->free($resql);
 				return 0;
 			}
 		}
 		else
 		{
-			dol_print_error($this->db);
+			$this->error=$this->db->lasterror();
 			return -1;
 		}
 	}
