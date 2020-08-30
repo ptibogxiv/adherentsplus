@@ -760,10 +760,8 @@ class AdherentsPlus extends DolibarrApi
         if( ! $result ) {
             throw new RestException(404, 'consumption not found');
         }
-        
 
-
-        return $this->_cleanObjectDatas($result);
+        return $this->_cleanObjectDatas($member);
     }      
  
     /**

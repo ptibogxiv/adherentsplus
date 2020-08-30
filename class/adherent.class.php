@@ -2344,7 +2344,7 @@ require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
         $this->label          = $prodtmp->label;
         $this->qty            = $obj->qty;
 
-				return 1;
+				return $this->id;
 			}
 			else
 			{
