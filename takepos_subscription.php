@@ -97,7 +97,7 @@ $arrayofjs = array();
 
 top_htmlhead($head, $title, $disablejs, $disablehead, $arrayofjs, $arrayofcss);
 
-$langs->loadLangs(array("main", "bills", "cashdesk", "members", "adherentsplus@adherentsplus"));
+$langs->loadLangs(array("main", "bills", "cashdesk", "members", "banks", "adherentsplus@adherentsplus"));
 
 ?>
 <link rel="stylesheet" href="/takepos/css/pos.css.php">
@@ -292,7 +292,7 @@ print '<button type="button" class="calcbutton2" onclick="location.href=\'takepo
             print '<table class="noborder centpercent">'."\n";
 
             print '<tr class="liste_titre">';
-            print_liste_field_titre('Ref', $_SERVER["PHP_SELF"], 'c.rowid', '', $param, '', $sortfield, $sortorder);
+            print_liste_field_titre('Ref', $_SERVER["PHP_SELF"], '', '', $param, '', $sortfield, $sortorder);
             print_liste_field_titre('DateCreation', $_SERVER["PHP_SELF"], '', '', $param, '', $sortfield, $sortorder, 'center ');
             print_liste_field_titre('Type', $_SERVER["PHP_SELF"], '', '', $param, '', $sortfield, $sortorder, 'center ');
             print_liste_field_titre('DateStart', $_SERVER["PHP_SELF"], '', '', $param, '', $sortfield, $sortorder, 'center ');
@@ -326,7 +326,7 @@ print '<button type="button" class="calcbutton2" onclick="location.href=\'takepo
                 }
 
                 print '<br><tr class="oddeven">';
-                print '<td>'.$subscriptionstatic->getNomUrl(1).'</td>';
+                print '<td>'.$objp->crowid.'</td>';
                 print '<td class="center">'.dol_print_date($db->jdate($objp->datec), 'dayhour')."</td>\n";
                 print '<td class="center">';
                 if ($typeid > 0) {

@@ -126,6 +126,7 @@ dol_include_once('/adherentsplus/class/adherent.class.php');
 				$this->id             = $obj->rowid;
 				$this->fk_member      = $obj->fk_member;
 				$this->date_creation  = $this->db->jdate($obj->date_creation);
+				$this->date_modification  = $this->db->jdate($obj->tms);
 				$this->fk_product     = $obj->fk_product;
         $prodtmp=new Product($this->db);
         $prodtmp->fetch($obj->fk_product);
