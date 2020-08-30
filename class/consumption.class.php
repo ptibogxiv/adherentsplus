@@ -108,39 +108,47 @@ dol_include_once('/adherentsplus/class/adherent.class.php');
 	 *  @param	int		$rowid		Id consumption
 	 *  @return	int					<0 if KO, =0 if not found, >0 if OK
 	 */
-	function fetch($rowid)
+	public function fetch($rowid)
 	{
-    $sql = "SELECT c.rowid,c.entity,c.date_creation,c.fk_member,c.fk_product,c.qty";    
-    $sql.= " FROM ".MAIN_DB_PREFIX."adherent_consumption as c";
-    $sql.= " WHERE c.rowid=".$rowid;
+    $sql = "SELECT t.rowid, t.entity, t.date_creation, t.tms, t.fk_member, t.fk_product, t.qty";    
+    $sql.= " FROM ".MAIN_DB_PREFIX."adherent_consumption as t";
+    $sql.= " WHERE t.entity IN (" . getEntity('adherent').")";
+    $sql.= " AND t.rowid = ".$rowid;
 
 		dol_syslog(get_class($this)."::fetch", LOG_DEBUG);
-		$resql=$this->db->query($sql);
+		$resql = $this->db->query($sql);
 		if ($resql)
 		{
 			if ($this->db->num_rows($resql))
 			{
 				$obj = $this->db->fetch_object($resql);
-
-				$this->id             = $obj->rowid;
-				$this->fk_member      = $obj->fk_member;
-				$this->date_creation  = $this->db->jdate($obj->date_creation);
-				$this->fk_product     = $obj->fk_product;
-        $prodtmp=new Product($this->db);
-        $prodtmp->fetch($obj->fk_product);
+        $this->id             = $obj->id;
+        $this->socid          = $obj->fk_soc;
+        $this->fk_product     = $obj->product;
+        $this->ref            = $obj->ref;
         $this->label          = $obj->label;
+        $this->fk_type        = $obj->type;
         $this->qty            = $obj->qty;
+        $this->target         = $obj->target;
+        $this->rang           = $obj->rang;
+        $this->priv           = $obj->priv;
+        $this->date_creation  = $this->db->jdate($obj->datec);
+        $this->date_modification = $this->db->jdate($obj->datem);
+        $this->user_author_id    = $obj->fk_user_author;
+        $this->user_modification = $obj->fk_user_mod;
 
+				$this->db->free($resql);
 				return 1;
 			}
 			else
 			{
+				$this->db->free($resql);
 				return 0;
 			}
 		}
 		else
 		{
-			$this->error=$this->db->lasterror();
+			dol_print_error($this->db);
 			return -1;
 		}
 	}
@@ -153,7 +161,7 @@ dol_include_once('/adherentsplus/class/adherent.class.php');
 	 *	@param 	int		$notrigger		0=Disable triggers
 	 *	@return	int						<0 if KO, >0 if OK
 	 */
-	function update($user,$notrigger=0)
+	public function update($user,$notrigger=0)
 	{
 		$this->db->begin();
 
@@ -187,110 +195,47 @@ dol_include_once('/adherentsplus/class/adherent.class.php');
 	}
 
 	/**
-	 *	Delete a subscription
+	 *  Fonction qui supprime le souhait
 	 *
-	 *	@param	User	$user		User that delete
-	 *	@return	int					<0 if KO, 0 if not found, >0 if OK
+	 *  @param	int		$rowid		Id of consumption to delete
+	 *	@param	User		$user		User object
+	 *	@param	int		$notrigger	1=Does not execute triggers, 0= execute triggers
+	 *  @return	int					<0 if KO, 0=nothing to do, >0 if OK
 	 */
-	function delete($user)
+	public function delete($rowid, $user, $notrigger = 0)
 	{
+		global $conf, $langs;
+
+		$result = 0;
+		$error=0;
+		$errorflag=0;
+
+		// Check parameters
+		if (empty($rowid)) $rowid=$this->id;
+
 		$this->db->begin();
 
-		$sql = "DELETE FROM ".MAIN_DB_PREFIX."consumption WHERE rowid = ".$this->id;
-		dol_syslog(get_class($this)."::delete", LOG_DEBUG);
-		$resql=$this->db->query($sql);
-		if ($resql)
-		{
-		}
-		else
-		{
-			$this->error=$this->db->lasterror();
-			$this->db->rollback();
-			return -1;
-		}
-	}
-
-
-	/**
-	 *  Return clicable name (with picto eventually)
-	 *
-	 *	@param	int		$withpicto		0=No picto, 1=Include picto into link, 2=Only picto
-	 *	@return	string					Chaine avec URL
-	 */
-	function getNomUrl($withpicto=0)
-	{
-		global $langs;
-
-		$result='';
-        $label=$langs->trans("ShowSubscription").': '.$this->ref;
-
-        $link = '<a href="'.dol_buildpath('/adherentsplus/subscription/card.php?rowid='.$this->id.'', 1).'" title="'.dol_escape_htmltag($label, 1).'" class="classfortooltip">';
-		$linkend='</a>';
-
-		$picto='payment';
-
-        if ($withpicto) $result.=($link.img_object($label, $picto, 'class="classfortooltip"').$linkend);
-		if ($withpicto && $withpicto != 2) $result.=' ';
-		$result.=$link.$this->ref.$linkend;
-		return $result;
-	}
-
-
-	/**
-	 *  Retourne le libelle du statut d'une adhesion
-	 *
-	 *  @param	int		$mode       0=libelle long, 1=libelle court, 2=Picto + Libelle court, 3=Picto, 4=Picto + Libelle long, 5=Libelle court + Picto
-	 *  @return string				Label
-	 */
-	function getLibStatut($mode=0)
-	{
-	    return '';
-	}
-
-	/**
-	 *  Renvoi le libelle d'un statut donne
-	 *
-	 *  @param	int			$statut      			Id statut
-	 *  @return string      						Label
-	 */
-	function LibStatut($statut)
-	{
-	    global $langs;
-	    $langs->load("members");
-	    return '';
-	}
-
-    /**
-     *  Load information of the subscription object
-	 *
-     *  @param	int		$id       Id subscription
-     *  @return	void
-     */
-	function info($id)
-	{
-		$sql = 'SELECT c.rowid, c.datec,';
-		$sql.= ' c.tms as datem';
-		$sql.= ' FROM '.MAIN_DB_PREFIX.'subscription as c';
-		$sql.= ' WHERE c.rowid = '.$id;
-
-		$result=$this->db->query($sql);
-		if ($result)
-		{
-			if ($this->db->num_rows($result))
+		// Remove wish
+			$sql = "DELETE FROM ".MAIN_DB_PREFIX."adherent_consumption WHERE rowid = ".$rowid;
+			dol_syslog(get_class($this)."::delete", LOG_DEBUG);
+			$resql=$this->db->query($sql);
+			if (! $resql)
 			{
-				$obj = $this->db->fetch_object($result);
-				$this->id = $obj->rowid;
-
-				$this->date_creation     = $this->db->jdate($obj->datec);
-				$this->date_modification = $this->db->jdate($obj->datem);
+				$error++;
+				$this->error .= $this->db->lasterror();
+				$errorflag=-5;
 			}
 
-			$this->db->free($result);
-
+		if (! $error)
+		{
+			$this->db->commit();
+			return 1;
 		}
 		else
 		{
-			dol_print_error($this->db);
+			$this->db->rollback();
+			return $errorflag;
 		}
 	}
+
 }

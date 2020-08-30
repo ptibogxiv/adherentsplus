@@ -745,18 +745,24 @@ class AdherentsPlus extends DolibarrApi
         if(! DolibarrApiAccess::$user->rights->societe->lire) {
             throw new RestException(401);
         }
+        
+        $member = new AdherentPlus($this->db);
+        $result = $member->fetch($id);
+        if( ! $result ) {
+            throw new RestException(404, 'member not found');
+        }
 
-        $consumption = new Consumption($this->db);
-        $result = $consumption->fetch($id);
+        $consumptions = new Consumption($this->db);
+        $result = $consumptions->fetch($consumption);
         if( ! $result ) {
             throw new RestException(404, 'consumption not found');
         }
         
-        if( ! DolibarrApi::_checkAccessToResource('adherent', $consumption->id)) {
+        if( ! DolibarrApi::_checkAccessToResource('consumption', $consumptions->id)) {
             throw new RestException(401, 'Access not allowed for login '.DolibarrApiAccess::$user->login);
         }
 
-        return $this->_cleanObjectDatas($consumption);
+        return $this->_cleanObjectDatas($consumptions);
     }      
  
     /**
@@ -813,14 +819,14 @@ class AdherentsPlus extends DolibarrApi
         // Check mandatory fields
         $result = $this->_validate($request_data);
 
-        $consumption = new Consumption($this->db);
+        $consumptions = new Consumption($this->db);
         foreach($request_data as $field => $value) {
             $wish->$field = $value;
         }
         if ($consumption->create(DolibarrApiAccess::$user) < 0) {
-            throw new RestException(500, 'Error creating consumption', array_merge(array($consumption->error), $consumption->errors));
+            throw new RestException(500, 'Error creating consumption', array_merge(array($consumptions->error), $consumptions->errors));
         }
-        return $consumption->id;
+        return $consumptions->id;
     }
     
     /**
@@ -841,14 +847,20 @@ class AdherentsPlus extends DolibarrApi
         if(! DolibarrApiAccess::$user->rights->societe->creer) {
             throw new RestException(401);
         }
+        
+        $member = new AdherentPlus($this->db);
+        $result = $member->fetch($id);
+        if( ! $result ) {
+            throw new RestException(404, 'member not found');
+        }
 
-        $consumption = new Consumption($this->db);
-        $result = $consumption->fetch($id);
+        $consumptions = new Consumption($this->db);
+        $result = $consumptions->fetch($consumption);
         if( ! $result ) {
             throw new RestException(404, 'consumption not found');
         }
 
-        if( ! DolibarrApi::_checkAccessToResource('member', $consumption->id)) {
+        if( ! DolibarrApi::_checkAccessToResource('consumption', $consumptions->id)) {
             throw new RestException(401, 'Access not allowed for login '.DolibarrApiAccess::$user->login);
         }
 
@@ -859,13 +871,13 @@ class AdherentsPlus extends DolibarrApi
 
         // If there is no error, update() returns the number of affected rows
         // so if the update is a no op, the return value is zero.
-        if ($consumption->update(DolibarrApiAccess::$user) >= 0)
+        if ($consumptions->update(DolibarrApiAccess::$user) >= 0)
         {
             return $this->get($id);
         }
         else
         {
-        	throw new RestException(500, $consumption->error);
+        	throw new RestException(500, $consumptions->error);
         }
     } 
     
@@ -892,18 +904,19 @@ class AdherentsPlus extends DolibarrApi
         $result = $member->fetch($id);
         if( ! $result ) {
             throw new RestException(404, 'member not found');
-
-        $consumption = new Consumption($this->db);
-        $result = $consumption->fetch($consumption);
+        }
+        
+        $consumptions = new Consumption($this->db);
+        $result = $consumptions->fetch($consumption);
         if( ! $result ) {
             throw new RestException(404, 'consumption not found');
         }
         
-        if( ! DolibarrApi::_checkAccessToResource('member', $consumption->id)) {
+        if( ! DolibarrApi::_checkAccessToResource('consumption', $consumptions->id)) {
             throw new RestException(401, 'Access not allowed for login '.DolibarrApiAccess::$user->login);
         }
 
-        if (! $wish->delete($consumption->id, DolibarrApiAccess::$user)) {
+        if (! $consumptions->delete($consumptions->id, DolibarrApiAccess::$user)) {
             throw new RestException(401,'error when deleting wish');
         }
 
