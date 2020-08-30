@@ -20,6 +20,7 @@ use Luracast\Restler\RestException;
 require_once DOL_DOCUMENT_ROOT.'/societe/class/societe.class.php';
 dol_include_once('/adherentsplus/class/adherent.class.php');	
 dol_include_once('/adherentsplus/class/subscription.class.php');
+dol_include_once('/adherentsplus/class/consumption.class.php');
 dol_include_once('/adherentsplus/class/adherent_type.class.php');
 
 /**
@@ -723,7 +724,40 @@ class AdherentsPlus extends DolibarrApi
                 'message' => 'member unlink'
             )
         );
-    }        
+    } 
+    
+    /**
+     * Get properties of an consumption
+     *
+     * Return an array with wish informations
+     *
+     * @param  int    $id               Id of member
+     * @param  int    $consumption      Id of consumption line
+     * @return array|mixed                 Data without useless information
+     *
+     * @throws 401
+     * @throws 404
+     *
+     * @url GET {id}/consumptions/{consumption}
+     */
+    public function getConsumption($id, $consumption)
+    {
+        if(! DolibarrApiAccess::$user->rights->societe->lire) {
+            throw new RestException(401);
+        }
+
+        $consumption = new Consumption($this->db);
+        $result = $consumption->fetch($id);
+        if( ! $result ) {
+            throw new RestException(404, 'consumption not found');
+        }
+        
+        if( ! DolibarrApi::_checkAccessToResource('adherent', $consumption->id)) {
+            throw new RestException(401, 'Access not allowed for login '.DolibarrApiAccess::$user->login);
+        }
+
+        return $this->_cleanObjectDatas($consumption);
+    }      
  
     /**
      * List consumptions of a member
@@ -733,11 +767,12 @@ class AdherentsPlus extends DolibarrApi
      * @param int $id ID of member
      * @return array Array of consumption objects
      *
-     * @throws RestException
+     * @throws 401
+     * @throws 404
      *
      * @url GET {id}/consumptions
      */
-    function getConsumptions($id)
+    function getListConsumptions($id)
     {
         $obj_ret = array();
 
@@ -756,7 +791,129 @@ class AdherentsPlus extends DolibarrApi
             $obj_ret[] = $this->_cleanObjectDatas($consumption);
         }
         return $obj_ret;
-    }     
+    } 
+    
+    /**
+     * Create consumption object
+     *
+     * @param  int    $id               Id of member
+     * @param array $request_data   Request data
+     * @return int  ID of consumption
+     *
+     * @throws 401
+     * @throws 500
+     *
+     * @url POST {id}/consumptions
+     */
+    public function postConsumption($id, $request_data = null)
+    {
+        if(! DolibarrApiAccess::$user->rights->societe->creer) {
+            throw new RestException(401);
+        }
+        // Check mandatory fields
+        $result = $this->_validate($request_data);
+
+        $consumption = new Consumption($this->db);
+        foreach($request_data as $field => $value) {
+            $wish->$field = $value;
+        }
+        if ($consumption->create(DolibarrApiAccess::$user) < 0) {
+            throw new RestException(500, 'Error creating consumption', array_merge(array($consumption->error), $consumption->errors));
+        }
+        return $consumption->id;
+    }
+    
+    /**
+     * Update consumption of a member
+     *
+     * @param  int    $id               Id of member
+     * @param  int    $consumption      Id of consumption line
+     * @param array $request_data   Datas
+     * @return array|mixed                 Data without useless information
+     *
+     * @throws 401
+     * @throws 404
+     *
+     * @url PUT {id}/consumptions/{consumption}
+     */
+    public function putConsumption($id, $consumption, $request_data = null)
+    {
+        if(! DolibarrApiAccess::$user->rights->societe->creer) {
+            throw new RestException(401);
+        }
+
+        $consumption = new Consumption($this->db);
+        $result = $consumption->fetch($id);
+        if( ! $result ) {
+            throw new RestException(404, 'consumption not found');
+        }
+
+        if( ! DolibarrApi::_checkAccessToResource('member', $consumption->id)) {
+            throw new RestException(401, 'Access not allowed for login '.DolibarrApiAccess::$user->login);
+        }
+
+        foreach($request_data as $field => $value) {
+            if ($field == 'id') continue;
+                $member->$field = $value;
+        }
+
+        // If there is no error, update() returns the number of affected rows
+        // so if the update is a no op, the return value is zero.
+        if ($consumption->update(DolibarrApiAccess::$user) >= 0)
+        {
+            return $this->get($id);
+        }
+        else
+        {
+        	throw new RestException(500, $consumption->error);
+        }
+    } 
+    
+    /**
+     * Delete consumption of a member
+     *
+     * @param  int    $id               Id of member
+     * @param  int    $consumption      Id of consumption line
+     * @return array
+     * 
+     * @throws 401
+     * @throws 404
+     * @throws 500
+     *
+     * @url DELETE {id}/consumptions/{consumption}
+     */
+    public function deleteConsumption($id, $consumption)
+    {
+        if(! DolibarrApiAccess::$user->rights->societe->creer) {
+            throw new RestException(401);
+        }
+        
+        $member = new AdherentPlus($this->db);
+        $result = $member->fetch($id);
+        if( ! $result ) {
+            throw new RestException(404, 'member not found');
+
+        $consumption = new Consumption($this->db);
+        $result = $consumption->fetch($consumption);
+        if( ! $result ) {
+            throw new RestException(404, 'consumption not found');
+        }
+        
+        if( ! DolibarrApi::_checkAccessToResource('member', $consumption->id)) {
+            throw new RestException(401, 'Access not allowed for login '.DolibarrApiAccess::$user->login);
+        }
+
+        if (! $wish->delete($consumption->id, DolibarrApiAccess::$user)) {
+            throw new RestException(401,'error when deleting wish');
+        }
+
+        return array(
+            'success' => array(
+                'code' => 200,
+                'message' => 'consumption deleted'
+            )
+        );
+    }
     
     /**
      * Validate fields before creating an object
