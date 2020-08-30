@@ -756,7 +756,7 @@ class AdherentsPlus extends DolibarrApi
             throw new RestException(401, 'Access not allowed for login '.DolibarrApiAccess::$user->login);
         }
 
-        $result = $member->fetchconsumption($consumptionid);
+        $result = $member->fetch_consumptions($consumptionid);
         if( ! $result ) {
             throw new RestException(404, 'consumption not found');
         }
@@ -902,36 +902,30 @@ class AdherentsPlus extends DolibarrApi
      */
     public function deleteConsumption($id, $consumptionid)
     {
-        if(! DolibarrApiAccess::$user->rights->societe->creer) {
+        if (! DolibarrApiAccess::$user->rights->adherent->configurer) {
             throw new RestException(401);
         }
-        
         $member = new AdherentPlus($this->db);
         $result = $member->fetch($id);
         if( ! $result ) {
-            throw new RestException(404, 'member not found');
-        }         	
-        
-        if (empty($consumptionid)) {
-    		throw new RestException(400, 'Consumption ID is mandatory');
+            throw new RestException(404, 'member type not found');
         }
-        
-        $result = $member->fetch_consumptions($consumptionid);
-        if( ! $result ) {
-            throw new RestException(404, 'consumption not found');
-        }
-        
-        if( ! DolibarrApi::_checkAccessToResource('member', $id)) {
+
+        if ( ! DolibarrApi::_checkAccessToResource('member',$member->id,'adherent')) {
             throw new RestException(401, 'Access not allowed for login '.DolibarrApiAccess::$user->login);
         }
 
-    	$updateRes = $member->deleteconsumption($consumptionid);
-    	if ($updateRes > 0) {
-    		return $updateRes;
-    	} else {
-    		throw new RestException(405, $this->invoice->error);
-    	}
-    }
+        if (! $member->delete_consumption($consumptionid)) {
+            throw new RestException(401,'error when deleting member type');
+        }
+
+        return array(
+            'success' => array(
+                'code' => 200,
+                'message' => 'member unlink'
+            )
+        );
+    } 
     
     /**
      * Validate fields before creating an object

@@ -2326,7 +2326,7 @@ require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 	 *  @param	int		$rowid		Id of consumption to delete
 	 *  @return	int					<0 if KO, 0=nothing to do, >0 if OK
 	 */
-	public function deleteconsumption($rowid)
+	public function delete_consumption($rowid)
 	{
 		global $conf, $langs;
 
@@ -2337,7 +2337,7 @@ require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 		$this->db->begin();
 
 		// Remove wish
-			$sql = "DELETE FROM ".MAIN_DB_PREFIX."adherent_consumption WHERE rowid = ".$rowid." AND fk_member = ".$this->id;
+		$sql = "DELETE FROM ".MAIN_DB_PREFIX."adherent_consumption WHERE rowid = ".$rowid." AND fk_member = ".$this->id;
 		dol_syslog(get_class($this)."::deleteline", LOG_DEBUG);
 		$result = $this->db->query($sql);
 		if (!$result)
