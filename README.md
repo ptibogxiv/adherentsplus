@@ -54,6 +54,6 @@ pour toutes versions de Dolibarr:
  
  ALTER TABLE `llx_adherent` ADD COLUMN `fk_parent` int(11) DEFAULT NULL;
 
- ALTER TABLE `llx_adherent` ADD COLUMN `datecommitment` DATE NOT NULL ;
+ ALTER TABLE `llx_adherent` ADD COLUMN `datecommitment` DATE NULL ;
 
  ALTER TABLE `llx_adherent` ADD COLUMN `ref` varchar(30);
