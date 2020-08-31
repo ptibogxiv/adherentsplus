@@ -48,6 +48,8 @@ if (! $res)
 {
 	die("Main include failed");
 }
+
+require_once DOL_DOCUMENT_ROOT.'/core/class/html.form.class.php';
 require_once DOL_DOCUMENT_ROOT.'/compta/facture/class/facture.class.php';
 require_once DOL_DOCUMENT_ROOT.'/adherents/class/adherent.class.php';
 require_once DOL_DOCUMENT_ROOT.'/adherents/class/adherent_type.class.php';
@@ -67,7 +69,7 @@ if (empty($user->rights->takepos->run)) {
 
 $constforcompanyid = $conf->global->{'CASHDESK_ID_THIRDPARTY'.$_SESSION["takeposterminal"]};
 
-
+$form = new Form($db);
 $invoice = new Facture($db);
 if ($invoiceid > 0)
 {
@@ -223,7 +225,7 @@ echo $langs->trans("None");
 
 <div style="position:absolute; left:5%; height:52%; width:92%;">
 <?php
-	
+
 	$sql = "SELECT d.rowid, d.libelle as label, d.subscription, d.vote, d.statut as status, d.morphy";
 	$sql .= " FROM ".MAIN_DB_PREFIX."adherent_type as d";
 	$sql .= " WHERE d.entity IN (".getEntity('member_type').")";
@@ -305,8 +307,6 @@ print '<button type="button" class="calcbutton2" onclick="location.href=\'takepo
             print "</tr>\n";
 
             $accountstatic = new Account($db);
-            $adh = new Adherent($db);
-            $adht = new AdherentTypePlus($db);
 
             $i = 0;
             while ($i < $num)
@@ -381,7 +381,8 @@ print '<button type="button" class="calcbutton2" onclick="location.href=\'takepo
             dol_print_error($db);
         }
             print "</table>";
-
+$adh->fetch('', '', $invoice->socid);
+print $form->showphoto('memberphoto', $adh, 0, 0, 0, 'photoref', 'small', 1, 0, 1);	
 ?>
 </div>
 <?php } else {
