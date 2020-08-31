@@ -174,7 +174,7 @@ $result = $adh->fetch('', '', $invoice->socid);
 $adht = new AdherentTypePlus($db);
 $result=$adht->fetch($adh->typeid);
 ?>
-<div style="position:relative; padding-top: 10px; left:5%; height:150px; width:91%;">
+<div style="position:relative; padding-top: 10px; left:5%; height:150px; width:92%;">
 <center>
 <div class="paymentbordline paymentbordlinetotal">
 <center><span class="takepospay"><font color="white"><?php echo $langs->trans("Status"); ?>: </font><span id="totaldisplay" class="colorwhite"><?php 
@@ -269,7 +269,9 @@ print '</small></button>';
 if ($adh->statut != 0) {
 print '<button type="button" class="calcbutton2" onclick="location.href=\'takepos_subscription.php?action=change&idmember='.$adh->id.'&type=0&invoiceid='.$invoiceid.'&place='.urlencode($place).'\'">'.$langs->trans("Resiliate").'</button>';
 }
-
+?>
+<div>
+<?php
         $sql = "SELECT d.rowid, d.firstname, d.lastname, d.societe, d.fk_adherent_type as type,";
         $sql .= " c.rowid as crowid, c.subscription,";
         $sql .= " c.datec, c.fk_type as cfk_type,";
@@ -291,7 +293,7 @@ print '<button type="button" class="calcbutton2" onclick="location.href=\'takepo
 
             $num = $db->num_rows($result);
 
-            print '<table class="noborder centpercent">'."\n";
+            print '<br><br><table class="noborder centpercent">'."\n";
 
             print '<tr class="liste_titre">';
             print_liste_field_titre('Ref', $_SERVER["PHP_SELF"], '', '', $param, '', $sortfield, $sortorder);
@@ -384,7 +386,7 @@ print '<button type="button" class="calcbutton2" onclick="location.href=\'takepo
 $adh->fetch('', '', $invoice->socid);
 print $form->showphoto('memberphoto', $adh, 0, 0, 0, 'photoref', 'small', 1, 0, 1);	
 ?>
-</div>
+</div></div>
 <?php } else {
 print '<center>'.$langs->trans('MembershipNotAllowedForGenericCustomer').'</center>';
  } ?>
