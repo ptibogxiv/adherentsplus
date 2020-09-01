@@ -57,6 +57,8 @@ require_once DOL_DOCUMENT_ROOT.'/adherents/class/subscription.class.php';
 dol_include_once('/adherentsplus/class/adherent.class.php');
 dol_include_once('/adherentsplus/class/adherent_type.class.php');
 require_once DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php';
+require_once DOL_DOCUMENT_ROOT.'/accountancy/class/accountingjournal.class.php';
+
 
 $action = GETPOST('action', 'alpha');
 $place = (GETPOST('place', 'aZ09') ? GETPOST('place', 'aZ09') : '0'); // $place is id of table for Bar or Restaurant
@@ -293,7 +295,10 @@ print '<button type="button" class="calcbutton2" onclick="location.href=\'takepo
 
             $num = $db->num_rows($result);
 
-            print '<br><br><table class="noborder centpercent">'."\n";
+            print '<br><table class="centpercent"><tr><td>';
+            $adh->fetch('', '', $invoice->socid);
+            print $form->showphoto('memberphoto', $adh, 0, 0, 0, 'photoref', 'small', 1, 0, 1);	
+            print '</td><td><table class="noborder centpercent">'."\n";
 
             print '<tr class="liste_titre">';
             print_liste_field_titre('Ref', $_SERVER["PHP_SELF"], '', '', $param, '', $sortfield, $sortorder);
@@ -376,15 +381,12 @@ print '<button type="button" class="calcbutton2" onclick="location.href=\'takepo
                 print '<tr><td colspan="'.$colspan.'"><span class="opacitymedium">'.$langs->trans("None").'</span></td></tr>';
             }
 
-            print "</table>";
         }
         else
         {
             dol_print_error($db);
         }
-            print "</table>";
-$adh->fetch('', '', $invoice->socid);
-print $form->showphoto('memberphoto', $adh, 0, 0, 0, 'photoref', 'small', 1, 0, 1);	
+            print "</table></td></tr></table>";
 ?>
 </div></div>
 <?php } else {
