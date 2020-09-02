@@ -15,45 +15,8 @@ Les modifications de la base de données seront prochainement incluses dans le p
 For install / Pour installation
 download then unzip then copy in htdocs/custom folder
 
-Add the following fields in dolibarr database
-Il vous faut ajouter les champs suivants dans la base de données:
+A partir de la version 12.0.3 pour Dolibarr 12.0.3, toutes les bases de données seront mise à jour automatiquement.
+From v12.0.3 for Dolibarr 12.0.3, all databases will be updated automatically.
 
-Pour les versions avant la V10 (inclus à partir de la v10):
-
- ALTER TABLE `llx_subscription` ADD COLUMN `fk_type` int(11) DEFAULT NULL;
- 
- ALTER TABLE `llx_adherent_type` ADD COLUMN `morphy` varchar(3) DEFAULT NULL;
- 
-Pour les versions avant la V11 (inclus à partir de la v11):
-
- ALTER TABLE `llx_adherent_type` ADD COLUMN `duration` varchar(6) DEFAULT NULL;
-
-pour toutes versions de Dolibarr:
-
- ALTER TABLE `llx_adherent_type` ADD COLUMN `welcome` double(24,8) DEFAULT 0.00000000;
- 
- ALTER TABLE `llx_adherent_type` ADD COLUMN `price` double(24,8) DEFAULT 0.00000000;
- 
- ALTER TABLE `llx_adherent_type` ADD COLUMN `federal` double(24,8) DEFAULT 0.00000000;
- 
- ALTER TABLE `llx_adherent_type` ADD COLUMN `price_level` int(11) DEFAULT 1;
- 
- ALTER TABLE `llx_adherent_type` ADD COLUMN `automatic` varchar(3) DEFAULT NULL;
- 
- ALTER TABLE `llx_adherent_type` ADD COLUMN `automatic_renew` varchar(3)   DEFAULT NULL;
- 
- ALTER TABLE `llx_adherent_type` ADD COLUMN `family` int(3)   DEFAULT NULL;
- 
- ALTER TABLE `llx_adherent_type` ADD COLUMN `use_default` int(11) DEFAULT NULL;
- 
- ALTER TABLE `llx_adherent_type` ADD COLUMN `commitment` varchar(6)   DEFAULT NULL;
- 
- ALTER TABLE `llx_adherent_type` ADD COLUMN `prorata` varchar(9) DEFAULT NULL;
- 
-  ALTER TABLE `llx_adherent_type` ADD COLUMN `prorata_date` varchar(3) DEFAULT NULL;
- 
- ALTER TABLE `llx_adherent` ADD COLUMN `fk_parent` int(11) DEFAULT NULL;
-
- ALTER TABLE `llx_adherent` ADD COLUMN `datecommitment` DATE NULL ;
-
- ALTER TABLE `llx_adherent` ADD COLUMN `ref` varchar(30);
+Merci de désactiver puis récctiver le module en mettant à jour.
+Please disable then enable adherentsplus when updating.
