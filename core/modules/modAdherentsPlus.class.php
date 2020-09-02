@@ -54,7 +54,7 @@ class modAdherentsPlus extends DolibarrModules
 		// Module label (no space allowed), used if translation string 'ModuleXXXName' not found (where XXX is value of numeric property 'numero' of module)
     $this->name = preg_replace('/^mod/i','',get_class($this));
         $this->description = "Management Extended of members of a foundation or association Extended";
-        $this->version = '12.0.2';                        // 'experimental' or 'dolibarr' or version
+        $this->version = '12.0.3';                        // 'experimental' or 'dolibarr' or version
         $this->const_name = 'MAIN_MODULE_'.strtoupper($this->name);
 		// Module description used if translation string 'ModuleXXXDesc' not found (XXX is id value)
     $this->editor_name = 'ptibogxiv.net';
@@ -245,52 +245,54 @@ $r=0;
 	}
 
 
-    /**
-     *		Function called when module is enabled.
-     *		The init function add constants, boxes, permissions and menus (defined in constructor) into Dolibarr database.
-     *		It also creates data directories
-     *
-     *      @param      string	$options    Options when enabling module ('', 'newboxdefonly', 'noboxes')
-     *      @return     int             	1 if OK, 0 if KO
-     */
+	/**
+	 *		Function called when module is enabled.
+	 *		The init function add constants, boxes, permissions and menus (defined in constructor) into Dolibarr database.
+	 *		It also creates data directories
+	 *
+     *      @param      string	$options    Options when enabling module ('', 'noboxes')
+	 *      @return     int             	1 if OK, 0 if KO
+	 */
     function init($options='')
     {
-        global $conf,$langs;
+        global $conf;
 
         // Permissions
         $this->remove($options);
 
-        //ODT template
-        /*
-        $src=DOL_DOCUMENT_ROOT.'/install/doctemplates/orders/template_order.odt';
-        $dirodt=DOL_DATA_ROOT.'/doctemplates/orders';
-        $dest=$dirodt.'/template_order.odt';
+        $sql = array();
+        $result=$this->load_tables();
+        if ($result != 1)
+            var_dump($this);
 
-        if (file_exists($src) && ! file_exists($dest))
-        {
-            require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
-            dol_mkdir($dirodt);
-            $result=dol_copy($src,$dest,0,0);
-            if ($result < 0)
-            {
-                $langs->load("errors");
-                $this->error=$langs->trans('ErrorFailToCopyFile',$src,$dest);
-                return 0;
-            }
-        }*/
-        
-        
-
-        $sql = array(
-            "DELETE FROM ".MAIN_DB_PREFIX."document_model WHERE nom = '".$this->db->escape($this->const[0][2])."' AND type='member' AND entity = ".$conf->entity,
-            "INSERT INTO ".MAIN_DB_PREFIX."document_model (nom, type, entity) VALUES('".$this->db->escape($this->const[0][2])."','member',".$conf->entity.")"
-        );
-
-        return $this->_init($sql,$options);
+        return $this->_init($sql, $options);
     }
-    
-    private function loadTables()
+
+	/**
+	 * Function called when module is disabled.
+	 * Remove from database constants, boxes and permissions from Dolibarr database.
+	 * Data directories are not deleted
+	 *
+	 * @param      string	$options    Options when enabling module ('', 'noboxes')
+	 * @return     int             	1 if OK, 0 if KO
+	 */
+	public function remove($options = '')
 	{
-		return $this->_load_tables('/adherentsplus/sql/');
-}
+		$sql = array();
+
+		return $this->_remove($sql, $options);
+	}
+
+    /**
+     *		Create tables, keys and data required by module
+     * 		Files llx_table1.sql, llx_table1.key.sql llx_data.sql with create table, create keys
+     * 		and create data commands must be stored in directory /mymodule/sql/
+     *		This function is called by this->init.
+     *
+     * 		@return		int		<=0 if KO, >0 if OK
+     */
+    public function load_tables()
+    {
+        return $this->_load_tables('/adherentsplus/sql/');
+    }
 }
