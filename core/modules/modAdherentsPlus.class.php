@@ -47,13 +47,13 @@ class modAdherentsPlus extends DolibarrModules
     	global $conf;
 
         $this->db = $db;
-        $this->numero = 431499; // 310;
+        $this->numero = 431499;
 
         $this->family = "hr";
         $this->module_position = 20;
 		// Module label (no space allowed), used if translation string 'ModuleXXXName' not found (where XXX is value of numeric property 'numero' of module)
     $this->name = preg_replace('/^mod/i','',get_class($this));
-        $this->description = "Management Extended of members of a foundation or association Extended";
+        $this->description = "Management Extended of members";
         $this->version = '12.0.3';                        // 'experimental' or 'dolibarr' or version
         $this->const_name = 'MAIN_MODULE_'.strtoupper($this->name);
 		// Module description used if translation string 'ModuleXXXDesc' not found (XXX is id value)
@@ -77,10 +77,10 @@ class modAdherentsPlus extends DolibarrModules
 		);
         // Dependencies
         //------------
-        $this->depends = array();
-        $this->requiredby = array('modMailmanSpip');
-        $this->langfiles = array("members","companies");
-        $this->need_dolibarr_version = array(9,0);
+        $this->depends = array('modAdherent');
+        $this->requiredby = array();
+        $this->langfiles = array("adherentsplus@adherentsplus");
+        $this->need_dolibarr_version = array(12,0);
         // Constants
         //-----------
         $this->const = array();
