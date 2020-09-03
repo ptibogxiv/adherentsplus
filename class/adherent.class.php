@@ -2637,6 +2637,73 @@ require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 		}
 
 	}
+  
+	/**
+	 *  Delete an consumption
+	 *
+	 *  @param      int		$consumptionid		Id of consumption to delete
+	 *  @param      User	$user		User object
+	 *  
+	 *  @return     int        		 	>0 if OK, 0 if nothing to do, <0 if KO
+	 */
+	public function deleteconsumption($consumptionid = 0, $user = null)
+	{
+		if ($this->statut == '-1')
+		{
+			$this->db->begin();
+
+			$sql = "SELECT rowid, fk_product, fk_invoice";
+			$sql .= " FROM ".MAIN_DB_PREFIX."adherent_consumption";
+			$sql .= " WHERE rowid = ".$consumptionid;
+
+			$result = $this->db->query($sql);
+			if ($result)
+			{
+				$obj = $this->db->fetch_object($result);
+
+				if ($obj)
+				{
+					$product = new Product($this->db);
+					$product->id = $obj->fk_product;
+
+					// Delete line
+					$line = new OrderLine($this->db);
+
+					// For triggers
+					$line->fetch($consumptionid);
+
+					if ($line->delete($user) > 0)
+					{
+						$result = $this->update_price(1);
+
+						if ($result > 0)
+						{
+							$this->db->commit();
+							return 1;
+						} else {
+							$this->db->rollback();
+							$this->error = $this->db->lasterror();
+							return -1;
+						}
+					} else {
+						$this->db->rollback();
+						$this->error = $line->error;
+						return -1;
+					}
+				} else {
+					$this->db->rollback();
+					return 0;
+				}
+			} else {
+				$this->db->rollback();
+				$this->error = $this->db->lasterror();
+				return -1;
+			}
+		} else {
+			$this->error = 'ErrorDeleteConsumptionNotAllowedByObjectStatus';
+			return -1;
+		}
+	}
 
 	/**
 	 *      Load indicators for dashboard (this->nbtodo and this->nbtodolate)

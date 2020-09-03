@@ -793,8 +793,8 @@ class AdherentsPlus extends DolibarrApi
         }
 
         $obj_ret = array();
-        foreach ($member->consumptions as $linkedmembers) {
-            $obj_ret[] = $this->_cleanObjectDatas($linkedmembers);
+        foreach ($member->consumptions as $consumption) {
+            $obj_ret[] = $this->_cleanObjectDatas($consumption);
         }
         return $obj_ret;
     } 
@@ -909,16 +909,15 @@ class AdherentsPlus extends DolibarrApi
         $member = new AdherentPlus($this->db);
         $result = $member->fetch($id);
         if( ! $result ) {
-            throw new RestException(404, 'member type not found');
+            throw new RestException(404, 'member not found');
         }
 
         if ( ! DolibarrApi::_checkAccessToResource('member',$member->id,'adherent')) {
             throw new RestException(401, 'Access not allowed for login '.DolibarrApiAccess::$user->login);
         }
         
-        $consumption = new Consumption($this->db);
-        if (! $consumption->delete($consumptionid)) {
-            throw new RestException(401,'error when deleting member type');
+        if (! $member->deleteconsumption($consumptionid, DolibarrApiAccess::$user)) {
+            throw new RestException(401,'error when deleting consumption');
         }
 
         return array(

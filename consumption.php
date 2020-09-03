@@ -205,7 +205,7 @@ if ($id)
 
                 print "<tr ".$bc[$var].">";
 
-                print '<td>'.dol_print_date($consumption->date_consumption,'dayhour')."</td>\n";
+                print '<td>'.dol_print_date($consumption->date_creation,'dayhour')."</td>\n";
                 print '<td align="center">';
                 $prodtmp=new Product($db);
                 $prodtmp->fetch($consumption->fk_product);
