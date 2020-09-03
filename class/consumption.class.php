@@ -143,6 +143,45 @@ dol_include_once('/adherentsplus/class/adherent.class.php');
 			return -1;
 		}
 	}
+  
+	/**
+	 *	Delete consumption in database
+	 *
+	 *  @param	int		$rowid		Id of consumption to delete
+	 *  @return	int					<0 if KO, 0=nothing to do, >0 if OK
+	 */
+	public function delete($rowid)
+	{
+		global $conf, $langs;
+
+		$result = 0;
+		$error=0;
+		$errorflag=0;
+
+		$this->db->begin();
+
+		// Remove wish
+		$sql = "DELETE FROM ".MAIN_DB_PREFIX."adherent_consumption WHERE rowid = ".$rowid;
+		dol_syslog(get_class($this)."::deleteline", LOG_DEBUG);
+		$result = $this->db->query($sql);
+		if (!$result)
+		{
+			$this->error = $this->db->error();
+			$this->db->rollback();
+			return -1;
+		}
+
+		if (! $error)
+		{
+			$this->db->commit();
+			return 1;
+		}
+		else
+		{
+			$this->db->rollback();
+			return $errorflag;
+		}
+	}
 
 
 }

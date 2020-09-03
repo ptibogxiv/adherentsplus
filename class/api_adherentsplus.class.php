@@ -914,8 +914,9 @@ class AdherentsPlus extends DolibarrApi
         if ( ! DolibarrApi::_checkAccessToResource('member',$member->id,'adherent')) {
             throw new RestException(401, 'Access not allowed for login '.DolibarrApiAccess::$user->login);
         }
-
-        if (! $member->delete_consumption($consumptionid)) {
+        
+        $consumption = new Consumption($this->db);
+        if (! $consumption->delete($consumptionid)) {
             throw new RestException(401,'error when deleting member type');
         }
 
