@@ -1,0 +1,56 @@
+= ADHERENTSPLUS =
+:subtitle: ADHERENTSPLUS DOCUMENTATION
+:source-highlighter: rouge
+:companyname: demo.ptibogxiv.net
+:corpname: demo.ptibogxiv.net
+:orgname: demo.ptibogxiv.net
+:creator: Thibault FOUCART
+:title: Documentation of module AdherentsPlus
+:subject: This document is the document of module AdherentsPlus.
+:keywords: AdherentsPlus
+// Date du document :
+:docdate: 2020-09-03
+:toc: manual
+:toc-placement: preamble
+
+
+== TOPIC OF DOCUMENT
+
+This is the documentation of module AdherentsPlus
+
+
+*Log of versions of document*
+
+[options="header",format="csv"]
+|=== 
+Author, Date, Version
+--- Thibault FOUCART  support@ptibogxiv.net ---, 2020-09-03, Version 1.0
+|===
+
+
+[NOTE]
+==============
+This document was generated using Dolibarr ERP CRM process
+==============
+
+
+:toc: manual
+:toc-placement: preamble
+
+<<<
+
+== INTRODUCTION
+
+//include::README.md[]
+__README__
+
+== DATA SPECIFICATIONS
+
+__DATA_SPECIFICATION__
+
+
+== CHANGELOG
+
+//include::ChangeLog.md[]
+__CHANGELOG__
+
