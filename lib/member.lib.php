@@ -176,33 +176,10 @@ function member_admin_prepare_head()
     $head[$h][2] = 'general';
     $h++;
     
-    $head[$h][0] = dol_buildpath('/adherentsplus/admin/adherent_emails.php', 1);
-    $head[$h][1] = $langs->trans("EMails");
-    $head[$h][2] = 'emails';
+    $head[$h][0] = dol_buildpath('/adherentsplus/admin/about.php', 1);
+    $head[$h][1] = $langs->trans("About");
+    $head[$h][2] = 'about';
     $h++;
-
-    // Show more tabs from modules
-    // Entries must be declared in modules descriptor with line
-    // $this->tabs = array('entity:+tabname:Title:@mymodule:/mymodule/mypage.php?id=__ID__');   to add new tab
-    // $this->tabs = array('entity:-tabname:Title:@mymodule:/mymodule/mypage.php?id=__ID__');   to remove a tab
-    complete_head_from_modules($conf,$langs,'',$head,$h,'member_admin');
-
-    $head[$h][0] = dol_buildpath('/adherentsplus/admin/adherent_extrafields.php', 1);
-    $head[$h][1] = $langs->trans("ExtraFieldsMember");
-    $head[$h][2] = 'attributes';
-    $h++;
-
-    $head[$h][0] = dol_buildpath('/adherentsplus/admin/adherent_type_extrafields.php', 1);
-    $head[$h][1] = $langs->trans("ExtraFieldsMemberType");
-    $head[$h][2] = 'attributes_type';
-    $h++;
-
-    $head[$h][0] = dol_buildpath('/adherentsplus/admin/website.php', 1);
-    $head[$h][1] = $langs->trans("BlankSubscriptionForm");
-    $head[$h][2] = 'website';
-    $h++;
-
-    complete_head_from_modules($conf,$langs,'',$head,$h,'member_admin','remove');
 
     return $head;
 }

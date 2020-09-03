@@ -67,6 +67,7 @@ MembersStatusResiliated=Adhérents résiliés
 NewCotisation=Nouvelle adhésion
 PaymentSubscription=Paiement cotisation
 SubscriptionEndDate=Date de fin adhésion
+MembersPlusSetup=Configuration du module adhérentsplus
 MembersTypeSetup=Configuration des types d'adhérents
 NewSubscription=Nouvelle adhésion
 NewSubscriptionDesc=Ce formulaire permet de vous inscrire comme nouvel adhérent de l'association. Pour un renouvellement (si vous êtes déjà adhérent), contactez plutôt l'association par email %s.

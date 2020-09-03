@@ -74,30 +74,16 @@ if ($action == 'updateall')
 {
 
     $db->begin();
-    $res1=$res2=$res3=$res4=$res5=$res6=$res7=$res8=$res9=$res10=$res11=$res12=$res13=0;
-    $res1=dolibarr_set_const($db, 'ADHERENT_LOGIN_NOT_REQUIRED', GETPOST('ADHERENT_LOGIN_NOT_REQUIRED', 'alpha')?0:1, 'chaine', 0, '', $conf->entity);
-    $res2=dolibarr_set_const($db, 'ADHERENT_MAIL_REQUIRED', GETPOST('ADHERENT_MAIL_REQUIRED', 'alpha'), 'chaine', 0, '', $conf->entity);
-    $res3=dolibarr_set_const($db, 'ADHERENT_DEFAULT_SENDINFOBYMAIL', GETPOST('ADHERENT_DEFAULT_SENDINFOBYMAIL', 'alpha'), 'chaine', 0, '', $conf->entity);
-    $res4=dolibarr_set_const($db, 'ADHERENT_LINKEDMEMBER', GETPOST('ADHERENT_LINKEDMEMBER', 'alpha'), 'chaine', 0, '', $conf->entity);
-    $res8=dolibarr_set_const($db, 'ADHERENT_BANK_USE', GETPOST('ADHERENT_BANK_USE', 'alpha'), 'chaine', 0, '', $conf->entity);
-    $res9=dolibarr_set_const($db, 'ADHERENT_SUBSCRIPTION_PRORATA', GETPOST('ADHERENT_SUBSCRIPTION_PRORATA', 'alpha'), 'chaine', 0, '', $conf->entity);
-    $res10=dolibarr_set_const($db, 'SOCIETE_SUBSCRIBE_MONTH_START', GETPOST('SOCIETE_SUBSCRIBE_MONTH_START', 'alpha'), 'chaine', 0, '', $conf->entity);
-    $res11=dolibarr_set_const($db, 'SOCIETE_SUBSCRIBE_MONTH_PRESTART', GETPOST('SOCIETE_SUBSCRIBE_MONTH_PRESTART', 'alpha'), 'chaine', 0, '', $conf->entity);
-    $res12=dolibarr_set_const($db, 'ADHERENT_WELCOME_MONTH', GETPOST('ADHERENT_WELCOME_MONTH', 'alpha'), 'chaine', 0, '', $conf->entity);
-    $res13=dolibarr_set_const($db, 'ADHERENT_MEMBER_CATEGORY', implode(",", GETPOST('ADHERENT_MEMBER_CATEGORY', 'array')), 'chaine', 0, '', $conf->entity);
-    $res14=dolibarr_set_const($db, 'ADHERENT_CONSUMPTION', GETPOST('ADHERENT_CONSUMPTION', 'alpha'), 'chaine', 0, '', $conf->entity);
-    $res15=dolibarr_set_const($db, 'ADHERENT_FEDERAL_PART', GETPOST('ADHERENT_FEDERAL_PART', 'alpha'), 'chaine', 0, '', $conf->entity);
-    // Use vat for invoice creation
-    if ($conf->facture->enabled)
-    {
-        $res5=dolibarr_set_const($db, 'ADHERENT_VAT_FOR_SUBSCRIPTIONS', GETPOST('ADHERENT_VAT_FOR_SUBSCRIPTIONS', 'alpha'), 'chaine', 0, '', $conf->entity);
-        $res6=dolibarr_set_const($db, 'ADHERENT_PRODUCT_ID_FOR_SUBSCRIPTIONS', GETPOST('ADHERENT_PRODUCT_ID_FOR_SUBSCRIPTIONS', 'alpha'), 'chaine', 0, '', $conf->entity);
-        if (! empty($conf->product->enabled) || ! empty($conf->service->enabled))
-        {
-            $res7=dolibarr_set_const($db, 'ADHERENT_PRODUCT_ID_FOR_SUBSCRIPTIONS', GETPOST('ADHERENT_PRODUCT_ID_FOR_SUBSCRIPTIONS', 'alpha'), 'chaine', 0, '', $conf->entity);
-        }
-    }
-    if ($res1 < 0 || $res2 < 0 || $res3 < 0 || $res4 < 0 || $res5 < 0 || $res6 < 0 || $res7 < 0 || $res8 < 0 || $res9 < 0 || $res10 < 0 || $res11 < 0 || $res12 < 0 || $res13 < 0 || $res14 < 0 || $res15 < 0)
+    $res1=$res2=$res3=$res4=$res5=$res6=$res7=$res8=$res9=0;
+    $res2=dolibarr_set_const($db, 'ADHERENT_LINKEDMEMBER', GETPOST('ADHERENT_LINKEDMEMBER', 'alpha'), 'chaine', 0, '', $conf->entity);
+    $res3=dolibarr_set_const($db, 'ADHERENT_SUBSCRIPTION_PRORATA', GETPOST('ADHERENT_SUBSCRIPTION_PRORATA', 'alpha'), 'chaine', 0, '', $conf->entity);
+    $res4=dolibarr_set_const($db, 'SOCIETE_SUBSCRIBE_MONTH_START', GETPOST('SOCIETE_SUBSCRIBE_MONTH_START', 'alpha'), 'chaine', 0, '', $conf->entity);
+    $res5=dolibarr_set_const($db, 'SOCIETE_SUBSCRIBE_MONTH_PRESTART', GETPOST('SOCIETE_SUBSCRIBE_MONTH_PRESTART', 'alpha'), 'chaine', 0, '', $conf->entity);
+    $res6=dolibarr_set_const($db, 'ADHERENT_WELCOME_MONTH', GETPOST('ADHERENT_WELCOME_MONTH', 'alpha'), 'chaine', 0, '', $conf->entity);
+    $res7=dolibarr_set_const($db, 'ADHERENT_MEMBER_CATEGORY', implode(",", GETPOST('ADHERENT_MEMBER_CATEGORY', 'array')), 'chaine', 0, '', $conf->entity);
+    $res8=dolibarr_set_const($db, 'ADHERENT_CONSUMPTION', GETPOST('ADHERENT_CONSUMPTION', 'alpha'), 'chaine', 0, '', $conf->entity);
+    $res9=dolibarr_set_const($db, 'ADHERENT_FEDERAL_PART', GETPOST('ADHERENT_FEDERAL_PART', 'alpha'), 'chaine', 0, '', $conf->entity);
+    if ($res1 < 0 || $res2 < 0 || $res3 < 0 || $res4 < 0 || $res5 < 0 || $res6 < 0 || $res7 < 0 || $res8 < 0 || $res9 < 0)
     {
         setEventMessages('ErrorFailedToSaveDate', null, 'errors');
         $db->rollback();
@@ -173,7 +159,7 @@ llxHeader('',$langs->trans("MembersSetup"),$help_url);
 
 
 $linkback='<a href="'.DOL_URL_ROOT.'/admin/modules.php">'.$langs->trans("BackToModuleList").'</a>';
-print load_fiche_titre($langs->trans("MembersSetup"),$linkback,'title_setup');
+print load_fiche_titre($langs->trans("MembersPlusSetup"),$linkback,'title_setup');
 
 
 $head = member_admin_prepare_head();
@@ -191,75 +177,10 @@ print '<td>'.$langs->trans("Description").'</td>';
 print '<td>'.$langs->trans("Value").'</td>';
 print "</tr>\n";
 
-
-// Login/Pass required for members
-print '<tr class="oddeven"><td>'.$langs->trans("AdherentLoginRequired").'</td><td>';
-print $form->selectyesno('ADHERENT_LOGIN_NOT_REQUIRED', (! empty($conf->global->ADHERENT_LOGIN_NOT_REQUIRED)?0:1), 1);
-print "</td></tr>\n";
-
-// Mail required for members
-print '<tr class="oddeven"><td>'.$langs->trans("AdherentMailRequired").'</td><td>';
-print $form->selectyesno('ADHERENT_MAIL_REQUIRED',(! empty($conf->global->ADHERENT_MAIL_REQUIRED)?$conf->global->ADHERENT_MAIL_REQUIRED:0),1);
-print "</td></tr>\n";
-
-// Send mail information is on by default
-print '<tr class="oddeven"><td>'.$langs->trans("MemberSendInformationByMailByDefault").'</td><td>';
-print $form->selectyesno('ADHERENT_DEFAULT_SENDINFOBYMAIL',(! empty($conf->global->ADHERENT_DEFAULT_SENDINFOBYMAIL)?$conf->global->ADHERENT_DEFAULT_SENDINFOBYMAIL:0),1);
-print "</td></tr>\n";
-
 // multimembers for one thirdparty
 print '<tr class="oddeven"><td>'.$langs->trans("AdherentLinkedMember").'</td><td>';
 print $form->selectyesno('ADHERENT_LINKEDMEMBER',(! empty($conf->global->ADHERENT_LINKEDMEMBER)?$conf->global->ADHERENT_LINKEDMEMBER:0),1);
 print "</td></tr>\n";
-
-// Insert subscription into bank account
-print '<tr class="oddeven"><td>'.$langs->trans("MoreActionsOnSubscription").'</td>';
-$arraychoices=array('0'=>$langs->trans("None"));
-if (! empty($conf->banque->enabled)) $arraychoices['bankdirect']=$langs->trans("MoreActionBankDirect");
-if (! empty($conf->banque->enabled) && ! empty($conf->societe->enabled) && ! empty($conf->facture->enabled)) $arraychoices['invoiceonly']=$langs->trans("MoreActionInvoiceOnly");
-if (! empty($conf->banque->enabled) && ! empty($conf->societe->enabled) && ! empty($conf->facture->enabled)) $arraychoices['bankviainvoice']=$langs->trans("MoreActionBankViaInvoice");
-print '<td>';
-print $form->selectarray('ADHERENT_BANK_USE', $arraychoices, $conf->global->ADHERENT_BANK_USE, 0);
-if ($conf->global->ADHERENT_BANK_USE == 'bankdirect' || $conf->global->ADHERENT_BANK_USE == 'bankviainvoice')
-{
-    print '<br><div style="padding-top: 5px;"><span class="opacitymedium">'.$langs->trans("ABankAccountMustBeDefinedOnPaymentModeSetup").'</span></div>';
-}
-print '</td>';
-print "</tr>\n";
-
-// Use vat for invoice creation
-if ($conf->facture->enabled)
-{
-	print '<tr class="oddeven"><td>'.$langs->trans("VATToUseForSubscriptions").'</td>';
-	if (! empty($conf->banque->enabled))
-	{
-		print '<td>';
-		print $form->selectarray('ADHERENT_VAT_FOR_SUBSCRIPTIONS', array('0'=>$langs->trans("NoVatOnSubscription"),'defaultforfoundationcountry'=>$langs->trans("Default")), (empty($conf->global->ADHERENT_VAT_FOR_SUBSCRIPTIONS)?'0':$conf->global->ADHERENT_VAT_FOR_SUBSCRIPTIONS), 0);
-		print '</td>';
-	}
-	else
-	{
-		print '<td align="right">';
-		print $langs->trans("WarningModuleNotActive",$langs->transnoentities("Module85Name"));
-		print '</td>';
-	}
-	print "</tr>\n";
-	
-	if (! empty($conf->product->enabled) || ! empty($conf->service->enabled))
-	{
-		print '<tr class="oddeven"><td>'.$langs->trans("ADHERENT_PRODUCT_ID_FOR_SUBSCRIPTIONS").'</td>';
-		print '<td>';
-		$form->select_produits($conf->global->ADHERENT_PRODUCT_ID_FOR_SUBSCRIPTIONS, 'ADHERENT_PRODUCT_ID_FOR_SUBSCRIPTIONS');
-		print '</td>';
-	}
-	print "</tr>\n";
-}
-
-// Login/Pass required for members
-print '<tr class="oddeven"><td>'.$langs->trans("FederalPart").'</td><td>';
-print $form->selectyesno('ADHERENT_FEDERAL_PART', (! empty($conf->global->ADHERENT_FEDERAL_PART)?$conf->global->ADHERENT_FEDERAL_PART:0),1);
-print "</td></tr>\n";
-
 
 // type of adhesion flow
 print '<tr class="oddeven"><td>'.$langs->trans("BeginningFixedDate").'</td>';
@@ -318,45 +239,6 @@ print '</center>';
 print '</form>';
 
 print '<br>';
-
-
-/*
- * Edition info modele document
- */
-$constantes=array(
-		'ADHERENT_CARD_TYPE',
-//		'ADHERENT_CARD_BACKGROUND',
-		'ADHERENT_CARD_HEADER_TEXT',
-		'ADHERENT_CARD_TEXT',
-		'ADHERENT_CARD_TEXT_RIGHT',
-		'ADHERENT_CARD_FOOTER_TEXT'
-		);
-
-print load_fiche_titre($langs->trans("MembersCards"),'','');
-
-$helptext='*'.$langs->trans("FollowingConstantsWillBeSubstituted").'<br>';
-$helptext.='%DOL_MAIN_URL_ROOT%, %ID%, %FIRSTNAME%, %LASTNAME%, %FULLNAME%, %LOGIN%, %PASSWORD%, ';
-$helptext.='%COMPANY%, %ADDRESS%, %ZIP%, %TOWN%, %COUNTRY%, %EMAIL%, %BIRTH%, %PHOTO%, %TYPE%, ';
-$helptext.='%YEAR%, %MONTH%, %DAY%';
-
-form_constantes($constantes, 0, $helptext);
-
-print '<br>';
-
-
-/*
- * Edition info modele document
- */
-$constantes=array('ADHERENT_ETIQUETTE_TYPE','ADHERENT_ETIQUETTE_TEXT');
-
-print load_fiche_titre($langs->trans("MembersTickets"),'','');
-
-$helptext='*'.$langs->trans("FollowingConstantsWillBeSubstituted").'<br>';
-$helptext.='%DOL_MAIN_URL_ROOT%, %ID%, %FIRSTNAME%, %LASTNAME%, %FULLNAME%, %LOGIN%, %PASSWORD%, ';
-$helptext.='%COMPANY%, %ADDRESS%, %ZIP%, %TOWN%, %COUNTRY%, %EMAIL%, %BIRTH%, %PHOTO%, %TYPE%, ';
-$helptext.='%YEAR%, %MONTH%, %DAY%';
-
-form_constantes($constantes, 0, $helptext);
 
 dol_fiche_end();
 
