@@ -95,7 +95,7 @@ $arrayofjs = array();
 
 top_htmlhead($head, $title, $disablejs, $disablehead, $arrayofjs, $arrayofcss);
 
-$langs->loadLangs(array("main", "bills", "cashdesk", "members", "adherentsplus@adherentsplus"));
+$langs->loadLangs(array("main", "bills", "cashdesk", "members", "products", "adherentsplus@adherentsplus"));
 
 ?>
 <link rel="stylesheet" href="/takepos/css/pos.css.php">
@@ -166,103 +166,60 @@ if ($action == "change") // change member from POS
 
 if ($constforcompanyid != $invoice->socid && !empty($invoice->socid)) { 
 $adh = new AdherentPlus($db);
-$result = $adh->fetch('', '', $invoice->socid);
+$result=$adh->fetch('', '', $invoice->socid, '', '', '', 1);
 $adht = new AdherentTypePlus($db);
+
 $result=$adht->fetch($adh->typeid);
-?>
-<div style="position:relative; padding-top: 10px; left:5%; height:150px; width:91%;">
-<center>
-<div class="paymentbordline paymentbordlinetotal">
-<center><span class="takepospay"><font color="white"><?php echo $langs->trans("Status"); ?>: </font><span id="totaldisplay" class="colorwhite"><?php 
-echo $adh->getLibStatut(0); ?></span></font></span></center>
-</div>
-<div class="paymentbordline paymentbordlinetotal">
-<center><span class="takepospay"><font color="white"><?php echo $langs->trans("Type"); ?>: </font><span id="totaldisplay" class="colorwhite"><?php 
-echo $adht->libelle; ?></span></font></span></center>
-</div>
-<div class="paymentbordline paymentbordlinetotal">
-<center><span class="takepospay"><font color="white"><?php echo $langs->trans("SubscriptionEndDate"); ?>: </font><span id="totaldisplay" class="colorwhite"><?php 
-	if ($adh->datefin)
-	{
-	    echo dol_print_date($adh->datefin, 'day');
-	    if ($adh->hasDelay()) {
-	        echo " ".img_warning($langs->trans("Late"));
-	    }
-	}
-	else
-	{
-	    if (!$adht->subscription)
-	    {
-	        echo $langs->trans("SubscriptionNotRecorded");
-	        if ($adh->statut > 0) echo " ".img_warning($langs->trans("Late")); // Display a delay picto only if it is not a draft and is not canceled
-	    }
-	    else
-	    {
-	        echo $langs->trans("SubscriptionNotReceived");
-	        if ($adh->statut > 0) echo " ".img_warning($langs->trans("Late")); // Display a delay picto only if it is not a draft and is not canceled
-	    }
-	} ?></span></font></span></center>
-</div>
-<div class="paymentbordline paymentbordlinereceived">
-    <center><span class="takepospay"><font color="white"><?php echo $langs->trans("Commitment"); ?>: </font><span id="totaldisplay" class="colorwhite"><?php 
-    		if ($adh->datecommitment)
-		{
-			echo dol_print_date($adh->datecommitment,'day');
-			if ($adh->hasDelay()) {
-				echo " ".img_warning($langs->trans("Late"));
-			}
-		} else {
-echo $langs->trans("None");
-    }
-    ?></span></font></span></center>
-    </div>
-</center>
-</div>
+  $morehtmlright= dolGetButtonTitle($langs->trans('Add'), '', 'fa fa-plus-circle', $_SERVER["PHP_SELF"].'?rowid='.$object->id.'&action=create');
 
-<div style="position:absolute; left:5%; height:52%; width:92%;">
-<?php
-	
-	$sql = "SELECT d.rowid, d.libelle as label, d.subscription, d.vote, d.statut as status, d.morphy";
-	$sql .= " FROM ".MAIN_DB_PREFIX."adherent_type as d";
-	$sql .= " WHERE d.entity IN (".getEntity('member_type').")";
+      print load_fiche_titre($langs->trans("ListOfProductsServices"), $morehtmlright, '');
 
-	$result = $db->query($sql);
-	if ($result)
-	{
-		$num = $db->num_rows($result);
-		$nbtotalofrecords = $num;
+      print '<div class="div-table-responsive">';
+      print '<table class="tagtable liste'.($moreforfilter?" listwithfilterbefore":"").'">'."\n";
 
-		$i = 0;
-    
-		while ($i < $num) {
-			$objp = $db->fetch_object($result);
-      $membertype = new AdherentTypePlus($db); 
-      $membertype->fetch($objp->rowid);
-      $membertype->subscription_calculator($adh->id);
-//if (($adh->datefin <= dol_now()) || ($membertype->date_renew <= dol_now()) || ($adh->datefin < $membertype->date_renew)) {     
-print '<button type="button" class="';
-if ($membertype->id == $adh->typeid) { 
-print "calcbutton poscolorblue";
-} else {
-print "calcbutton poscolordelete";
-}
-print '" onclick="location.href=\'takepos_consumption.php?action=change&idmember='.$adh->id.'&type='.$membertype->id.'&invoiceid='.$invoiceid.'&place='.urlencode($place).'\'">'.dol_escape_htmltag($membertype->label).'<br><small>';
-print '('.price($membertype->price_prorata).' '.$langs->trans("Currency".$conf->currency);
-if ($membertype->price_prorata != $membertype->nextprice) { print ' '.$langs->trans("then").' '.price($membertype->nextprice).' '.$langs->trans("Currency".$conf->currency); }
-print ')<br>';
-print ''.dol_print_date($membertype->date_begin, 'day').' - '.dol_print_date($membertype->date_end, 'day');
-print '</small></button>';
-//}
-			$i++;
-		}
-	}
-	else
-	{
-		dol_print_error($db);
-	}
-if ($adh->statut != 0) {
-print '<button type="button" class="calcbutton2" onclick="location.href=\'takepos_consumption.php?action=change&idmember='.$adh->id.'&type=0&invoiceid='.$invoiceid.'&place='.urlencode($place).'\'">'.$langs->trans("Resiliate").'</button>';
-}
+            print '<tr class="liste_titre">';
+            print '<td align="center">'.$langs->trans("Date").'</td>';
+            print '<td align="center">'.$langs->trans("Product/Service").'</td>';
+            print '<td align="center">'.$langs->trans("Quantity").'</td>';
+            print '<td align="right">'.$langs->trans("Price").'</td>';
+            print '<td align="right">'.$langs->trans('Invoice').'</td>';
+            print "</tr>\n";
+
+            foreach ($adh->consumptions as $consumption)
+            {
+
+                print "<tr ".$bc[$var].">";
+
+                print '<td>'.dol_print_date($consumption->date_consumption,'dayhour')."</td>\n";
+                print '<td align="center">';
+                $prodtmp=new Product($db);
+                $prodtmp->fetch($consumption->fk_product);
+                print $prodtmp->getNomUrl(1);	// must use noentitiesnoconv to avoid to encode html into getNomUrl of product
+                print ' - '.$prodtmp->label.'</td>';
+                print '<td align="center">'; 
+                             
+                if ($prodtmp->isService() && $prodtmp->duration_value> 0)
+            {
+                print $consumption->value." "; 
+                if ($prodtmp->duration_value > 1)
+                {
+                    $dur=array("i"=>$langs->trans("Minute"),"h"=>$langs->trans("Hours"),"d"=>$langs->trans("Days"),"w"=>$langs->trans("Weeks"),"m"=>$langs->trans("Months"),"y"=>$langs->trans("Years"));
+                }
+                else if ($prodtmp->duration_value > 0)
+                {
+                    $dur=array("i"=>$langs->trans("Minute"),"h"=>$langs->trans("Hour"),"d"=>$langs->trans("Day"),"w"=>$langs->trans("Week"),"m"=>$langs->trans("Month"),"y"=>$langs->trans("Year"));
+                }
+                print (! empty($prodtmp->duration_unit) && isset($dur[$prodtmp->duration_unit]) ? $langs->trans($dur[$prodtmp->duration_unit]) : '')."</td>\n";                  
+            } else {
+                print $consumption->qty." </td>\n";  
+            }   
+        
+                print '<td align="right">'.$consumption->amount.'</td>';
+                print '<td align="right">'.dol_print_date($consumption->date_validation,'day').'</td>';
+                print "</tr>";
+
+            }
+            print "</table></div>";
 ?>
 </div>
 <?php } else {
