@@ -100,6 +100,55 @@ dol_include_once('/adherentsplus/class/adherent.class.php');
 			return -1;
 		}
 	}
+  
+	/**
+	 *  Method to load a consumption
+	 *
+	 *  @param	int		$rowid		Id consumption
+	 *  @return	int					<0 if KO, =0 if not found, >0 if OK
+	 */
+	function fetch($rowid)
+	{
+    $sql ="SELECT rowid, fk_adherent, datec,";
+		$sql.=" tms,";
+		$sql.=" dateadh as dateh,";
+		$sql.=" datef,";
+		$sql.=" subscription, note, fk_bank, fk_type";
+		$sql.=" FROM ".MAIN_DB_PREFIX."adherent_consumption";
+		$sql.="	WHERE rowid=".$rowid;
+
+		dol_syslog(get_class($this)."::fetch", LOG_DEBUG);
+		$resql=$this->db->query($sql);
+		if ($resql)
+		{
+			if ($this->db->num_rows($resql))
+			{
+				$obj = $this->db->fetch_object($resql);
+
+				$this->id             = $obj->rowid;
+				$this->ref            = $obj->rowid;
+				$this->fk_type        = $obj->fk_type;
+				$this->fk_adherent    = $obj->fk_adherent;
+				$this->datec          = $this->db->jdate($obj->datec);
+				$this->datem          = $this->db->jdate($obj->tms);
+				$this->dateh          = $this->db->jdate($obj->dateh);
+				$this->datef          = $this->db->jdate($obj->datef);
+				$this->amount         = $obj->subscription;
+				$this->note           = $obj->note;
+				$this->fk_bank        = $obj->fk_bank;
+				return 1;
+			}
+			else
+			{
+				return 0;
+			}
+		}
+		else
+		{
+			$this->error=$this->db->lasterror();
+			return -1;
+		}
+	}
 
 
 	/**

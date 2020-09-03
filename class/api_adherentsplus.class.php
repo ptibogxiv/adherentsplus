@@ -19,7 +19,7 @@ use Luracast\Restler\RestException;
 
 require_once DOL_DOCUMENT_ROOT.'/societe/class/societe.class.php';
 dol_include_once('/adherentsplus/class/adherent.class.php');	
-dol_include_once('/adherentsplus/class/subscription.class.php');
+require_once DOL_DOCUMENT_ROOT.'/adherents/class/subscription.class.php';
 dol_include_once('/adherentsplus/class/consumption.class.php');
 dol_include_once('/adherentsplus/class/adherent_type.class.php');
 

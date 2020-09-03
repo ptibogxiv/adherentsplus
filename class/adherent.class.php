@@ -1626,7 +1626,7 @@ dol_include_once('/adherentsplus/class/subscription.class.php');
                 $this->last_subscription_date=$obj->dateh;
                 $this->last_subscription_amount=$obj->subscription;
 
-                $subscription=new SubscriptionPlus($this->db);
+                $subscription=new Subscription($this->db);
                 $subscription->id=$obj->crowid;
                 $subscription->fk_adherent=$obj->fk_adherent;
                 $subscription->fk_type=$obj->fk_type;
