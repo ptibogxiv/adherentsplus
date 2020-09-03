@@ -117,8 +117,8 @@ dol_include_once('/adherentsplus/class/adherent.class.php');
 
 		$this->db->begin();
   
-    $sql ="SELECT rowid, entity, fk_member, label, description, date_creation,";
-		$sql.=" tms, fk_facture,";
+    $sql ="SELECT rowid, entity, fk_member, fk_product, fk_facture, label, description, date_creation,";
+		$sql.=" qty, tms, fk_facture, date_start, date_end,";
 		$sql.=" fk_user_author, fk_user_modif";
 		$sql.=" FROM ".MAIN_DB_PREFIX."adherent_consumption";
 		$sql.="	WHERE rowid=".$rowid;
@@ -133,7 +133,14 @@ dol_include_once('/adherentsplus/class/adherent.class.php');
 
 				$this->id             = $obj->rowid;
 				$this->ref            = $obj->rowid;
-				$this->fk_member      = $obj->fk_member;
+				$this->fk_adherent    = $obj->fk_member;
+				$this->fk_product     = $obj->fk_product;
+				$this->fk_facture     = $obj->fk_facture;
+				$this->label           = $obj->label;
+				$this->description     = $obj->description;
+				$this->qty            = $obj->qty;
+				$this->date_start       = $this->db->jdate($obj->date_start);
+				$this->date_end         = $this->db->jdate($obj->date_end);
 				$this->date_creation  = $this->db->jdate($obj->date_creation);
 				$this->date_modification = $this->db->jdate($obj->tms);
 				$this->fk_user_author = $obj->fk_user_author;
