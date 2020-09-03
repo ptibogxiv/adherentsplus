@@ -56,8 +56,10 @@ dol_fiche_head($head, 'about', $langs->trans("Members"), -1, 'user');
 
 print $langs->trans("AboutInfo").'<br>';
 print '<br>';
-//$url='http://www.nltechno.com';
-//print '<a href="'.$url.'" target="_blank"><img border="0" width="60" src="../img/nltechno.gif"></a><br><br>';
+$url1='https://github.com/sponsors/ptibogxiv';
+$url2='https://www.paypal.me/ptibogxiv';
+print '<a href="'.$url1.'" target="_blank">'.$langs->trans("SponsorGithub").'</a><br><br>';
+print '<a href="'.$url2.'" target="_blank">'.$langs->trans("SponsorPayPal").'</a><br><br>';
 print '<br>';
 
 print $langs->trans("MoreModules").'<br>';
