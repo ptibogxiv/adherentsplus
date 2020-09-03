@@ -118,7 +118,7 @@ class AdherentPlus extends CommonObject
     // def in common object
     //public $statut;
 
-    public $photo;
+  public $photo;
 
 	public $datec;
 	public $datem;
