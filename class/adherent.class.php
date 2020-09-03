@@ -2269,10 +2269,10 @@ dol_include_once('/adherentsplus/class/subscription.class.php');
 dol_include_once('/adherentsplus/class/consumption.class.php');
 require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 
-    $sql = "SELECT c.rowid, c.fk_member, c.fk_product, c.qty, c.date_creation, c.date_consumption, c.tms";    
+    $sql = "SELECT c.rowid, c.fk_member, c.date_creation";    
     $sql.= " FROM ".MAIN_DB_PREFIX."adherent_consumption as c";
     $sql.= " WHERE c.fk_member=".$this->id;
-		$sql.= " ORDER BY c.date_consumption DESC";
+		$sql.= " ORDER BY c.date_creation DESC";
 		dol_syslog(get_class($this)."::fetch_consumptions", LOG_DEBUG);
 
 		$resql=$this->db->query($sql);
@@ -2285,28 +2285,7 @@ require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
             {
 
                 $consumption=new Consumption($this->db);
-                $consumption->id=$obj->rowid;
-                $consumption->fk_member=$obj->fk_member;
-                $consumption->fk_product=$obj->fk_product;
-                $prodtmp=new Product($this->db);
-                $prodtmp->fetch($obj->fk_product);
-                $consumption->label=$prodtmp->label;
-                $consumption->qty=$obj->qty;
-                $consumption->fk_invoice=$obj->fk_invoice;
-                $consumption->date_creation=$this->db->jdate($obj->date_creation);
-                $consumption->date_consumption=$this->db->jdate($obj->date_consumption);
-    if ($prodtmp->isService() && $prodtmp->duration_value > 0)
-    {        
-                $consumption->value          = $obj->qty*$prodtmp->duration_value;
-                $consumption->unit           = $prodtmp->duration_unit;
-    } else {
-    
-    }
-		if ($prodtmp->price_base_type == 'TTC') {
-                $consumption->amount           =price($prodtmp->price_ttc*$obj->qty);
-		} else {
-                $consumption->amount           =price($prodtmp->price*$obj->qty);
-		}
+                $consumption->fetch($obj->rowid);
                 $this->consumptions[]=$consumption;
 
                 $i++;

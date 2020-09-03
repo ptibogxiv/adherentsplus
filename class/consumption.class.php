@@ -107,13 +107,19 @@ dol_include_once('/adherentsplus/class/adherent.class.php');
 	 *  @param	int		$rowid		Id consumption
 	 *  @return	int					<0 if KO, =0 if not found, >0 if OK
 	 */
-	function fetch($rowid)
+	public function fetch($rowid)
 	{
-    $sql ="SELECT rowid, fk_adherent, datec,";
-		$sql.=" tms,";
-		$sql.=" dateadh as dateh,";
-		$sql.=" datef,";
-		$sql.=" subscription, note, fk_bank, fk_type";
+		global $conf, $langs;
+
+		$result = 0;
+		$error=0;
+		$errorflag=0;
+
+		$this->db->begin();
+  
+    $sql ="SELECT rowid, entity, fk_member, label, description, date_creation,";
+		$sql.=" tms, fk_facture,";
+		$sql.=" fk_user_author, fk_user_modif";
 		$sql.=" FROM ".MAIN_DB_PREFIX."adherent_consumption";
 		$sql.="	WHERE rowid=".$rowid;
 
@@ -127,15 +133,12 @@ dol_include_once('/adherentsplus/class/adherent.class.php');
 
 				$this->id             = $obj->rowid;
 				$this->ref            = $obj->rowid;
-				$this->fk_type        = $obj->fk_type;
-				$this->fk_adherent    = $obj->fk_adherent;
-				$this->datec          = $this->db->jdate($obj->datec);
-				$this->datem          = $this->db->jdate($obj->tms);
-				$this->dateh          = $this->db->jdate($obj->dateh);
-				$this->datef          = $this->db->jdate($obj->datef);
-				$this->amount         = $obj->subscription;
-				$this->note           = $obj->note;
-				$this->fk_bank        = $obj->fk_bank;
+				$this->fk_member      = $obj->fk_member;
+				$this->date_creation  = $this->db->jdate($obj->date_creation);
+				$this->date_modification = $this->db->jdate($obj->tms);
+				$this->fk_user_author = $obj->fk_user_author;
+				$this->fk_user_modif  = $obj->fk_user_modif;
+
 				return 1;
 			}
 			else
@@ -160,6 +163,12 @@ dol_include_once('/adherentsplus/class/adherent.class.php');
 	 */
 	public function update($user,$notrigger=0)
 	{
+		global $conf, $langs;
+
+		$result = 0;
+		$error=0;
+		$errorflag=0;
+
 		$this->db->begin();
 
 		$sql = "UPDATE ".MAIN_DB_PREFIX."subscription SET ";

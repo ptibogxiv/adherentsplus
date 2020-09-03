@@ -756,12 +756,13 @@ class AdherentsPlus extends DolibarrApi
             throw new RestException(401, 'Access not allowed for login '.DolibarrApiAccess::$user->login);
         }
 
-        $result = $member->fetch_consumptions($consumptionid);
+        $consumption = new Consumption($this->db);
+        $result = $consumption->fetch($consumptionid);
         if( ! $result ) {
             throw new RestException(404, 'consumption not found');
         }
 
-        return $this->_cleanObjectDatas($member);
+        return $this->_cleanObjectDatas($consumption);
     }      
  
     /**
@@ -959,7 +960,8 @@ class AdherentsPlus extends DolibarrApi
 
         // Remove the subscriptions because they are handled as a subresource.
         unset($object->subscriptions);
-
+        unset($object->lines);
+        
         return $object;
     }     
 
