@@ -26,7 +26,7 @@
 
 /**
  *   	\file       htdocs/adherents/admin/adherent.php
- *		\ingroup    member
+ *		\ingroup    adherentsplus
  *		\brief      Page to setup the module Foundation
  */
 
@@ -164,7 +164,10 @@ print load_fiche_titre($langs->trans("MembersPlusSetup"),$linkback,'title_setup'
 
 $head = member_admin_prepare_head();
 
-dol_fiche_head($head, 'general', $langs->trans("Members"), -1, 'user');
+dol_fiche_head($head, 'general', $langs->trans("Members"), -1, 'user');  	
+
+$urlwithroot = $urlwithouturlroot.DOL_URL_ROOT; // This is to use external domain name found into config file
+print '<br><a target="_blank" href="'.$urlwithroot.'/adherents/admin/adherent.php">'.$langs->trans("AccessToMembersSetup").'</a>';
 
 print '<form action="'.$_SERVER["PHP_SELF"].'" method="POST">';
 print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';

@@ -1,5 +1,5 @@
 <?php
-/* Copyright (C) 2013 Laurent Destailleur  <eldy@users.sourceforge.net>
+/* Copyright (C) 2020 Thibault FOUCART support@ptibogxiv.net
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,8 +17,8 @@
  */
 
 /**
- *	    \file       htdocs/memcached/admin/about.php
- *      \ingroup    memcached
+ *   	\file       htdocs/adherentsplus/admin/about.php
+ *      \ingroup    adherentsplus
  *      \brief      Page about
  */
 
@@ -38,7 +38,7 @@ dol_include_once('/adherentsplus/lib/member.lib.php');
 
 if (!$user->admin) accessforbidden();
 
-$langs->loadLangs(array('admin', 'members', 'adherentsplus@adherentsplus'));
+$langs->loadLangs(array('admin', 'adherentsplus@adherentsplus'));
 
 /**
  * View
@@ -62,19 +62,8 @@ print '<br>';
 
 print $langs->trans("MoreModules").'<br>';
 print '&nbsp; &nbsp; &nbsp; '.$langs->trans("MoreModulesLink").'<br>';
-$url='http://www.dolistore.com/search.php?search_query=nltechno';
+$url='http://www.dolistore.com/search.php?search_query=ptibogxiv.net';
 print '<a href="'.$url.'" target="_blank"><img border="0" width="180" src="'.DOL_URL_ROOT.'/theme/dolistore_logo.png"></a><br><br><br>';
-
-print '<br>';
-print $langs->trans("MoreCloudHosting").'<br>';
-print '&nbsp; &nbsp; &nbsp; '.$langs->trans("MoreCloudHostingLink").'<br>';
-$url='http://www.dolicloud.com';
-print '<a href="'.$url.'" target="_blank"><img border="0" width="180" src="../img/dolicloud_logo.png"></a><br><br>';
-
-print '<br>';
-print $langs->trans("CompatibleWithDoliDroid").'<br>';
-$url='https://play.google.com/store/apps/details?id=com.nltechno.dolidroidpro';
-print '<a href="'.$url.'" target="_blank"><img border="0" width="180" src="../img/dolidroid_512x512_en.png"></a><br><br><br>';
 
 print '<br>';
 

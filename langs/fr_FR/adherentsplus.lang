@@ -17,6 +17,11 @@ CHARSET=UTF-8
 Module431499Name=AdhérentsPlus
 Module431499Desc=Module complémentaire pour la gestion des Adhérents
 
+AboutInfo=Ce module est développé et diffusé par Thibault FOUCART.
+MoreModules=D'autres modules du même auteur sont disponibles sur la place de marché officielle DoliStore...
+MoreModulesLink=Cliquez ici pour voir la liste
+
+AccessToMembersSetup=Cliquez ici pour pour accéder aux réglages du module adhérent de base
 MembersArea=Espace adhérents
 MemberCard=Fiche adhérent
 SubscriptionCard=Fiche cotisation
