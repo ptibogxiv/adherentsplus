@@ -435,13 +435,15 @@ dol_include_once('/adherentsplus/class/adherent.class.php');
 	 */
 	public function delete($user, $notrigger = 0)
 	{
-		global $conf, $langs;
+	    global $conf;
 
 		$error = 0;
 
-		dol_syslog(get_class($this)."::delete ".$this->id, LOG_DEBUG);
+        dol_syslog(get_class($this)."::delete rowid=".$this->id, LOG_DEBUG);
 
-		$this->db->begin();
+        if (empty($this->entity)) $this->entity = $conf->entity;
+        
+        $this->db->begin();
 
 		if (!$error && !$notrigger)
 		{
@@ -453,26 +455,28 @@ dol_include_once('/adherentsplus/class/adherent.class.php');
 
 		if (!$error)
 		{
-			// Delete object
-			$sql = "DELETE FROM ".MAIN_DB_PREFIX."adherent_consumption WHERE rowid = ".$this->id;
-			if (!$this->db->query($sql))
-			{
-				$error++;
-				$this->errors[] = $this->db->lasterror();
-			}
-		}
+			      // Delete object
+			      $sql = "DELETE FROM ".MAIN_DB_PREFIX."adherent_consumption";
+            $sql .= ' WHERE entity = '.$this->entity;
+            $sql .= ' AND rowid = '.$this->id;
+            
+            $resql = $this->db->query($sql);
+            if (!$resql) {
+                $error ++;
+                $this->errors[] = 'Error ' . $this->db->lasterror();
+                dol_syslog(get_class($this)."::delete " . ' ' . join(',', $this->errors), LOG_ERR);
+            }
+        }
 
-		if (!$error)
-		{
-			$this->db->commit();
-			return 1;
-		} else {
-			foreach ($this->errors as $errmsg)
-			{
-				$this->error .= ($this->error ? ', '.$errmsg : $errmsg);
-			}
+        // Commit or rollback
+		if ($error) {
 			$this->db->rollback();
-			return -1 * $error;
+
+			return - 1 * $error;
+		} else {
+			$this->db->commit();
+
+			return 1;
 		}
 	}
 
