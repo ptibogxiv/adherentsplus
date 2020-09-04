@@ -883,8 +883,7 @@ class AdherentsPlus extends DolibarrApi
             throw new RestException(404, 'consumption not found');
         }
         
-        $result = $consumption->delete($consumptionid, DolibarrApiAccess::$user);
-        if( ! $result ) {
+        if(! $consumption->delete(DolibarrApiAccess::$user, 1)) {
             throw new RestException(401,'error when deleting consumption');
         }
 

@@ -429,44 +429,50 @@ dol_include_once('/adherentsplus/class/adherent.class.php');
 	/**
 	 *  Fonction qui supprime le souhait
 	 *
-	 *  @param	int		$rowid		Id of member to delete
 	 *	@param	User		$user		User object
 	 *	@param	int		$notrigger	1=Does not execute triggers, 0= execute triggers
 	 *  @return	int					<0 if KO, 0=nothing to do, >0 if OK
 	 */
-	public function delete($rowid, $user, $notrigger = 0)
+	public function delete($user, $notrigger = 0)
 	{
 		global $conf, $langs;
 
-		$result = 0;
-		$error=0;
-		$errorflag=0;
+		$error = 0;
 
-		// Check parameters
-		if (empty($rowid)) $rowid=$this->id;
+		dol_syslog(get_class($this)."::delete ".$this->id, LOG_DEBUG);
 
 		$this->db->begin();
 
-		  // Remove wish
-		  $sql = "DELETE FROM ".MAIN_DB_PREFIX."adherent_consumption WHERE rowid = ".$rowid;
-			dol_syslog(get_class($this)."::delete", LOG_DEBUG);
-			$resql=$this->db->query($sql);
-			if (! $resql)
+		if (!$error && !$notrigger)
+		{
+			// Call trigger
+			$result = $this->call_trigger('CONSUMPTION_DELETE', $user);
+			if ($result < 0) $error++;
+			// End call triggers
+		}
+
+		if (!$error)
+		{
+			// Delete object
+			$sql = "DELETE FROM ".MAIN_DB_PREFIX."adherent_consumption WHERE rowid = ".$this->id;
+			if (!$this->db->query($sql))
 			{
 				$error++;
-				$this->error .= $this->db->lasterror();
-				$errorflag=-5;
+				$this->errors[] = $this->db->lasterror();
 			}
+		}
 
-		if (! $error)
+		if (!$error)
 		{
 			$this->db->commit();
 			return 1;
-		}
-		else
-		{
+		} else {
+			foreach ($this->errors as $errmsg)
+			{
+				$this->error .= ($this->error ? ', '.$errmsg : $errmsg);
+			}
 			$this->db->rollback();
-			return $errorflag;
+			return -1 * $error;
 		}
 	}
 
