@@ -2663,14 +2663,11 @@ require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 
 				if ($obj)
 				{
-					$product = new Product($this->db);
-					$product->id = $obj->fk_product;
-
-					// Delete line
+					// Delete Consumption
 					$line = new OrderLine($this->db);
 
 					// For triggers
-					$line->fetch($consumptionid);
+					$consumption->fetch($consumptionid);
 
 					if ($line->delete($user) > 0)
 					{
