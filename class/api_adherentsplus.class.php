@@ -891,7 +891,7 @@ class AdherentsPlus extends DolibarrApi
         return array(
             'success' => array(
                 'code' => 200,
-                'message' => 'consumption deleted'.$this->consumption->errors
+                'message' => 'consumption deleted'
             )
         );
     } 
