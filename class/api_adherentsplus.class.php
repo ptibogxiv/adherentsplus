@@ -46,6 +46,8 @@ class AdherentsPlus extends DolibarrApi
     {
         global $db, $conf;
         $this->db = $db;
+        
+        $this->consumption = new Consumption($this->db);
     }
 
     /**
@@ -877,13 +879,12 @@ class AdherentsPlus extends DolibarrApi
             throw new RestException(401, 'Access not allowed for login '.DolibarrApiAccess::$user->login);
         }
         
-        $consumption = new Consumption($this->db);
-				$result = $consumption->fetch($consumptionid);
+				$result = $this->consumption->fetch($consumptionid);
         if( ! $result) {
             throw new RestException(404, 'consumption not found');
         }
         
-        if(! $consumption->delete(DolibarrApiAccess::$user, 1)) {
+        if(! $this->consumption->delete(DolibarrApiAccess::$user)) {
             throw new RestException(401,'error when deleting consumption');
         }
 
