@@ -724,45 +724,6 @@ class AdherentsPlus extends DolibarrApi
                 'message' => 'member unlink'
             )
         );
-    } 
-    
-    /**
-     * Get properties of an consumption
-     *
-     * Return an array with wish informations
-     *
-     * @param  int    $id               Id of member
-     * @param  int    $consumptionid      Id of consumption line
-     * @return array|mixed                 Data without useless information
-     *
-     * @throws 401
-     * @throws 404
-     *
-     * @url GET {id}/consumptions/{consumptionid}
-     */
-    public function getConsumption($id, $consumptionid)
-    {
-        if(! DolibarrApiAccess::$user->rights->societe->lire) {
-            throw new RestException(401);
-        }
-        
-        $member = new AdherentPlus($this->db);
-        $result = $member->fetch($id);
-        if( ! $result ) {
-            throw new RestException(404, 'member not found');
-        } 
-        
-        if( ! DolibarrApi::_checkAccessToResource('member', $member->id)) {
-            throw new RestException(401, 'Access not allowed for login '.DolibarrApiAccess::$user->login);
-        }
-
-        $consumption = new Consumption($this->db);
-        $result = $consumption->fetch($consumptionid);
-        if( ! $result ) {
-            throw new RestException(404, 'consumption not found');
-        }
-
-        return $this->_cleanObjectDatas($consumption);
     }      
  
     /**
@@ -917,7 +878,12 @@ class AdherentsPlus extends DolibarrApi
         }
         
         $consumption = new Consumption($this->db);
-        $result = $consumption->delete($consumptionid);
+				$result = $consumption->fetch($consumptionid);
+        if( ! $result) {
+            throw new RestException(404, 'consumption not found');
+        }
+        
+        $result = $consumption->delete($consumptionid, DolibarrApiAccess::$user);
         if( ! $result ) {
             throw new RestException(401,'error when deleting consumption');
         }
@@ -925,7 +891,7 @@ class AdherentsPlus extends DolibarrApi
         return array(
             'success' => array(
                 'code' => 200,
-                'message' => 'member unlink'
+                'message' => 'consumption deleted'
             )
         );
     } 
