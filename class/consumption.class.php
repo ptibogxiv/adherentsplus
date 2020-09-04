@@ -441,6 +441,13 @@ dol_include_once('/adherentsplus/class/adherent.class.php');
 		$errorflag=0;
 
 		$this->db->begin();
+    
+    $consumption = new Consumption($this->db);
+    $result = $consumption->fetch($rowid);
+    if( ! $result ) {
+			$this->error=$this->db->lasterror();
+			return -1;
+    }
 
 		// Remove wish
 		$sql = "DELETE FROM ".MAIN_DB_PREFIX."adherent_consumption WHERE rowid = ".$rowid;
