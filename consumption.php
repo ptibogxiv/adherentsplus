@@ -395,8 +395,8 @@ if ($id)
 		$sql.= " '1',";
     $sql .= " '0',";
     $sql.= " '".$db->idate($now)."'";
-    $sql.= ", '".($date_livraison ? null : null)."'";  	
-		$sql.= ", '".($date_livraison ? null : null)."')";
+    $sql.= ", ".($date_livraison ? "null" : "null")."";  	
+		$sql.= ", ".($date_livraison ? "null" : "null").")";
 
         $resql = $db->query($sql); 
             

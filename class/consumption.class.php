@@ -82,13 +82,13 @@ class Consumption extends CommonObject
         $this->db->begin();
     
 		$sql = "INSERT INTO ".MAIN_DB_PREFIX."adherent_consumption (entity, fk_adherent, fk_product, qty, remise_percent, date_creation, date_start, date_end)";
-    $sql.= " VALUES (".$this->entity.", '1', '4',";
-		$sql.= " '".$this->qty."',";
-    $sql .= " '".$this->db->escape($this->remise_percent ? $this->remise_percent : null)."',";
-    $sql.= " '".$this->db->idate($now)."'";
-    $sql.= ", '".$this->db->idate($this->date_start)."'";  	
-		$sql.= ", '".$this->db->idate($this->date_end)."')";
+    $sql .= " VALUES (".$this->entity.", '1', '4', '1',";
+    $sql .= " '0',";
+    $sql .= " '".$this->db->idate($this->date_creation)."',";
+    $sql .= " ".($this->date_start ? "null" : "null").",";  	
+		$sql .= " ".($this->date_end ? "null" : "null").")";
 
+        dol_syslog(get_class($this)."::create", LOG_DEBUG);
         $resql = $this->db->query($sql);
         if (!$resql) {
             $error++;
@@ -97,11 +97,10 @@ class Consumption extends CommonObject
 
         if (!$error) {
             $this->id = $this->db->last_insert_id(MAIN_DB_PREFIX.$this->table_element);
-            $this->fk_type = $type;
         }
 
         if (!$error && !$notrigger) {
-        	$this->context = array('member'=>$member);
+        	//$this->context = array('member'=>$member);
         	// Call triggers
             $result = $this->call_trigger('MEMBER_CONSUMPTION_CREATE', $user);
             if ($result < 0) { $error++; }
