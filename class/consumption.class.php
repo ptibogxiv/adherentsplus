@@ -211,6 +211,7 @@ dol_include_once('/adherentsplus/class/adherent.class.php');
         // It subscription is linked to a bank transaction, we get it
         if ($this->fk_facture) {
             $error++;
+            return 0;
         }
 
         $this->db->begin();
