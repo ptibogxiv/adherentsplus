@@ -833,7 +833,7 @@ if ($rowid > 0)
 	    	print showOnlinePaymentUrl('membersubscription', $object->ref);
 	    	print '<br>';
 	    }
-      
+if ($conf->global->MAIN_FEATURES_LEVEL >= 2) {     
 print '<br>';
 $adht->fetch($object2->typeid);
 $adht->subscription_calculator($rowid);
@@ -878,7 +878,7 @@ print 'nextbegin: '.dol_print_date($adht->date_nextbegin, 'dayhour').'<br>';
 print 'nextend: '.dol_print_date($adht->date_nextend, 'dayhour').'<br>';
 print 'nextprice: '.price($adht->nextprice);
 print ' '.$langs->trans("Currency".$conf->currency);
-      
+}      
     }
 
     /*
