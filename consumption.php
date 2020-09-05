@@ -326,7 +326,7 @@ if ($id)
 
             print '<tr class="liste_titre">';
             print '<td align="center">'.$langs->trans("Date").'</td>';
-            print '<td align="center">'.$langs->trans("Product/Service").'</td>';
+            print '<td align="center">'.$langs->trans("Description").'</td>';
             print '<td align="center">'.$langs->trans("Quantity").'</td>';
             print '<td align="right">'.$langs->trans("Price").'</td>';
             print '<td align="right">'.$langs->trans('Invoice').'</td>';

@@ -795,7 +795,7 @@ class AdherentsPlus extends DolibarrApi
         if (!$this->consumption->create(DolibarrApiAccess::$user)) {
             throw new RestException(500, 'Error creating consumption', array_merge(array($consumption->errors), $consumption->errors));
         }
-        return $consumption->id;
+        return $this->consumption->id;
     }
     
     /**
@@ -823,32 +823,22 @@ class AdherentsPlus extends DolibarrApi
             throw new RestException(404, 'member not found');
         }
 
-        $consumption = new Consumption($this->db);
-        $result = $consumption->fetch($consumption);
-        if( ! $result ) {
-            throw new RestException(404, 'consumption not found');
+        $result = $this->consumption->fetch($consumptionid);
+        if (!$result) {
+            throw new RestException(404, 'Consumption not found');
         }
 
-        if( ! DolibarrApi::_checkAccessToResource('consumption', $consumption->id)) {
-            throw new RestException(401, 'Access not allowed for login '.DolibarrApiAccess::$user->login);
-        }
-
-        foreach($request_data as $field => $value) {
+        foreach ($request_data as $field => $value) {
             if ($field == 'id') continue;
-                $member->$field = $value;
+            $this->consumption->$field = $value;
         }
 
-        // If there is no error, update() returns the number of affected rows
-        // so if the update is a no op, the return value is zero.
-        if ($consumption->update(DolibarrApiAccess::$user) >= 0)
-        {
-            return $this->get($id);
+        if ($this->consumption->update(DolibarrApiAccess::$user) > 0) {
+            return $this->_cleanObjectDatas($this->consumption);
+        } else {
+            throw new RestException(500, $this->consumption->error);
         }
-        else
-        {
-        	throw new RestException(500, $consumption->error);
-        }
-    } 
+    }
     
     /**
      * Delete consumption of a member

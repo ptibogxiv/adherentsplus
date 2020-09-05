@@ -108,7 +108,7 @@ dol_include_once('/adherentsplus/class/adherent.class.php');
 	 *  @return	int					<0 if KO, =0 if not found, >0 if OK
 	 */
 	public function fetch($rowid)
-	{
+	{  
   
     $sql ="SELECT rowid, entity, fk_member, fk_product, fk_facture, product_type, label, description, date_creation,";
 		$sql.=" qty, tms, fk_facture, date_start, date_end, fk_user_author, fk_user_modif";
@@ -157,21 +157,19 @@ dol_include_once('/adherentsplus/class/adherent.class.php');
 	 */
     public function update($user, $notrigger = 0)
     {
-        $error = 0;
+        $error = 0;  
 
         $this->db->begin();
 
-		$sql = "UPDATE ".MAIN_DB_PREFIX."subscription SET ";
-		$sql .= " fk_adherent = ".$this->fk_adherent.",";
-		$sql .= " note=".($this->note ? "'".$this->db->escape($this->note)."'" : 'null').",";
-		$sql .= " subscription = '".price2num($this->amount)."',";
-		$sql .= " dateadh='".$this->db->idate($this->dateh)."',";
-		$sql .= " datef='".$this->db->idate($this->datef)."',";
-		$sql .= " datec='".$this->db->idate($this->datec)."',";
-		$sql .= " fk_bank = ".($this->fk_bank ? $this->fk_bank : 'null');
-    $sql.= " WHERE entity IN (" . getEntity('adherent').")";
-    $sql.= " AND fk_member = ".$this->id;
-    $sql.= " AND rowid = ".$rowid;
+		    $sql = "UPDATE ".MAIN_DB_PREFIX."adherent_consumption SET";
+		    $sql .= " qty = 5,";//".$this->qty.",";
+        if (!empty($this->fk_product)) $sql .= " fk_facture ='".$this->fk_product."',";
+        if (!empty($this->fk_facture)) $sql .= " fk_facture ='".$this->fk_facture."',";
+        if (!empty($this->date_start)) $sql .= " date_start='".$this->date_start."',";
+        if (!empty($this->date_end)) $sql .= " date_end='".$this->date_end."',";
+        $sql .= " fk_user_modif = ".$user->id;
+        $sql .= " WHERE fk_member = ".$this->fk_adherent;
+        $sql .= " AND rowid = ".$this->id;
 
         dol_syslog(get_class($this)."::update", LOG_DEBUG);
         $resql = $this->db->query($sql);
