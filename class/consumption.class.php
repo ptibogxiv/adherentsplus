@@ -109,35 +109,27 @@ dol_include_once('/adherentsplus/class/adherent.class.php');
 	 */
 	public function fetch($rowid)
 	{
-		global $conf, $langs;
-
-		$result = 0;
-		$error=0;
-		$errorflag=0;
-
-		$this->db->begin();
   
     $sql ="SELECT rowid, entity, fk_member, fk_product, fk_facture, product_type, label, description, date_creation,";
-		$sql.=" qty, tms, fk_facture, date_start, date_end,";
-		$sql.=" fk_user_author, fk_user_modif";
+		$sql.=" qty, tms, fk_facture, date_start, date_end, fk_user_author, fk_user_modif";
 		$sql.=" FROM ".MAIN_DB_PREFIX."adherent_consumption";
 		$sql.="	WHERE rowid=".$rowid;
 
-		dol_syslog(get_class($this)."::fetch", LOG_DEBUG);
-		$resql = $this->db->query($sql);
-		if ($resql) {
-			$numrows = $this->db->num_rows($resql);
-			if ($numrows) {
-				$obj = $this->db->fetch_object($resql);
+        dol_syslog(get_class($this)."::fetch", LOG_DEBUG);
+        $resql = $this->db->query($sql);
+        if ($resql) {
+            if ($this->db->num_rows($resql)) {
+                $obj = $this->db->fetch_object($resql);
 
 				$this->id             = $obj->rowid;
 				$this->ref            = $obj->rowid;
+				$this->entity         = $obj->entity;   
 				$this->fk_adherent    = $obj->fk_member;
 				$this->fk_product     = $obj->fk_product;
 				$this->product_type   = $obj->product_type;
 				$this->fk_facture     = $obj->fk_facture;
-				$this->label           = $obj->label;
-				$this->description     = $obj->description;
+				$this->label          = $obj->label;
+				$this->description    = $obj->description;
 				$this->qty            = $obj->qty;
 				$this->date_start       = $this->db->jdate($obj->date_start);
 				$this->date_end         = $this->db->jdate($obj->date_end);
@@ -145,21 +137,15 @@ dol_include_once('/adherentsplus/class/adherent.class.php');
 				$this->date_modification = $this->db->jdate($obj->tms);
 				$this->fk_user_author = $obj->fk_user_author;
 				$this->fk_user_modif  = $obj->fk_user_modif;
-			}
-			$this->db->free($resql);
-
-			if ($numrows) {
-				return 1;
-			} else {
-				return 0;
-			}
-		} else {
-            $this->errors[] = 'Error ' . $this->db->lasterror();
-			dol_syslog(get_class($this) . ' ' . join(',', $this->errors), LOG_ERR);
-
-			return - 1;
-		}
-	}
+                return 1;
+            } else {
+                return 0;
+            }
+        } else {
+            $this->error = $this->db->lasterror();
+            return -1;
+        }
+    }
 
 
 	/**
@@ -219,48 +205,50 @@ dol_include_once('/adherentsplus/class/adherent.class.php');
 	 *  @return	int					<0 if KO, 0=nothing to do, >0 if OK
 	 */
 	public function delete($user, $notrigger = 0)
-	{
-	    global $conf;
-
-		$error = 0;
-
-        dol_syslog(get_class($this)."::delete rowid=".$this->id, LOG_DEBUG);
-
-        if (empty($this->entity)) $this->entity = $conf->entity;
+    {
+        $error = 0;
         
         $this->db->begin();
 
-		if (!$error && !$notrigger)
-		{
-			// Call trigger
-			$result = $this->call_trigger('CONSUMPTION_DELETE', $user);
-			if ($result < 0) $error++;
-			// End call triggers
-		}
+        if (!$error) {
+            if (!$notrigger) {
+                // Call triggers
+                $result = $this->call_trigger('MEMBER_CONSUMPTION_DELETE', $user);
+                if ($result < 0) { $error++; } // Do also here what you must do to rollback action if trigger fail
+                // End call triggers
+            }
+        }
 
 		if (!$error )
 		{
 			      // Delete object
 			      $sql = "DELETE FROM ".MAIN_DB_PREFIX."adherent_consumption WHERE entity = ".$this->entity." AND rowid = ".$this->id;
+            dol_syslog(get_class($this)."::delete rowid=".$this->id, LOG_DEBUG);
             $resql = $this->db->query($sql);
-            //if (!$resql) {
-                $error ++;
-                $this->errors[] = 'Error ' . $this->db->lasterror();
-                dol_syslog(get_class($this)."::delete " . ' ' . join(',', $this->errors), LOG_ERR);
-            //}
+            if ($resql) {
+                $num = $this->db->affected_rows($resql);
+                if ($num) {
+                        $this->db->commit();
+                        return 1;
+                } else {
+                    $this->db->commit();
+                    return 0;
+                }
+            } else {
+                $error++;
+                $this->error = $this->db->lasterror();
+            }
         }
 
         // Commit or rollback
-		if ($error) {
-			$this->db->rollback();
-
-			return - 1 * $error;
-		} else {
-			$this->db->commit();
-
-			return 1;
-		}
-	}
+        if ($error) {
+            $this->db->rollback();
+            return -1;
+        } else {
+            $this->db->commit();
+            return 1;
+        }
+    }
 
 
 }

@@ -417,12 +417,12 @@ if ($id)
             print "</table></div>";
             
 			      // Delete object
-			      $sql = "DELETE FROM ".MAIN_DB_PREFIX."adherent_consumption WHERE rowid = 1";
+			      //$sql = "DELETE FROM ".MAIN_DB_PREFIX."adherent_consumption WHERE rowid = 1";
             
-            $resql = $db->query($sql);
-            $db->commit();
+            //$resql = $db->query($sql);
+            //$db->commit();
             
-            print var_dump($resql);
+            //print var_dump($resql);
             
 llxFooter();
 $db->close();

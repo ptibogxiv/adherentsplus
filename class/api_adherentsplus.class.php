@@ -878,22 +878,22 @@ class AdherentsPlus extends DolibarrApi
             throw new RestException(401, 'Access not allowed for login '.DolibarrApiAccess::$user->login);
         }
         
-				$result = $this->consumption->fetch($consumptionid);
-        if( ! $result) {
-            throw new RestException(404, 'consumption not found');
+        $result = $this->consumption->fetch($consumptionid);
+        if (!$result) {
+            throw new RestException(404, 'Consumption not found');
         }
-        
-        if(! $this->consumption->delete(DolibarrApiAccess::$user)) {
-            throw new RestException(401,'error when deleting consumption');
+
+        if (!$this->consumption->delete(DolibarrApiAccess::$user)) {
+            throw new RestException(401, 'error when deleting consumption');
         }
 
         return array(
             'success' => array(
                 'code' => 200,
-                'message' => 'consumption deleted'
+                'message' => 'subscription deleted'
             )
         );
-    } 
+    }
     
     /**
      * Validate fields before creating an object

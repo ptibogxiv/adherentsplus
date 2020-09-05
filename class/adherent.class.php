@@ -2267,7 +2267,7 @@ dol_include_once('/adherentsplus/class/subscription.class.php');
 		global $langs;
 
 dol_include_once('/adherentsplus/class/consumption.class.php');
-require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
+//require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 
     $sql = "SELECT c.rowid, c.fk_member, c.date_creation";    
     $sql.= " FROM ".MAIN_DB_PREFIX."adherent_consumption as c";
