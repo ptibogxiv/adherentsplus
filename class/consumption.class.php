@@ -157,18 +157,25 @@ dol_include_once('/adherentsplus/class/adherent.class.php');
 	 */
     public function update($user, $notrigger = 0)
     {
-        $error = 0;  
+        global $langs;
+        $error = 0;
+
+        if (!empty($this->fk_facture)) {
+            $error++;
+            $this->error = $langs->trans("ConsumptionAlreadyBilled");
+            return 0;
+        }
 
         $this->db->begin();
 
 		    $sql = "UPDATE ".MAIN_DB_PREFIX."adherent_consumption SET";
-		    $sql .= " qty = 5,";//".$this->qty.",";
-        if (!empty($this->fk_product)) $sql .= " fk_facture ='".$this->fk_product."',";
+		    $sql .= " qty = 6,";//".$this->qty.",";
+        if (!empty($this->fk_product)) $sql .= " fk_product ='".$this->fk_product."',";
         if (!empty($this->fk_facture)) $sql .= " fk_facture ='".$this->fk_facture."',";
         if (!empty($this->date_start)) $sql .= " date_start='".$this->date_start."',";
         if (!empty($this->date_end)) $sql .= " date_end='".$this->date_end."',";
         $sql .= " fk_user_modif = ".$user->id;
-        $sql .= " WHERE fk_member = ".$this->fk_adherent;
+        $sql .= " WHERE fk_facture IS NULL AND fk_member = ".$this->fk_adherent;
         $sql .= " AND rowid = ".$this->id;
 
         dol_syslog(get_class($this)."::update", LOG_DEBUG);
@@ -213,8 +220,7 @@ dol_include_once('/adherentsplus/class/adherent.class.php');
         global $langs;
         $error = 0;
 
-        // It subscription is linked to a bank transaction, we get it
-        if ($this->fk_facture) {
+        if (!empty($this->fk_facture)) {
             $error++;
             $this->error = $langs->trans("ConsumptionAlreadyBilled");
             return 0;

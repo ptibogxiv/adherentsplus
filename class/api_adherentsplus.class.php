@@ -836,7 +836,7 @@ class AdherentsPlus extends DolibarrApi
         if ($this->consumption->update(DolibarrApiAccess::$user) > 0) {
             return $this->_cleanObjectDatas($this->consumption);
         } else {
-            throw new RestException(500, $this->consumption->error);
+            throw new RestException(401, $this->consumption->error);
         }
     }
     

@@ -367,7 +367,7 @@ if ($id)
                 
 		        // Actions
 		        print '<td align="center">';
-				if ($user->rights->societe->creer)
+				if ($user->rights->adherent->configurer && empty($consumption->fk_facture))
         {
 				print '<a href="'.$_SERVER["PHP_SELF"].'?rowid='.$id.'&lineid='.$consumption->id.'&action=edit">';
 				print img_picto($langs->trans("Modify"), 'edit');
@@ -378,7 +378,9 @@ if ($id)
 		   	print '<a href="'.$_SERVER["PHP_SELF"].'?rowid='.$id.'&lineid='.$consumption->id.'&action=delete">';
 		   	print img_picto($langs->trans("Delete"), 'delete');
 		   	print '</a>';
-		    }
+		    } else {
+		   	print '&nbsp;';
+        }
 				print "</td>";
                 
                 print "</tr>";
