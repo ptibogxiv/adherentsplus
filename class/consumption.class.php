@@ -82,11 +82,10 @@ class Consumption extends CommonObject
         $this->db->begin();
     
 		$sql = "INSERT INTO ".MAIN_DB_PREFIX."adherent_consumption (entity, fk_adherent, fk_product, qty, remise_percent, date_creation, date_start, date_end)";
-    $sql .= " VALUES (".$this->entity.", '1', '4', '1',";
-    $sql .= " '0',";
-    $sql .= " '".$this->db->idate($this->date_creation)."',";
-    $sql .= " ".($this->date_start ? "null" : "null").",";  	
-		$sql .= " ".($this->date_end ? "null" : "null").")";
+    $sql .= " VALUES (".$this->entity.", '1', '4', '1', '0',";
+    $sql .= " '".$this->db->idate($now)."',";
+    $sql .= " 'null',";  	
+		$sql .= " 'null')";
 
         dol_syslog(get_class($this)."::create", LOG_DEBUG);
         $resql = $this->db->query($sql);
@@ -100,7 +99,11 @@ class Consumption extends CommonObject
         }
 
         if (!$error && !$notrigger) {
-        	//$this->context = array('member'=>$member);
+        require_once DOL_DOCUMENT_ROOT.'/adherents/class/adherent.class.php';
+        $member = new Adherent($this->db);
+        $result = $member->fetch($this->fk_adherent);
+        
+        	$this->context = array('member'=>$member);
         	// Call triggers
             $result = $this->call_trigger('MEMBER_CONSUMPTION_CREATE', $user);
             if ($result < 0) { $error++; }
