@@ -787,7 +787,7 @@ class AdherentsPlus extends DolibarrApi
         }
         
         // Check mandatory fields
-        //$result = $this->_validate($request_data);
+        $result = $this->_validateConsumption($request_data);
 
         foreach($request_data as $field => $value) {
             $this->consumption->$field = $value;
@@ -902,6 +902,25 @@ class AdherentsPlus extends DolibarrApi
             $member[$field] = $data[$field];
         }
         return $member;
+    }
+    
+    /**
+     * Validate fields before creating an object
+     *
+     * @param array|null    $data   Data to validate
+     * @return array
+     *
+     * @throws RestException
+     */
+    function _validateConsumption($data)
+    {
+        $this->consumption = array();
+        foreach (Consumption::$FIELDS as $field) {
+            if (!isset($data[$field]))
+                throw new RestException(400, "$field field missing");
+            $this->consumption[$field] = $data[$field];
+        }
+        return $this->consumption;
     }
 
     /**
