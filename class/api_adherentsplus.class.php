@@ -792,8 +792,8 @@ class AdherentsPlus extends DolibarrApi
         foreach($request_data as $field => $value) {
             $this->consumption->$field = $value;
         }
-        if (!$this->consumption->create(DolibarrApiAccess::$user)) {
-            throw new RestException(500, 'Error creating consumption', array_merge(array($consumption->errors), $consumption->errors));
+        if ($this->consumption->create(DolibarrApiAccess::$user) < 0) {
+            throw new RestException(500, 'Error creating consumption', array_merge(array($this->consumption->errors), $this->consumption->errors));
         }
         return $this->consumption->id;
     }
@@ -874,7 +874,7 @@ class AdherentsPlus extends DolibarrApi
         }
 
         if (!$this->consumption->delete(DolibarrApiAccess::$user)) {
-            throw new RestException(401, 'error when deleting consumption: '.$this->consumption->error);
+            throw new RestException(401, 'error when deleting consumption', array_merge(array($this->consumption->errors), $this->consumption->errors));
         }
 
         return array(

@@ -55,51 +55,69 @@ class Consumption extends CommonObject
 
 
 	/**
-	 *	Function who permitted cretaion of the subscription
-	 *
-	 *	@param	int		$userid		userid de celui qui insere
-	 *	@return	int					<0 if KO, Id subscription created if OK
-	 */
-	function create($userid)
-	{
-		global $langs;
-		$now=dol_now();
+	 *	Function who permitted cretaion of the consumption
+     *
+     *	@param	User	$user			User that create
+     *	@param  bool 	$notrigger 		false=launch triggers after, true=disable triggers
+     *	@return	int						<0 if KO, Id subscription created if OK
+     */
+    public function create($user, $notrigger = false)
+    {
+        global $langs;
 
-		// Check parameters
-		if ($this->datef <= $this->dateh)
-		{
-			$this->error=$langs->trans("ErrorBadValueForDate");
-			return -1;
-		}
+        $error = 0;
+
+        $now = dol_now();
+
+        // Check parameters
+        if ($this->date_end <= $this->date_start) {
+            $this->error = $langs->trans("ErrorBadValueForDate");
+            return -1;
+        }
+        if (empty($this->date_creation)) $this->date_creation = $now;
+       	// Clean parameters
+        if (!empty($this->label)) $this->label=trim($this->label);
+        if (empty($this->entity)) $this->entity = $conf->entity;
+
+        $this->db->begin();
     
-		$sql = "INSERT INTO ".MAIN_DB_PREFIX."subscription (fk_adherent, fk_type, datec, dateadh, datef, subscription, note)";
-        if ($this->fk_type == NULL) {
-dol_include_once('/adherentsplus/class/adherent.class.php');
-		$member=new AdherentPlus($this->db);
-		$result=$member->fetch($this->fk_adherent);
-    $type=$member->typeid;
-    }else {
-    $type=$this->fk_type;
-    }
-    $sql.= " VALUES (".$this->fk_adherent.", '".$type."', '".$this->db->idate($now)."',";
-		$sql.= " '".$this->db->idate($this->dateh)."',";
-		$sql.= " '".$this->db->idate($this->datef)."',";
-		$sql.= " ".$this->amount.",";
-		$sql.= " '".$this->db->escape($this->note)."')";
+		$sql = "INSERT INTO ".MAIN_DB_PREFIX."adherent_consumption (entity, fk_adherent, fk_product, qty, remise_percent, date_creation, date_start, date_end)";
+    $sql.= " VALUES (".$this->entity.", '1', '4',";
+		$sql.= " '".$this->qty."',";
+    $sql .= " '".$this->db->escape($this->remise_percent ? $this->remise_percent : null)."',";
+    $sql.= " '".$this->db->idate($now)."'";
+    $sql.= ", '".$this->db->idate($this->date_start)."'";  	
+		$sql.= ", '".$this->db->idate($this->date_end)."')";
 
-		dol_syslog(get_class($this)."::create", LOG_DEBUG);
-		$resql = $this->db->query($sql);
-		if ($resql)
-		{
-		    $this->id = $this->db->last_insert_id(MAIN_DB_PREFIX."subscription");
-		    return $this->id;
-		}
-		else
-		{
-			$this->error=$this->db->lasterror();
-			return -1;
-		}
-	}
+        $resql = $this->db->query($sql);
+        if (!$resql) {
+            $error++;
+            $this->errors[] = $this->db->lasterror();
+        }
+
+        if (!$error) {
+            $this->id = $this->db->last_insert_id(MAIN_DB_PREFIX.$this->table_element);
+            $this->fk_type = $type;
+        }
+
+        if (!$error && !$notrigger) {
+        	$this->context = array('member'=>$member);
+        	// Call triggers
+            $result = $this->call_trigger('MEMBER_CONSUMPTION_CREATE', $user);
+            if ($result < 0) { $error++; }
+            // End call triggers
+        }
+
+        // Commit or rollback
+        if ($error) {
+            $this->db->rollback();
+            return -1;
+        } else {
+            $this->db->commit();
+            return $this->id;
+        }
+    }
+
   
 	/**
 	 *  Method to load a consumption
@@ -110,7 +128,7 @@ dol_include_once('/adherentsplus/class/adherent.class.php');
 	public function fetch($rowid)
 	{  
   
-    $sql ="SELECT rowid, entity, fk_member, fk_product, fk_facture, product_type, label, description, date_creation,";
+    $sql ="SELECT rowid, entity, fk_adherent, fk_product, fk_facture, product_type, label, description, date_creation,";
 		$sql.=" qty, tms, fk_facture, date_start, date_end, fk_user_author, fk_user_modif";
 		$sql.=" FROM ".MAIN_DB_PREFIX."adherent_consumption";
 		$sql.="	WHERE rowid=".$rowid;
@@ -124,7 +142,7 @@ dol_include_once('/adherentsplus/class/adherent.class.php');
 				$this->id             = $obj->rowid;
 				$this->ref            = $obj->rowid;
 				$this->entity         = $obj->entity;   
-				$this->fk_adherent    = $obj->fk_member;
+				$this->fk_adherent    = $obj->fk_adherent;
 				$this->fk_product     = $obj->fk_product;
 				$this->product_type   = $obj->product_type;
 				$this->fk_facture     = $obj->fk_facture;
@@ -175,7 +193,7 @@ dol_include_once('/adherentsplus/class/adherent.class.php');
         if (!empty($this->date_start)) $sql .= " date_start='".$this->date_start."',";
         if (!empty($this->date_end)) $sql .= " date_end='".$this->date_end."',";
         $sql .= " fk_user_modif = ".$user->id;
-        $sql .= " WHERE fk_facture IS NULL AND fk_member = ".$this->fk_adherent;
+        $sql .= " WHERE fk_facture IS NULL AND fk_adherent = ".$this->fk_adherent;
         $sql .= " AND rowid = ".$this->id;
 
         dol_syslog(get_class($this)."::update", LOG_DEBUG);
@@ -222,7 +240,7 @@ dol_include_once('/adherentsplus/class/adherent.class.php');
 
         if (!empty($this->fk_facture)) {
             $error++;
-            $this->error = $langs->trans("ConsumptionAlreadyBilled");
+            $this->errors = $langs->trans("ConsumptionAlreadyBilled");
             return 0;
         }
 

@@ -2269,9 +2269,9 @@ dol_include_once('/adherentsplus/class/subscription.class.php');
 dol_include_once('/adherentsplus/class/consumption.class.php');
 //require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 
-    $sql = "SELECT c.rowid, c.fk_member, c.date_creation";    
+    $sql = "SELECT c.rowid, c.fk_adherent, c.date_creation";    
     $sql.= " FROM ".MAIN_DB_PREFIX."adherent_consumption as c";
-    $sql.= " WHERE c.fk_member=".$this->id;
+    $sql.= " WHERE c.fk_adherent=".$this->id;
 		$sql.= " ORDER BY c.date_creation DESC";
 		dol_syslog(get_class($this)."::fetch_consumptions", LOG_DEBUG);
 

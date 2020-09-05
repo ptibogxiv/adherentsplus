@@ -388,5 +388,17 @@ if ($id)
             }
             print "</table></div>";
             
+        $now = dol_now();
+    $date_livraison = null;
+		$sql = "INSERT INTO ".MAIN_DB_PREFIX."adherent_consumption (entity, fk_adherent, fk_product, qty, remise_percent, date_creation, date_start, date_end)";
+    $sql.= " VALUES (".$conf->entity.", '1', '4',";
+		$sql.= " '1',";
+    $sql .= " '0',";
+    $sql.= " '".$db->idate($now)."'";
+    $sql.= ", '".($date_livraison ? "'".$db->idate($date_livraison)."'" : null)."'";  	
+		$sql.= ", '".($date_livraison ? "'".$db->idate($date_livraison)."'" : null)."')";
+
+        $resql = $db->query($sql); 
+            
 llxFooter();
 $db->close();
