@@ -200,6 +200,7 @@ if (empty($reshook))
   
 	if ($user->rights->adherent->configurer && $action == 'confirm_delete' && GETPOST('confirm', 'alpha') == 'yes')
 	{
+    $consumption->fetch($lineid);
 		$result = $consumption->delete($lineid, $user);
 		if ($result > 0)
 		{
@@ -210,7 +211,7 @@ if (empty($reshook))
 			}
 			else
 			{
-				header("Location: consumption.php?rowid=".$socid);
+				header("Location: consumption.php?rowid=".$id);
 				exit;
 			}
 		}
@@ -414,6 +415,14 @@ if ($id)
 
             }
             print "</table></div>";
-
+            
+			      // Delete object
+			      $sql = "DELETE FROM ".MAIN_DB_PREFIX."adherent_consumption WHERE rowid = 1";
+            
+            $resql = $db->query($sql);
+            $db->commit();
+            
+            print var_dump($resql);
+            
 llxFooter();
 $db->close();

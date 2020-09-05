@@ -241,16 +241,13 @@ dol_include_once('/adherentsplus/class/adherent.class.php');
 		if (!$error )
 		{
 			      // Delete object
-			      $sql = "DELETE FROM ".MAIN_DB_PREFIX."adherent_consumption";
-            $sql .= ' WHERE entity = '.$this->entity;
-            $sql .= ' AND rowid = '.$this->id;
-            
+			      $sql = "DELETE FROM ".MAIN_DB_PREFIX."adherent_consumption WHERE entity = ".$this->entity." AND rowid = ".$this->id;
             $resql = $this->db->query($sql);
-            if (!$resql) {
+            //if (!$resql) {
                 $error ++;
                 $this->errors[] = 'Error ' . $this->db->lasterror();
                 dol_syslog(get_class($this)."::delete " . ' ' . join(',', $this->errors), LOG_ERR);
-            }
+            //}
         }
 
         // Commit or rollback
