@@ -52,6 +52,7 @@ $langs->loadLangs(array('products', 'companies', 'members', 'bills', 'other', 'a
 
 $action=GETPOST('action','alpha');
 $id=GETPOST('rowid','int');
+$lineid=GETPOST('lineid','int');
 
 // Security check
 $result=restrictedArea($user, 'adherent', $id);
@@ -63,12 +64,167 @@ if ($result > 0)
     $adht = new AdherentTypePlus($db);
     $result=$adht->fetch($object->typeid);
 }
-
+$consumption = new Consumption($db);
 $permissionnote=$user->rights->adherent->creer;  // Used by the include of actions_setnotes.inc.php
 
 /*
- * View
+ *	Actions
  */
+
+if ($cancel)
+{
+	$action='';
+}
+
+$parameters=array('id'=>$id, 'objcanvas'=>$objcanvas);
+$reshook=$hookmanager->executeHooks('doActions', $parameters, $object, $action);    // Note that $action and $object may have been modified by some hooks
+if ($reshook < 0) setEventMessages($hookmanager->error, $hookmanager->errors, 'errors');
+
+if (empty($reshook))
+{
+	if ($cancel)
+	{
+		$action='';
+		if (! empty($backtopage))
+		{
+			header("Location: ".$backtopage);
+			exit;
+		}
+	}
+  
+	if ($action == 'add' && $user->rights->societe->creer)
+	{
+		$error=0;
+
+		if (! GETPOST('productid', 'int') || ! GETPOST('quantity', 'int'))
+		{
+			if (! GETPOST('productid', 'int')) setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("ProductOrService")), null, 'errors');
+			if (! GETPOST('quantity', 'int')) setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("Qty")), null, 'errors');
+			$action='create';
+			$error++;
+		}
+
+		if (! $error)
+		{
+  
+			// Ajout
+			$wish = new Wish($db);
+
+			$wish->fk_product     = GETPOST('productid', 'int');
+			$wish->fk_soc         = $socid;
+			$wish->qty            = GETPOST('quantity', 'int');
+			$wish->target         = GETPOST('target', 'int');
+			$wish->entity         = $conf->entity;
+			$wish->priv           = GETPOST('priv', 'int');
+			$wish->rang           = GETPOST('rank', 'int');
+			$db->begin();
+
+			if (! $error)
+			{
+				$result = $wish->create($user);
+				if ($result < 0)
+				{
+					$error++;
+					setEventMessages($wish->error, $wish->errors, 'errors');
+					$action='create';     // Force chargement page création
+				}
+			}
+
+			if (! $error)
+			{
+				$db->commit();
+
+				$url=$_SERVER["PHP_SELF"].'?socid='.$object->id;
+				header('Location: '.$url);
+				exit;
+			}
+			else
+			{
+				$db->rollback();
+			}
+		}
+	}
+  
+	if ($action == 'update' && $user->rights->societe->creer)
+	{
+		$error=0;
+
+		if (! GETPOST('quantity', 'int'))
+		{
+			if (! GETPOST('quantity', 'int')) setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("Qty")), null, 'errors');
+			$action='edit';
+			$error++;
+		}
+
+		if (! $error)
+		{
+		$db->begin();
+
+		// Insert member
+		$sql = "UPDATE ".MAIN_DB_PREFIX."wishlist";
+    $sql.= " SET qty = '".$db->escape(GETPOST('quantity', 'int'))."'";
+    $sql.= ", target = '".(!empty(GETPOST('target', 'int'))?$db->escape(GETPOST('target', 'int')):0)."'";
+    $sql.= ", priv = '".$db->escape(GETPOST('priv', 'int'))."'";
+    $sql.= ", fk_user_mod = ".($user->id>0?$user->id:"null");	// Can be null because member can be created by a guest or a script
+    $sql.= ", rang = '".(!empty(GETPOST('rank', 'int'))?$db->escape(GETPOST('rank', 'int')):0)."'";
+    $sql.= " WHERE rowid = '".$lineid."'";
+
+		//dol_syslog(get_class($this)."::create", LOG_DEBUG);
+		$result = $db->query($sql);
+
+			if (! $error)
+			{
+				//$result = $companypaymentmode->create($user);
+				if ($result < 0)
+				{
+					$error++;
+					//setEventMessages($companypaymentmode->error, $companypaymentmode->errors, 'errors');
+					$action='edit';     // Force chargement page création
+				}
+			}
+
+			if (! $error)
+			{
+				$db->commit();
+
+				$url=$_SERVER["PHP_SELF"].'?socid='.$object->id;
+				header('Location: '.$url);
+				exit;
+			}
+			else
+			{
+				$db->rollback();
+			}
+		}
+	}
+  
+	if ($user->rights->adherent->configurer && $action == 'confirm_delete' && GETPOST('confirm', 'alpha') == 'yes')
+	{
+		$result = $consumption->delete($lineid, $user);
+		if ($result > 0)
+		{
+			if (! empty($backtopage))
+			{
+				header("Location: ".$backtopage);
+				exit;
+			}
+			else
+			{
+				header("Location: consumption.php?rowid=".$socid);
+				exit;
+			}
+		}
+		else
+		{
+			$errmesg=$consumption->error;
+		}
+	}
+}
+
+/*
+ *	View
+ */
+
 $title=$langs->trans("Member") . " - " . $langs->trans("Consumptions");
 $helpurl="EN:Module_Foundations|FR:Module_Adh&eacute;rents|ES:M&oacute;dulo_Miembros";
 llxHeader("",$title,$helpurl);
@@ -178,6 +334,11 @@ if ($id)
 
 }
 
+	// Confirm delete ban
+	if ($action == 'delete')
+	{
+		print $form->formconfirm($_SERVER["PHP_SELF"]."?rowid=".$id."&lineid=".$lineid, $langs->trans("DeleteAConsumption"), $langs->trans("ConfirmDeleteConsumption", ''), "confirm_delete", '', 0, 1);
+	}
 
 			print '<input class="flat" type="hidden" name="rowid" value="'.$socid.'" size="12">';
       
@@ -198,6 +359,7 @@ if ($id)
             print '<td align="center">'.$langs->trans("Quantity").'</td>';
             print '<td align="right">'.$langs->trans("Price").'</td>';
             print '<td align="right">'.$langs->trans('Invoice').'</td>';
+            print '<td align="center">'.$langs->trans('Action').'</td>';
             print "</tr>\n";
 
             foreach ($object->consumptions as $consumption)
@@ -231,6 +393,23 @@ if ($id)
         
                 print '<td align="right">'.$consumption->amount.'</td>';
                 print '<td align="right">'.dol_print_date($consumption->date_validation,'day').'</td>';
+                
+		        // Actions
+		        print '<td align="center">';
+				if ($user->rights->societe->creer)
+        {
+				print '<a href="'.$_SERVER["PHP_SELF"].'?rowid='.$id.'&lineid='.$consumption->id.'&action=edit">';
+				print img_picto($langs->trans("Modify"), 'edit');
+				print '</a>';
+
+		   	print '&nbsp;';
+
+		   	print '<a href="'.$_SERVER["PHP_SELF"].'?rowid='.$id.'&lineid='.$consumption->id.'&action=delete">';
+		   	print img_picto($langs->trans("Delete"), 'delete');
+		   	print '</a>';
+		    }
+				print "</td>";
+                
                 print "</tr>";
 
             }

@@ -745,7 +745,7 @@ class AdherentsPlus extends DolibarrApi
     {
         $obj_ret = array();
 
-        if(! DolibarrApiAccess::$user->rights->adherent->cotisation->lire) {
+        if(! DolibarrApiAccess::$user->rights->adherent->configurer) {
             throw new RestException(401);
         }
 
@@ -776,7 +776,7 @@ class AdherentsPlus extends DolibarrApi
      */
     public function postConsumption($id, $request_data = null)
     {
-        if(! DolibarrApiAccess::$user->rights->societe->creer) {
+        if(! DolibarrApiAccess::$user->rights->adherent->configurer) {
             throw new RestException(401);
         }
         
@@ -789,14 +789,13 @@ class AdherentsPlus extends DolibarrApi
         // Check mandatory fields
         //$result = $this->_validate($request_data);
 
-        $consumptions = new Consumption($this->db);
         foreach($request_data as $field => $value) {
-            $wish->$field = $value;
+            $this->consumption->$field = $value;
         }
-        if ($consumptions->create(DolibarrApiAccess::$user) < 0) {
-            throw new RestException(500, 'Error creating consumption', array_merge(array($consumptions->error), $consumptions->errors));
+        if (!$this->consumption->create(DolibarrApiAccess::$user)) {
+            throw new RestException(500, 'Error creating consumption', array_merge(array($consumption->errors), $consumption->errors));
         }
-        return $consumptions->id;
+        return $consumption->id;
     }
     
     /**
@@ -814,7 +813,7 @@ class AdherentsPlus extends DolibarrApi
      */
     public function putConsumption($id, $consumptionid, $request_data = null)
     {
-        if(! DolibarrApiAccess::$user->rights->societe->creer) {
+        if(! DolibarrApiAccess::$user->rights->adherent->configurer) {
             throw new RestException(401);
         }
         
