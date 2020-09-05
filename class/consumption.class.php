@@ -149,21 +149,17 @@ dol_include_once('/adherentsplus/class/adherent.class.php');
 
 
 	/**
-	 *	Update subscription
+	 *	Update consumption
 	 *
 	 *	@param	User	$user			User who updated
 	 *	@param 	int		$notrigger		0=Disable triggers
 	 *	@return	int						<0 if KO, >0 if OK
 	 */
-	public function update($user,$notrigger=0)
-	{
-		global $conf, $langs;
+    public function update($user, $notrigger = 0)
+    {
+        $error = 0;
 
-		$result = 0;
-		$error=0;
-		$errorflag=0;
-
-		$this->db->begin();
+        $this->db->begin();
 
 		$sql = "UPDATE ".MAIN_DB_PREFIX."subscription SET ";
 		$sql .= " fk_adherent = ".$this->fk_adherent.",";
@@ -177,24 +173,34 @@ dol_include_once('/adherentsplus/class/adherent.class.php');
     $sql.= " AND fk_member = ".$this->id;
     $sql.= " AND rowid = ".$rowid;
 
-		dol_syslog(get_class($this)."::update", LOG_DEBUG);
-		$resql = $this->db->query($sql);
-		if ($resql)
-		{
-			$member=new AdherentPlus($this->db);
-			$result=$member->fetch($this->fk_adherent);
-			$result=$member->update_end_date($user);
+        dol_syslog(get_class($this)."::update", LOG_DEBUG);
+        $resql = $this->db->query($sql);
+        if ($resql) {
+            require_once DOL_DOCUMENT_ROOT.'/adherents/class/adherent.class.php';
+            $member = new Adherent($this->db);
+            $result = $member->fetch($this->fk_adherent);
 
-			$this->db->commit();
-			return 1;
-		}
-		else
-		{
-			$this->db->rollback();
-			$this->error=$this->db->lasterror();
-			return -1;
-		}
-	}
+            if (!$error && !$notrigger) {
+            	$this->context = array('member'=>$member);
+            	// Call triggers
+                $result = $this->call_trigger('MEMBER_CONSUMPTION_MODIFY', $user);
+                if ($result < 0) { $error++; } //Do also here what you must do to rollback action if trigger fail
+                // End call triggers
+            }
+        } else {
+            $error++;
+            $this->error = $this->db->lasterror();
+        }
+
+        // Commit or rollback
+        if ($error) {
+            $this->db->rollback();
+            return -1;
+        } else {
+            $this->db->commit();
+            return $this->id;
+        }
+    }
 
   
 	/**

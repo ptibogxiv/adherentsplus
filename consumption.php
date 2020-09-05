@@ -147,54 +147,24 @@ if (empty($reshook))
   
 	if ($action == 'update' && $user->rights->societe->creer)
 	{
-		$error=0;
-
-		if (! GETPOST('quantity', 'int'))
+    $consumption->fetch($lineid);
+		$result = $consumption->update($lineid, $user);
+		if ($result > 0)
 		{
-			if (! GETPOST('quantity', 'int')) setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("Qty")), null, 'errors');
-			$action='edit';
-			$error++;
-		}
-
-		if (! $error)
-		{
-		$db->begin();
-
-		// Insert member
-		$sql = "UPDATE ".MAIN_DB_PREFIX."wishlist";
-    $sql.= " SET qty = '".$db->escape(GETPOST('quantity', 'int'))."'";
-    $sql.= ", target = '".(!empty(GETPOST('target', 'int'))?$db->escape(GETPOST('target', 'int')):0)."'";
-    $sql.= ", priv = '".$db->escape(GETPOST('priv', 'int'))."'";
-    $sql.= ", fk_user_mod = ".($user->id>0?$user->id:"null");	// Can be null because member can be created by a guest or a script
-    $sql.= ", rang = '".(!empty(GETPOST('rank', 'int'))?$db->escape(GETPOST('rank', 'int')):0)."'";
-    $sql.= " WHERE rowid = '".$lineid."'";
-
-		//dol_syslog(get_class($this)."::create", LOG_DEBUG);
-		$result = $db->query($sql);
-
-			if (! $error)
+			if (! empty($backtopage))
 			{
-				//$result = $companypaymentmode->create($user);
-				if ($result < 0)
-				{
-					$error++;
-					//setEventMessages($companypaymentmode->error, $companypaymentmode->errors, 'errors');
-					$action='edit';     // Force chargement page création
-				}
-			}
-
-			if (! $error)
-			{
-				$db->commit();
-
-				$url=$_SERVER["PHP_SELF"].'?socid='.$object->id;
-				header('Location: '.$url);
+				header("Location: ".$backtopage);
 				exit;
 			}
 			else
 			{
-				$db->rollback();
+				header("Location: consumption.php?rowid=".$id);
+				exit;
 			}
+		}
+		else
+		{
+			$errmesg=$consumption->error;
 		}
 	}
   
@@ -415,14 +385,6 @@ if ($id)
 
             }
             print "</table></div>";
-            
-			      // Delete object
-			      //$sql = "DELETE FROM ".MAIN_DB_PREFIX."adherent_consumption WHERE rowid = 1";
-            
-            //$resql = $db->query($sql);
-            //$db->commit();
-            
-            //print var_dump($resql);
             
 llxFooter();
 $db->close();
