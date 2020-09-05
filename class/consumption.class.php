@@ -63,16 +63,18 @@ class Consumption extends CommonObject
      */
     public function create($user, $notrigger = false)
     {
-        global $langs;
+        global $conf, $langs;
 
         $error = 0;
 
         $now = dol_now();
 
         // Check parameters
+        if ($this->date_end) {
         if ($this->date_end <= $this->date_start) {
             $this->error = $langs->trans("ErrorBadValueForDate");
             return -1;
+        }
         }
         if (empty($this->date_creation)) $this->date_creation = $now;
        	// Clean parameters
@@ -83,9 +85,9 @@ class Consumption extends CommonObject
     
 		$sql = "INSERT INTO ".MAIN_DB_PREFIX."adherent_consumption (entity, fk_adherent, fk_product, qty, remise_percent, date_creation, date_start, date_end)";
     $sql .= " VALUES (".$this->entity.", '1', '4', '1', '0',";
-    $sql .= " '".$this->db->idate($now)."',";
-    $sql .= " 'null',";  	
-		$sql .= " 'null')";
+    $sql .= " '".$this->db->idate($this->date_creation)."',";
+    $sql .= " ".($this->date_start ? "'".$this->db->idate($this->date_start)."'" : "null").",";  	
+		$sql .= " ".($this->date_end ? "'".$this->db->idate($this->date_end)."'" : "null").")";
 
         dol_syslog(get_class($this)."::create", LOG_DEBUG);
         $resql = $this->db->query($sql);

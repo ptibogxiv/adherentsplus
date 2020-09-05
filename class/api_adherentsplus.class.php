@@ -793,7 +793,7 @@ class AdherentsPlus extends DolibarrApi
             $this->consumption->$field = $value;
         }
         if ($this->consumption->create(DolibarrApiAccess::$user) < 0) {
-            throw new RestException(500, 'Error creating consumption', array_merge(array($this->consumption->errors), $this->consumption->errors));
+            throw new RestException(500, 'Error creating consumption'.$this->consumption->error, array_merge(array($this->consumption->errors), $this->consumption->errors));
         }
         return $this->consumption->id;
     }
