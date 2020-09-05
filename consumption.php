@@ -187,7 +187,7 @@ if (empty($reshook))
 		}
 		else
 		{
-			$errmesg=$consumption->error;
+			setEventMessages($consumption->error, $consumption->errors, 'errors');
 		}
 	}
 }

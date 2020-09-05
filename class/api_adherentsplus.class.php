@@ -884,7 +884,7 @@ class AdherentsPlus extends DolibarrApi
         }
 
         if (!$this->consumption->delete(DolibarrApiAccess::$user)) {
-            throw new RestException(401, 'error when deleting consumption');
+            throw new RestException(401, 'error when deleting consumption: '.$this->consumption->error);
         }
 
         return array(

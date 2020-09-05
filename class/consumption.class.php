@@ -212,11 +212,13 @@ dol_include_once('/adherentsplus/class/adherent.class.php');
 	 */
 	public function delete($user, $notrigger = 0)
     {
+        global $langs;
         $error = 0;
 
         // It subscription is linked to a bank transaction, we get it
         if ($this->fk_facture) {
             $error++;
+            $this->error = $langs->trans("ConsumptionAlreadyBilled");
             return 0;
         }
 
