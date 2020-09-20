@@ -271,6 +271,7 @@ print '</small></button>';
 if ($adh->statut != 0) {
 print '<button type="button" class="calcbutton2" onclick="location.href=\'takepos_subscription.php?action=change&idmember='.$adh->id.'&type=0&invoiceid='.$invoiceid.'&place='.urlencode($place).'\'">'.$langs->trans("Resiliate").'</button>';
 }
+if (!empty($adh->id)) {
 ?>
 <div>
 <?php
@@ -388,7 +389,7 @@ print '<button type="button" class="calcbutton2" onclick="location.href=\'takepo
         }
             print "</table></td></tr></table>";
 ?>
-</div></div>
+</div><?php } ?></div>
 <?php } else {
 print '<center>'.$langs->trans('MembershipNotAllowedForGenericCustomer').'</center>';
  } ?>
