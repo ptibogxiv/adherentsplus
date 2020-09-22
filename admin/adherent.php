@@ -185,6 +185,11 @@ print '<tr class="oddeven"><td>'.$langs->trans("AdherentLinkedMember").'</td><td
 print $form->selectyesno('ADHERENT_LINKEDMEMBER',(! empty($conf->global->ADHERENT_LINKEDMEMBER)?$conf->global->ADHERENT_LINKEDMEMBER:0),1);
 print "</td></tr>\n";
 
+// Login/Pass required for members
+print '<tr class="oddeven"><td>'.$langs->trans("FederalPart").'</td><td>';
+print $form->select_company($conf->global->ADHERENT_FEDERAL_PART, 'ADHERENT_FEDERAL_PART', 's.fournisseur=1', 'SelectThirdParty', 0, 0, null, 0, 'minwidth300');
+print "</td></tr>\n";
+
 // type of adhesion flow
 print '<tr class="oddeven"><td>'.$langs->trans("BeginningFixedDate").'</td>';
 print '<td>';

@@ -230,7 +230,7 @@ if ($rowid > 0)
     print ' '.$langs->trans("Currency".$conf->currency);
 		print '</tr>';
     
-if (! empty($conf->global->ADHERENT_FEDERAL_PART)){    
+if ($conf->global->ADHERENT_FEDERAL_PART > 0){        
     print '<tr><td>'.$langs->trans("FederalPart");
 		print $form->textwithpicto($s,$langs->trans("IncludeInSubscritionPrice"),1);
     print '</td><td>';
@@ -425,8 +425,8 @@ print ' '.$langs->trans("Currency".$conf->currency);
     print ' '.$langs->trans("Currency".$conf->currency);    
 		print '</td></tr>';
     
-if (! empty($conf->global->ADHERENT_FEDERAL_PART)){    
-    print '<tr><td>'.$langs->trans("FederalPart");
+if ($conf->global->ADHERENT_FEDERAL_PART > 0){    
+    print '<tr><td>'.$langs->trans("FederalPart").$conf->global->ADHERENT_FEDERAL_PART;
 		print $form->textwithpicto($s,$langs->trans("IncludeInSubscritionPrice"),1);
     print '</td><td>';
 		print '<input size="10" type="text" value="' . price($object->federal) . '" name="federal">';   
