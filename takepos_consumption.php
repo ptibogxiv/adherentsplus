@@ -170,7 +170,7 @@ $result=$adh->fetch('', '', $invoice->socid, '', '', '', 1);
 $adht = new AdherentTypePlus($db);
 }
 
-if ($constforcompanyid != $invoice->socid && !empty($invoice->socid) && $adh > 0) { 
+if ($constforcompanyid != $invoice->socid && !empty($invoice->socid) && $adh->id > 0) { 
 
 $result=$adht->fetch($adh->typeid);
   $morehtmlright= dolGetButtonTitle($langs->trans('Add'), '', 'fa fa-plus-circle', $_SERVER["PHP_SELF"].'?rowid='.$object->id.'&action=create');
