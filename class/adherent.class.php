@@ -1583,71 +1583,67 @@ $tx = ceil((($dateto-$today)/31558464)*$conf->global->ADHERENT_SUBSCRIPTION_PROR
 	}
 
 
+	// phpcs:disable PEAR.NamingConventions.ValidFunctionName.ScopeNotCamelCaps
 	/**
-	 *	Fonction qui recupere pour un adherent les parametres
-	 *				first_subscription_date
-	 *				first_subscription_amount
-	 *				last_subscription_date
-	 *				last_subscription_amount
+	 *	Function to get member subscriptions data
+	 *				first_subscription_date, first_subscription_date_start, first_subscription_date_end, first_subscription_amount
+	 *				last_subscription_date, last_subscription_date_start, last_subscription_date_end, last_subscription_amount
 	 *
 	 *	@return		int			<0 si KO, >0 si OK
 	 */
-	function fetch_subscriptions()
+	public function fetch_subscriptions()
 	{
+		// phpcs:enable
 		global $langs;
 
-dol_include_once('/adherentsplus/class/subscription.class.php');
+		require_once DOL_DOCUMENT_ROOT.'/adherents/class/subscription.class.php';
 
-		$sql = "SELECT c.rowid as crowid, c.fk_adherent, c.subscription, c.note, c.fk_bank, c.fk_type,";
-		$sql.= " c.tms as datem,";
-		$sql.= " c.datec as datec,";
-		$sql.= " c.dateadh as dateh,";
-		$sql.= " c.datef as datef, ";
-    $sql.= " t.rowid as trowid, t.libelle ";
-		$sql.= " FROM ".MAIN_DB_PREFIX."subscription as c ";
-    $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."adherent_type as t ON c.fk_type=t.rowid ";
-		$sql.= " WHERE c.fk_adherent = ".$this->id;
-		$sql.= " ORDER BY c.dateadh DESC";
+		$sql = "SELECT c.rowid, c.fk_adherent, c.fk_type, c.subscription, c.note, c.fk_bank,";
+		$sql .= " c.tms as datem,";
+		$sql .= " c.datec as datec,";
+		$sql .= " c.dateadh as dateh,";
+		$sql .= " c.datef as datef";
+		$sql .= " FROM ".MAIN_DB_PREFIX."subscription as c";
+		$sql .= " WHERE c.fk_adherent = ".$this->id;
+		$sql .= " ORDER BY c.dateadh";
 		dol_syslog(get_class($this)."::fetch_subscriptions", LOG_DEBUG);
 
-		$resql=$this->db->query($sql);
-		if ($resql)
-		{
-			$this->subscriptions=array();
+		$resql = $this->db->query($sql);
+		if ($resql) {
+			$this->subscriptions = array();
 
-			$i=0;
-            while ($obj = $this->db->fetch_object($resql))
-            {
-                if ($i==0)
-                {
-                    $this->first_subscription_date=$obj->dateh;
-                    $this->first_subscription_amount=$obj->subscription;
-                }
-                $this->last_subscription_date=$obj->dateh;
-                $this->last_subscription_amount=$obj->subscription;
+			$i = 0;
+			while ($obj = $this->db->fetch_object($resql)) {
+				if ($i == 0) {
+					$this->first_subscription_date = $this->db->jdate($obj->datec);
+					$this->first_subscription_date_start = $this->db->jdate($obj->dateh);
+					$this->first_subscription_date_end = $this->db->jdate($obj->datef);
+					$this->first_subscription_amount = $obj->subscription;
+				}
+				$this->last_subscription_date = $this->db->jdate($obj->datec);
+				$this->last_subscription_date_start = $this->db->jdate($obj->datef);
+				$this->last_subscription_date_end = $this->db->jdate($obj->datef);
+				$this->last_subscription_amount = $obj->subscription;
 
-                $subscription=new Subscription($this->db);
-                $subscription->id=$obj->crowid;
-                $subscription->fk_adherent=$obj->fk_adherent;
-                $subscription->fk_type=$obj->fk_type;
-                $subscription->label=$obj->libelle;
-                $subscription->amount=$obj->subscription;
-                $subscription->note=$obj->note;
-                $subscription->fk_bank=$obj->fk_bank;
-                $subscription->datem=$this->db->jdate($obj->datem);
-                $subscription->datec=$this->db->jdate($obj->datec);
-                $subscription->dateh=$this->db->jdate($obj->dateh);
-                $subscription->datef=$this->db->jdate($obj->datef);
+				$subscription = new Subscription($this->db);
+				$subscription->id = $obj->rowid;
+				$subscription->fk_adherent = $obj->fk_adherent;
+				$subscription->fk_type = $obj->fk_type;
+				$subscription->amount = $obj->subscription;
+				$subscription->note = $obj->note;
+				$subscription->fk_bank = $obj->fk_bank;
+				$subscription->datem = $this->db->jdate($obj->datem);
+				$subscription->datec = $this->db->jdate($obj->datec);
+				$subscription->dateh = $this->db->jdate($obj->dateh);
+				$subscription->datef = $this->db->jdate($obj->datef);
 
-                $this->subscriptions[]=$subscription;
+				$this->subscriptions[] = $subscription;
 
-                $i++;
-            }
-            return 1;
-		}
-		else
-		{
-			$this->error=$this->db->error().' sql='.$sql;
+				$i++;
+			}
+			return 1;
+		} else {
+			$this->error = $this->db->error().' sql='.$sql;
 			return -1;
 		}
 	}
