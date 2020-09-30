@@ -173,6 +173,11 @@ if ($action == "change") // change member from POS
 if ($constforcompanyid != $invoice->socid && !empty($invoice->socid)) { 
 $adh = new AdherentPlus($db);
 $result = $adh->fetch('', '', $invoice->socid);
+if (empty($adh->id) && !empty($invoice->socid)) {
+$backtopage = dol_buildpath('/adherentsplus/takepos_subscription.php?place='.$place.'&invoiceid='.$invoiceid, 1);
+header("Location: ".DOL_URL_ROOT."/adherents/card.php?&action=create&socid=".$invoice->socid."&backtopage=".$backtopage);
+exit;
+}
 $adht = new AdherentTypePlus($db);
 $result=$adht->fetch($adh->typeid);
 ?>
