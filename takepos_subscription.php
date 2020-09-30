@@ -175,7 +175,7 @@ $adh = new AdherentPlus($db);
 $result = $adh->fetch('', '', $invoice->socid);
 if (empty($adh->id) && !empty($invoice->socid)) {
 $backtopage = dol_buildpath('/adherentsplus/takepos_subscription.php?place='.$place.'&invoiceid='.$invoiceid, 1);
-header("Location: ".DOL_URL_ROOT."/adherents/card.php?&action=create&socid=".$invoice->socid."&backtopage=".$backtopage);
+header("Location: ".DOL_URL_ROOT."/adherents/card.php?&action=create&socid=".$invoice->socid."&optioncss=print&backtopage=".$backtopage);
 exit;
 }
 $adht = new AdherentTypePlus($db);
