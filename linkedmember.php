@@ -209,7 +209,7 @@ print '<SELECT name="memberid">';
         
         $sql = "SELECT c.rowid, c.firstname, c.lastname, c.societe";               
         $sql.= " FROM ".MAIN_DB_PREFIX."adherent as c";
-        $sql.= " WHERE c.entity IN (" . getEntity('adherentsplus') . ") AND c.rowid!=".$object->id." AND ISNULL(c.fk_parent)";
+        $sql.= " WHERE c.entity IN (" . getEntity('adherent') . ") AND c.rowid!=".$object->id." AND ISNULL(c.fk_parent)";
         $sql.= " ORDER BY c.firstname, c.lastname ASC";
         //$sql.= " LIMIT 0,5";
         
