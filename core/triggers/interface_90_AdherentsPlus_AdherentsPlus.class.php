@@ -272,10 +272,17 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES) && !empty($object->fk_soc)){
 	$soc->fetch($object->fk_soc);
 	$soc->set_price_level('1', $user);
 } 
-}  else if ($action == 'MEMBER_SUBSCRIPTION_CREATE' ){
+}  else if ($action == 'MEMBER_SUBSCRIPTION_CREATE' && !empty($conf->global->ADHERENT_FEDERAL_PART)){
 require_once DOL_DOCUMENT_ROOT.'/fourn/class/fournisseur.facture.class.php';
 $object = new FactureFournisseur($db);
 
+$object->ref_supplier = $object->note;
+$object->socid				= $conf->global->ADHERENT_FEDERAL_PART;
+$object->label				= $object->note;
+$object->date = $object->datec;
+$object->multicurrency_code	= GETPOST('multicurrency_code', 'alpha');
+$object->multicurrency_tx = GETPOST('originmulticurrency_tx', 'int');
+$object->create($user);
 
     	}    
               
