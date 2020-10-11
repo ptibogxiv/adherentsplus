@@ -273,6 +273,9 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES) && !empty($object->fk_soc)){
 	$soc->set_price_level('1', $user);
 } 
 }  else if ($action == 'MEMBER_SUBSCRIPTION_CREATE' ){
+require_once DOL_DOCUMENT_ROOT.'/fourn/class/fournisseur.facture.class.php';
+$object = new FactureFournisseur($db);
+
 
     	}    
               
