@@ -272,7 +272,9 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES) && !empty($object->fk_soc)){
 	$soc->fetch($object->fk_soc);
 	$soc->set_price_level('1', $user);
 } 
-    	}       
+}  else if ($action == 'MEMBER_SUBSCRIPTION_CREATE' ){
+
+    	}    
               
           
  
