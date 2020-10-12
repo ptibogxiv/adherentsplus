@@ -451,24 +451,6 @@ if ($rowid > 0)
 
 		dol_fiche_end();
 
-
-		/*
-		 * Buttons
-		 */
-
-		print '<div class="tabsAction">';
-
-		// Add
-    if ( $user->rights->adherent->configurer && !empty($object->statut) )
-		{
-		print '<div class="inline-block divButAction"><a class="butAction" href="type_package.php?action=create&rowid='.$object->id.'">'.$langs->trans("AddProductOrService").'</a></div>';
-    } else {
-		print '<div class="inline-block divButAction"><a class="butActionRefused classfortooltip" href="#" title="'.dol_escape_htmltag($langs->trans("NoAddProductOrService")).'">'.$langs->trans("AddProductOrService").'</a></div>';    
-    }
-
-		print "</div>";
-
-
 		// Show list of members (nearly same code than in page list.php)
 
 		$membertypestatic=new AdherentTypePlus($db);
@@ -572,9 +554,10 @@ if ($rowid > 0)
 			print '<input class="flat" type="hidden" name="rowid" value="'.$rowid.'" size="12"></td>';
 
 			print '<br>';
-            print_barre_liste('',$page,$_SERVER["PHP_SELF"],$param,$sortfield,$sortorder,'',$num,$nbtotalofrecords);
 
-            $moreforfilter = '';
+  $morehtmlright= dolGetButtonTitle($langs->trans('AddAWish'), '', 'fa fa-plus-circle', $_SERVER["PHP_SELF"].'?rowid='.$object->id.'&action=create');
+
+      print load_fiche_titre($langs->trans("ListOfProductsServices"), $morehtmlright, '');
 
             print '<div class="div-table-responsive">';
             print '<table class="tagtable liste'.($moreforfilter?" listwithfilterbefore":"").'">'."\n";
