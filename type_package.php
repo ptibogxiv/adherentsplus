@@ -508,13 +508,8 @@ if ($socid && $action == 'edit' && $user->rights->wishlist->create)
 	}
   
 // Create Card
-if ($socid && $action == 'create' && $user->rights->wishlist->create)
+if ($rowid && $action == 'create' && $user->rights->wishlist->create)
 {
-	dol_fiche_head($head, 'wishlist', $langs->trans("ThirdParty"), 0, 'company');
-
-	$linkback = '<a href="'.DOL_URL_ROOT.'/societe/list.php">'.$langs->trans("BackToList").'</a>';
-
-	dol_banner_tab($object, 'socid', $linkback, ($user->societe_id?0:1), 'rowid', 'nom');
 
 	print '<div class="nofichecenter">';
 
@@ -537,18 +532,6 @@ if ($socid && $action == 'create' && $user->rights->wishlist->create)
 	print '<tr><td class="fieldrequired">'.$langs->trans("Qty").'</td>';
 	print '<td><input class="minwidth200" type="text" name="quantity" value="'.(GETPOST('quantity', 'int')?GETPOST('quantity', 'int'):1).'"></td></tr>';
 
-	print '<tr><td>'.$langs->trans("Target").'</td>';
-	print '<td><input class="minwidth200" type="text" name="target" value="'.GETPOST('target', 'int').'"></td></tr>';
-
-	print '<tr><td>'.$langs->trans("Rank").'</td>';
-	print '<td><input class="minwidth200" type="text" name="rank" value="'.(GETPOST('rank','int')?GETPOST('rank','int'):$wish->rang).'"></td></tr>';
-
-  // Visibility
-  print '<tr><td class="fieldrequired"><label for="priv">'.$langs->trans("ContactVisibility").'</label></td><td colspan="3">';
-  $selectarray=array('0'=>$langs->trans("ContactPublic"),'1'=>$langs->trans("ContactPrivate"));
-  print $form->selectarray('priv', $selectarray, $wish->priv, 0);
-  print '</td></tr>';
-
 	print '</table>';
 
 	print '</div>';
@@ -565,13 +548,8 @@ if ($socid && $action == 'create' && $user->rights->wishlist->create)
 }
 
 // Create Card
-if ($socid && $action == 'edit' && $user->rights->wishlist->create)
+if ($rowid && $action == 'edit' && $user->rights->wishlist->create)
 {
-	dol_fiche_head($head, 'wishlist', $langs->trans("ThirdParty"), 0, 'company');
-
-	$linkback = '<a href="'.DOL_URL_ROOT.'/societe/list.php">'.$langs->trans("BackToList").'</a>';
-
-	dol_banner_tab($object, 'socid', $linkback, ($user->societe_id?0:1), 'rowid', 'nom');
 
   $wish->fetch($lineid);  
 
@@ -593,18 +571,6 @@ if ($socid && $action == 'edit' && $user->rights->wishlist->create)
 
 	print '<tr><td class="fieldrequired">'.$langs->trans("Qty").'</td>';
 	print '<td><input class="minwidth200" type="text" name="quantity" value="'.(GETPOST('quantity','int')?GETPOST('quantity','int'):$wish->qty).'"></td></tr>';
-
-	print '<tr><td>'.$langs->trans("Target").'</td>';
-	print '<td><input class="minwidth200" type="text" name="target" value="'.(GETPOST('target','int')?GETPOST('target','int'):$wish->target).'"></td></tr>';
-  
-	print '<tr><td>'.$langs->trans("Rank").'</td>';
-	print '<td><input class="minwidth200" type="text" name="rank" value="'.(GETPOST('rank','int')?GETPOST('rank','int'):$wish->rang).'"></td></tr>';
-  
-  // Visibility
-  print '<tr><td class="fieldrequired"><label for="priv">'.$langs->trans("ContactVisibility").'</label></td><td colspan="3">';
-  $selectarray=array('0'=>$langs->trans("ContactPublic"),'1'=>$langs->trans("ContactPrivate"));
-  print $form->selectarray('priv', $selectarray, $wish->priv, 0);
-  print '</td></tr>';
 
 	print '</table>';
 
