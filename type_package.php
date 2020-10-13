@@ -260,7 +260,7 @@ if ($rowid && $action == 'edit' && $user->rights->adherent->creer)
 
 		$now=dol_now();
 
-		$sql = "SELECT t.rowid, t.fk_type as type, t.fk_product as product, t.qty as qty, t.date_creation";
+		$sql = "SELECT t.rowid, t.fk_type as type, t.fk_product as product, t.qty, t.date_creation, t.date_closing";
 		$sql .= ", p.ref as ref, p.label as label";
 		$sql.= " FROM ".MAIN_DB_PREFIX."adherent_type_package as t";
     $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."product as p ON p.rowid = t.fk_product";
@@ -364,29 +364,21 @@ if ($rowid && $action == 'edit' && $user->rights->adherent->creer)
 
 		        // Date begin
 		        print '<td class="nowrap">';
-		        print dol_print_date($objp->date_creation,'day');
+		        print dol_print_date($objp->date_creation,'dayhour');
 		        print "</td>";
 
 		        // Date end
-		        if ($objp->date_creation)
+		        if ($objp->date_closing)
 		        {
 			        print '<td align="center" class="nowrap">';
-		          print dol_print_date($objp->date_creation,'day');
+		          print dol_print_date($objp->date_closing,'dayhour');
 		          print '</td>';
 		        }
 		        else
 		        {
 			        print '<td align="left" class="nowrap">';
-			        if ($objp->subscription == 'yes')
-			        {
-		                print $langs->trans("SubscriptionNotReceived");
-		                if ($objp->statut > 0) print " ".img_warning();
-			        }
-			        else
-			        {
-			            print '&nbsp;';
-			        }
-		            print '</td>';
+			        print '&nbsp;';
+		          print '</td>';
 		        }
 
 		        // Actions
