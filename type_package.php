@@ -258,93 +258,23 @@ if ($rowid && $action == 'edit' && $user->rights->adherent->creer)
 	if ($action != 'create' && $action != 'edit')
 	{
 
-
-		// Show list of members (nearly same code than in page list.php)
-
-		$membertypestatic=new AdherentTypePlus($db);
-
 		$now=dol_now();
 
-		$sql = "SELECT t.rowid, t.fk_type as type, t.fk_product as product, t.qty as qty";
-    $sql.= " , p.label, p.ref as ref";
-		$sql.= " FROM ".MAIN_DB_PREFIX."adherent_package as t";
+		$sql = "SELECT t.rowid, t.fk_type as type, t.fk_product as product, t.qty as qty, t.date_creation";
+		$sql .= ", p.ref as ref, p.label as label";
+		$sql.= " FROM ".MAIN_DB_PREFIX."adherent_type_package as t";
     $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."product as p ON p.rowid = t.fk_product";
 		$sql.= " WHERE t.entity IN (".getEntity('adherent').")";
-		$sql.= " AND t.fk_type = ".$object->id;
-		if ($sall)
-		{
-			//$sql.=natural_search(array("f.firstname","d.lastname","d.societe","d.email","d.login","d.address","d.town","d.note_public","d.note_private"), $sall);
-		}
-		if ($status != '')
-		{
-		    $sql.= " AND t.statut IN (".$db->escape($status).")";     // Peut valoir un nombre ou liste de nombre separes par virgules
-		}
-		if ($action == 'search')
-		{
-			if (GETPOST('search'))
-			{
-		  		//$sql.= natural_search(array("d.firstname","d.lastname"), GETPOST('search','alpha'));
-		  	}
-		}
-		if (! empty($search_ref))
-		{
-			$sql.= natural_search("p.ref", $search_ref);
-		}
-		if (! empty($search_label))
-		{
-			$sql.= natural_search("p.label", $search_label);
-		}
-		if (! empty($search_qty))
-		{
-			$sql.= natural_search("t.qty", $search_qty);
-		}
-		if ($filter == 'uptodate')
-		{
-		    //$sql.=" AND datefin >= '".$db->idate($now)."'";
-		}
-		if ($filter == 'outofdate')
-		{
-		    //$sql.=" AND datefin < '".$db->idate($now)."'";
-		}
-		// Count total nb of records
-		$nbtotalofrecords = '';
-		if (empty($conf->global->MAIN_DISABLE_FULL_SCANLIST))
-		{
-			$resql = $db->query($sql);
-		    if ($resql) $nbtotalofrecords = $db->num_rows($result);
-		    else dol_print_error($db);
-		}
-		// Add order and limit
-		$sql.= " ".$db->order($sortfield,$sortorder);
-		$sql.= " ".$db->plimit($conf->liste_limit+1, $offset);
+		$sql.= " AND t.fk_type = ".$rowid;
 
 		$resql = $db->query($sql);
+
 		if ($resql)
 		{
 		    $num = $db->num_rows($resql);
 		    $i = 0;
 
 		    $titre=$langs->trans("ProductsList");
-		    if ($status != '')
-		    {
-		        if ($status == '-1,1')								{ $titre=$langs->trans("MembersListQualified"); }
-		        else if ($status == '-1')							{ $titre=$langs->trans("MembersListToValid"); }
-		        else if ($status == '1' && ! $filter)				{ $titre=$langs->trans("MembersListValid"); }
-		        else if ($status == '1' && $filter=='uptodate')		{ $titre=$langs->trans("MembersListUpToDate"); }
-		        else if ($status == '1' && $filter=='outofdate')	{ $titre=$langs->trans("MembersListNotUpToDate"); }
-		        else if ($status == '0')							{ $titre=$langs->trans("MembersListResiliated"); }
-		    }
-		    elseif ($action == 'search')
-		    {
-		        $titre=$langs->trans("MembersListQualified");
-		    }
-
-		    if ($type > 0)
-		    {
-				$membertype=new AdherentTypePLus($db);
-		        $result=$membertype->fetch($type);
-				$titre.=" (".$membertype->label.")";
-		    }
 
 		    $param="&rowid=".$rowid;
 		    if (! empty($status))			$param.="&status=".$status;
@@ -411,7 +341,7 @@ if ($rowid && $action == 'edit' && $user->rights->adherent->creer)
 		        $datefin=$db->jdate($objp->datefin);
 
 	$product_static = new Product($db);
-		$product_static->id = $objp->product;
+		$product_static->id = $objp->fk_product;
 		$product_static->ref = $objp->ref;
 		        // Lastname
 		        print '<tr class="oddeven">';
@@ -421,14 +351,6 @@ if ($rowid && $action == 'edit' && $user->rights->adherent->creer)
 
 		        // Login
 		        print '<td class="tdoverflowmax200">'.dol_trunc($objp->label, 80).'</td>';
-
-		        // Type
-		        /*print '<td class="nowrap">';
-		        $membertypestatic->id=$objp->type_id;
-		        $membertypestatic->label=$objp->type;
-		        print $membertypestatic->getNomUrl(1,12);
-		        print '</td>';
-				*/
 
 		        // Moral/Physique
 		        print "<td>".dol_trunc($objp->label, 80)."</td>";
@@ -440,24 +362,17 @@ if ($rowid && $action == 'edit' && $user->rights->adherent->creer)
 		        print "<td>".$langs->trans("unlimited")."</td>";
             }
 
-		        // Statut
+		        // Date begin
 		        print '<td class="nowrap">';
-		        //print $adh->LibStatut($objp->statut,$objp->subscription,$datefin,2);
+		        print dol_print_date($objp->date_creation,'day');
 		        print "</td>";
 
-		        // Date end subscription
-		        if ($datefin)
+		        // Date end
+		        if ($objp->date_creation)
 		        {
 			        print '<td align="center" class="nowrap">';
-		            if ($datefin < dol_now() && $objp->statut > 0)
-		            {
-		                print dol_print_date($datefin,'day')." ".img_warning($langs->trans("SubscriptionLate"));
-		            }
-		            else
-		            {
-		                print dol_print_date($datefin,'day');
-		            }
-		            print '</td>';
+		          print dol_print_date($objp->date_creation,'day');
+		          print '</td>';
 		        }
 		        else
 		        {
@@ -477,14 +392,19 @@ if ($rowid && $action == 'edit' && $user->rights->adherent->creer)
 		        // Actions
 		        print '<td align="center">';
 				if ($user->rights->adherent->creer)
-				{
-					print '<a href="card.php?rowid='.$objp->rowid.'&action=edit&return=list.php">'.img_edit().'</a>';
-				}
-				print '&nbsp;';
+        {
+				print '<a href="'.$_SERVER["PHP_SELF"].'?rowid='.$object->id.'&lineid='.$objp->id.'&action=edit">';
+				print img_picto($langs->trans("Modify"), 'edit');
+				print '</a>';
+        }
+		   	print '&nbsp;';
 				if ($user->rights->adherent->supprimer)
-				{
-					print '<a href="type_package.php?rowid='.$objp->rowid.'&action=resign&return=list.php">'.img_picto($langs->trans("Resiliate"),'disable.png').'</a>';
-		        }
+        {
+		   	print '<a href="'.$_SERVER["PHP_SELF"].'?rowid='.$object->id.'&lineid='.$objp->id.'&action=delete">';
+		   	print img_picto($langs->trans("Delete"), 'delete');
+		   	print '</a>';
+		    }
+				print "</td>";
 				print "</td>";
 
 		        print "</tr>\n";
