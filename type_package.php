@@ -209,131 +209,55 @@ if ($action == 'delete' && $user->rights->adherent->configurer)
 }
 
 
-/*
- * View
- */
-
 llxHeader('',$langs->trans("MembersTypeSetup"),'EN:Module_Foundations|FR:Module_Adh&eacute;rents|ES:M&oacute;dulo_Miembros');
 
 $form=new Form($db);
 $formother=new FormOther($db);
 $formproduct = new FormProduct($db);
 
-// List of members type
-if (! $rowid && $action != 'create' && $action != 'edit')
+$object = new AdherentTypePlus($db);
+$object->fetch($rowid);
+$object->fetch_optionals($rowid,$extralabels);
+
+$head = memberplus_type_prepare_head($object);
+
+dol_fiche_head($head, 'package', $langs->trans("MemberType"), -1, 'group');
+
+$linkback = '<a href="'.DOL_URL_ROOT.'/adherents/type.php?restore_lastsearch_values=1">'.$langs->trans("BackToList").'</a>';
+
+dol_banner_tab($object, 'rowid', $linkback);
+
+print '<div class="fichecenter">';
+print '<div class="underbanner clearboth"></div>';
+    
+print '</div>';
+
+dol_fiche_end();
+
+if ($socid && $action == 'create' && $user->rights->wishlist->create)
 {
-	//dol_fiche_head('');
-
-	$sql = "SELECT d.rowid, d.libelle as label, d.subscription, d.vote, d.welcome, d.price, d.vote, d.automatic, d.automatic_renew, d.family, d.statut, d.morphy";
-	$sql.= " FROM ".MAIN_DB_PREFIX."adherent_type as d";
-	$sql.= " WHERE d.entity IN (".getEntity('adherent').")";
-
-	$result = $db->query($sql);
-	if ($result)
-	{
-		$num = $db->num_rows($result);
-		$nbtotalofrecords = $num;
-
-		$i = 0;
-
-		$param = '';
-
-		print '<form method="POST" action="'.$_SERVER["PHP_SELF"].'">';
-		if ($optioncss != '') print '<input type="hidden" name="optioncss" value="'.$optioncss.'">';
-		print '<input type="hidden" name="token" value="'.newToken().'">';
-		print '<input type="hidden" name="formfilteraction" id="formfilteraction" value="list">';
-		print '<input type="hidden" name="action" value="list">';
-		print '<input type="hidden" name="sortfield" value="'.$sortfield.'">';
-        print '<input type="hidden" name="page" value="'.$page.'">';
-		print '<input type="hidden" name="sortorder" value="'.$sortorder.'">';
-
-	    print_barre_liste($langs->trans("MembersTypes"), $page, $_SERVER["PHP_SELF"], $param, $sortfield, $sortorder, '', $num, $nbtotalofrecords, 'title_generic.png', 0, '', '', $limit);
-
-		$moreforfilter = '';
-
-		print '<div class="div-table-responsive">';
-		print '<table class="tagtable liste'.($moreforfilter?" listwithfilterbefore":"").'">'."\n";
-
-		print '<tr class="liste_titre">';
-		print '<th>'.$langs->trans("Ref").'</th>';
-		print '<th>'.$langs->trans("Label").'</th>';
-    print '<th class="center">'.$langs->trans("Nature").'</th>';
-    print '<th class="center">'.$langs->trans("GroupSubscription").'</th>';
-		print '<th class="center">'.$langs->trans("SubscriptionRequired").'</th>';
-		print '<th class="center">'.$langs->trans("VoteAllowed").'</th>';
-    print '<th class="center">'.$langs->trans("Validation").'</th>';
-    print '<th class="center">'.$langs->trans("Renewal").'</th>';
-    print '<th class="center">'.$langs->trans("Status").'</th>';
-		print '<th>&nbsp;</th>';
-		print "</tr>\n";
-
-		while ($i < $num)
-		{
-			$objp = $db->fetch_object($result);
-			print '<tr class="oddeven">';
-			print '<td><a href="'.$_SERVER["PHP_SELF"].'?rowid='.$objp->rowid.'">'.img_object($langs->trans("ShowType"),'group').' '.$objp->rowid.'</a></td>';
-			print '<td><a href="'.$_SERVER["PHP_SELF"].'?rowid='.$objp->rowid.'">'.dol_escape_htmltag($objp->label).'</a></td>';
-      print '<td align="center">';
-		if ($objp->morphy == 'phy') { print $langs->trans("Physical"); }
-		elseif ($objp->morphy == 'mor') { print $langs->trans("Moral"); } 
-    else print $langs->trans("Physical & Morale");    
-      print '</td>'; //'.$objp->getmorphylib($objp->morphy).'
-      print '<td class="center">'.yn($objp->family).'</td>';
-			print '<td class="center">'.yn($objp->subscription).'</td>';
-			print '<td class="center">'.yn($objp->vote).'</td>';
-      print '<td class="center">'.autoOrManual($objp->automatic).'</td>';
-      print '<td class="center">'.autoOrManual($objp->automatic_renew).'</td>';
-      print '<td class="center">';
-if ( !empty($objp->statut) ) print img_picto($langs->trans("InActivity"),'statut4');
-else print img_picto($langs->trans("ActivityCeased"),'statut5');     
-      print '</td>';
-			if ($user->rights->adherent->configurer)
-				print '<td class="right"><a href="'.$_SERVER["PHP_SELF"].'?action=edit&rowid='.$objp->rowid.'">'.img_edit().'</a></td>';
-			else
-				print '<td class="right">&nbsp;</td>';
-			print "</tr>";
-			$i++;
-		}
-		print "</table>";
-		print '</div>';
-
-		print '</form>';
-	}
-	else
-	{
-		dol_print_error($db);
-	}
+	print '<form action="'.$_SERVER["PHP_SELF"].'?socid='.$object->id.'" method="post">';
+	print '<input type="hidden" name="token" value="'.newToken().'">';
+	$actionforadd='add';
+	print '<input type="hidden" name="action" value="'.$actionforadd.'">';
 }
 
-
-
+if ($socid && $action == 'edit' && $user->rights->wishlist->create)
+{
+	print '<form action="'.$_SERVER["PHP_SELF"].'?socid='.$object->id.'" method="post">';
+	print '<input type="hidden" name="token" value="'.newToken().'">';
+	$actionforedit='update';
+	print '<input type="hidden" name="action" value="'.$actionforedit.'">';
+}
+    
 /* ************************************************************************** */
 /*                                                                            */
 /* View mode                                                                  */
 /*                                                                            */
 /* ************************************************************************** */
-if ($rowid > 0)
-{
-	if ($action != 'edit')
+	if ($action != 'create' && $action != 'edit')
 	{
-		$object = new AdherentTypePlus($db);
-		$object->fetch($rowid);
-		$object->fetch_optionals($rowid,$extralabels);
 
-		$head = memberplus_type_prepare_head($object);
-
-		dol_fiche_head($head, 'package', $langs->trans("MemberType"), -1, 'group');
-
-		$linkback = '<a href="'.DOL_URL_ROOT.'/adherents/type.php?restore_lastsearch_values=1">'.$langs->trans("BackToList").'</a>';
-
-		dol_banner_tab($object, 'rowid', $linkback);
-
-		print '<div class="fichecenter">';
-		print '<div class="underbanner clearboth"></div>';
-    
-    print '</div>';
-
-		dol_fiche_end();
 
 		// Show list of members (nearly same code than in page list.php)
 
@@ -582,9 +506,122 @@ if ($rowid > 0)
 		}
 
 	}
+  
+// Create Card
+if ($socid && $action == 'create' && $user->rights->wishlist->create)
+{
+	dol_fiche_head($head, 'wishlist', $langs->trans("ThirdParty"), 0, 'company');
 
+	$linkback = '<a href="'.DOL_URL_ROOT.'/societe/list.php">'.$langs->trans("BackToList").'</a>';
+
+	dol_banner_tab($object, 'socid', $linkback, ($user->societe_id?0:1), 'rowid', 'nom');
+
+	print '<div class="nofichecenter">';
+
+	print '<div class="underbanner clearboth"></div>';
+	print '<table class="border centpercent">';
+
+	print '<tr><td class="titlefieldcreate fieldrequired">'.$langs->trans("PredefinedProductsAndServicesToSell").'</td>';
+	print '<td>';
+  			if (! empty($conf->global->ENTREPOT_EXTRA_STATUS))
+			{
+				// hide products in closed warehouse, but show products for internal transfer
+				$form->select_produits(GETPOST('productid', 'int'), 'productid', $filtertype, $conf->product->limit_size, $object->price_level, 1, 2, '', 1, array(), $object->id, '1', 0, 'maxwidth300', 0, 'warehouseopen,warehouseinternal', GETPOST('combinations', 'array'));
+			}
+			else
+			{
+				$form->select_produits(GETPOST('productid', 'int'), 'productid', $filtertype, $conf->product->limit_size, $object->price_level, 1, 2, '', 1, array(), $object->id, '1', 0, 'maxwidth300', 0, '', GETPOST('combinations', 'array'));
+			}
+  print '</td></tr>';
+
+	print '<tr><td class="fieldrequired">'.$langs->trans("Qty").'</td>';
+	print '<td><input class="minwidth200" type="text" name="quantity" value="'.(GETPOST('quantity', 'int')?GETPOST('quantity', 'int'):1).'"></td></tr>';
+
+	print '<tr><td>'.$langs->trans("Target").'</td>';
+	print '<td><input class="minwidth200" type="text" name="target" value="'.GETPOST('target', 'int').'"></td></tr>';
+
+	print '<tr><td>'.$langs->trans("Rank").'</td>';
+	print '<td><input class="minwidth200" type="text" name="rank" value="'.(GETPOST('rank','int')?GETPOST('rank','int'):$wish->rang).'"></td></tr>';
+
+  // Visibility
+  print '<tr><td class="fieldrequired"><label for="priv">'.$langs->trans("ContactVisibility").'</label></td><td colspan="3">';
+  $selectarray=array('0'=>$langs->trans("ContactPublic"),'1'=>$langs->trans("ContactPrivate"));
+  print $form->selectarray('priv', $selectarray, $wish->priv, 0);
+  print '</td></tr>';
+
+	print '</table>';
+
+	print '</div>';
+
+	dol_fiche_end();
+
+	dol_set_focus('#label');
+
+	print '<div class="center">';
+	print '<input class="button" value="'.$langs->trans("Add").'" type="submit">';
+	print '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+	print '<input name="cancel" class="button" value="'.$langs->trans("Cancel").'" type="submit">';
+	print '</div>';
 }
 
+// Create Card
+if ($socid && $action == 'edit' && $user->rights->wishlist->create)
+{
+	dol_fiche_head($head, 'wishlist', $langs->trans("ThirdParty"), 0, 'company');
+
+	$linkback = '<a href="'.DOL_URL_ROOT.'/societe/list.php">'.$langs->trans("BackToList").'</a>';
+
+	dol_banner_tab($object, 'socid', $linkback, ($user->societe_id?0:1), 'rowid', 'nom');
+
+  $wish->fetch($lineid);  
+
+	print '<div class="nofichecenter">';
+
+	print '<div class="underbanner clearboth"></div>';
+	print '<table class="border centpercent">';
+
+	print '<tr><td class="titlefieldcreate fieldrequired">'.$langs->trans("PredefinedProductsAndServicesToSell").'</td>';
+	  $product_static = new Product($db);
+		$product_static->id = $wish->fk_product;
+		$product_static->ref = $wish->ref;
+    $product_static->label = $wish->label;
+    $product_static->type = $wish->fk_type;
+	print '<td>';
+	print $product_static->getNomUrl(1)." - ".$wish->label;
+	print "</td>";
+  print '</td></tr>';
+
+	print '<tr><td class="fieldrequired">'.$langs->trans("Qty").'</td>';
+	print '<td><input class="minwidth200" type="text" name="quantity" value="'.(GETPOST('quantity','int')?GETPOST('quantity','int'):$wish->qty).'"></td></tr>';
+
+	print '<tr><td>'.$langs->trans("Target").'</td>';
+	print '<td><input class="minwidth200" type="text" name="target" value="'.(GETPOST('target','int')?GETPOST('target','int'):$wish->target).'"></td></tr>';
+  
+	print '<tr><td>'.$langs->trans("Rank").'</td>';
+	print '<td><input class="minwidth200" type="text" name="rank" value="'.(GETPOST('rank','int')?GETPOST('rank','int'):$wish->rang).'"></td></tr>';
+  
+  // Visibility
+  print '<tr><td class="fieldrequired"><label for="priv">'.$langs->trans("ContactVisibility").'</label></td><td colspan="3">';
+  $selectarray=array('0'=>$langs->trans("ContactPublic"),'1'=>$langs->trans("ContactPrivate"));
+  print $form->selectarray('priv', $selectarray, $wish->priv, 0);
+  print '</td></tr>';
+
+	print '</table>';
+
+	print '</div>';
+
+	dol_fiche_end();
+
+	dol_set_focus('#label');
+
+	print '<div class="center"><input type="hidden" name="lineid" value="'.$lineid.'">';
+	print '<input class="button" value="'.$langs->trans("Edit").'" type="submit">';
+	print '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+	print '<input name="cancel" class="button" value="'.$langs->trans("Cancel").'" type="submit">';
+	print '</div>';
+}
+
+print '</form>';
 
 llxFooter();
 
