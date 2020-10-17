@@ -233,9 +233,10 @@ echo $langs->trans("None");
 <div style="position:absolute; left:5%; height:52%; width:92%;">
 <?php
 
-	$sql = "SELECT d.rowid, d.libelle as label, d.subscription, d.vote, d.statut as status, d.morphy";
+	$sql = "SELECT d.rowid, d.libelle as label, d.subscription, d.vote, d.morphy";
 	$sql .= " FROM ".MAIN_DB_PREFIX."adherent_type as d";
 	$sql .= " WHERE d.entity IN (".getEntity('member_type').")";
+	$sql .= " AND d.statut = '1'";  
   $sql .= " ORDER BY d.libelle ASC";
 
 	$result = $db->query($sql);
@@ -252,7 +253,7 @@ echo $langs->trans("None");
       $membertype->fetch($objp->rowid);
       $membertype->subscription_calculator($adh->id);
 if (empty($membertype->morphy) || ($membertype->morphy == $adh->morphy)) {
-if ($adh->datefin <= $membertype->date_end) {    
+if ($adh->datefin < $membertype->date_end) {    
 print '<button type="button" class="';
 if ($membertype->id == $adh->typeid) { 
 print "calcbutton poscolorblue";
@@ -263,7 +264,7 @@ print '" onclick="location.href=\'takepos_subscription.php?action=change&idmembe
 print '('.price($membertype->price_prorata).' '.$langs->trans("Currency".$conf->currency);
 if ($membertype->price_prorata != $membertype->nextprice) { print ' '.$langs->trans("then").' '.price($membertype->nextprice).' '.$langs->trans("Currency".$conf->currency); }
 print ')<br>';
-print ''.dol_print_date($membertype->date_begin, 'day').' - '.dol_print_date($membertype->date_end, 'day');
+print dol_print_date($membertype->date_begin, 'day').' - '.dol_print_date($membertype->date_end, 'day');
 print '</small></button>';
 } else {
 print '<button type="button" class="';
@@ -276,7 +277,7 @@ print '" disabled="disabled">'.dol_escape_htmltag($membertype->label).'<br><smal
 print '('.price($membertype->price_prorata).' '.$langs->trans("Currency".$conf->currency);
 if ($membertype->price_prorata != $membertype->nextprice) { print ' '.$langs->trans("then").' '.price($membertype->nextprice).' '.$langs->trans("Currency".$conf->currency); }
 print ')<br>';
-print ''.dol_print_date($membertype->date_begin, 'day').' - '.dol_print_date($membertype->date_end, 'day');
+print $langs->trans("Disabled");
 print '</small></button>';
 }
 }
