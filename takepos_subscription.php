@@ -251,8 +251,8 @@ echo $langs->trans("None");
       $membertype = new AdherentTypePlus($db); 
       $membertype->fetch($objp->rowid);
       $membertype->subscription_calculator($adh->id);
-//if (($adh->datefin <= dol_now()) || ($membertype->date_renew <= dol_now()) || ($adh->datefin < $membertype->date_renew)) { 
-if (empty($membertype->morphy) || ($membertype->morphy == $adh->morphy)) {    
+if (empty($membertype->morphy) || ($membertype->morphy == $adh->morphy)) {
+if ($adh->datefin <= $membertype->date_end) {    
 print '<button type="button" class="';
 if ($membertype->id == $adh->typeid) { 
 print "calcbutton poscolorblue";
@@ -265,6 +265,20 @@ if ($membertype->price_prorata != $membertype->nextprice) { print ' '.$langs->tr
 print ')<br>';
 print ''.dol_print_date($membertype->date_begin, 'day').' - '.dol_print_date($membertype->date_end, 'day');
 print '</small></button>';
+} else {
+print '<button type="button" class="';
+if ($membertype->id == $adh->typeid) { 
+print "calcbutton poscolorblue";
+} else {
+print "calcbutton poscolordelete";
+}
+print '" disabled="disabled">'.dol_escape_htmltag($membertype->label).'<br><small>';
+print '('.price($membertype->price_prorata).' '.$langs->trans("Currency".$conf->currency);
+if ($membertype->price_prorata != $membertype->nextprice) { print ' '.$langs->trans("then").' '.price($membertype->nextprice).' '.$langs->trans("Currency".$conf->currency); }
+print ')<br>';
+print ''.dol_print_date($membertype->date_begin, 'day').' - '.dol_print_date($membertype->date_end, 'day');
+print '</small></button>';
+}
 }
 			$i++;
 		}
