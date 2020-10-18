@@ -260,7 +260,7 @@ if ($rowid && $action == 'edit' && $user->rights->adherent->creer)
 
 		$now=dol_now();
 
-		$sql = "SELECT t.rowid, t.fk_type as type, t.fk_product as product, t.qty, t.date_creation, t.date_closing";
+		$sql = "SELECT t.rowid as id, t.fk_type as type, t.fk_product as product, t.qty, t.date_creation, t.date_closing";
 		$sql .= ", p.ref as ref, p.label as label";
 		$sql.= " FROM ".MAIN_DB_PREFIX."adherent_type_package as t";
     $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."product as p ON p.rowid = t.fk_product";
