@@ -686,7 +686,7 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
 		$sql .= ", p.ref as ref, p.label as label, p.fk_product_type";
 		$sql.= " FROM ".MAIN_DB_PREFIX."adherent_type_package as t";
     $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."product as p ON p.rowid = t.fk_product";
-		$sql.= " WHERE t.entity IN (".getEntity('adherent').")";
+		$sql.= " WHERE t.entity IN (".getEntity('member_type').")";
 		$sql.= " AND t.rowid = ".$rowid; 
 
 		dol_syslog(get_class($this)."::fetch", LOG_DEBUG);
@@ -1156,7 +1156,7 @@ return 1;
 
         $sql = "SELECT rowid, libelle as label, welcome, price, federal, morphy, automatic, automatic_renew, use_default, note";
         $sql.= " FROM ".MAIN_DB_PREFIX."adherent_type";
-	      $sql.= " WHERE entity IN (".getEntity('adherent').")";
+	      $sql.= " WHERE entity IN (".getEntity('member_type').")";
 
         $resql=$this->db->query($sql);
         if ($resql)
