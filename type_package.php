@@ -64,6 +64,8 @@ $cancel = GETPOST('cancel','alpha');
 $lineid  = GETPOST('lineid','int');
 
 $qty  = GETPOST('qty','int');
+$date_start      = dol_mktime(0, 0, 0, GETPOST('date_start_month', 'int'), GETPOST('date_start_day', 'int'), GETPOST('date_start_year', 'int'));
+$date_end        = dol_mktime(0, 0, 0, GETPOST('date_end_month', 'int'), GETPOST('date_end_day', 'int'), GETPOST('date_end_year', 'int'));
 
 $search_ref	= GETPOST('search_ref','alpha');
 $search_label		= GETPOST('search_label','alpha');
@@ -153,6 +155,8 @@ if ($action == 'update' && $user->rights->adherent->configurer)
 		$object = new AdherentTypePlus($db);
 		$object->lineid     = $lineid;
 		$object->qty        = $qty;
+    $object->date_start = $date_start;
+    $object->date_end = $date_end;
 
 		// Fill array 'array_options' with data from add form
 		$ret = $extrafields->setOptionalsFromPost($extralabels,$object);
@@ -225,7 +229,7 @@ if ($rowid && $action == 'edit' && $user->rights->adherent->creer)
 
 		$now=dol_now();
 
-		$sql = "SELECT t.rowid as id, t.fk_type as type, t.fk_product as product, t.qty, t.date_creation, t.date_closing";
+		$sql = "SELECT t.rowid as id, t.fk_type as type, t.fk_product as product, t.qty, t.date_start, t.date_end";
 		$sql .= ", p.ref as ref, p.label as label";
 		$sql.= " FROM ".MAIN_DB_PREFIX."adherent_type_package as t";
     $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."product as p ON p.rowid = t.fk_product";
@@ -329,14 +333,14 @@ if ($rowid && $action == 'edit' && $user->rights->adherent->creer)
 
 		        // Date begin
 		        print '<td class="nowrap">';
-		        print dol_print_date($objp->date_creation,'dayhour');
+		        print dol_print_date($objp->date_start,'day');
 		        print "</td>";
 
 		        // Date end
-		        if ($objp->date_closing)
+		        if ($objp->date_end)
 		        {
 			        print '<td align="center" class="nowrap">';
-		          print dol_print_date($objp->date_closing,'dayhour');
+		          print dol_print_date($objp->date_end,'day');
 		          print '</td>';
 		        }
 		        else
