@@ -86,17 +86,7 @@ $result=restrictedArea($user,'adherent',$rowid,'adherent_type');
 $extrafields = new ExtraFields($db);
 
 // fetch optionals attributes and labels
-$extralabels=$extrafields->fetch_name_optionals_label('adherent_type');
-
-if (GETPOST('button_removefilter_x','alpha') || GETPOST('button_removefilter_x','alpha') || GETPOST('button_removefilter','alpha')) // All tests are required to be compatible with all browsers
-{
-    $search_lastname="";
-    $search_login="";
-    $search_email="";
-    $type="";
-    $sall="";
-}
-
+$extralabels=$extrafields->fetch_name_optionals_label('adherent_type_package');
 
 // Initialize technical object to manage hooks of page. Note that conf->hooks_modules contains array of hook context
 $hookmanager->initHooks(array('membertypecard','globalcard'));
@@ -134,7 +124,7 @@ if ($action == 'add' && $user->rights->adherent->configurer)
 
 		if ($object->label)
 		{
-			$id=$object->create($user);
+			$id=$object->create_package($user);
 			if ($id > 0)
 			{
 				header("Location: ".$_SERVER["PHP_SELF"]."?rowid=".$rowid);
@@ -179,7 +169,7 @@ if ($action == 'update' && $user->rights->adherent->configurer)
 		$ret = $extrafields->setOptionalsFromPost($extralabels,$object);
 		if ($ret < 0) $error++;
 
-		$object->update($user);
+		$object->update_package($user);
 
 		header("Location: ".$_SERVER["PHP_SELF"]."?rowid=".$rowid);
 		exit;
