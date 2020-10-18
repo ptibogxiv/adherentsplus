@@ -65,7 +65,7 @@ $lineid  = GETPOST('lineid','int');
 
 $qty  = GETPOST('qty','int');
 $date_start      = dol_mktime(0, 0, 0, GETPOST('date_start_month', 'int'), GETPOST('date_start_day', 'int'), GETPOST('date_start_year', 'int'));
-$date_end        = dol_mktime(0, 0, 0, GETPOST('date_end_month', 'int'), GETPOST('date_end_day', 'int'), GETPOST('date_end_year', 'int'));
+if (!empty(GETPOST('date_end_month', 'int')) && !empty(GETPOST('date_end_day', 'int')) && !empty(GETPOST('date_end_year', 'int'))) $date_end = dol_mktime(0, 0, 0, GETPOST('date_end_month', 'int'), GETPOST('date_end_day', 'int'), GETPOST('date_end_year', 'int'));
 
 $search_ref	= GETPOST('search_ref','alpha');
 $search_label		= GETPOST('search_label','alpha');

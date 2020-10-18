@@ -742,10 +742,12 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
         
 		$this->db->begin();
 		
+    $date_end = (!empty($this->date_end) ? "'".$this->db->idate($this->date_end)."'" : "null");
+    
 		$sql = "UPDATE ".MAIN_DB_PREFIX."adherent_type_package";
     $sql.= " SET qty = '".$this->db->escape(GETPOST('quantity', 'int'))."',";
     $sql .= " date_start='".$this->db->idate($this->date_start)."',";
-    $sql .= " date_end='".$this->db->idate($this->date_end)."'";
+    $sql .= " date_end=".$date_end."";
     //$sql.= ", target = '".(!empty(GETPOST('target', 'int'))?$db->escape(GETPOST('target', 'int')):0)."'";
     //$sql.= ", fk_user_mod = ".($user->id>0?$user->id:"null");	// Can be null because member can be created by a guest or a script
     //$sql.= ", rang = '".(!empty(GETPOST('rank', 'int'))?$db->escape(GETPOST('rank', 'int')):0)."'";
