@@ -61,7 +61,7 @@ $langs->load("adherentsplus@adherentsplus");
 $rowid  = GETPOST('rowid','int');
 $action = GETPOST('action','alpha');
 $cancel = GETPOST('cancel','alpha');
-$lineid  = GETPOST('rowid','int');
+$lineid  = GETPOST('lineid','int');
 
 $search_ref	= GETPOST('search_ref','alpha');
 $search_label		= GETPOST('search_label','alpha');
