@@ -626,6 +626,8 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
 
 		$error = 0;
     
+    $this->db->begin();
+    
     $date_end = (!empty($this->date_end) ? "'".$this->db->idate($this->date_end)."'" : "null");
 		
 		$sql = "INSERT INTO ".MAIN_DB_PREFIX."adherent_type_package";
@@ -727,9 +729,9 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
 	/**
 	 *    Update package from database
 	 * 
-	 * @param 	Facture 	$facture	Invoice object
-	 * @param 	double 		$points		Points to add/remove
-	 * @param 	string 		$typemov	Type of movement (increase to add, decrease to remove)
+	 * @param  User $user      User that creates
+	 * @param  bool $notrigger false=launch triggers after, true=disable triggers
+	 * 
 	 * @return int			<0 if KO, >0 if OK
 	 */
     public function update_package($user, $notrigger = 0)
