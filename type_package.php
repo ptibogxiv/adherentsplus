@@ -63,6 +63,8 @@ $action = GETPOST('action','alpha');
 $cancel = GETPOST('cancel','alpha');
 $lineid  = GETPOST('lineid','int');
 
+$qty  = GETPOST('qty','int');
+
 $search_ref	= GETPOST('search_ref','alpha');
 $search_label		= GETPOST('search_label','alpha');
 $search_qty		= GETPOST('search_qty','int');
@@ -149,22 +151,9 @@ if ($action == 'update' && $user->rights->adherent->configurer)
 	if (! $cancel)
 	{
 		$object = new AdherentTypePlus($db);
-		$object->id             = $rowid;
-		$object->label        = trim($label);
-    $object->statut         = trim($statut);
-    $object->morphy         = trim($morphy);
-		$object->subscription   = (int) trim($subscription);
-		$object->note           = trim($comment);
-		$object->mail_valid     = (boolean) trim($mail_valid);
-		$object->vote           = (boolean) trim($vote);
-    $object->family           = (boolean) trim($family);
-    $object->welcome     = price2num($welcome);
-    $object->price       = price2num($price);
-    $object->price_level       = trim($price_level?$price_level:'1');
-    $object->duration_value     	 = $duration_value;
-    $object->duration_unit      	 = $duration_unit;
-    $object->automatic   = (boolean) trim($automatic);
-    $object->automatic_renew   = (boolean) trim($automatic_renew);
+		$object->lineid     = $lineid;
+		$object->qty        = $qty;
+
 		// Fill array 'array_options' with data from add form
 		$ret = $extrafields->setOptionalsFromPost($extralabels,$object);
 		if ($ret < 0) $error++;
