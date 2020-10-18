@@ -441,8 +441,16 @@ if ($rowid && $action == 'create' && $user->rights->adherent->creer)
 			}
   print '</td></tr>';
 
-	print '<tr><td class="fieldrequired">'.$langs->trans("Qty").'</td>';
-	print '<td><input class="minwidth200" type="text" name="quantity" value="'.(GETPOST('quantity', 'int')?GETPOST('quantity', 'int'):1).'"></td></tr>';
+  print '<tr><td class="fieldrequired">'.$langs->trans("Qty").'</td>';
+  print '<tr><td class="fieldrequired">'.$langs->trans("Qty").'</td>';
+	print '<td><input class="minwidth200" type="text" name="quantity" value="'.(GETPOST('quantity','int')?GETPOST('quantity','int'):$wish->qty).'"></td></tr>';
+    print '<tr><td class="titlefieldcreate fieldrequired">'.$langs->trans("DateStart").'</td><td>';
+    $form->select_date($date_start, 'date_start_', '', '', '', "date_start", 1, 1);
+    print '</td></tr>';
+    print '<tr><td>'.$langs->trans("DateEnd").'</td><td>';
+    $form->select_date($date_end, 'date_end_', '', '', '', "date_end", 1, 1);
+    print '</td>';
+  print '</tr>';
 
 	print '</table>';
 
@@ -463,7 +471,7 @@ if ($rowid && $action == 'create' && $user->rights->adherent->creer)
 if ($rowid && $action == 'edit' && $user->rights->adherent->creer)
 {
 
-  $wish->fetch($lineid);  
+  //$wish->fetch($lineid);  
 
 	print '<div class="nofichecenter">';
 
@@ -476,13 +484,16 @@ if ($rowid && $action == 'edit' && $user->rights->adherent->creer)
 		$product_static->ref = $wish->ref;
     $product_static->label = $wish->label;
     $product_static->type = $wish->fk_type;
-	print '<td>';
-	print $product_static->getNomUrl(1)." - ".$wish->label;
-	print "</td>";
-  print '</td></tr>';
-
-	print '<tr><td class="fieldrequired">'.$langs->trans("Qty").'</td>';
+	print '<td>'.$product_static->getNomUrl(1)." - ".$wish->label.'</td></tr>';
+  print '<tr><td class="fieldrequired">'.$langs->trans("Qty").'</td>';
 	print '<td><input class="minwidth200" type="text" name="quantity" value="'.(GETPOST('quantity','int')?GETPOST('quantity','int'):$wish->qty).'"></td></tr>';
+    print '<tr><td class="titlefieldcreate fieldrequired">'.$langs->trans("DateStart").'</td><td>';
+    $form->select_date($date_start, 'date_start_', '', '', '', "date_start", 1, 1);
+    print '</td></tr>';
+    print '<tr><td>'.$langs->trans("DateEnd").'</td><td>';
+    $form->select_date($date_end, 'date_end_', '', '', '', "date_end", 1, 1);
+    print '</td>';
+  print '</tr>';
 
 	print '</table>';
 
