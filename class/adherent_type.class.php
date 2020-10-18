@@ -613,20 +613,20 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
 	/**
 	 *    Create package from database
 	 * 
-	 * @param 	Facture 	$user	Invoice object
-	 * @param 	double 		$notrigger		Points to add/remove
-	 * @return int			<0 if KO, >0 if OK
+	 * @param  User $user      User that creates
+	 * @param  bool $notrigger false=launch triggers after, true=disable triggers
+	 *
+	 * @return int <0 if KO, Id of created object if OK
 	 */
-    public function create_package($user, $notrigger = 0)
+    public function create_package(User $user, $notrigger = false)
 	{
-		global $conf,$user;
-    $error = 0;
-    
-		$now=dol_now();
+	    global $conf,$langs;
+
+        dol_syslog(get_class($this)."::create user=".$user->id);
+
+		$error = 0;
     
     $date_end = (!empty($this->date_end) ? "'".$this->db->idate($this->date_end)."'" : "null");
-        
-		$this->db->begin();
 		
 		$sql = "INSERT INTO ".MAIN_DB_PREFIX."adherent_type_package";
 		$sql.= " (entity, date_start, date_end, fk_type, fk_product, qty)";
@@ -639,33 +639,35 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
     $sql.= " qty = '".$this->db->escape($this->qty)."'";
 		$sql.= ")";
 		
-		dol_syslog(get_class($this)."::create::insert sql=".$sql, LOG_DEBUG);
-		if (! $this->db->query($sql) )
-		{
-			dol_syslog(get_class($this)."::create::insert error", LOG_ERR);
-			$error++;
+		$this->db->begin();
+
+		$resql = $this->db->query($sql);
+		if (!$resql) {
+			$error ++;
+			$this->errors[] = 'Error ' . $this->db->lasterror();
+            dol_syslog(get_class($this)."::create ".join(',', $this->errors), LOG_ERR);
 		}
-		
-		if (! $error)
-		{
-				if (! $notrigger)
-				{
-					// Call trigger
-					$result=$this->call_trigger('WISH_CREATE', $user);
-					if ($result < 0) { $error++; }
-					// End call triggers
-				}
-    
-			dol_syslog(get_class($this)."::create by $user->id", LOG_DEBUG);
-			$this->db->commit();
-			return 1;
+
+		if (!$error) {
+			$this->id = $this->db->last_insert_id(MAIN_DB_PREFIX."adherent_type_package");
+
+			if (!$notrigger) {
+				//// Call triggers
+				//$result=$this->call_trigger('DISCOUNT_PRICE_CREATE',$user);
+				//if ($result < 0) $error++;
+				//// End call triggers
+			}
 		}
-		else
-		{
-			$this->error=$this->db->lasterror();
-			dol_syslog(get_class($this)."::create ".$this->error, LOG_ERR);
+
+		// Commit or rollback
+		if ($error) {
 			$this->db->rollback();
-			return -1;
+
+			return - 1 * $error;
+		} else {
+			$this->db->commit();
+
+			return $this->id;
 		}
 	}
     

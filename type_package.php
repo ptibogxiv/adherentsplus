@@ -87,6 +87,7 @@ if (! $sortorder) {  $sortorder="DESC"; }
 // Security check
 $result=restrictedArea($user,'adherent',$rowid,'adherent_type');
 
+$object = new AdherentTypePlus($db);
 $extrafields = new ExtraFields($db);
 
 // fetch optionals attributes and labels
@@ -104,7 +105,6 @@ if ($action == 'add' && $user->rights->adherent->configurer)
 {
 	if (! $cancel)
 	{
-		$object = new AdherentTypePlus($db);
 		$object->fk_type    = $rowid;
     $object->fk_product = $productid;
 		$object->lineid     = $lineid;
@@ -118,9 +118,8 @@ if ($action == 'add' && $user->rights->adherent->configurer)
 
 		if ($object->fk_product && $object->qty)
 		{
-			$id=$object->create_package($user);
-			if ($id > 0)
-			{
+			$result = $object->create_package($user);
+			if ($result > 0) {
 				header("Location: ".$_SERVER["PHP_SELF"]."?rowid=".$rowid);
 				exit;
 			}
@@ -142,7 +141,6 @@ if ($action == 'update' && $user->rights->adherent->configurer)
 {
 	if (! $cancel)
 	{
-		$object = new AdherentTypePlus($db);
 		$object->lineid     = $lineid;
 		$object->qty        = $qty;
     $object->date_start = $date_start;
