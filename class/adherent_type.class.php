@@ -719,13 +719,18 @@ $datewf = $date->getTimestamp();
                                
 if (!empty($prorata)) {
 if (!empty($this->prorata)) {
-$date = new DateTime(); 
-$date->modify('NOW');
+if ($daterenew > $abo && $abo > $datefrom) {
+$date = new DateTime($abo);
+$date->modify('+1 SECONDS');
+} else {
+$date = new DateTime();
+$date->modify('NOW');   
+} 
 } elseif ($daterenew > $abo && $abo > $datefrom) {
 $date = new DateTime($abo);
 $date->modify('+1 SECONDS');  
 } elseif ($this->duration_unit == 'y') {
-$date = new DateTime($datefrom);
+$date = new DateTime($datefrom);  
 } elseif ($this->duration_unit == 'd') {
 $date = new DateTime();  
 $date->modify('MIDNIGHT');
