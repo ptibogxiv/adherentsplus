@@ -61,6 +61,7 @@ $langs->load("adherentsplus@adherentsplus");
 $rowid  = GETPOST('rowid','int');
 $action = GETPOST('action','alpha');
 $cancel = GETPOST('cancel','alpha');
+$lineid  = GETPOST('rowid','int');
 
 $search_ref	= GETPOST('search_ref','alpha');
 $search_label		= GETPOST('search_label','alpha');
@@ -79,21 +80,6 @@ $pagenext = $page + 1;
 if (! $sortorder) {  $sortorder="DESC"; }
 //if (! $sortfield) {  $sortfield="d.lastname"; }
 
-$label=GETPOST("label","alpha");
-$statut=GETPOST("statut","int");
-$morphy=GETPOST("morphy","alpha");
-$subscription=GETPOST("subscription","int");
-$family=GETPOST("family","int");
-$vote=GETPOST("vote","int");
-$comment=GETPOST("comment");
-$mail_valid=GETPOST("mail_valid");
-$welcome=GETPOST("welcome","alpha");
-$price=GETPOST("price","alpha");
-$price_level=GETPOST("price_level","int");
-$duration_value = GETPOST('duration_value', 'int');
-$duration_unit = GETPOST('duration_unit', 'alpha');
-$automatic=GETPOST("automatic","int");
-$automatic_renew=GETPOST("automatic_renew","int");
 // Security check
 $result=restrictedArea($user,'adherent',$rowid,'adherent_type');
 
@@ -470,7 +456,7 @@ if ($rowid && $action == 'create' && $user->rights->adherent->creer)
 if ($rowid && $action == 'edit' && $user->rights->adherent->creer)
 {
 
-  //$wish->fetch($lineid);  
+  $object->fetch_package($lineid);  
 
 	print '<div class="nofichecenter">';
 
@@ -479,18 +465,18 @@ if ($rowid && $action == 'edit' && $user->rights->adherent->creer)
 
 	print '<tr><td class="titlefieldcreate fieldrequired">'.$langs->trans("PredefinedProductsAndServicesToSell").'</td>';
 	  $product_static = new Product($db);
-		$product_static->id = $wish->fk_product;
-		$product_static->ref = $wish->ref;
-    $product_static->label = $wish->label;
-    $product_static->type = $wish->fk_type;
-	print '<td>'.$product_static->getNomUrl(1)." - ".$wish->label.'</td></tr>';
+		$product_static->id = $object->fk_product;
+		$product_static->ref = $object->ref;
+    $product_static->label = $object->label;
+    $product_static->type = $object->fk_product_type;
+	print '<td>'.$product_static->getNomUrl(1)." - ".$object->label.'</td></tr>';
   print '<tr><td class="fieldrequired">'.$langs->trans("Qty").'</td>';
-	print '<td><input class="minwidth200" type="text" name="quantity" value="'.(GETPOST('quantity','int')?GETPOST('quantity','int'):$wish->qty).'"></td></tr>';
+	print '<td><input class="minwidth200" type="text" name="quantity" value="'.(GETPOST('quantity','int')?GETPOST('quantity','int'):$object->qty).'"></td></tr>';
     print '<tr><td class="titlefieldcreate fieldrequired">'.$langs->trans("DateStart").'</td><td>';
-    $form->select_date($date_start, 'date_start_', '', '', '', "date_start", 1, 1);
+    $form->select_date($object->date_start, 'date_start_', '', '', '', "date_start", 1, 1);
     print '</td></tr>';
     print '<tr><td>'.$langs->trans("DateEnd").'</td><td>';
-    $form->select_date($date_end, 'date_end_', '', '', '', "date_end", 1, 1);
+    $form->select_date($object->date_end, 'date_end_', '', '', '', "date_end", 1, 1);
     print '</td>';
   print '</tr>';
 

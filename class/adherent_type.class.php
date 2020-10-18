@@ -611,6 +611,59 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
     }
     
 	/**
+	 *    Load package from database
+	 *
+	 *	@param	int		$rowid      			Id of object to load
+	 *  @return   int		            <0 if KO, 0 if not found, >0 if OK
+	 */
+	public function fetch_package($rowid)
+	{
+		$sql = "SELECT t.rowid as id, t.fk_type as type, t.fk_product as product, t.qty, t.date_creation, t.tms, t.date_closing";
+		$sql .= ", p.ref as ref, p.label as label, p.fk_product_type";
+		$sql.= " FROM ".MAIN_DB_PREFIX."adherent_type_package as t";
+    $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."product as p ON p.rowid = t.fk_product";
+		$sql.= " WHERE t.entity IN (".getEntity('adherent').")";
+		$sql.= " AND t.rowid = ".$rowid; 
+
+		dol_syslog(get_class($this)."::fetch", LOG_DEBUG);
+		$resql = $this->db->query($sql);
+		if ($resql)
+		{
+			if ($this->db->num_rows($resql))
+			{
+				$obj = $this->db->fetch_object($resql);
+        $this->id             = $obj->id;
+        $this->socid          = $obj->fk_soc;
+        $this->fk_product     = $obj->product;
+        $this->ref            = $obj->ref;
+        $this->label          = $obj->label;
+        $this->fk_type        = $obj->type;
+        $this->fk_product_type= $obj->fk_product_type;
+        $this->qty            = $obj->qty;
+        $this->rang           = $obj->rang;
+        $this->date_start  = $this->db->jdate($obj->date_creation);
+        $this->date_end = $this->db->jdate($obj->date_closing);
+        $this->date_modification = $this->db->jdate($obj->tms);
+        $this->user_author_id    = $obj->fk_user_author;
+        $this->user_modification = $obj->fk_user_mod;
+
+				$this->db->free($resql);
+				return 1;
+			}
+			else
+			{
+				$this->db->free($resql);
+				return 0;
+			}
+		}
+		else
+		{
+			dol_print_error($this->db);
+			return -1;
+		}
+	}
+    
+	/**
 	 *  Function that retrieves the data of a type
 	 *
 	 *  @param 		int		$rowid			Id of member to load
