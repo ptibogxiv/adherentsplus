@@ -100,7 +100,6 @@ $reshook = array();
 <?php
 $reshook[] = array('title'=>'<span class="fas fa-users paddingrightonly"></span><div class="trunc">'.$langs->trans("Subscription").'</div>', 'action'=>'Customer33();');
 
-if ($conf->global->MAIN_FEATURES_LEVEL > 1) {  
 if (!empty($conf->global->ADHERENT_CONSUMPTION)) {
 ?>
 <script language="javascript"> 
@@ -111,8 +110,7 @@ function CloseBillConsumption() {
 }
 </script>
 <?php 
-$reshook[] = array('title'=>'<span class="fas fa-users paddingrightonly"></span><div class="trunc">'.$langs->trans("Consumptions").'</div>', 'action'=>'CloseBillConsumption();');
-}  
+$reshook[] = array('title'=>'<span class="fas fa-users paddingrightonly"></span><div class="trunc">'.$langs->trans("Consumptions").'</div>', 'action'=>'CloseBillConsumption();');  
 
 } 
 
