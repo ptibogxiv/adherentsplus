@@ -442,7 +442,6 @@ if ($rowid && $action == 'create' && $user->rights->adherent->creer)
   print '</td></tr>';
 
   print '<tr><td class="fieldrequired">'.$langs->trans("Qty").'</td>';
-  print '<tr><td class="fieldrequired">'.$langs->trans("Qty").'</td>';
 	print '<td><input class="minwidth200" type="text" name="quantity" value="'.(GETPOST('quantity','int')?GETPOST('quantity','int'):$wish->qty).'"></td></tr>';
     print '<tr><td class="titlefieldcreate fieldrequired">'.$langs->trans("DateStart").'</td><td>';
     $form->select_date($date_start, 'date_start_', '', '', '', "date_start", 1, 1);
