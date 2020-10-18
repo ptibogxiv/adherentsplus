@@ -62,8 +62,8 @@ $rowid  = GETPOST('rowid','int');
 $action = GETPOST('action','alpha');
 $cancel = GETPOST('cancel','alpha');
 $lineid  = GETPOST('lineid','int');
-
-$qty  = GETPOST('qty','int');
+$productid  = GETPOST('productid','int');
+$qty  = GETPOST('quantity','int');
 $date_start      = dol_mktime(0, 0, 0, GETPOST('date_start_month', 'int'), GETPOST('date_start_day', 'int'), GETPOST('date_start_year', 'int'));
 if (!empty(GETPOST('date_end_month', 'int')) && !empty(GETPOST('date_end_day', 'int')) && !empty(GETPOST('date_end_year', 'int'))) $date_end = dol_mktime(0, 0, 0, GETPOST('date_end_month', 'int'), GETPOST('date_end_day', 'int'), GETPOST('date_end_year', 'int'));
 
@@ -105,22 +105,12 @@ if ($action == 'add' && $user->rights->adherent->configurer)
 	if (! $cancel)
 	{
 		$object = new AdherentTypePlus($db);
-
-    $object->welcome     = price2num($welcome);
-    $object->price       = price2num($price);
-    $object->price_level       = trim($price_level?$price_level:'1');
-    $object->automatic   = (boolean) trim($automatic);
-    $object->automatic_renew   = (boolean) trim($automatic_renew);
-    $object->family   = (boolean) trim($family);
-		$object->label			= trim($label);
-    $object->statut         = trim($statut);
-    $object->morphy         = trim($morphy);
-		$object->subscription	= (int) trim($subscription);
-    $object->duration_value     	 = $duration_value;
-    $object->duration_unit      	 = $duration_unit;
-		$object->note			= trim($comment);
-		$object->mail_valid		= (boolean) trim($mail_valid);
-		$object->vote			= (boolean) trim($vote);
+		$object->type       = $rowid;
+    $object->fk_product = $productid;
+		$object->lineid     = $lineid;
+		$object->qty        = $qty;
+    $object->date_start = $date_start;
+    $object->date_end = $date_end;
 
 		// Fill array 'array_options' with data from add form
 		$ret = $extrafields->setOptionalsFromPost($extralabels,$object);
@@ -158,7 +148,7 @@ if ($action == 'update' && $user->rights->adherent->configurer)
     $object->date_start = $date_start;
     $object->date_end = $date_end;
 
-		// Fill array 'array_options' with data from add form
+		// Fill array 'array_options' with data from updateform
 		$ret = $extrafields->setOptionalsFromPost($extralabels,$object);
 		if ($ret < 0) $error++;
 
@@ -454,7 +444,7 @@ if ($rowid && $action == 'edit' && $user->rights->adherent->creer)
     $product_static->type = $object->fk_product_type;
 	print '<td>'.$product_static->getNomUrl(1)." - ".$object->label.'</td></tr>';
   print '<tr><td class="fieldrequired">'.$langs->trans("Qty").'</td>';
-	print '<td><input class="minwidth50" type="text" name="quantity" value="'.(GETPOST('quantity','int')?GETPOST('quantity','int'):$object->qty).'"></td></tr>';
+	print '<td><input class="minwidth50" type="text" name="quantity" value="'.($qty?$qty:$object->qty).'"></td></tr>';
     print '<tr><td class="titlefieldcreate fieldrequired">'.$langs->trans("DateStart").'</td><td>';
     $form->select_date($object->date_start, 'date_start_', '', '', '', "date_start", 1, 1);
     print '</td></tr>';

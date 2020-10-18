@@ -625,23 +625,19 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
     
 		$now=dol_now();
     
-    if (! $this->datec) $this->datec=$now;
+    $date_end = (!empty($this->date_end) ? "'".$this->db->idate($this->date_end)."'" : "null");
         
 		$this->db->begin();
 		
 		$sql = "INSERT INTO ".MAIN_DB_PREFIX."adherent_type_package";
-		$sql.= " (datec, fk_user_author, fk_user_mod, fk_product, fk_soc, qty, target, rang, priv, entity)";
-		$sql.= " VALUES (";
-    $sql.= " '".$this->db->idate($this->datec)."'";
-		$sql.= ", ".($user->id>0?$user->id:"null");	// Can be null because member can be created by a guest or a script
-		$sql.= ", null";    
-		$sql.= ", '".$this->db->escape($this->fk_product)."'";
-		$sql.= ", '".$this->db->escape($this->fk_soc)."'";
-    $sql.= ", '".$this->db->escape($this->qty)."'";
-    $sql.= ", '".(! empty($this->target) ? $this->db->escape($this->target) : "0")."'";
-    $sql.= ", '".(! empty($this->rang) ? $this->db->escape($this->rang) : "0")."'";
-    $sql.= ", '".$this->db->escape($this->priv)."'";
-		$sql.= ", ".$conf->entity;
+		$sql.= " (entity, date_start, date_end, fk_type, fk_product, qty)";
+		$sql.= " VALUES ("; 		
+    $sql.= " ".$conf->entity;
+    $sql.= " date_start='".$this->db->idate($this->date_start)."',";
+    $sql.= " date_end=".$date_end.",";
+    $sql.= " fk_type = '".$this->db->escape($this->fk_type)."',";
+    $sql.= " fk_product = '".$this->db->escape($this->fk_product)."',";
+    $sql.= " qty = '".$this->db->escape($this->qty)."'";
 		$sql.= ")";
 		
 		dol_syslog(get_class($this)."::create::insert sql=".$sql, LOG_DEBUG);
@@ -745,12 +741,9 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
     $date_end = (!empty($this->date_end) ? "'".$this->db->idate($this->date_end)."'" : "null");
     
 		$sql = "UPDATE ".MAIN_DB_PREFIX."adherent_type_package";
-    $sql.= " SET qty = '".$this->db->escape(GETPOST('quantity', 'int'))."',";
-    $sql .= " date_start='".$this->db->idate($this->date_start)."',";
-    $sql .= " date_end=".$date_end."";
-    //$sql.= ", target = '".(!empty(GETPOST('target', 'int'))?$db->escape(GETPOST('target', 'int')):0)."'";
-    //$sql.= ", fk_user_mod = ".($user->id>0?$user->id:"null");	// Can be null because member can be created by a guest or a script
-    //$sql.= ", rang = '".(!empty(GETPOST('rank', 'int'))?$db->escape(GETPOST('rank', 'int')):0)."'";
+    $sql.= " SET qty = '".$this->db->escape($this->qty)."',";
+    $sql.= " date_start='".$this->db->idate($this->date_start)."',";
+    $sql.= " date_end=".$date_end;
     $sql.= " WHERE rowid = '".$this->lineid."'";
 		
 		dol_syslog(get_class($this)."::update::update sql=".$sql, LOG_DEBUG);
