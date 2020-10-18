@@ -151,7 +151,7 @@ if ($action == 'add' && $user->rights->adherent->configurer)
 			$id=$object->create($user);
 			if ($id > 0)
 			{
-				header("Location: ".$_SERVER["PHP_SELF"]);
+				header("Location: ".$_SERVER["PHP_SELF"]."?rowid=".$rowid);
 				exit;
 			}
 			else
@@ -195,16 +195,16 @@ if ($action == 'update' && $user->rights->adherent->configurer)
 
 		$object->update($user);
 
-		header("Location: ".$_SERVER["PHP_SELF"]."?rowid=".$_POST["rowid"]);
+		header("Location: ".$_SERVER["PHP_SELF"]."?rowid=".$rowid);
 		exit;
 	}
 }
 
 if ($action == 'delete' && $user->rights->adherent->configurer)
 {
-	$object = new AdherentTypePlus($db);
-	$object->delete($rowid);
-	header("Location: ".$_SERVER["PHP_SELF"]);
+	//$object = new AdherentTypePlus($db);
+	//$object->delete($rowid);
+	header("Location: ".$_SERVER["PHP_SELF"]."?rowid=".$rowid);
 	exit;
 }
 
