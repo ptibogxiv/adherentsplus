@@ -626,7 +626,7 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
 
 		$error = 0;
     
-    $this->db->begin();
+    //$this->db->begin();
     
     $date_end = (!empty($this->date_end) ? "'".$this->db->idate($this->date_end)."'" : "null");
 		
