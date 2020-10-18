@@ -298,8 +298,8 @@ if ($rowid && $action == 'edit' && $user->rights->adherent->creer)
 		    print_liste_field_titre("Label",$_SERVER["PHP_SELF"],"p.label",$param,"","",$sortfield,$sortorder);
 		    print_liste_field_titre("Description",$_SERVER["PHP_SELF"],"",$param,"","",$sortfield,$sortorder);
 		    print_liste_field_titre("Qty",$_SERVER["PHP_SELF"],"t.qty",$param,"","",$sortfield,$sortorder);
-		    print_liste_field_titre("DateStart",$_SERVER["PHP_SELF"],"d.statut,d.datefin",$param,"","",$sortfield,$sortorder);
-		    print_liste_field_titre("DateEnd",$_SERVER["PHP_SELF"],"d.datefin",$param,"",'align="center"',$sortfield,$sortorder);
+		    print_liste_field_titre("DateStart",$_SERVER["PHP_SELF"],"t.date_start",$param,"","",$sortfield,$sortorder);
+		    print_liste_field_titre("DateEnd",$_SERVER["PHP_SELF"],"t.date_end",$param,"",'align="center"',$sortfield,$sortorder);
 		    print_liste_field_titre("Action",$_SERVER["PHP_SELF"],"",$param,"",'width="60" align="center"',$sortfield,$sortorder);
 		    print "</tr>\n";
 
