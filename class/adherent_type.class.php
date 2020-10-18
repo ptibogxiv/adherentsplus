@@ -641,8 +641,8 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
         $this->fk_product_type= $obj->fk_product_type;
         $this->qty            = $obj->qty;
         $this->rang           = $obj->rang;
-        $this->date_start  = $this->db->jdate($obj->date_creation);
-        $this->date_end = $this->db->jdate($obj->date_closing);
+        $this->date_start  = (!empty($obj->date_creation) ? $this->db->jdate($obj->date_creation) : null);
+        $this->date_end = (!empty($obj->date_closing) ? $this->db->jdate($obj->date_closing) : null);
         $this->date_modification = $this->db->jdate($obj->tms);
         $this->user_author_id    = $obj->fk_user_author;
         $this->user_modification = $obj->fk_user_mod;
