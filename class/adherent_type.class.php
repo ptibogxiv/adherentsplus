@@ -613,9 +613,8 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
 	/**
 	 *    Create package from database
 	 * 
-	 * @param 	Facture 	$facture	Invoice object
-	 * @param 	double 		$points		Points to add/remove
-	 * @param 	string 		$typemov	Type of movement (increase to add, decrease to remove)
+	 * @param 	Facture 	$user	Invoice object
+	 * @param 	double 		$notrigger		Points to add/remove
 	 * @return int			<0 if KO, >0 if OK
 	 */
     public function create_package($user, $notrigger = 0)
@@ -632,7 +631,7 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
 		$sql = "INSERT INTO ".MAIN_DB_PREFIX."adherent_type_package";
 		$sql.= " (entity, date_start, date_end, fk_type, fk_product, qty)";
 		$sql.= " VALUES ("; 		
-    $sql.= " ".$conf->entity;
+    $sql.= " '".$conf->entity."',";
     $sql.= " date_start='".$this->db->idate($this->date_start)."',";
     $sql.= " date_end=".$date_end.",";
     $sql.= " fk_type = '".$this->db->escape($this->fk_type)."',";

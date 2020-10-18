@@ -105,7 +105,7 @@ if ($action == 'add' && $user->rights->adherent->configurer)
 	if (! $cancel)
 	{
 		$object = new AdherentTypePlus($db);
-		$object->type       = $rowid;
+		$object->fk_type    = $rowid;
     $object->fk_product = $productid;
 		$object->lineid     = $lineid;
 		$object->qty        = $qty;
@@ -116,7 +116,7 @@ if ($action == 'add' && $user->rights->adherent->configurer)
 		$ret = $extrafields->setOptionalsFromPost($extralabels,$object);
 		if ($ret < 0) $error++;
 
-		if ($object->label)
+		if ($object->fk_product && $object->qty)
 		{
 			$id=$object->create_package($user);
 			if ($id > 0)
