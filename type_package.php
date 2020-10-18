@@ -411,7 +411,7 @@ if ($rowid && $action == 'create' && $user->rights->adherent->creer)
   print '</td></tr>';
 
   print '<tr><td class="fieldrequired">'.$langs->trans("Qty").'</td>';
-	print '<td><input class="minwidth200" type="text" name="quantity" value="'.(GETPOST('quantity','int')?GETPOST('quantity','int'):$wish->qty).'"></td></tr>';
+	print '<td><input class="minwidth50" type="text" name="quantity" value="'.(GETPOST('quantity','int')?GETPOST('quantity','int'):1).'"></td></tr>';
     print '<tr><td class="titlefieldcreate fieldrequired">'.$langs->trans("DateStart").'</td><td>';
     $form->select_date($date_start, 'date_start_', '', '', '', "date_start", 1, 1);
     print '</td></tr>';
@@ -454,7 +454,7 @@ if ($rowid && $action == 'edit' && $user->rights->adherent->creer)
     $product_static->type = $object->fk_product_type;
 	print '<td>'.$product_static->getNomUrl(1)." - ".$object->label.'</td></tr>';
   print '<tr><td class="fieldrequired">'.$langs->trans("Qty").'</td>';
-	print '<td><input class="minwidth200" type="text" name="quantity" value="'.(GETPOST('quantity','int')?GETPOST('quantity','int'):$object->qty).'"></td></tr>';
+	print '<td><input class="minwidth50" type="text" name="quantity" value="'.(GETPOST('quantity','int')?GETPOST('quantity','int'):$object->qty).'"></td></tr>';
     print '<tr><td class="titlefieldcreate fieldrequired">'.$langs->trans("DateStart").'</td><td>';
     $form->select_date($object->date_start, 'date_start_', '', '', '', "date_start", 1, 1);
     print '</td></tr>';
