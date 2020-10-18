@@ -626,8 +626,6 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
 
 		$error = 0;
     
-    //$this->db->begin();
-    
     $date_end = (!empty($this->date_end) ? "'".$this->db->idate($this->date_end)."'" : "null");
 		
 		$sql = "INSERT INTO ".MAIN_DB_PREFIX."adherent_type_package";

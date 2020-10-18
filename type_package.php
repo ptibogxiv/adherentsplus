@@ -101,7 +101,7 @@ $hookmanager->initHooks(array('membertypecard','globalcard'));
  *	Actions
  */
 
-if ($action == 'add' && $user->rights->adherent->configurer)
+if ($action == 'create' && $user->rights->adherent->configurer)
 {
 	if (! $cancel)
 	{
@@ -195,7 +195,7 @@ if ($rowid && $action == 'create' && $user->rights->adherent->creer)
 {
 	print '<form action="'.$_SERVER["PHP_SELF"].'?rowid='.$object->id.'" method="post">';
 	print '<input type="hidden" name="token" value="'.newToken().'">';
-	$actionforadd='add';
+	$actionforadd='create';
 	print '<input type="hidden" name="action" value="'.$actionforadd.'">';
 }
 
@@ -250,7 +250,7 @@ if ($rowid && $action == 'edit' && $user->rights->adherent->creer)
 
 			print '<br>';
 
-  $morehtmlright= dolGetButtonTitle($langs->trans('AddAWish'), '', 'fa fa-plus-circle', $_SERVER["PHP_SELF"].'?rowid='.$object->id.'&action=create');
+  $morehtmlright= dolGetButtonTitle($langs->trans('AddAPackage'), '', 'fa fa-plus-circle', $_SERVER["PHP_SELF"].'?rowid='.$object->id.'&action=create');
 
       print load_fiche_titre($langs->trans("ListOfProductsServices"), $morehtmlright, '');
 
