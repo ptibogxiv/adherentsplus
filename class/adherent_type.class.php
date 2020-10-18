@@ -726,6 +726,70 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
 			return -1;
 		}
 	}
+  
+	/**
+	 *    Update package from database
+	 * 
+	 * @param 	Facture 	$facture	Invoice object
+	 * @param 	double 		$points		Points to add/remove
+	 * @param 	string 		$typemov	Type of movement (increase to add, decrease to remove)
+	 * @return int			<0 if KO, >0 if OK
+	 */
+    public function update_package($user, $notrigger = 0)
+	{
+		global $conf,$user;
+    $error = 0;
+    
+		$now=dol_now();
+    
+    if (! $this->datec) $this->datec=$now;
+        
+		$this->db->begin();
+		
+		$sql = "INSERT INTO ".MAIN_DB_PREFIX."adherent_type_package";
+		$sql.= " (datec, fk_user_author, fk_user_mod, fk_product, fk_soc, qty, target, rang, priv, entity)";
+		$sql.= " VALUES (";
+    $sql.= " '".$this->db->idate($this->datec)."'";
+		$sql.= ", ".($user->id>0?$user->id:"null");	// Can be null because member can be created by a guest or a script
+		$sql.= ", null";    
+		$sql.= ", '".$this->db->escape($this->fk_product)."'";
+		$sql.= ", '".$this->db->escape($this->fk_soc)."'";
+    $sql.= ", '".$this->db->escape($this->qty)."'";
+    $sql.= ", '".(! empty($this->target) ? $this->db->escape($this->target) : "0")."'";
+    $sql.= ", '".(! empty($this->rang) ? $this->db->escape($this->rang) : "0")."'";
+    $sql.= ", '".$this->db->escape($this->priv)."'";
+		$sql.= ", ".$conf->entity;
+		$sql.= ")";
+		
+		dol_syslog(get_class($this)."::create::insert sql=".$sql, LOG_DEBUG);
+		if (! $this->db->query($sql) )
+		{
+			dol_syslog(get_class($this)."::create::insert error", LOG_ERR);
+			$error++;
+		}
+		
+		if (! $error)
+		{
+				if (! $notrigger)
+				{
+					// Call trigger
+					$result=$this->call_trigger('WISH_CREATE', $user);
+					if ($result < 0) { $error++; }
+					// End call triggers
+				}
+    
+			dol_syslog(get_class($this)."::create by $user->id", LOG_DEBUG);
+			$this->db->commit();
+			return 1;
+		}
+		else
+		{
+			$this->error=$this->db->lasterror();
+			dol_syslog(get_class($this)."::create ".$this->error, LOG_ERR);
+			$this->db->rollback();
+			return -1;
+		}
+	}
     
 	/**
 	 *  Function that retrieves the data of a type
