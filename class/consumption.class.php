@@ -69,7 +69,7 @@ class Consumption extends CommonObject
 
         $now = dol_now();
 
-        if (empty($this->date_creation)) $this->date_creation = $now;
+        $this->date_creation = $now;
         if (empty($this->date_start)) $this->date_start = $this->date_creation;
         if (empty($this->date_end)) $this->date_end = $this->date_start; 
         if (empty($this->entity)) $this->entity = $conf->entity;

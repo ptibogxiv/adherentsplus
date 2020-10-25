@@ -296,7 +296,7 @@ if ($id && $action == 'create' && $user->rights->adherent->creer)
       print '<table class="tagtable liste'.($moreforfilter?" listwithfilterbefore":"").'">'."\n";
 
             print '<tr class="liste_titre">';
-            print '<td align="center">'.$langs->trans("Date").'</td>';
+            print '<td align="left">'.$langs->trans("DateCreation").'</td>';
             print '<td align="center">'.$langs->trans("Description").'</td>';
             print '<td align="center">'.$langs->trans("Quantity").'</td>';
             print '<td align="right">'.$langs->trans("Price").'</td>';
