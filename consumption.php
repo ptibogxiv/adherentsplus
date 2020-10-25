@@ -479,7 +479,7 @@ if ($id && $action == 'edit' && $user->rights->adherent->creer)
   print '<tr><td class="fieldrequired">'.$langs->trans("Qty").'</td>';
 	print '<td><input class="minwidth50" type="text" name="quantity" value="'.($qty?$qty:$consumption->qty).'"></td></tr>';
   print '<tr><td class="titlefieldcreate fieldrequired">'.$langs->trans("Date").'</td><td>';
-  $form->select_date($date_creation, 'date_creation_', '', '', '', "date_creation", 1, 1);
+  $form->select_date($consumption->date_creation, 'date_creation_', '', '', '', "date_creation", 1, 1);
   print '</td></tr>';
   print '</tr>';
 
