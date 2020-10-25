@@ -76,7 +76,7 @@ $permissionnote=$user->rights->adherent->creer;  // Used by the include of actio
  *	Actions
  */
 
-if ($action == 'create' && $user->rights->adherent->configurer)
+if ($action == 'confirm_create' && $user->rights->adherent->configurer)
 {
 	if (! $cancel)
 	{ 
@@ -85,31 +85,19 @@ if ($action == 'create' && $user->rights->adherent->configurer)
     $consumption->fk_product = $productid;
 		$consumption->qty        = $qty;
     $consumption->date_start = $date_start;
-    $consumption->date_end = $date_start;
+    $consumption->date_end = $date_end;
 
-		// Fill array 'array_options' with data from add form
-		$ret = $extrafields->setOptionalsFromPost($extralabels,$consumption);
-		if ($ret < 0) $error++;
-
-		if ($consumption->fk_product && $object->qty)
-		{
 			$result = $consumption->create($user);
 			if ($result > 0) {
-				header("Location: ".$_SERVER["PHP_SELF"]."?rowid=".$rowid);
+				header("Location: ".$_SERVER["PHP_SELF"]."?rowid=".$id);
 				exit;
 			}
 			else
 			{
 				$mesg=$consumption->error;
-        setEventMessages($consumption->error, null, 'errors');
 				$action = 'create';
 			}
-		}
-		else
-		{
-			$mesg=$langs->trans("ErrorFieldRequired",$langs->transnoentities("Label"));
-			$action = 'create';
-		}
+
 	}
 }
   
@@ -122,10 +110,6 @@ if ($action == 'update' && $user->rights->adherent->configurer)
 		$consumption->qty        = $qty;
     $consumption->date_start = $date_start;
     $consumption->date_end = $date_end;
-
-		// Fill array 'array_options' with data from updateform
-		$ret = $extrafields->setOptionalsFromPost($extralabels,$consumption);
-		if ($ret < 0) $error++;
 
 		$result = $consumption->update($user);
 
@@ -271,7 +255,7 @@ if ($id && $action == 'create' && $user->rights->adherent->creer)
 {
 	print '<form action="'.$_SERVER["PHP_SELF"].'?rowid='.$id.'" method="post">';
 	print '<input type="hidden" name="token" value="'.newToken().'">';
-	$actionforadd='create';
+	$actionforadd='confirm_create';
 	print '<input type="hidden" name="action" value="'.$actionforadd.'">';
 } elseif ($id && $action == 'edit' && $user->rights->adherent->creer)
 {

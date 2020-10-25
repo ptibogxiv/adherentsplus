@@ -30,7 +30,7 @@ require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 class Consumption extends CommonObject
 {
 	public $element='consumption';
-	public $table_element='consumption';
+	public $table_element='adherent_consumption';
   public $picto='payment';
 
 	var $date_creation;				// Date creation
@@ -69,29 +69,21 @@ class Consumption extends CommonObject
 
         $now = dol_now();
 
-        // Check parameters
-        if ($this->date_end) {
-        if ($this->date_end <= $this->date_start) {
-            $this->error = $langs->trans("ErrorBadValueForDate");
-            return -1;
-        }
-        } else {
-        $this->date_end = $this->date_start;
-        }
         if (empty($this->date_creation)) $this->date_creation = $now;
-       	// Clean parameters
-        if (!empty($this->label)) $this->label=trim($this->label);
+        if (empty($this->date_start)) $this->date_start = $this->date_creation;
+        if (empty($this->date_end)) $this->date_end = $this->date_start; 
         if (empty($this->entity)) $this->entity = $conf->entity;
 
         $this->db->begin();
     
-		$sql = "INSERT INTO ".MAIN_DB_PREFIX."adherent_consumption (entity, fk_adherent, fk_product, qty, remise_percent, date_creation, date_start, date_end)";
-    $sql .= " VALUES (".$this->entity.", '1', '4', '1', '0',";
+		$sql = "INSERT INTO ".MAIN_DB_PREFIX."adherent_consumption (entity, fk_adherent, fk_product, qty, remise_percent, date_creation, date_start, date_end, fk_user_author)";
+    $sql .= " VALUES (".$this->entity.", '".$this->db->escape($this->fk_adherent)."', '".$this->db->escape($this->fk_product)."', '".$this->db->escape($this->qty)."', '0',";
     $sql .= " '".$this->db->idate($this->date_creation)."',";
     $sql .= " ".($this->date_start ? "'".$this->db->idate($this->date_start)."'" : "null").",";  	
-		$sql .= " ".($this->date_end ? "'".$this->db->idate($this->date_end)."'" : "null").")";
+		$sql .= " ".($this->date_end ? "'".$this->db->idate($this->date_end)."'" : "null").",";
+    $sql .= " ".$user->id.")";
 
-        dol_syslog(get_class($this)."::create", LOG_DEBUG);
+        dol_syslog(get_class($this)."::create", LOG_ERR);
         $resql = $this->db->query($sql);
         if (!$resql) {
             $error++;
@@ -134,9 +126,9 @@ class Consumption extends CommonObject
 	public function fetch($rowid)
 	{  
   
-    $sql ="SELECT t.rowid, t.entity, t.fk_adherent, t.fk_product, t.fk_facture, t.product_type, t.label, t.description, t.date_creation";
+    $sql ="SELECT t.rowid, t.entity, t.fk_adherent, t.fk_product, t.fk_facture, t.date_creation";
 		$sql.=" , t.qty, t.tms, t.fk_facture, t.date_start, t.date_end, t.fk_user_author, t.fk_user_modif";
-		$sql.=" , p.ref as ref, p.label as label, p.fk_product_type";
+		$sql.=" , p.ref as ref, p.label as label, p.description as description, p.fk_product_type";
 		$sql.=" FROM ".MAIN_DB_PREFIX."adherent_consumption as t";
     $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."product as p ON p.rowid = t.fk_product";     
 		$sql.="	WHERE t.rowid=".$rowid;
@@ -152,7 +144,7 @@ class Consumption extends CommonObject
 				$this->entity         = $obj->entity;   
 				$this->fk_adherent    = $obj->fk_adherent;
 				$this->fk_product     = $obj->fk_product;
-				$this->product_type   = $obj->product_type;
+				$this->product_type   = $obj->fk_product_type;
 				$this->fk_facture     = $obj->fk_facture;
 				$this->label          = $obj->label;
 				$this->description    = $obj->description;
