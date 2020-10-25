@@ -440,9 +440,12 @@ if ($id && $action == 'edit' && $user->rights->adherent->creer)
 	print '<td>'.$product_static->getNomUrl(1)." - ".$consumption->label.'</td></tr>';
   print '<tr><td class="fieldrequired">'.$langs->trans("Qty").'</td>';
 	print '<td><input class="minwidth50" type="text" name="quantity" value="'.($qty?$qty:$consumption->qty).'"></td></tr>';
-  print '<tr><td class="titlefieldcreate fieldrequired">'.$langs->trans("Date").'</td><td>';
-  $form->select_date($consumption->date_creation, 'date_creation_', '', '', '', "date_creation", 1, 1);
+  print '<tr><td class="titlefieldcreate fieldrequired">'.$langs->trans("DateStart").'</td><td>';
+  $form->select_date($consumption->date_start, 'date_start_', '', '', '', "date_start", 1, 1);
   print '</td></tr>';
+  print '<tr><td>'.$langs->trans("DateEnd").'</td><td>';
+  $form->select_date($consumption->date_end, 'date_end_', '', '', '', "date_end", 1, 1);
+  print '</td>';
   print '</tr>';
 
 	print '</table>';

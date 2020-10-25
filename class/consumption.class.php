@@ -198,8 +198,8 @@ class Consumption extends CommonObject
 		    $sql .= " qty = ".$this->qty.",";
         if (!empty($this->fk_product)) $sql .= " fk_product ='".$this->fk_product."',";
         if (!empty($this->fk_facture)) $sql .= " fk_facture ='".$this->fk_facture."',";
-        if (!empty($this->date_start)) $sql .= " date_start='".$this->date_start."',";
-        if (!empty($this->date_end)) $sql .= " date_end='".$this->date_end."',";
+        if (!empty($this->date_start)) $sql.= " date_start='".$this->db->idate($this->date_start)."',";
+        if (!empty($this->date_end)) $sql.= " date_end='".$this->db->idate($this->date_end)."',";
         $sql .= " fk_user_modif = ".$user->id;
         $sql .= " WHERE fk_facture IS NULL AND fk_adherent = ".$this->fk_adherent;
         $sql .= " AND rowid = ".$this->id;
