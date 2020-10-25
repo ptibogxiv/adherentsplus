@@ -218,7 +218,7 @@ if ($rowid && $action == 'edit' && $user->rights->adherent->creer)
 		$now=dol_now();
 
 		$sql = "SELECT t.rowid as id, t.fk_type as type, t.fk_product as product, t.qty, t.date_start, t.date_end";
-		$sql .= ", p.ref as ref, p.label as label";
+		$sql .= ",  p.rowid, p.label, p.price, p.ref, p.fk_product_type, p.tosell, p.tobuy, p.tobatch";
 		$sql.= " FROM ".MAIN_DB_PREFIX."adherent_type_package as t";
     $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."product as p ON p.rowid = t.fk_product";
 		$sql.= " WHERE t.entity IN (".getEntity('member_type').")";
@@ -297,13 +297,18 @@ if ($rowid && $action == 'edit' && $user->rights->adherent->creer)
 
 		        $datefin=$db->jdate($objp->datefin);
 
-	$product_static = new Product($db);
-		$product_static->id = $objp->fk_product;
-		$product_static->ref = $objp->ref;
-		        // Lastname
+	      $product_static = new Product($db);
+		    $product_static->id = $objp->rowid;
+		    $product_static->ref = $objp->ref;
+        $product_static->label = $objp->label;
+				$product_static->entity = $objp->entity;
+				$product_static->status = $objp->tosell;
+				$product_static->status_buy = $objp->tobuy;
+				$product_static->status_batch = $objp->tobatch;
+    
 		        print '<tr class="oddeven">';
 			print '<td class="tdoverflowmax200">';
-			print $product_static->getNomUrl(1);
+			print $product_static->getNomUrl(1, '', 16);
 			print "</td>";
 
 		        // Login
