@@ -112,8 +112,8 @@ if ($action == 'create' && $user->rights->adherent->configurer)
     $object->date_end = $date_end;
 
 		// Fill array 'array_options' with data from add form
-		//$ret = $extrafields->setOptionalsFromPost($extralabels,$object);
-		//if ($ret < 0) $error++;
+		$ret = $extrafields->setOptionalsFromPost($extralabels,$object);
+		if ($ret < 0) $error++;
 
 		if ($object->fk_product && $object->qty)
 		{
