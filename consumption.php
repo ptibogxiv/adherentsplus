@@ -310,6 +310,14 @@ if ($id)
 	{
 		print $form->formconfirm($_SERVER["PHP_SELF"]."?rowid=".$id."&lineid=".$lineid, $langs->trans("DeleteAConsumption"), $langs->trans("ConfirmDeleteConsumption", ''), "confirm_delete", '', 0, 1);
 	}
+  
+/* ************************************************************************** */
+/*                                                                            */
+/* View mode                                                                  */
+/*                                                                            */
+/* ************************************************************************** */
+	if ($action != 'create' && $action != 'edit')
+	{
 
 			print '<input class="flat" type="hidden" name="rowid" value="'.$socid.'" size="12">';
       
@@ -387,6 +395,8 @@ if ($id)
 
             }
             print "</table></div>";
+            
+ }           
             
 llxFooter();
 $db->close();
