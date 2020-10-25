@@ -101,6 +101,7 @@ if ($action == 'create' && $user->rights->adherent->configurer)
 			else
 			{
 				$mesg=$consumption->error;
+        setEventMessages($consumption->error, null, 'errors');
 				$action = 'create';
 			}
 		}
@@ -400,9 +401,13 @@ if ($id && $action == 'create' && $user->rights->adherent->creer)
 
   print '<tr><td class="fieldrequired">'.$langs->trans("Qty").'</td>';
 	print '<td><input class="minwidth50" type="text" name="quantity" value="'.($qty?$qty:1).'"></td></tr>';
-  print '<tr><td class="titlefieldcreate fieldrequired">'.$langs->trans("Date").'</td><td>';
+  print '<tr><td class="titlefieldcreate fieldrequired">'.$langs->trans("DateStart").'</td><td>';
   $form->select_date($date_start, 'date_start_', '', '', '', "date_start", 1, 1);
   print '</td></tr>';
+  print '</tr>';
+  print '<tr><td>'.$langs->trans("DateEnd").'</td><td>';
+  $form->select_date($date_end, 'date_end_', '', '', '', "date_end", 1, 1);
+  print '</td>';
   print '</tr>';
 
 	print '</table>';
