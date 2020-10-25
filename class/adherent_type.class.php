@@ -776,6 +776,65 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
 			return -1;
 		}
 	}
+  
+	/**
+	 * Delete discount price in database
+	 *
+     * @param User $user      User that deletes
+	 * @param bool $notrigger false=launch triggers after, true=disable triggers
+	 *
+	 * @return int <0 if KO, >0 if OK
+	 */
+	public function delete_package(User $user, $notrigger = false)
+	{
+	    global $conf;
+
+		$error = 0;
+
+        dol_syslog(get_class($this)."::delete rowid=".$this->id, LOG_DEBUG);
+
+        if (empty($this->entity)) $this->entity = $conf->entity;
+
+        // Check parameters
+        if (empty($user->id))
+        {
+            $this->error="ErrorBadParameters";
+            dol_syslog(get_class($this)."::delete Try to delete an package with an empty parameter (user)", LOG_ERR);
+            return -3;
+        }
+
+        $this->db->begin();
+
+		if (!$error && !$notrigger) {
+				//// Call triggers
+				//$result=$this->call_trigger('DISCOUNT_PRICE_DELETE',$user);
+				//if ($result < 0) $error++;
+				//// End call triggers
+			}
+
+        if (!$error) {
+            $sql = 'DELETE FROM '.MAIN_DB_PREFIX.'adherent_type_package';
+            $sql .= ' WHERE rowid = '.$this->id;
+
+            $resql = $this->db->query($sql);
+            if (!$resql) {
+                $error ++;
+                $this->errors[] = 'Error ' . $this->db->lasterror();
+                dol_syslog(get_class($this)."::delete " . ' ' . join(',', $this->errors), LOG_ERR);
+            }
+        }
+
+        // Commit or rollback
+		if ($error) {
+			$this->db->rollback();
+
+			return - 1 * $error;
+		} else {
+			$this->db->commit();
+
+			return 1;
+		}
+	}
     
 	/**
 	 *  Function that retrieves the data of a type

@@ -159,10 +159,11 @@ if ($action == 'update' && $user->rights->adherent->configurer)
 
 if ($action == 'delete' && $user->rights->adherent->configurer)
 {
-	//$object = new AdherentTypePlus($db);
-	//$object->delete($rowid);
-	header("Location: ".$_SERVER["PHP_SELF"]."?rowid=".$rowid);
-	exit;
+		$object->fetch_package($lineid);
+    $object->delete_package($user);
+
+		header("Location: ".$_SERVER["PHP_SELF"]."?rowid=".$rowid);
+		exit;
 }
 
 
