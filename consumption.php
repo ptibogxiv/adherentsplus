@@ -311,6 +311,22 @@ if ($id)
 		print $form->formconfirm($_SERVER["PHP_SELF"]."?rowid=".$id."&lineid=".$lineid, $langs->trans("DeleteAConsumption"), $langs->trans("ConfirmDeleteConsumption", ''), "confirm_delete", '', 0, 1);
 	}
   
+if ($rowid && $action == 'create' && $user->rights->adherent->creer)
+{
+	print '<form action="'.$_SERVER["PHP_SELF"].'?rowid='.$id.'" method="post">';
+	print '<input type="hidden" name="token" value="'.newToken().'">';
+	$actionforadd='create';
+	print '<input type="hidden" name="action" value="'.$actionforadd.'">';
+}
+
+if ($rowid && $action == 'edit' && $user->rights->adherent->creer)
+{
+	print '<form action="'.$_SERVER["PHP_SELF"].'?rowid='.$id.'" method="post">';
+	print '<input type="hidden" name="token" value="'.newToken().'">';
+	$actionforedit='update';
+	print '<input type="hidden" name="action" value="'.$actionforedit.'">';
+}
+  
 /* ************************************************************************** */
 /*                                                                            */
 /* View mode                                                                  */
@@ -396,7 +412,99 @@ if ($id)
             }
             print "</table></div>";
             
- }           
+ }   
+ 
+// Create Card
+if ($id && $action == 'create' && $user->rights->adherent->creer)
+{
+
+	print '<div class="nofichecenter">';
+
+	print '<div class="underbanner clearboth"></div>';
+	print '<table class="border centpercent">';
+
+	print '<tr><td class="titlefieldcreate fieldrequired">'.$langs->trans("PredefinedProductsAndServicesToSell").'</td>';
+	print '<td>';
+  			if (! empty($conf->global->ENTREPOT_EXTRA_STATUS))
+			{
+				// hide products in closed warehouse, but show products for internal transfer
+				$form->select_produits(GETPOST('productid', 'int'), 'productid', $filtertype, $conf->product->limit_size, $object->price_level, 1, 2, '', 1, array(), $object->id, '1', 0, 'maxwidth300', 0, 'warehouseopen,warehouseinternal', GETPOST('combinations', 'array'));
+			}
+			else
+			{
+				$form->select_produits(GETPOST('productid', 'int'), 'productid', $filtertype, $conf->product->limit_size, $object->price_level, 1, 2, '', 1, array(), $object->id, '1', 0, 'maxwidth300', 0, '', GETPOST('combinations', 'array'));
+			}
+  print '</td></tr>';
+
+  print '<tr><td class="fieldrequired">'.$langs->trans("Qty").'</td>';
+	print '<td><input class="minwidth50" type="text" name="quantity" value="'.($qty?$qty:1).'"></td></tr>';
+    print '<tr><td class="titlefieldcreate fieldrequired">'.$langs->trans("DateStart").'</td><td>';
+    $form->select_date($date_start, 'date_start_', '', '', '', "date_start", 1, 1);
+    print '</td></tr>';
+    print '<tr><td>'.$langs->trans("DateEnd").'</td><td>';
+    $form->select_date($date_end, 'date_end_', '', '', '', "date_end", 1, 1);
+    print '</td>';
+  print '</tr>';
+
+	print '</table>';
+
+	print '</div>';
+
+	dol_fiche_end();
+
+	dol_set_focus('#label');
+
+	print '<div class="center">';
+	print '<input class="button" value="'.$langs->trans("Add").'" type="submit">';
+	print '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+	print '<input name="cancel" class="button" value="'.$langs->trans("Cancel").'" type="submit">';
+	print '</div>';
+}
+
+// Create Card
+if ($id && $action == 'edit' && $user->rights->adherent->creer)
+{
+
+  $consumption->fetch($lineid);  
+
+	print '<div class="nofichecenter">';
+
+	print '<div class="underbanner clearboth"></div>';
+	print '<table class="border centpercent">';
+
+	print '<tr><td class="titlefieldcreate fieldrequired">'.$langs->trans("PredefinedProductsAndServicesToSell").'</td>';
+	  $product_static = new Product($db);
+		$product_static->id = $consumption->fk_product;
+		$product_static->ref = $consumption->ref;
+    $product_static->label = $consumption->label;
+    $product_static->type = $consumption->fk_product_type;
+	print '<td>'.$product_static->getNomUrl(1)." - ".$consumption->label.'</td></tr>';
+  print '<tr><td class="fieldrequired">'.$langs->trans("Qty").'</td>';
+	print '<td><input class="minwidth50" type="text" name="quantity" value="'.($qty?$qty:$consumption->qty).'"></td></tr>';
+    print '<tr><td class="titlefieldcreate fieldrequired">'.$langs->trans("DateStart").'</td><td>';
+    $form->select_date($consumption->date_start, 'date_start_', '', '', '', "date_start", 1, 1);
+    print '</td></tr>';
+    print '<tr><td>'.$langs->trans("DateEnd").'</td><td>';
+    $form->select_date($consumption->date_end, 'date_end_', '', '', '', "date_end", 1, 1);
+    print '</td>';
+  print '</tr>';
+
+	print '</table>';
+
+	print '</div>';
+
+	dol_fiche_end();
+
+	dol_set_focus('#label');
+
+	print '<div class="center"><input type="hidden" name="lineid" value="'.$lineid.'">';
+	print '<input class="button" value="'.$langs->trans("Edit").'" type="submit">';
+	print '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+	print '<input name="cancel" class="button" value="'.$langs->trans("Cancel").'" type="submit">';
+	print '</div>';
+}
+
+print '</form>';    
             
 llxFooter();
 $db->close();

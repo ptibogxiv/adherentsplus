@@ -132,10 +132,12 @@ class Consumption extends CommonObject
 	public function fetch($rowid)
 	{  
   
-    $sql ="SELECT rowid, entity, fk_adherent, fk_product, fk_facture, product_type, label, description, date_creation,";
-		$sql.=" qty, tms, fk_facture, date_start, date_end, fk_user_author, fk_user_modif";
-		$sql.=" FROM ".MAIN_DB_PREFIX."adherent_consumption";
-		$sql.="	WHERE rowid=".$rowid;
+    $sql ="SELECT t.rowid, t.entity, t.fk_adherent, t.fk_product, t.fk_facture, t.product_type, t.label, t.description, t.date_creation";
+		$sql.=" , t.qty, t.tms, t.fk_facture, t.date_start, t.date_end, t.fk_user_author, t.fk_user_modif";
+		$sql.=" , p.ref as ref, p.label as label, p.fk_product_type";
+		$sql.=" FROM ".MAIN_DB_PREFIX."adherent_consumption as t";
+    $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."product as p ON p.rowid = t.fk_product";     
+		$sql.="	WHERE t.rowid=".$rowid;
 
         dol_syslog(get_class($this)."::fetch", LOG_DEBUG);
         $resql = $this->db->query($sql);
@@ -144,7 +146,7 @@ class Consumption extends CommonObject
                 $obj = $this->db->fetch_object($resql);
 
 				$this->id             = $obj->rowid;
-				$this->ref            = $obj->rowid;
+				$this->ref            = $obj->ref;
 				$this->entity         = $obj->entity;   
 				$this->fk_adherent    = $obj->fk_adherent;
 				$this->fk_product     = $obj->fk_product;
