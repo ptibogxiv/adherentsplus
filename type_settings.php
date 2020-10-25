@@ -333,7 +333,8 @@ if ((float) DOL_VERSION < 11.0) {
 		//}
 
 		print "</div>";
-    
+if ($conf->global->MAIN_FEATURES_LEVEL >= 2)
+{    
 print 'from '.dol_print_date($object->date_from, 'dayhour').' to '.dol_print_date($object->date_to, 'dayhour').'<br>'; 
 print 'season: '.$object->season.'<br>';
 print 'date_renew: '.dol_print_date($object->date_renew, 'dayhour').'<br>';
@@ -380,7 +381,7 @@ print 'nextbegin: '.dol_print_date($object->date_nextbegin, 'dayhour').'<br>';
 print 'nextend: '.dol_print_date($object->date_nextend, 'dayhour').'<br>';
 print 'nextprice: '.price($object->nextprice);
 print ' '.$langs->trans("Currency".$conf->currency);
-
+}
 	}
 
 	/* ************************************************************************** */
