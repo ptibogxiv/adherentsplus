@@ -632,11 +632,11 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
 		$sql.= " (entity, date_start, date_end, fk_type, fk_product, qty)";
 		$sql.= " VALUES ("; 		
     $sql.= " '".$conf->entity."',";
-    $sql.= " date_start='".$this->db->idate($this->date_start)."',";
-    $sql.= " date_end=".$date_end.",";
-    $sql.= " fk_type = '".$this->db->escape($this->fk_type)."',";
-    $sql.= " fk_product = '".$this->db->escape($this->fk_product)."',";
-    $sql.= " qty = '".$this->db->escape($this->qty)."'";
+    $sql.= " '".$this->db->idate($this->date_start)."',";
+    $sql.= " ".$date_end.",";
+    $sql.= " '".$this->db->escape($this->fk_type)."',";
+    $sql.= " '".$this->db->escape($this->fk_product)."',";
+    $sql.= " '".$this->db->escape($this->qty)."'";
 		$sql.= ")";
 		
 		$this->db->begin();
