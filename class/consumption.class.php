@@ -75,6 +75,8 @@ class Consumption extends CommonObject
             $this->error = $langs->trans("ErrorBadValueForDate");
             return -1;
         }
+        } else {
+        $this->date_end = $this->date_start;
         }
         if (empty($this->date_creation)) $this->date_creation = $now;
        	// Clean parameters
@@ -184,7 +186,7 @@ class Consumption extends CommonObject
         global $langs;
         $error = 0;
 
-        if (!empty($this->fk_facture)) {
+        if (isset($this->fk_facture) && !empty($this->fk_facture)) {
             $error++;
             $this->error = $langs->trans("ConsumptionAlreadyBilled");
             return 0;
@@ -193,7 +195,7 @@ class Consumption extends CommonObject
         $this->db->begin();
 
 		    $sql = "UPDATE ".MAIN_DB_PREFIX."adherent_consumption SET";
-		    $sql .= " qty = 6,";//".$this->qty.",";
+		    $sql .= " qty = ".$this->qty.",";
         if (!empty($this->fk_product)) $sql .= " fk_product ='".$this->fk_product."',";
         if (!empty($this->fk_facture)) $sql .= " fk_facture ='".$this->fk_facture."',";
         if (!empty($this->date_start)) $sql .= " date_start='".$this->date_start."',";

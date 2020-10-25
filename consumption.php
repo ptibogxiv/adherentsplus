@@ -50,9 +50,14 @@ require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 
 $langs->loadLangs(array('products', 'companies', 'members', 'bills', 'other', 'adherentsplus@adherentsplus'));
 
-$action=GETPOST('action','alpha');
+$action = GETPOST('action','alpha');
+$cancel = GETPOST('cancel','alpha');
 $id=GETPOST('rowid','int');
 $lineid=GETPOST('lineid','int');
+$productid  = GETPOST('productid','int');
+$qty  = GETPOST('quantity','int');
+if (!empty(GETPOST('date_start_month', 'int')) && !empty(GETPOST('date_start_day', 'int')) && !empty(GETPOST('date_start_year', 'int'))) $date_start = dol_mktime(0, 0, 0, GETPOST('date_start_month', 'int'), GETPOST('date_start_day', 'int'), GETPOST('date_start_year', 'int'));
+if (!empty(GETPOST('date_end_month', 'int')) && !empty(GETPOST('date_end_day', 'int')) && !empty(GETPOST('date_end_year', 'int'))) $date_end = dol_mktime(0, 0, 0, GETPOST('date_end_month', 'int'), GETPOST('date_end_day', 'int'), GETPOST('date_end_year', 'int'));
 
 // Security check
 $result=restrictedArea($user, 'adherent', $id);
@@ -71,36 +76,57 @@ $permissionnote=$user->rights->adherent->creer;  // Used by the include of actio
  *	Actions
  */
 
-if ($cancel)
+if ($action == 'create' && $user->rights->adherent->configurer)
 {
-	$action='';
-}
+	if (! $cancel)
+	{ 
+		$consumption->fk_adherent= $id;
+		$consumption->fk_type    = $rowid;
+    $consumption->fk_product = $productid;
+		$consumption->qty        = $qty;
+    $consumption->date_start = $date_start;
+    $consumption->date_end = $date_start;
 
-	if ($cancel)
-	{
-		$action='';
-		if (! empty($backtopage))
+		// Fill array 'array_options' with data from add form
+		$ret = $extrafields->setOptionalsFromPost($extralabels,$consumption);
+		if ($ret < 0) $error++;
+
+		if ($consumption->fk_product && $object->qty)
 		{
-			header("Location: ".$backtopage);
-			exit;
+			$result = $consumption->create($user);
+			if ($result > 0) {
+				header("Location: ".$_SERVER["PHP_SELF"]."?rowid=".$rowid);
+				exit;
+			}
+			else
+			{
+				$mesg=$consumption->error;
+				$action = 'create';
+			}
+		}
+		else
+		{
+			$mesg=$langs->trans("ErrorFieldRequired",$langs->transnoentities("Label"));
+			$action = 'create';
 		}
 	}
-
+}
   
 if ($action == 'update' && $user->rights->adherent->configurer)
 {
 	if (! $cancel)
 	{
-		$consumption->lineid     = $lineid;
+		$consumption->id     = $lineid;
+		$consumption->fk_adherent     = $id;
 		$consumption->qty        = $qty;
     $consumption->date_start = $date_start;
     $consumption->date_end = $date_end;
 
 		// Fill array 'array_options' with data from updateform
-		$ret = $extrafields->setOptionalsFromPost($extralabels,$object);
+		$ret = $extrafields->setOptionalsFromPost($extralabels,$consumption);
 		if ($ret < 0) $error++;
 
-		$consumption->update($user);
+		$result = $consumption->update($user);
 
 				header("Location: consumption.php?rowid=".$id);
 				exit;
@@ -146,26 +172,7 @@ if ($id)
 
 	dol_fiche_head($head, 'consumption', $langs->trans("Member"), -1, 'user');
 
-if ($rowid && $action == 'create' && $user->rights->adherent->creer)
-{
-	print '<form action="'.$_SERVER["PHP_SELF"].'?rowid='.$id.'" method="post">';
-	print '<input type="hidden" name="token" value="'.newToken().'">';
-	$actionforadd='create';
-	print '<input type="hidden" name="action" value="'.$actionforadd.'">';
-} elseif ($rowid && $action == 'edit' && $user->rights->adherent->creer)
-{
-	print '<form action="'.$_SERVER["PHP_SELF"].'?rowid='.$id.'" method="post">';
-	print '<input type="hidden" name="token" value="'.newToken().'">';
-	$actionforedit='update';
-	print '<input type="hidden" name="action" value="'.$actionforedit.'">';
-} else {
-	print '<form action="'.$_SERVER["PHP_SELF"].'?rowid='.$id.'" method="post">';
-	print '<input type="hidden" name="token" value="'.newToken().'">';
-}
-
-
-
-    $linkback = '<a href="'.DOL_URL_ROOT.'/adherents/list.php?restore_lastsearch_values=1">'.$langs->trans("BackToList").'</a>';
+  $linkback = '<a href="'.DOL_URL_ROOT.'/adherents/list.php?restore_lastsearch_values=1">'.$langs->trans("BackToList").'</a>';
 	
 	dol_banner_tab($object, 'rowid', $linkback);
     
@@ -257,6 +264,23 @@ if ($rowid && $action == 'create' && $user->rights->adherent->creer)
 
     dol_fiche_end();
 
+}
+
+if ($id && $action == 'create' && $user->rights->adherent->creer)
+{
+	print '<form action="'.$_SERVER["PHP_SELF"].'?rowid='.$id.'" method="post">';
+	print '<input type="hidden" name="token" value="'.newToken().'">';
+	$actionforadd='create';
+	print '<input type="hidden" name="action" value="'.$actionforadd.'">';
+} elseif ($id && $action == 'edit' && $user->rights->adherent->creer)
+{
+	print '<form action="'.$_SERVER["PHP_SELF"].'?rowid='.$id.'" method="post">';
+	print '<input type="hidden" name="token" value="'.newToken().'">';
+	$actionforedit='update';
+	print '<input type="hidden" name="action" value="'.$actionforedit.'">';
+} else {
+	print '<form action="'.$_SERVER["PHP_SELF"].'?rowid='.$id.'" method="post">';
+	print '<input type="hidden" name="token" value="'.newToken().'">';
 }
 
 	// Confirm delete ban
@@ -377,7 +401,7 @@ if ($id && $action == 'create' && $user->rights->adherent->creer)
   print '<tr><td class="fieldrequired">'.$langs->trans("Qty").'</td>';
 	print '<td><input class="minwidth50" type="text" name="quantity" value="'.($qty?$qty:1).'"></td></tr>';
   print '<tr><td class="titlefieldcreate fieldrequired">'.$langs->trans("Date").'</td><td>';
-  $form->select_date($date_creation, 'date_creation_', '', '', '', "date_creation", 1, 1);
+  $form->select_date($date_start, 'date_start_', '', '', '', "date_start", 1, 1);
   print '</td></tr>';
   print '</tr>';
 
