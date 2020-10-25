@@ -76,12 +76,6 @@ if ($cancel)
 	$action='';
 }
 
-$parameters=array('id'=>$id, 'objcanvas'=>$objcanvas);
-$reshook=$hookmanager->executeHooks('doActions', $parameters, $object, $action);    // Note that $action and $object may have been modified by some hooks
-if ($reshook < 0) setEventMessages($hookmanager->error, $hookmanager->errors, 'errors');
-
-if (empty($reshook))
-{
 	if ($cancel)
 	{
 		$action='';
@@ -91,82 +85,27 @@ if (empty($reshook))
 			exit;
 		}
 	}
+
   
-	if ($action == 'add' && $user->rights->societe->creer)
+if ($action == 'update' && $user->rights->adherent->configurer)
+{
+	if (! $cancel)
 	{
-		$error=0;
+		$consumption->lineid     = $lineid;
+		$consumption->qty        = $qty;
+    $consumption->date_start = $date_start;
+    $consumption->date_end = $date_end;
 
-		if (! GETPOST('productid', 'int') || ! GETPOST('quantity', 'int'))
-		{
-			if (! GETPOST('productid', 'int')) setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("ProductOrService")), null, 'errors');
-			if (! GETPOST('quantity', 'int')) setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("Qty")), null, 'errors');
-			$action='create';
-			$error++;
-		}
+		// Fill array 'array_options' with data from updateform
+		$ret = $extrafields->setOptionalsFromPost($extralabels,$object);
+		if ($ret < 0) $error++;
 
-		if (! $error)
-		{
-  
-			// Ajout
-			$wish = new Wish($db);
+		$consumption->update($user);
 
-			$wish->fk_product     = GETPOST('productid', 'int');
-			$wish->fk_soc         = $socid;
-			$wish->qty            = GETPOST('quantity', 'int');
-			$wish->target         = GETPOST('target', 'int');
-			$wish->entity         = $conf->entity;
-			$wish->priv           = GETPOST('priv', 'int');
-			$wish->rang           = GETPOST('rank', 'int');
-			$db->begin();
-
-			if (! $error)
-			{
-				$result = $wish->create($user);
-				if ($result < 0)
-				{
-					$error++;
-					setEventMessages($wish->error, $wish->errors, 'errors');
-					$action='create';     // Force chargement page création
-				}
-			}
-
-			if (! $error)
-			{
-				$db->commit();
-
-				$url=$_SERVER["PHP_SELF"].'?socid='.$object->id;
-				header('Location: '.$url);
-				exit;
-			}
-			else
-			{
-				$db->rollback();
-			}
-		}
-	}
-  
-	if ($action == 'update' && $user->rights->societe->creer)
-	{
-    $consumption->fetch($lineid);
-		$result = $consumption->update($lineid, $user);
-		if ($result > 0)
-		{
-			if (! empty($backtopage))
-			{
-				header("Location: ".$backtopage);
-				exit;
-			}
-			else
-			{
 				header("Location: consumption.php?rowid=".$id);
 				exit;
-			}
-		}
-		else
-		{
-			$errmesg=$consumption->error;
-		}
 	}
+}
   
 	if ($user->rights->adherent->configurer && $action == 'confirm_delete' && GETPOST('confirm', 'alpha') == 'yes')
 	{
@@ -190,7 +129,6 @@ if (empty($reshook))
 			setEventMessages($consumption->error, $consumption->errors, 'errors');
 		}
 	}
-}
 
 /*
  *	View
@@ -208,8 +146,24 @@ if ($id)
 
 	dol_fiche_head($head, 'consumption', $langs->trans("Member"), -1, 'user');
 
-	print "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">";
-	print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
+if ($rowid && $action == 'create' && $user->rights->adherent->creer)
+{
+	print '<form action="'.$_SERVER["PHP_SELF"].'?rowid='.$id.'" method="post">';
+	print '<input type="hidden" name="token" value="'.newToken().'">';
+	$actionforadd='create';
+	print '<input type="hidden" name="action" value="'.$actionforadd.'">';
+} elseif ($rowid && $action == 'edit' && $user->rights->adherent->creer)
+{
+	print '<form action="'.$_SERVER["PHP_SELF"].'?rowid='.$id.'" method="post">';
+	print '<input type="hidden" name="token" value="'.newToken().'">';
+	$actionforedit='update';
+	print '<input type="hidden" name="action" value="'.$actionforedit.'">';
+} else {
+	print '<form action="'.$_SERVER["PHP_SELF"].'?rowid='.$id.'" method="post">';
+	print '<input type="hidden" name="token" value="'.newToken().'">';
+}
+
+
 
     $linkback = '<a href="'.DOL_URL_ROOT.'/adherents/list.php?restore_lastsearch_values=1">'.$langs->trans("BackToList").'</a>';
 	
@@ -310,22 +264,6 @@ if ($id)
 	{
 		print $form->formconfirm($_SERVER["PHP_SELF"]."?rowid=".$id."&lineid=".$lineid, $langs->trans("DeleteAConsumption"), $langs->trans("ConfirmDeleteConsumption", ''), "confirm_delete", '', 0, 1);
 	}
-  
-if ($rowid && $action == 'create' && $user->rights->adherent->creer)
-{
-	print '<form action="'.$_SERVER["PHP_SELF"].'?rowid='.$id.'" method="post">';
-	print '<input type="hidden" name="token" value="'.newToken().'">';
-	$actionforadd='create';
-	print '<input type="hidden" name="action" value="'.$actionforadd.'">';
-}
-
-if ($rowid && $action == 'edit' && $user->rights->adherent->creer)
-{
-	print '<form action="'.$_SERVER["PHP_SELF"].'?rowid='.$id.'" method="post">';
-	print '<input type="hidden" name="token" value="'.newToken().'">';
-	$actionforedit='update';
-	print '<input type="hidden" name="action" value="'.$actionforedit.'">';
-}
   
 /* ************************************************************************** */
 /*                                                                            */
