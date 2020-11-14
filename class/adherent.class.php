@@ -2295,6 +2295,45 @@ dol_include_once('/adherentsplus/class/consumption.class.php');
 		}
 	}
   
+  	/**
+	 *	Fonction qui recupere pour un adherent les parametres
+	 *
+	 *  @param	int		$rowid		Id of member
+	 *  @param	int		$typeid		Id of type of member
+	 *  @return	int					<0 if KO, 0=nothing to do, >0 if OK
+	 */
+	function overview_consumptions($rowid = '',  $typeid = '')
+	{
+		global $langs;
+
+    $sql = "SELECT DISTINCT fk_product";    
+    $sql.= " FROM ".MAIN_DB_PREFIX."adherent_type_package as p";
+    $sql.= " WHERE p.fk_type=".$typeid;
+		//$sql.= " ORDER BY c.date_creation DESC";
+		dol_syslog(get_class($this)."::fetch_consumptions", LOG_DEBUG);
+
+		$resql=$this->db->query($sql);
+		if ($resql)
+		{
+			$array=array();
+			$i=0;
+            while ($obj = $this->db->fetch_object($resql))
+            {
+;
+                $array[$obj->fk_product]['included']=$obj->fk_product;
+                $array[$obj->fk_product]['to_billed']=$obj->fk_product;
+                $i++;
+            }
+			
+      return $array;
+		}
+		else
+		{
+			$this->error=$this->db->error().' sql='.$sql;
+			return -1;
+		}
+	}
+  
     // phpcs:disable PEAR.NamingConventions.ValidFunctionName.ScopeNotCamelCaps
 	/**
 	 *  Function to add member into external tools mailing-list, spip, etc.

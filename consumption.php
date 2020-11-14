@@ -282,6 +282,8 @@ if ($id && $action == 'create' && $user->rights->adherent->creer)
 	if ($action != 'create' && $action != 'edit')
 	{
 
+     print var_dump($object->overview_consumptions($id, $object->typeid));
+
 			print '<input class="flat" type="hidden" name="rowid" value="'.$socid.'" size="12">';
       
       print_barre_liste('',$page,$_SERVER["PHP_SELF"],$param,$sortfield,$sortorder,'',$num,$nbtotalofrecords);
