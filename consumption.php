@@ -299,6 +299,7 @@ if ($id && $action == 'create' && $user->rights->adherent->creer)
 
             print '<tr class="liste_titre">';
             print '<td align="left">'.$langs->trans("DateCreation").'</td>';
+            print '<td align="left">'.$langs->trans("Date").'</td>';
             print '<td align="center">'.$langs->trans("Description").'</td>';
             print '<td align="center">'.$langs->trans("Quantity").'</td>';
             print '<td align="right">'.$langs->trans("Price").'</td>';
@@ -312,6 +313,7 @@ if ($id && $action == 'create' && $user->rights->adherent->creer)
                 print "<tr ".$bc[$var].">";
 
                 print '<td>'.dol_print_date($consumption->date_creation,'dayhour')."</td>\n";
+                print '<td>'.dol_print_date($consumption->date_start,'day')."</td>\n";
                 print '<td align="center">';
                 $prodtmp=new Product($db);
                 $prodtmp->fetch($consumption->fk_product);
@@ -321,7 +323,7 @@ if ($id && $action == 'create' && $user->rights->adherent->creer)
                              
                 if ($prodtmp->isService() && $prodtmp->duration_value> 0)
             {
-                print $consumption->value." "; 
+                print $consumption->qty." "; 
                 if ($prodtmp->duration_value > 1)
                 {
                     $dur=array("i"=>$langs->trans("Minute"),"h"=>$langs->trans("Hours"),"d"=>$langs->trans("Days"),"w"=>$langs->trans("Weeks"),"m"=>$langs->trans("Months"),"y"=>$langs->trans("Years"));
