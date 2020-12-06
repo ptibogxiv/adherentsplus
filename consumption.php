@@ -83,7 +83,9 @@ $id = $adh->id;
 // Security check
 if (!$id || (!$user->rights->adherent-creer && !$user->rights->takepos->run))
 {
-	accessforbidden($langs->trans('MembershipNotAllowedForGenericCustomer'));
+$message = null;
+if ($constforcompanyid == $invoice->socid)  $message = $langs->trans('MembershipNotAllowedForGenericCustomer');
+	accessforbidden($message);
 }
 
 // Security check
