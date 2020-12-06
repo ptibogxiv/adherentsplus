@@ -281,17 +281,20 @@ if ($id && $contextpage != 'takepos')
 if ($id && $action == 'create' && $user->rights->adherent->creer)
 {
 	print '<form action="'.$_SERVER["PHP_SELF"].'?rowid='.$id.'" method="post">';
+if ($contextpage == 'takepos') print '<input type="hidden" name="contextpage" value="takepos">';
 	print '<input type="hidden" name="token" value="'.newToken().'">';
 	$actionforadd='confirm_create';
 	print '<input type="hidden" name="action" value="'.$actionforadd.'">';
 } elseif ($id && $action == 'edit' && $user->rights->adherent->creer)
 {
 	print '<form action="'.$_SERVER["PHP_SELF"].'?rowid='.$id.'" method="post">';
+if ($contextpage == 'takepos') print '<input type="hidden" name="contextpage" value="takepos">';
 	print '<input type="hidden" name="token" value="'.newToken().'">';
 	$actionforedit='update';
 	print '<input type="hidden" name="action" value="'.$actionforedit.'">';
 } else {
 	print '<form action="'.$_SERVER["PHP_SELF"].'?rowid='.$id.'" method="post">';
+if ($contextpage == 'takepos') print '<input type="hidden" name="contextpage" value="takepos">'; 
 	print '<input type="hidden" name="token" value="'.newToken().'">';
 }
 
