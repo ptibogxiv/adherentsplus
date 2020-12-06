@@ -233,11 +233,11 @@ echo $langs->trans("None");
 <div style="position:absolute; left:5%; height:52%; width:92%;">
 <?php
 
-	$sql = "SELECT d.rowid, d.libelle as label, d.subscription, d.vote, d.morphy";
+	$sql = "SELECT d.rowid as rowid, d.libelle as label, d.subscription, d.vote, d.morphy, d.tms as tms";
 	$sql .= " FROM ".MAIN_DB_PREFIX."adherent_type as d";
 	$sql .= " WHERE d.entity IN (".getEntity('member_type').")";
 	$sql .= " AND d.statut = '1'";  
-  $sql .= " ORDER BY d.libelle ASC";
+  $sql .= " ORDER BY ".(!empty($conf->global->TAKEPOS_SORTPRODUCTFIELD)?$conf->global->TAKEPOS_SORTPRODUCTFIELD:'rowid')." ASC";
 
 	$result = $db->query($sql);
 	if ($result)
