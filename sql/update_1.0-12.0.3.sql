@@ -26,7 +26,7 @@ ALTER TABLE llx_adherent_type ADD COLUMN automatic varchar(3) DEFAULT NULL;
 
 ALTER TABLE llx_adherent_type ADD COLUMN automatic_renew varchar(3) DEFAULT NULL;
 
-ALTER TABLE llx_adherent_type ADD COLUMN family int(3) DEFAULT NULL;
+ALTER TABLE llx_adherent_type ADD COLUMN family varchar(3) DEFAULT NULL;
 
 ALTER TABLE llx_adherent_type ADD COLUMN use_default int(11) DEFAULT NULL;
 
