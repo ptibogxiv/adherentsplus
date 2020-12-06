@@ -47,10 +47,13 @@ dol_include_once('/adherentsplus/lib/member.lib.php');
 dol_include_once('/adherentsplus/class/adherent.class.php');
 dol_include_once('/adherentsplus/class/adherent_type.class.php');
 require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
+require_once DOL_DOCUMENT_ROOT.'/compta/facture/class/facture.class.php';
 
 $langs->loadLangs(array('products', 'companies', 'members', 'bills', 'other', 'adherentsplus@adherentsplus'));
 
-$action = GETPOST('action','alpha');
+$action = GETPOST('action', 'alpha');
+$place = (GETPOST('place', 'aZ09') ? GETPOST('place', 'aZ09') : '0'); // $place is id of table for Bar or Restaurant
+$invoiceid = GETPOST('invoiceid', 'int');
 $cancel = GETPOST('cancel','alpha');
 $id=GETPOST('rowid','int');
 $lineid=GETPOST('lineid','int');
@@ -58,6 +61,30 @@ $productid  = GETPOST('productid','int');
 $qty  = GETPOST('quantity','int');
 if (!empty(GETPOST('date_start_month', 'int')) && !empty(GETPOST('date_start_day', 'int')) && !empty(GETPOST('date_start_year', 'int'))) $date_start = dol_mktime(0, 0, 0, GETPOST('date_start_month', 'int'), GETPOST('date_start_day', 'int'), GETPOST('date_start_year', 'int'));
 if (!empty(GETPOST('date_end_month', 'int')) && !empty(GETPOST('date_end_day', 'int')) && !empty(GETPOST('date_end_year', 'int'))) $date_end = dol_mktime(0, 0, 0, GETPOST('date_end_month', 'int'), GETPOST('date_end_day', 'int'), GETPOST('date_end_year', 'int'));
+$contextpage = GETPOST('contextpage', 'aZ') ?GETPOST('contextpage', 'aZ') : 'thirdpartylist';
+
+if ($contextpage == 'takepos')
+{
+	$_GET['optioncss'] = 'print';
+$constforcompanyid = $conf->global->{'CASHDESK_ID_THIRDPARTY'.$_SESSION["takeposterminal"]};  
+$invoice = new Facture($db);
+if ($invoiceid > 0)
+{
+    $invoice->fetch($invoiceid);
+}
+
+if ($constforcompanyid != $invoice->socid && !empty($invoice->socid)) { 
+$adh = new AdherentPlus($db);
+$result = $adh->fetch('', '', $invoice->socid, '', '', '', 1);
+$id = $adh->id;
+}
+}
+
+// Security check
+if (!$id || (!$user->rights->adherent-creer && !$user->rights->takepos->run))
+{
+	accessforbidden($langs->trans('MembershipNotAllowedForGenericCustomer'));
+}
 
 // Security check
 $result=restrictedArea($user, 'adherent', $id);
@@ -151,7 +178,7 @@ llxHeader("",$title,$helpurl);
 
 $form = new Form($db);
 
-if ($id) 
+if ($id && $contextpage != 'takepos') 
 {  
 	$head = memberplus_prepare_head($object);
 
@@ -282,7 +309,7 @@ if ($id && $action == 'create' && $user->rights->adherent->creer)
 	if ($action != 'create' && $action != 'edit')
 	{
 
-     print var_dump($object->overview_consumptions($id, $object->typeid));
+     //print var_dump($object->overview_consumptions($id, $object->typeid));
 
 			print '<input class="flat" type="hidden" name="rowid" value="'.$socid.'" size="12">';
       
@@ -290,7 +317,9 @@ if ($id && $action == 'create' && $user->rights->adherent->creer)
     /*
     * List of consumptions
     */
-  $morehtmlright= dolGetButtonTitle($langs->trans('Add'), '', 'fa fa-plus-circle', $_SERVER["PHP_SELF"].'?rowid='.$object->id.'&action=create');
+  $urlcreation =  $_SERVER["PHP_SELF"].'?rowid='.$object->id.'&action=create'; 
+  if ($contextpage == 'takepos') $urlcreation .= "&contextpage=takepos";
+  $morehtmlright= dolGetButtonTitle($langs->trans('Add'), '', 'fa fa-plus-circle', $urlcreation);
 
       print load_fiche_titre($langs->trans("ListOfProductsServices"), $morehtmlright, '');
 
