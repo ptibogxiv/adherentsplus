@@ -411,7 +411,7 @@ if (!empty($adh->id)) {
 ?>
 </div><?php } ?></div>
 <?php } else {
-print '<center>'.$langs->trans('MembershipNotAllowedForGenericCustomer').'</center>';
+accessforbidden($langs->trans('MembershipNotAllowedForGenericCustomer'));
  } ?>
 </body>
 </html>
