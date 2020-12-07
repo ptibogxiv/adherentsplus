@@ -210,7 +210,7 @@ if ($rowid && $action == 'edit' && $user->rights->adherent->creer)
 		$sql.= " FROM ".MAIN_DB_PREFIX."adherent_type_package as t";
     $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."product as p ON p.rowid = t.fk_product";
 		$sql.= " WHERE t.entity IN (".getEntity('member_type').")";
-		$sql.= " AND t.fk_member ='".$object->id."' AND t.fk_type = ".$object->typeid;
+		$sql.= " AND t.fk_member ='".$object->id."' ";//AND t.fk_type = ".$object->typeid;
 
 		$resql = $db->query($sql);
 
