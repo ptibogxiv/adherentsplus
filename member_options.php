@@ -101,7 +101,7 @@ if ($action == 'create' && $user->rights->adherent->configurer)
 {
 	if (! $cancel)
 	{ 
-		$object->fk_type    = $rowid;
+		$object->fk_type    = null;
 		$object->fk_member  = $rowid;
     $object->fk_product = $productid;
 		$object->qty        = $qty;
