@@ -160,12 +160,12 @@ $form=new Form($db);
 $formother=new FormOther($db);
 $formproduct = new FormProduct($db);
 
-$object = new AdherentTypePlus($db);
+$object = new AdherentPlus($db);
 $object->fetch($rowid);
 
-$head = memberplus_type_prepare_head($object);
+$head = memberplus_prepare_head($object);
 
-dol_fiche_head($head, 'package', $langs->trans("MemberType"), -1, 'group');
+dol_fiche_head($head, 'options', $langs->trans("Member"), -1, 'group');
 
 $linkback = '<a href="'.DOL_URL_ROOT.'/adherents/type.php?restore_lastsearch_values=1">'.$langs->trans("BackToList").'</a>';
 
@@ -209,7 +209,7 @@ if ($rowid && $action == 'edit' && $user->rights->adherent->creer)
 		$sql.= " FROM ".MAIN_DB_PREFIX."adherent_type_package as t";
     $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."product as p ON p.rowid = t.fk_product";
 		$sql.= " WHERE t.entity IN (".getEntity('member_type').")";
-		$sql.= " AND t.fk_member IS NULL AND t.fk_type = ".$rowid;
+		$sql.= " AND t.fk_member ='".$object->id."' AND t.fk_type = ".$object->typeid;
 
 		$resql = $db->query($sql);
 

@@ -213,6 +213,7 @@ class modAdherentsPlus extends DolibarrModules
 		$this->tabs = array(
         'member:-subscription',    
         'member:+subscription:Subscriptions:adherentsplus@adherentsplus:1:/adherentsplus/subscription.php?rowid=__ID__',
+    		'member:+options:Options:adherentsplus@adherentsplus:$conf->global->ADHERENT_CONSUMPTION:/adherentsplus/member_options.php?rowid=__ID__',
     		'member:+linkedmember:LinkedMembers:adherentsplus@adherentsplus:$conf->global->ADHERENT_LINKEDMEMBER:/adherentsplus/linkedmember.php?rowid=__ID__',
 				'member:+consumption:Consumptions:adherentsplus@adherentsplus:$conf->global->ADHERENT_CONSUMPTION:/adherentsplus/consumption.php?rowid=__ID__',
         'membertype:+settings:Settings:adherentsplus@adherentsplus:1:/adherentsplus/type_settings.php?rowid=__ID__',
