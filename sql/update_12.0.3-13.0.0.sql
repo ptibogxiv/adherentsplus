@@ -9,3 +9,5 @@
  */
 
 ALTER TABLE llx_adherent_type MODIFY COLUMN family varchar(3) DEFAULT NULL;
+
+ALTER TABLE llx_adherent_type_package ADD fk_member INT(11) DEFAULT NULL AFTER `fk_type`;
