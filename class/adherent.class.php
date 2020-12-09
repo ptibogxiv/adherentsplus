@@ -2265,6 +2265,26 @@ $tx = ceil((($dateto-$today)/31558464)*$conf->global->ADHERENT_SUBSCRIPTION_PROR
 dol_include_once('/adherentsplus/class/consumption.class.php');
 //require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 
+    $sql = "SELECT fk_product, sum(qty) as package";    
+    $sql.= " FROM ".MAIN_DB_PREFIX."adherent_type_package as c";
+		$sql.= " WHERE entity IN (".getEntity('adherent').")";
+    $sql.= " GROUP BY fk_product";
+		dol_syslog(get_class($this)."::fetch_consumptions", LOG_DEBUG);
+
+		$resql=$this->db->query($sql);
+		if ($resql)
+		{
+			$pack=array();
+
+			$i=0;
+            while ($obj = $this->db->fetch_object($resql))
+            {
+                $package[$obj->fk_product]=$obj->package;
+                $i++;
+            }
+
+		}   
+    
     $sql = "SELECT c.rowid, c.fk_adherent, c.date_creation";    
     $sql.= " FROM ".MAIN_DB_PREFIX."adherent_consumption as c";
     $sql.= " WHERE c.fk_adherent=".$this->id;

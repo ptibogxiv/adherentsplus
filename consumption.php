@@ -322,6 +322,29 @@ if ($contextpage == 'takepos') print '<input type="hidden" name="contextpage" va
     /*
     * List of consumptions
     */
+    $sql = "SELECT entity, fk_product, sum(qty) as package";    
+    $sql.= " FROM ".MAIN_DB_PREFIX."adherent_type_package as c";
+		$sql.= " WHERE entity IN (".getEntity('adherent').")";
+		$sql.= " AND (fk_type = '".$object->typeid."' or fk_member = '".$object->id."')";
+    $sql.= " GROUP BY fk_product";
+		//dol_syslog(get_class($this)."::fetch_consumptions", LOG_DEBUG);
+
+		$resql=$db->query($sql);
+		if ($resql)
+		{
+			$package=array();
+
+			$i=0;
+            while ($obj = $db->fetch_object($resql))
+            {
+                $package[$obj->fk_product]=$obj->package;
+                $i++;
+            }
+
+		} 
+  print var_dump($package);
+  
+    
   $urlcreation =  $_SERVER["PHP_SELF"].'?rowid='.$object->id.'&action=create'; 
   if ($contextpage == 'takepos') $urlcreation .= "&contextpage=takepos";
   $morehtmlright= dolGetButtonTitle($langs->trans('Add'), '', 'fa fa-plus-circle', $urlcreation);
