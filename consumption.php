@@ -358,11 +358,12 @@ if ($contextpage == 'takepos') print '<input type="hidden" name="contextpage" va
             print '<td align="left">'.$langs->trans("Date").'</td>';
             print '<td align="center">'.$langs->trans("Description").'</td>';
             print '<td align="center">'.$langs->trans("Quantity").'</td>';
+            print '<td align="center">'.$langs->trans("Total").'</td>';
             print '<td align="right">'.$langs->trans("Price").'</td>';
             print '<td align="right">'.$langs->trans('Invoice').'</td>';
             print '<td align="center">'.$langs->trans('Action').'</td>';
             print "</tr>\n";
-
+            $qty = array();
             foreach ($object->consumptions as $consumption)
             {
 
@@ -388,11 +389,13 @@ if ($contextpage == 'takepos') print '<input type="hidden" name="contextpage" va
                 {
                     $dur=array("i"=>$langs->trans("Minute"),"h"=>$langs->trans("Hour"),"d"=>$langs->trans("Day"),"w"=>$langs->trans("Week"),"m"=>$langs->trans("Month"),"y"=>$langs->trans("Year"));
                 }
-                print (! empty($prodtmp->duration_unit) && isset($dur[$prodtmp->duration_unit]) ? $langs->trans($dur[$prodtmp->duration_unit]) : '')."/".$package[$consumption->fk_product]."</td>\n";                  
+                print (! empty($prodtmp->duration_unit) && isset($dur[$prodtmp->duration_unit]) ? $langs->trans($dur[$prodtmp->duration_unit]) : '')."</td>\n";                  
             } else {
-                print $consumption->qty."/".$package[$consumption->fk_product]."</td>\n";  
+                print $consumption->qty."</td>\n";  
             }   
-        
+            $qty[$consumption->fk_product] += $consumption->qty;
+            if (empty($package[$consumption->fk_product])) $package[$consumption->fk_product] = 0;
+                print '<td align="right">'.$qty[$consumption->fk_product].'/'.$package[$consumption->fk_product].'</td>'; 
                 print '<td align="right">'.$consumption->amount.'</td>';
                 print '<td align="right">'.dol_print_date($consumption->date_validation,'day').'</td>';
                 
