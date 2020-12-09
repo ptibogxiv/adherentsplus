@@ -400,7 +400,7 @@ if ($contextpage == 'takepos') print '<input type="hidden" name="contextpage" va
             if ($qty[$consumption->fk_product] <= $package[$consumption->fk_product]) { 
             print $langs->trans("included");
             } else {
-            print $consumption->amount; 
+            print price($consumption->amount); 
             }
             print '</td>';
                 //print '<td align="right">'.dol_print_date($consumption->date_validation,'day').'</td>';
