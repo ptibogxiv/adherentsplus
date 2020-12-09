@@ -360,7 +360,7 @@ if ($contextpage == 'takepos') print '<input type="hidden" name="contextpage" va
             print '<td align="center">'.$langs->trans("Quantity").'</td>';
             print '<td align="center">'.$langs->trans("Total").'</td>';
             print '<td align="right">'.$langs->trans("Price").'</td>';
-            print '<td align="right">'.$langs->trans('Invoice').'</td>';
+            //print '<td align="right">'.$langs->trans('Invoice').'</td>';
             print '<td align="center">'.$langs->trans('Action').'</td>';
             print "</tr>\n";
             $qty = array();
@@ -396,8 +396,14 @@ if ($contextpage == 'takepos') print '<input type="hidden" name="contextpage" va
             $qty[$consumption->fk_product] += $consumption->qty;
             if (empty($package[$consumption->fk_product])) $package[$consumption->fk_product] = 0;
                 print '<td align="right">'.$qty[$consumption->fk_product].'/'.$package[$consumption->fk_product].'</td>'; 
-                print '<td align="right">'.$consumption->amount.'</td>';
-                print '<td align="right">'.dol_print_date($consumption->date_validation,'day').'</td>';
+            print '<td align="right">';
+            if ($qty[$consumption->fk_product] <= $package[$consumption->fk_product]) { 
+            print $langs->trans("included");
+            } else {
+            print $consumption->amount; 
+            }
+            print '</td>';
+                //print '<td align="right">'.dol_print_date($consumption->date_validation,'day').'</td>';
                 
 		        // Actions
 		        print '<td align="center">';
