@@ -342,7 +342,6 @@ if ($contextpage == 'takepos') print '<input type="hidden" name="contextpage" va
             }
 
 		} 
-  print var_dump($package);
   
     
   $urlcreation =  $_SERVER["PHP_SELF"].'?rowid='.$object->id.'&action=create'; 
@@ -389,9 +388,9 @@ if ($contextpage == 'takepos') print '<input type="hidden" name="contextpage" va
                 {
                     $dur=array("i"=>$langs->trans("Minute"),"h"=>$langs->trans("Hour"),"d"=>$langs->trans("Day"),"w"=>$langs->trans("Week"),"m"=>$langs->trans("Month"),"y"=>$langs->trans("Year"));
                 }
-                print (! empty($prodtmp->duration_unit) && isset($dur[$prodtmp->duration_unit]) ? $langs->trans($dur[$prodtmp->duration_unit]) : '')."/</td>\n";                  
+                print (! empty($prodtmp->duration_unit) && isset($dur[$prodtmp->duration_unit]) ? $langs->trans($dur[$prodtmp->duration_unit]) : '')."/".$package[$consumption->fk_product]."</td>\n";                  
             } else {
-                print $consumption->qty."/</td>\n";  
+                print $consumption->qty."/".$package[$consumption->fk_product]."</td>\n";  
             }   
         
                 print '<td align="right">'.$consumption->amount.'</td>';
