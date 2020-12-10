@@ -408,6 +408,25 @@ if ($contextpage == 'takepos') print '<input type="hidden" name="contextpage" va
 			}
 		}
     
+		// Price by customer
+		if (!empty($conf->global->PRODUIT_CUSTOMER_PRICES) && !empty($object->socid)) {
+			require_once DOL_DOCUMENT_ROOT.'/product/class/productcustomerprice.class.php';
+
+			$prodcustprice = new Productcustomerprice($db);
+
+			$filter = array('t.fk_product' => $consumption->fk_product, 't.fk_soc' => $object->socid);
+
+			$result = $prodcustprice->fetch_all('', '', 0, 0, $filter);
+			if ($result) {
+				if (count($prodcustprice->lines) > 0) {
+					$found = true;
+					$outprice_ht = $prodcustprice->lines [0]->price;
+					$outprice_ttc = $prodcustprice->lines [0]->price_ttc;
+					$outpricebasetype = $prodcustprice->lines [0]->price_base_type;
+					$outtva_tx = $prodcustprice->lines [0]->tva_tx;
+				}
+			}
+		}
     
 		if (!$found) {
 			$outprice_ht = $prodtmp->price;
