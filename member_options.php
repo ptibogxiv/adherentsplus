@@ -342,7 +342,7 @@ if ($rowid && $action == 'edit' && $user->rights->adherent->creer)
 		   	print '&nbsp;';
 				if ($user->rights->adherent->supprimer)
         {
-		   	print '<a href="'.$_SERVER["PHP_SELF"].'?rowid='.$object->id.'&lineid='.$objp->id.'&action=delete">';
+		   	print '<a href="'.$_SERVER["PHP_SELF"].'?rowid='.$object->id.'&lineid='.$objp->id.'&action=delete&token='.newToken().'">';
 		   	print img_picto($langs->trans("Delete"), 'delete');
 		   	print '</a>';
 		    }
