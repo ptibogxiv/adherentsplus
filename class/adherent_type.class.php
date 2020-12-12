@@ -627,7 +627,8 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
 		$error = 0;
     
     $date_end = (!empty($this->date_end) ? "'".$this->db->idate($this->date_end)."'" : "null");
-    $fk_member = (!empty($this->fk_member) ? "'".$this->db->idate($this->fk_member)."'" : "null");
+    $fk_type = (!empty($this->fk_type) ? "'".$this->db->escape($this->fk_type)."'" : "null");
+    $fk_member = (!empty($this->fk_member) ? "'".$this->db->escape($this->fk_member)."'" : "null");
     
 		$sql = "INSERT INTO ".MAIN_DB_PREFIX."adherent_type_package";
 		$sql.= " (entity, date_start, date_end, fk_type, fk_member, fk_product, qty)";
@@ -635,7 +636,7 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
     $sql.= " '".$conf->entity."',";
     $sql.= " '".$this->db->idate($this->date_start)."',";
     $sql.= " ".$date_end.",";
-    $sql.= " '".$this->db->escape($this->fk_type)."',";
+    $sql.= " ".$fk_type.",";
     $sql.= " ".$fk_member.",";
     $sql.= " '".$this->db->escape($this->fk_product)."',";
     $sql.= " '".$this->db->escape($this->qty)."'";
