@@ -627,14 +627,16 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
 		$error = 0;
     
     $date_end = (!empty($this->date_end) ? "'".$this->db->idate($this->date_end)."'" : "null");
-		
+    $fk_member = (!empty($this->fk_member) ? "'".$this->db->idate($this->fk_member)."'" : "null");
+    
 		$sql = "INSERT INTO ".MAIN_DB_PREFIX."adherent_type_package";
-		$sql.= " (entity, date_start, date_end, fk_type, fk_product, qty)";
+		$sql.= " (entity, date_start, date_end, fk_type, fk_member, fk_product, qty)";
 		$sql.= " VALUES ("; 		
     $sql.= " '".$conf->entity."',";
     $sql.= " '".$this->db->idate($this->date_start)."',";
     $sql.= " ".$date_end.",";
     $sql.= " '".$this->db->escape($this->fk_type)."',";
+    $sql.= " ".$fk_member.",";
     $sql.= " '".$this->db->escape($this->fk_product)."',";
     $sql.= " '".$this->db->escape($this->qty)."'";
 		$sql.= ")";
@@ -679,7 +681,7 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
 	 */
 	public function fetch_package($rowid)
 	{
-		$sql = "SELECT t.rowid as id, t.fk_type as type, t.fk_product as product, t.qty, t.date_start, t.tms, t.date_end";
+		$sql = "SELECT t.rowid as id, t.fk_type as type, t.fk_member, t.fk_product as product, t.qty, t.date_start, t.tms, t.date_end";
 		$sql .= ", p.ref as ref, p.label as label, p.fk_product_type";
 		$sql.= " FROM ".MAIN_DB_PREFIX."adherent_type_package as t";
     $sql.= " LEFT JOIN ".MAIN_DB_PREFIX."product as p ON p.rowid = t.fk_product";
@@ -699,6 +701,7 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
         $this->ref            = $obj->ref;
         $this->label          = $obj->label;
         $this->fk_type        = $obj->type;
+        $this->fk_member      = $obj->member;
         $this->fk_product_type= $obj->fk_product_type;
         $this->qty            = $obj->qty;
         $this->rang           = $obj->rang;
