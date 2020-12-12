@@ -368,7 +368,7 @@ if ($contextpage == 'takepos') print '<input type="hidden" name="contextpage" va
             print '<td align="center">'.$langs->trans("Quantity").'</td>';
             print '<td align="center">'.$langs->trans("Total").'</td>';
             print '<td align="right">'.$langs->trans("TotalHT").'</td>';
-            //print '<td align="right">'.$langs->trans('Invoice').'</td>';
+            print '<td align="right">'.$langs->trans("TotalTTC").'</td>';
             print '<td align="center">'.$langs->trans('Action').'</td>';
             print "</tr>\n";
             $qty = array();
@@ -400,7 +400,7 @@ if ($contextpage == 'takepos') print '<input type="hidden" name="contextpage" va
 				$objp = $db->fetch_object($result);
 				if ($objp) {
 					$found = true;
-					$outprice_ht = $objp->price;
+					$outprice = $objp->price;
 					$outprice_ttc = $objp->price_ttc;
 					$outpricebasetype = $objp->price_base_type;
 					$outtva_tx = $objp->tva_tx;
@@ -420,7 +420,7 @@ if ($contextpage == 'takepos') print '<input type="hidden" name="contextpage" va
 			if ($result) {
 				if (count($prodcustprice->lines) > 0) {
 					$found = true;
-					$outprice_ht = $prodcustprice->lines [0]->price;
+					$outprice = $prodcustprice->lines [0]->price;
 					$outprice_ttc = $prodcustprice->lines [0]->price_ttc;
 					$outpricebasetype = $prodcustprice->lines [0]->price_base_type;
 					$outtva_tx = $prodcustprice->lines [0]->tva_tx;
@@ -429,7 +429,7 @@ if ($contextpage == 'takepos') print '<input type="hidden" name="contextpage" va
 		}
     
 		if (!$found) {
-			$outprice_ht = $prodtmp->price;
+			$outprice = $prodtmp->price;
 			$outprice_ttc = $prodtmp->price_ttc;
 			$outpricebasetype = $prodtmp->price_base_type;
 			$outtva_tx = $prodtmp->tva_tx;
@@ -462,11 +462,19 @@ if ($contextpage == 'takepos') print '<input type="hidden" name="contextpage" va
             print $langs->trans("included");
             $price += 0;
             } else {
-            print price($consumption->qty*$outprice_ht);
-            $price += $consumption->qty*$outprice_ht; 
+            print price($consumption->qty*$outprice);
+            $price += $consumption->qty*$outprice; 
             }
             print '</td>';
-                //print '<td align="right">'.dol_print_date($consumption->date_validation,'day').'</td>';
+            print '<td align="right">';
+            if ($qty[$consumption->fk_product] <= $package[$consumption->fk_product]) { 
+            print $langs->trans("included");
+            $pricettc += 0;
+            } else {
+            print price($consumption->qty*$outprice_ttc);
+            $pricettc += $consumption->qty*$outprice_ttc; 
+            }
+            print '</td>';
                 
 		        // Actions
 		        print '<td align="center">';
@@ -489,7 +497,7 @@ if ($contextpage == 'takepos') print '<input type="hidden" name="contextpage" va
         $i++;
             }
         print '<tr class="liste_total">';
-				if (!empty($i)) print '<td class="left">'.$langs->trans("Total").'</td><td colspan="5" class="right">'.price($price).'</td><td></td>';
+				if (!empty($i)) print '<td class="left">'.$langs->trans("Total").'</td><td colspan="5" class="right">'.price($price).'</td><td class="right">'.price($pricettc).'</td><td></td>';
         print '</tr>';     
         print "</table></div>";         
  }   
