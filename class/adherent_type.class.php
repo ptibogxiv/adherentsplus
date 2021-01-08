@@ -951,14 +951,14 @@ if (!empty($prorata)) {
 if (!empty($this->prorata)) {
 if ($daterenew > $abo && $abo > $datefrom) {
 $date = new DateTime($abo);
-$date->modify('+1 SECOND');
+$date->modify('+1 SECONDS');
 } else {
 $date = new DateTime();
 $date->modify('NOW');   
 } 
 } elseif ($daterenew > $abo && $abo > $datefrom) {
 $date = new DateTime($abo);
-$date->modify('+1 SECOND');  
+$date->modify('+1 SECONDS');  
 } elseif ($this->duration_unit == 'y') {
 $date = new DateTime($datefrom);  
 } elseif ($this->duration_unit == 'd') {
@@ -982,7 +982,7 @@ $date->modify('LAST YEAR');
 } else {
 if (!empty($abo) && $abo > $datefrom && $datewf > dol_now() ) { 
 $date = new DateTime($abo);
-$date->modify('+1 SECOND');   
+$date->modify('+1 SECONDS');   
 } else {
 $date = new DateTime();
 $date->modify('NOW');  
