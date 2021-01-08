@@ -929,10 +929,10 @@ $date->modify('- '.$conf->global->SOCIETE_SUBSCRIBE_MONTH_PRESTART.' MONTHS');
 $daterenew = $date->format('Y-m-d H:i:s');
                 $this->date_renew         = $this->db->jdate($daterenew);
                 
-if (!empty($abo) && empty($conf->global->ADHERENT_WELCOME_MONTH) ) {
+if (!empty($abo) && $conf->global->ADHERENT_WELCOME_MONTH < 0) {
 $date = new DateTime($dateto);
 $date->modify('+1 SECONDS');   
-} elseif (!empty($abo) && !empty($conf->global->ADHERENT_WELCOME_MONTH) ) {
+} elseif (!empty($abo) && $conf->global->ADHERENT_WELCOME_MONTH >= 0 ) {
 $date = new DateTime($abo);
 $date->modify('+1 SECONDS');
 //$date->modify('NEXT DAY MIDNIGHT');
@@ -951,14 +951,14 @@ if (!empty($prorata)) {
 if (!empty($this->prorata)) {
 if ($daterenew > $abo && $abo > $datefrom) {
 $date = new DateTime($abo);
-$date->modify('+1 SECONDS');
+$date->modify('+1 SECOND');
 } else {
 $date = new DateTime();
 $date->modify('NOW');   
 } 
 } elseif ($daterenew > $abo && $abo > $datefrom) {
 $date = new DateTime($abo);
-$date->modify('+1 SECONDS');  
+$date->modify('+1 SECOND');  
 } elseif ($this->duration_unit == 'y') {
 $date = new DateTime($datefrom);  
 } elseif ($this->duration_unit == 'd') {
@@ -978,15 +978,15 @@ $date->modify('FIRST DAY OF '.$monthName.' MIDNIGHT');
 if ($date->getTimestamp() > dol_now() && $daterenew > dol_now()) {
 $date->modify('LAST YEAR');
 }
-}
+} 
 } else {
-if (!empty($abo) && $abo > $datefrom) { 
+if (!empty($abo) && $abo > $datefrom && $datewf > dol_now() ) { 
 $date = new DateTime($abo);
-$date->modify('+1 SECONDS');   
+$date->modify('+1 SECOND');   
 } else {
 $date = new DateTime();
-$date->modify('NOW');   
-}
+$date->modify('NOW');  
+}  
 } 
 
 //$date_begin = $date->format('Y-m-d H:i:s');
