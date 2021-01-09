@@ -166,7 +166,7 @@ $object->fetch($rowid);
 
 $head = memberplus_prepare_head($object);
 
-dol_fiche_head($head, 'options', $langs->trans("Member"), -1, 'group');
+dol_fiche_head($head, 'options', $langs->trans("Member"), -1, 'user');
 
 $linkback = '<a href="'.DOL_URL_ROOT.'/adherents/type.php?restore_lastsearch_values=1">'.$langs->trans("BackToList").'</a>';
 
