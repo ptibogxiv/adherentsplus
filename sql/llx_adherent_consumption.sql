@@ -21,6 +21,7 @@ CREATE TABLE llx_adherent_consumption (
   rowid integer AUTO_INCREMENT PRIMARY KEY,
   entity integer DEFAULT 1 NOT NULL,         -- multi company id
   fk_adherent integer DEFAULT NULL,
+  fk_subscription integer DEFAULT NULL,
   fk_facture integer DEFAULT NULL,
   fk_parent_line integer DEFAULT NULL,
   fk_product integer DEFAULT NULL,
