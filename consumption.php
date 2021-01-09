@@ -357,8 +357,8 @@ if ($contextpage == 'takepos') print '<input type="hidden" name="contextpage" va
       print '<table class="tagtable liste'.($moreforfilter?" listwithfilterbefore":"").'">'."\n";
 
             print '<tr class="liste_titre">';
-            print '<td align="left">'.$langs->trans("DateCreation").'</td>';
             print '<td align="left">'.$langs->trans("Date").'</td>';
+            print '<td align="left">'.$langs->trans("Subscription").'</td>';
             print '<td align="center">'.$langs->trans("Description").'</td>';
             print '<td align="center">'.$langs->trans("Quantity").'</td>';
             print '<td align="center">'.$langs->trans("Total").'</td>';
@@ -372,17 +372,19 @@ if ($contextpage == 'takepos') print '<input type="hidden" name="contextpage" va
             {
 
 		if ($object->socid > 0 && (!empty($conf->global->PRODUIT_MULTIPRICES) || !empty($conf->global->PRODUIT_CUSTOMER_PRICES_BY_QTY_MULTIPRICES))) {
-			$subsc = new SubscriptionPlus($db);
-      $subsc->fetch($consumption->fk_subscription);
+			$subscriptionstatic = new SubscriptionPlus($db);
+      $subscriptionstatic->fetch($consumption->fk_subscription);
+      $subscriptionstatic->ref = $consumption->fk_subscription;
+      $subscriptionstatic->id = $consumption->fk_subscription;
 			$adht = new AdherentTypePlus($db);
-      $adht->fetch($subsc->fk_type);
+      $adht->fetch($subscriptionstatic->fk_type);
 			$price_level = $adht->price_level;
 		}
 
                 print "<tr ".$bc[$var].">";
 
-                print '<td>'.dol_print_date($consumption->date_creation,'dayhour')."</td>\n";
                 print '<td>'.dol_print_date($consumption->date_start,'day')."</td>\n";
+                print '<td>'.$subscriptionstatic->getNomUrl(1)."</td>\n";
                 print '<td align="left">';
                 $prodtmp=new Product($db);
                 $prodtmp->fetch($consumption->fk_product);
