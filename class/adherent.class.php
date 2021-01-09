@@ -2288,7 +2288,7 @@ dol_include_once('/adherentsplus/class/consumption.class.php');
     $sql = "SELECT c.rowid, c.fk_adherent, c.fk_subscription, c.date_creation";    
     $sql.= " FROM ".MAIN_DB_PREFIX."adherent_consumption as c";
     $sql.= " WHERE c.fk_adherent=".$this->id;
-    $sql.= " (c.fk_facture IS null)";
+    $sql.= " AND (c.fk_facture IS null)";
 		$sql.= " ORDER BY c.date_start ASC";
 		dol_syslog(get_class($this)."::fetch_consumptions", LOG_DEBUG);
 
