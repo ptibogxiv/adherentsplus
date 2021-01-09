@@ -2285,7 +2285,7 @@ dol_include_once('/adherentsplus/class/consumption.class.php');
 
 		}   
     
-    $sql = "SELECT c.rowid, c.fk_adherent, c.date_creation";    
+    $sql = "SELECT c.rowid, c.fk_adherent, c.fk_subscription, c.date_creation";    
     $sql.= " FROM ".MAIN_DB_PREFIX."adherent_consumption as c";
     $sql.= " WHERE c.fk_adherent=".$this->id;
 		$sql.= " ORDER BY c.date_start ASC";

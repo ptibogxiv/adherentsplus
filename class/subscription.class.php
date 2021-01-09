@@ -154,7 +154,7 @@ class SubscriptionPlus extends CommonObject
                 $this->ref            = $obj->rowid;
 
                 $this->fk_type        = $obj->fk_type;
-                $this->fk_adherent    = $obj->fk_adherent;
+                $this->fk_adherent    = $obj->fk_adherent; 
                 $this->datec          = $this->db->jdate($obj->datec);
                 $this->datem          = $this->db->jdate($obj->tms);
                 $this->dateh          = $this->db->jdate($obj->dateh);

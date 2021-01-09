@@ -38,6 +38,7 @@ class Consumption extends CommonObject
 	var $fk_invoice;				// Subscription start date (date subscription)
 	var $fk_product;				// Subscription end date
 	var $fk_adherent;
+	var $fk_subscription;
   var $qty;
   var $value;
   var $unit;
@@ -126,7 +127,7 @@ class Consumption extends CommonObject
 	public function fetch($rowid)
 	{  
   
-    $sql ="SELECT t.rowid, t.entity, t.fk_adherent, t.fk_product, t.fk_facture, t.date_creation";
+    $sql ="SELECT t.rowid, t.entity, t.fk_adherent, t.fk_subscription, t.fk_product, t.fk_facture, t.date_creation";
 		$sql.=" , t.qty, t.tms, t.fk_facture, t.date_start, t.date_end, t.fk_user_author, t.fk_user_modif";
 		$sql.=" , p.ref as ref, p.label as label, p.description as description, p.fk_product_type";
 		$sql.=" FROM ".MAIN_DB_PREFIX."adherent_consumption as t";
@@ -143,6 +144,7 @@ class Consumption extends CommonObject
 				$this->ref            = $obj->ref;
 				$this->entity         = $obj->entity;   
 				$this->fk_adherent    = $obj->fk_adherent;
+				$this->fk_subscription= $obj->fk_subscription;
 				$this->fk_product     = $obj->fk_product;
 				$this->product_type   = $obj->fk_product_type;
 				$this->fk_facture     = $obj->fk_facture;

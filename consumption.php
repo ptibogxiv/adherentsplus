@@ -45,6 +45,7 @@ if (! $res)
 
 dol_include_once('/adherentsplus/lib/member.lib.php');
 dol_include_once('/adherentsplus/class/adherent.class.php');
+dol_include_once('/adherentsplus/class/subscription.class.php');
 dol_include_once('/adherentsplus/class/adherent_type.class.php');
 require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 require_once DOL_DOCUMENT_ROOT.'/compta/facture/class/facture.class.php';
@@ -345,13 +346,7 @@ if ($contextpage == 'takepos') print '<input type="hidden" name="contextpage" va
     
 		$outdiscount = 0;
 		$price_level = 1;
-		if ($object->socid > 0 && (!empty($conf->global->PRODUIT_MULTIPRICES) || !empty($conf->global->PRODUIT_CUSTOMER_PRICES_BY_QTY_MULTIPRICES))) {
-			$thirdpartytemp = new Societe($db);
-			$thirdpartytemp->fetch($object->socid);
-			$price_level = $thirdpartytemp->price_level;
-		}
   
-    
   $urlcreation =  $_SERVER["PHP_SELF"].'?rowid='.$object->id.'&action=create'; 
   if ($contextpage == 'takepos') $urlcreation .= "&contextpage=takepos";
   $morehtmlright= dolGetButtonTitle($langs->trans('Add'), '', 'fa fa-plus-circle', $urlcreation);
@@ -375,6 +370,12 @@ if ($contextpage == 'takepos') print '<input type="hidden" name="contextpage" va
             $i=0;
             foreach ($object->consumptions as $consumption)
             {
+
+		if ($object->socid > 0 && (!empty($conf->global->PRODUIT_MULTIPRICES) || !empty($conf->global->PRODUIT_CUSTOMER_PRICES_BY_QTY_MULTIPRICES))) {
+			$subsc = new SubscriptionPlus($db);
+      $subsc->fetch($consumption->fk_subscription);
+			$price_level = $subsc->price_level;
+		}
 
                 print "<tr ".$bc[$var].">";
 
