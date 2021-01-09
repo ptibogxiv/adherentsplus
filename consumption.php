@@ -374,7 +374,9 @@ if ($contextpage == 'takepos') print '<input type="hidden" name="contextpage" va
 		if ($object->socid > 0 && (!empty($conf->global->PRODUIT_MULTIPRICES) || !empty($conf->global->PRODUIT_CUSTOMER_PRICES_BY_QTY_MULTIPRICES))) {
 			$subsc = new SubscriptionPlus($db);
       $subsc->fetch($consumption->fk_subscription);
-			$price_level = $subsc->price_level;
+			$adht = new AdherentTypePlus($db);
+      $adht->fetch($subsc->fk_type);
+			$price_level = $adht->price_level;
 		}
 
                 print "<tr ".$bc[$var].">";
