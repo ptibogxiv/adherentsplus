@@ -45,7 +45,7 @@ if (! $res)
 
 dol_include_once('/adherentsplus/lib/member.lib.php');
 dol_include_once('/adherentsplus/class/adherent.class.php');
-dol_include_once('/adherentsplus/class/subscription.class.php');
+require_once DOL_DOCUMENT_ROOT.'/adherents/class/subscription.class.php';
 dol_include_once('/adherentsplus/class/adherent_type.class.php');
 require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 require_once DOL_DOCUMENT_ROOT.'/compta/facture/class/facture.class.php';
@@ -82,7 +82,7 @@ $id = $adh->id;
 }
 
 // Security check
-if (!$id || (!$user->rights->adherent-creer && !$user->rights->takepos->run))
+if (!$id || (!$user->rights->adherent->creer && !$user->rights->takepos->run))
 {
 $message = null;
 if ($constforcompanyid == $invoice->socid)  $message = $langs->trans('MembershipNotAllowedForGenericCustomer');
@@ -372,7 +372,7 @@ if ($contextpage == 'takepos') print '<input type="hidden" name="contextpage" va
             {
 
 		if ($object->socid > 0 && (!empty($conf->global->PRODUIT_MULTIPRICES) || !empty($conf->global->PRODUIT_CUSTOMER_PRICES_BY_QTY_MULTIPRICES))) {
-			$subscriptionstatic = new SubscriptionPlus($db);
+			$subscriptionstatic = new Subscription($db);
       $subscriptionstatic->fetch($consumption->fk_subscription);
       $subscriptionstatic->ref = $consumption->fk_subscription;
       $subscriptionstatic->id = $consumption->fk_subscription;
