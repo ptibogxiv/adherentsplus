@@ -384,7 +384,9 @@ if ($contextpage == 'takepos') print '<input type="hidden" name="contextpage" va
                 print "<tr ".$bc[$var].">";
 
                 print '<td>'.dol_print_date($consumption->date_start,'day')."</td>\n";
-                print '<td>'.$subscriptionstatic->getNomUrl(1)."</td>\n";
+                print '<td>';
+                if (!empty($consumption->fk_subscription)) print $subscriptionstatic->getNomUrl(1);
+                print "</td>\n";
                 print '<td align="left">';
                 $prodtmp=new Product($db);
                 $prodtmp->fetch($consumption->fk_product);
