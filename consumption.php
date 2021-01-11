@@ -45,8 +45,8 @@ if (! $res)
 
 dol_include_once('/adherentsplus/lib/member.lib.php');
 dol_include_once('/adherentsplus/class/adherent.class.php');
+dol_include_once('/adherentsplus/class/adherent_type.class.php');  
 require_once DOL_DOCUMENT_ROOT.'/adherents/class/subscription.class.php';
-dol_include_once('/adherentsplus/class/adherent_type.class.php');
 require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 require_once DOL_DOCUMENT_ROOT.'/compta/facture/class/facture.class.php';
 
@@ -368,19 +368,19 @@ if ($contextpage == 'takepos') print '<input type="hidden" name="contextpage" va
             print "</tr>\n";
             $qty = array();
             $i=0;
+            $subscriptionstatic = new Subscription($db);
+            
             foreach ($object->consumptions as $consumption)
             {
 
 		if ($object->socid > 0 && (!empty($conf->global->PRODUIT_MULTIPRICES) || !empty($conf->global->PRODUIT_CUSTOMER_PRICES_BY_QTY_MULTIPRICES))) {
-			$subscriptionstatic = new Subscription($db);
       $subscriptionstatic->fetch($consumption->fk_subscription);
-      $subscriptionstatic->ref = $consumption->fk_subscription;
-      $subscriptionstatic->id = $consumption->fk_subscription;
 			$adht = new AdherentTypePlus($db);
       $adht->fetch($subscriptionstatic->fk_type);
 			$price_level = $adht->price_level;
 		}
-
+                $subscriptionstatic->ref = $consumption->fk_subscription;
+                $subscriptionstatic->id = $consumption->fk_subscription;
                 print "<tr ".$bc[$var].">";
 
                 print '<td>'.dol_print_date($consumption->date_start,'day')."</td>\n";
