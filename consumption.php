@@ -465,7 +465,7 @@ if ($contextpage == 'takepos') print '<input type="hidden" name="contextpage" va
             if (empty($package[$consumption->fk_product])) $package[$consumption->fk_product] = 0;
                 print '<td align="right">'.$qty[$consumption->fk_product].'/'.$package[$consumption->fk_product].'</td>'; 
             print '<td align="right">';
-            if ($qty[$consumption->fk_product] <= $package[$consumption->fk_product]) { 
+            if ($qty[$consumption->fk_product] <= $package[$consumption->fk_product] && $package[$consumption->fk_product] != 0) { 
             print $langs->trans("included");
             $price += 0;
             } else {
@@ -474,7 +474,7 @@ if ($contextpage == 'takepos') print '<input type="hidden" name="contextpage" va
             }
             print '</td>';
             print '<td align="right">';
-            if ($qty[$consumption->fk_product] <= $package[$consumption->fk_product]) { 
+            if ($qty[$consumption->fk_product] <= $package[$consumption->fk_product] && $package[$consumption->fk_product] != 0) { 
             print $langs->trans("included");
             $pricettc += 0;
             } else {
