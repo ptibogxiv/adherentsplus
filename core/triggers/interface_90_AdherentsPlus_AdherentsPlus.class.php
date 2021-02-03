@@ -171,12 +171,12 @@ $adhesion=$langs->trans("Subscription").' '.$season;
 } else{
 $adhesion=$conf->global->MEMBER_NO_DEFAULT_LABEL;
 }
-        $sql = "SELECT f.fk_facture,f.fk_paiement,p.rowid, p.fk_bank as bank";               
-        $sql.= " FROM ".MAIN_DB_PREFIX."paiement_facture as f";
-        $sql.= " JOIN ".MAIN_DB_PREFIX."paiement as p on p.rowid=f.fk_paiement";
-        $sql.= " WHERE f.fk_facture=".$object->id." ";
+        $sql2 = "SELECT f.fk_facture,f.fk_paiement,p.rowid, p.fk_bank as bank";               
+        $sql2.= " FROM ".MAIN_DB_PREFIX."paiement_facture as f";
+        $sql2.= " JOIN ".MAIN_DB_PREFIX."paiement as p on p.rowid=f.fk_paiement";
+        $sql2.= " WHERE f.fk_facture=".$object->id." ";
         
-		$result3 = $db->query($sql);
+		$result3 = $db->query($sql2);
     if ($result3)
 		{
 			if ($db->num_rows($result3))
@@ -189,9 +189,9 @@ $adhesion=$conf->global->MEMBER_NO_DEFAULT_LABEL;
 $idcot=$member->subscription($datefrom, $objp2->total_ttc, $bankkey, '', $adhesion, '', '', '', $dateto); 
 
 if ($idcot>0) {
-$sql = 'UPDATE '.MAIN_DB_PREFIX.'subscription SET fk_bank='.$bankkey;
-$sql.= ' WHERE rowid='.$idcot;
-$result = $db->query($sql);
+$sql3 = 'UPDATE '.MAIN_DB_PREFIX.'subscription SET fk_bank='.$bankkey;
+$sql3.= ' WHERE rowid='.$idcot;
+$result = $db->query($sql3);
 $db->commit();
 
 $invoice = new Facture($db);
