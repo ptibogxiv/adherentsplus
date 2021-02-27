@@ -327,27 +327,24 @@ class AdherentPlus extends CommonObject
 	 */
 	public function create($user, $notrigger = 0)
 	{
-		global $conf,$langs;
+		global $conf, $langs;
 
-		$error=0;
+		$error = 0;
 
-		$now=dol_now();
+		$now = dol_now();
 
 		// Clean parameters
 		$this->import_key = trim($this->import_key);
 
 		// Check parameters
-		if (! empty($conf->global->ADHERENT_MAIL_REQUIRED) && ! isValidEMail($this->email))
-		{
+		if (!empty($conf->global->ADHERENT_MAIL_REQUIRED) && !isValidEMail($this->email)) {
 			$langs->load("errors");
 			$this->error = $langs->trans("ErrorBadEMail", $this->email);
 			return -1;
 		}
-		if (! $this->datec) $this->datec=$now;
-		if (empty($conf->global->ADHERENT_LOGIN_NOT_REQUIRED))
-		{
-			if (empty($this->login))
-			{
+		if (!$this->datec) $this->datec = $now;
+		if (empty($conf->global->ADHERENT_LOGIN_NOT_REQUIRED)) {
+			if (empty($this->login)) {
 				$this->error = $langs->trans("ErrorWrongValueForParameterX", "Login");
 				return -1;
 			}
@@ -357,83 +354,73 @@ class AdherentPlus extends CommonObject
 
 		// Insert member
 		$sql = "INSERT INTO ".MAIN_DB_PREFIX."adherent";
-		$sql.= " (datec,login,fk_user_author,fk_user_mod,fk_user_valid,morphy,fk_adherent_type,entity,import_key)";
-		$sql.= " VALUES (";
-		$sql.= " '".$this->db->idate($this->datec)."'";
-		$sql.= ", ".($this->login?"'".$this->db->escape($this->login)."'":"null");
-		$sql.= ", ".($user->id>0?$user->id:"null");	// Can be null because member can be created by a guest or a script
-		$sql.= ", null, null, '".$this->db->escape($this->morphy)."'";
-		$sql.= ", ".$this->typeid;
-		$sql.= ", ".$conf->entity;
-		$sql.= ", ".(! empty($this->import_key) ? "'".$this->db->escape($this->import_key)."'":"null");
-		$sql.= ")";
+		$sql .= " (ref, datec,login,fk_user_author,fk_user_mod,fk_user_valid,morphy,fk_adherent_type,entity,import_key)";
+		$sql .= " VALUES (";
+		$sql .= " '(PROV)'";
+		$sql .= ", '".$this->db->idate($this->datec)."'";
+		$sql .= ", ".($this->login ? "'".$this->db->escape($this->login)."'" : "null");
+		$sql .= ", ".($user->id > 0 ? $user->id : "null"); // Can be null because member can be created by a guest or a script
+		$sql .= ", null, null, '".$this->db->escape($this->morphy)."'";
+		$sql .= ", ".$this->typeid;
+		$sql .= ", ".$conf->entity;
+		$sql .= ", ".(!empty($this->import_key) ? "'".$this->db->escape($this->import_key)."'" : "null");
+		$sql .= ")";
 
 		dol_syslog(get_class($this)."::create", LOG_DEBUG);
 		$result = $this->db->query($sql);
-		if ($result)
-		{
+		if ($result) {
 			$id = $this->db->last_insert_id(MAIN_DB_PREFIX."adherent");
-			if ($id > 0)
-			{
-				$this->id=$id;
-				$this->ref=(string) $id;
+			if ($id > 0) {
+				$this->id = $id;
+				$this->ref = (string) $id;
 
 				// Update minor fields
-				$result=$this->update($user, 1, 1, 0, 0, 'add'); // nosync is 1 to avoid update data of user
-				if ($result < 0)
-				{
+				$result = $this->update($user, 1, 1, 0, 0, 'add'); // nosync is 1 to avoid update data of user
+				if ($result < 0) {
 					$this->db->rollback();
 					return -1;
 				}
 
 				// Add link to user
-				if ($this->user_id)
-				{
+				if ($this->user_id) {
 					// Add link to user
 					$sql = "UPDATE ".MAIN_DB_PREFIX."user SET";
-					$sql.= " fk_member = ".$this->id;
-					$sql.= " WHERE rowid = ".$this->user_id;
+					$sql .= " fk_member = ".$this->id;
+					$sql .= " WHERE rowid = ".$this->user_id;
 					dol_syslog(get_class($this)."::create", LOG_DEBUG);
 					$resql = $this->db->query($sql);
-					if (! $resql)
-					{
-						$this->error='Failed to update user to make link with member';
+					if (!$resql) {
+						$this->error = 'Failed to update user to make link with member';
 						$this->db->rollback();
 						return -4;
 					}
 				}
 
-				if (! $notrigger)
-				{
+				if (!$notrigger) {
 					// Call trigger
-					$result=$this->call_trigger('MEMBER_CREATE', $user);
-					if ($result < 0) { $error++; }
+					$result = $this->call_trigger('MEMBER_CREATE', $user);
+					if ($result < 0) {
+						$error++;
+					}
 					// End call triggers
 				}
 
-				if (count($this->errors))
-				{
+				if (count($this->errors)) {
 					dol_syslog(get_class($this)."::create ".implode(',', $this->errors), LOG_ERR);
 					$this->db->rollback();
 					return -3;
-				}
-				else
-				{
+				} else {
 					$this->db->commit();
 					return $this->id;
 				}
-			}
-			else
-			{
-				$this->error='Failed to get last insert id';
+			} else {
+				$this->error = 'Failed to get last insert id';
 				dol_syslog(get_class($this)."::create ".$this->error, LOG_ERR);
 				$this->db->rollback();
 				return -2;
 			}
-		}
-		else
-		{
-			$this->error=$this->db->error();
+		} else {
+			$this->error = $this->db->error();
 			$this->db->rollback();
 			return -1;
 		}

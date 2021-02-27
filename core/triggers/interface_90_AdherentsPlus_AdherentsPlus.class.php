@@ -122,39 +122,39 @@ dol_include_once('/adherentsplus/class/adherent.class.php');
 dol_include_once('/adherentsplus/class/adherent_type.class.php'); 
 require_once DOL_DOCUMENT_ROOT.'/compta/facture/class/facture.class.php';
       
-        $sql = "SELECT fk_product, date_start, date_end, total_ttc";               
-        $sql.= " FROM ".MAIN_DB_PREFIX."facturedet";
-        $sql.= " WHERE fk_facture=".$object->id." ";
+        $sql1 = "SELECT fk_product, date_start, date_end, total_ttc";               
+        $sql1.= " FROM ".MAIN_DB_PREFIX."facturedet";
+        $sql1.= " WHERE fk_facture=".$object->id." ";
         
-        $result2 = $db->query($sql);
-        if ($result2)
+        $result1 = $db->query($sql1);
+        if ($result1)
         {
-            $num = $db->num_rows($result2);
+            $num = $db->num_rows($result1);
             $i = 0;
 
             $var=True;
             while ($i < $num)
             {            
-                $objp2 = $db->fetch_object($result2);
+                $objp1 = $db->fetch_object($result1);
                 $var=!$var;  
               
-if ($objp2->fk_product==$conf->global->ADHERENT_PRODUCT_ID_FOR_SUBSCRIPTIONS) { 
+if ($objp1->fk_product==$conf->global->ADHERENT_PRODUCT_ID_FOR_SUBSCRIPTIONS) { 
 
 $member=new AdherentPlus($db);
 $member->fetch('','',$object->socid);
 $adht = new AdherentTypePlus($db);
 $adht->fetch($member->typeid);
 
-if (empty($objp2->date_start)) {
+if (empty($objp1->date_start)) {
 $datefrom = $member->next_subscription_date_start;
 } else {
-$datefrom = strtotime($objp2->date_start);
+$datefrom = strtotime($objp1->date_start);
 }
 
-if (empty($objp2->date_end)) {
+if (empty($objp1->date_end)) {
 $dateto = $member->next_subscription_date_end;
 } else {
-$dateto = strtotime($objp2->date_end);
+$dateto = strtotime($objp1->date_end);
 }
 
 $d = strftime("%Y",$datefrom);
@@ -176,22 +176,23 @@ $adhesion=$conf->global->MEMBER_NO_DEFAULT_LABEL;
         $sql2.= " JOIN ".MAIN_DB_PREFIX."paiement as p on p.rowid=f.fk_paiement";
         $sql2.= " WHERE f.fk_facture=".$object->id." ";
         
-		$result3 = $db->query($sql2);
-    if ($result3)
+		$result2 = $db->query($sql2);
+    if ($result2)
 		{
-			if ($db->num_rows($result3))
+			if ($db->num_rows($result2))
 			{
-				$obj = $db->fetch_object($result3);
-    $bankkey=$obj->bank;
+				$obj2 = $db->fetch_object($result2);
+    $bankkey=$obj2->bank;
     }
     }
 
-$idcot=$member->subscription($datefrom, $objp2->total_ttc, $bankkey, '', $adhesion, '', '', '', $dateto); 
+$idcot=$member->subscription($datefrom, $objp1->total_ttc, $bankkey, '', $adhesion, '', '', '', $dateto); 
 
 if ($idcot>0) {
+$db->begin();
 $sql3 = 'UPDATE '.MAIN_DB_PREFIX.'subscription SET fk_bank='.$bankkey;
 $sql3.= ' WHERE rowid='.$idcot;
-$result = $db->query($sql3);
+$result3 = $db->query($sql3);
 $db->commit();
 
 $invoice = new Facture($db);
@@ -203,7 +204,7 @@ $invoice->add_object_linked('subscription', $idcot);
         //if (! $error)
         //{
             // Send confirmation Email
-            if ($member->email && ! empty($conf->global->ADHERENT_DEFAULT_SENDINFOBYMAIL))   // $object is 'Adherent'
+            if ($idcot>0 && $member->email && ! empty($conf->global->ADHERENT_DEFAULT_SENDINFOBYMAIL))   // $object is 'Adherent'
             {
 				$subject = '';
 				$msg= '';
