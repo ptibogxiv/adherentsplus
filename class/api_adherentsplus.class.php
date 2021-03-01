@@ -340,7 +340,7 @@ class AdherentsPlus extends DolibarrApi
             	$obj = $db->fetch_object($result);
                 $membertype = new AdherentTypePlus($this->db);
                 if ($membertype->fetch($obj->rowid)) {
-                    $membertype->subscription_calculator();
+                    $membertype->subscription_calculator($member_id);
                     $obj_ret[] = $this->_cleanObjectDatas($membertype);
                 }
                 $i++;
