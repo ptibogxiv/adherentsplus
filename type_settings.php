@@ -506,6 +506,9 @@ if ((float) DOL_VERSION < 11.0) {
 		print $formother->selectAutoManual("automatic_renew",$object->automatic_renew,1);
 		print '</td></tr>';
 
+		// Other attributes
+		include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_edit.tpl.php';
+
 		print '</table>';
 
 		dol_fiche_end();
