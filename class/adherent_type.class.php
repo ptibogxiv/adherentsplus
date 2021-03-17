@@ -592,6 +592,12 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
                 $this->vote           = $obj->vote;
                 $this->status         = $obj->status;  
                 $this->date_modification			= $this->db->jdate($obj->datem);
+	
+                $this->db->free($resql);
+
+                // Retrieve all extrafield
+                // fetch optionals attributes and labels
+                $this->fetch_optionals();
                 
                 // multilangs
                 if (! empty($conf->global->MAIN_MULTILANGS)) {
@@ -599,8 +605,12 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
                 }
                 
 	if (! empty($conf->global->PRODUIT_MULTIPRICES) && empty($this->price_level)) $this->price_level=1;
+             
+
+			
                  
             }
+            
             return 1;
         }
         else
