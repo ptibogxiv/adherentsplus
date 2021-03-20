@@ -700,139 +700,134 @@ if ($rowid > 0)
         }
     }
 
-    /*
-     * List of subscriptions
-     */
-    if ($action != 'addsubscription' && $action != 'create_thirdparty')
-    {
-        $sql = "SELECT d.rowid, d.firstname, d.lastname, d.societe, d.fk_adherent_type as type,";
-        $sql .= " c.rowid as crowid, c.subscription,";
-        $sql .= " c.datec, c.fk_type as cfk_type,";
-        $sql .= " c.dateadh as dateh,";
-        $sql .= " c.datef,";
-        $sql .= " c.fk_bank,";
-        $sql .= " b.rowid as bid,";
-        $sql .= " ba.rowid as baid, ba.label, ba.bank, ba.ref, ba.account_number, ba.fk_accountancy_journal, ba.number, ba.currency_code";
-        $sql .= " FROM ".MAIN_DB_PREFIX."adherent as d, ".MAIN_DB_PREFIX."subscription as c";
-        $sql .= " LEFT JOIN ".MAIN_DB_PREFIX."bank as b ON c.fk_bank = b.rowid";
-        $sql .= " LEFT JOIN ".MAIN_DB_PREFIX."bank_account as ba ON b.fk_account = ba.rowid";
-        $sql .= " WHERE d.rowid = c.fk_adherent AND d.rowid=".$rowid;
+	/*
+	 * List of subscriptions
+	 */
+	if ($action != 'addsubscription' && $action != 'create_thirdparty') {
+		$sql = "SELECT d.rowid, d.firstname, d.lastname, d.societe, d.fk_adherent_type as type,";
+		$sql .= " c.rowid as crowid, c.subscription,";
+		$sql .= " c.datec, c.fk_type as cfk_type,";
+		$sql .= " c.dateadh as dateh,";
+		$sql .= " c.datef,";
+		$sql .= " c.fk_bank,";
+		$sql .= " b.rowid as bid,";
+		$sql .= " ba.rowid as baid, ba.label, ba.bank, ba.ref, ba.account_number, ba.fk_accountancy_journal, ba.number, ba.currency_code";
+		$sql .= " FROM ".MAIN_DB_PREFIX."adherent as d, ".MAIN_DB_PREFIX."subscription as c";
+		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."bank as b ON c.fk_bank = b.rowid";
+		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."bank_account as ba ON b.fk_account = ba.rowid";
+		$sql .= " WHERE d.rowid = c.fk_adherent AND d.rowid=".$rowid;
 		$sql .= $db->order($sortfield, $sortorder);
 
-        $result = $db->query($sql);
-        if ($result)
-        {
-            $subscriptionstatic = new Subscription($db);
+		$result = $db->query($sql);
+		if ($result) {
+			$subscriptionstatic = new Subscription($db);
 
-            $num = $db->num_rows($result);
+			$num = $db->num_rows($result);
 
-            print '<table class="noborder centpercent">'."\n";
+			print '<table class="noborder centpercent">'."\n";
 
-            print '<tr class="liste_titre">';
-            print_liste_field_titre('Ref', $_SERVER["PHP_SELF"], 'c.rowid', '', $param, '', $sortfield, $sortorder);
-            print_liste_field_titre('DateCreation', $_SERVER["PHP_SELF"], '', '', $param, '', $sortfield, $sortorder, 'center ');
-            print_liste_field_titre('Type', $_SERVER["PHP_SELF"], '', '', $param, '', $sortfield, $sortorder, 'center ');
-            print_liste_field_titre('DateStart', $_SERVER["PHP_SELF"], '', '', $param, '', $sortfield, $sortorder, 'center ');
-            print_liste_field_titre('DateEnd', $_SERVER["PHP_SELF"], '', '', $param, '', $sortfield, $sortorder, 'center ');
-            print_liste_field_titre('Amount', $_SERVER["PHP_SELF"], '', '', $param, '', $sortfield, $sortorder, 'right ');
-            if (!empty($conf->banque->enabled))
-            {
-            	print_liste_field_titre('Account', $_SERVER["PHP_SELF"], '', '', $param, '', $sortfield, $sortorder, 'right ');
-            }
-            print "</tr>\n";
+			print '<tr class="liste_titre">';
+			print_liste_field_titre('Ref', $_SERVER["PHP_SELF"], 'c.rowid', '', $param, '', $sortfield, $sortorder);
+			print_liste_field_titre('DateCreation', $_SERVER["PHP_SELF"], '', '', $param, '', $sortfield, $sortorder, 'center ');
+			print_liste_field_titre('Type', $_SERVER["PHP_SELF"], '', '', $param, '', $sortfield, $sortorder, 'center ');
+			print_liste_field_titre('DateStart', $_SERVER["PHP_SELF"], '', '', $param, '', $sortfield, $sortorder, 'center ');
+			print_liste_field_titre('DateEnd', $_SERVER["PHP_SELF"], '', '', $param, '', $sortfield, $sortorder, 'center ');
+			print_liste_field_titre('Amount', $_SERVER["PHP_SELF"], '', '', $param, '', $sortfield, $sortorder, 'right ');
+			if (!empty($conf->banque->enabled)) {
+				print_liste_field_titre('Account', $_SERVER["PHP_SELF"], '', '', $param, '', $sortfield, $sortorder, 'right ');
+			}
+			print "</tr>\n";
 
-            $accountstatic = new Account($db);
-            $adh = new Adherent($db);
-            $adht = new AdherentTypePlus($db);
+			$accountstatic = new Account($db);
+			$adh = new Adherent($db);
+			$adht = new AdherentType($db);
 
-            $i = 0;
-            while ($i < $num)
-            {
-                $objp = $db->fetch_object($result);
+			$i = 0;
+			while ($i < $num) {
+				$objp = $db->fetch_object($result);
 
-                $adh->id = $objp->rowid;
-                $adh->typeid = $objp->type;
+				$adh->id = $objp->rowid;
+				$adh->typeid = $objp->type;
 
-                $subscriptionstatic->ref = $objp->crowid;
-                $subscriptionstatic->id = $objp->crowid;
+				$subscriptionstatic->ref = $objp->crowid;
+				$subscriptionstatic->id = $objp->crowid;
 
-                $typeid = ($objp->cfk_type > 0 ? $objp->cfk_type : $adh->typeid);
-                if ($typeid > 0)
-                {
-                    $adht->fetch($typeid);
-                }
+				$typeid = $objp->cfk_type;
+				if ($typeid > 0) {
+					$adht->fetch($typeid);
+				}
 
-                print '<tr class="oddeven">';
-                print '<td>'.$subscriptionstatic->getNomUrl(1).'</td>';
-                print '<td class="center">'.dol_print_date($db->jdate($objp->datec), 'dayhour')."</td>\n";
-                print '<td class="center">';
-                if ($typeid > 0) {
-                    print $adht->getNomUrl(1);
-                }
-                print '</td>';
-                print '<td class="center">'.dol_print_date($db->jdate($objp->dateh), 'dayhour')."</td>\n";
-                print '<td class="center">'.dol_print_date($db->jdate($objp->datef), 'dayhour')."</td>\n";
-                print '<td class="right">'.price($objp->subscription).'</td>';
-				if (!empty($conf->banque->enabled))
-				{
+				print '<tr class="oddeven">';
+				print '<td>'.$subscriptionstatic->getNomUrl(1).'</td>';
+				print '<td class="center">'.dol_print_date($db->jdate($objp->datec), 'dayhour')."</td>\n";
+				print '<td class="center">';
+				if ($typeid > 0) {
+					print $adht->getNomUrl(1);
+				}
+				print '</td>';
+				print '<td class="center">'.dol_print_date($db->jdate($objp->dateh), 'day')."</td>\n";
+				print '<td class="center">'.dol_print_date($db->jdate($objp->datef), 'day')."</td>\n";
+				print '<td class="right">'.price($objp->subscription).'</td>';
+				if (!empty($conf->banque->enabled)) {
 					print '<td class="right">';
-					if ($objp->bid)
-					{
+					if ($objp->bid) {
 						$accountstatic->label = $objp->label;
 						$accountstatic->id = $objp->baid;
 						$accountstatic->number = $objp->number;
 						$accountstatic->account_number = $objp->account_number;
 						$accountstatic->currency_code = $objp->currency_code;
 
-						if (!empty($conf->accounting->enabled) && $objp->fk_accountancy_journal > 0)
-						{
+						if (!empty($conf->accounting->enabled) && $objp->fk_accountancy_journal > 0) {
 							$accountingjournal = new AccountingJournal($db);
 							$accountingjournal->fetch($objp->fk_accountancy_journal);
 
 							$accountstatic->accountancy_journal = $accountingjournal->getNomUrl(0, 1, 1, '', 1);
 						}
 
-                        $accountstatic->ref = $objp->ref;
-                        print $accountstatic->getNomUrl(1);
-                    }
-                    else
-                    {
-                        print '&nbsp;';
-                    }
-                    print '</td>';
-                }
-                print "</tr>";
-                $i++;
-            }
+						$accountstatic->ref = $objp->ref;
+						print $accountstatic->getNomUrl(1);
+					} else {
+						print '&nbsp;';
+					}
+					print '</td>';
+				}
+				print "</tr>";
+				$i++;
+			}
 
-            if (empty($num)) {
-                $colspan = 6;
-                if (!empty($conf->banque->enabled)) $colspan++;
-                print '<tr><td colspan="'.$colspan.'"><span class="opacitymedium">'.$langs->trans("None").'</span></td></tr>';
-            }
+			if (empty($num)) {
+				$colspan = 6;
+				if (!empty($conf->banque->enabled)) {
+					$colspan++;
+				}
+				print '<tr><td colspan="'.$colspan.'"><span class="opacitymedium">'.$langs->trans("None").'</span></td></tr>';
+			}
 
-            print "</table>";
-        }
-        else
-        {
-            dol_print_error($db);
-        }
-    }
+			print "</table>";
+		} else {
+			dol_print_error($db);
+		}
+	}
 
 
+	if (($action != 'addsubscription' && $action != 'create_thirdparty')) {
+		// Shon online payment link
+		$useonlinepayment = (!empty($conf->paypal->enabled) || !empty($conf->stripe->enabled) || !empty($conf->paybox->enabled));
+
+		if ($useonlinepayment) {
+			print '<br>';
+
+			require_once DOL_DOCUMENT_ROOT.'/core/lib/payments.lib.php';
+			print showOnlinePaymentUrl('membersubscription', $object->ref);
+			print '<br>';
+		}
+	}
+
+	/*
+	 * Add new subscription form
+	 */
     if (($action != 'addsubscription' && $action != 'create_thirdparty'))
     {
-	    // Shon online payment link
-	    $useonlinepayment = (!empty($conf->paypal->enabled) || !empty($conf->stripe->enabled) || !empty($conf->paybox->enabled));
-
-	    if ($useonlinepayment)
-	    {
-	    	print '<br>';
-
-	    	require_once DOL_DOCUMENT_ROOT.'/core/lib/payments.lib.php';
-	    	print showOnlinePaymentUrl('membersubscription', $object->ref);
-	    	print '<br>';
-	    }
 if ($conf->global->MAIN_FEATURES_LEVEL >= 2) {     
 print '<br>';
 $adht->fetch($object2->typeid);
