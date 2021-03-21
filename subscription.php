@@ -61,24 +61,30 @@ require_once DOL_DOCUMENT_ROOT.'/accountancy/class/accountingjournal.class.php';
 
 $langs->loadLangs(array("companies", "bills", "members", "users", "mails", 'other'));
 
-$action = GETPOST('action', 'alpha');
+$action = GETPOST('action', 'aZ09');
 $confirm = GETPOST('confirm', 'alpha');
 $rowid = GETPOST('rowid', 'int') ?GETPOST('rowid', 'int') : GETPOST('id', 'int');
 $typeid = GETPOST('typeid', 'int');
 
 // Load variable for pagination
 $limit = GETPOST('limit', 'int') ?GETPOST('limit', 'int') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'alpha');
-$sortorder = GETPOST('sortorder', 'alpha');
-$page = GETPOST('page', 'int');
-if (empty($page) || $page == -1) { $page = 0; }     // If $page is not defined, or '' or -1
+$sortfield = GETPOST('sortfield', 'aZ09comma');
+$sortorder = GETPOST('sortorder', 'aZ09comma');
+$page = GETPOSTISSET('pageplusone') ? (GETPOST('pageplusone') - 1) : GETPOST("page", 'int');
+if (empty($page) || $page == -1) {
+	$page = 0;
+}     // If $page is not defined, or '' or -1
 $offset = $limit * $page;
 $pageprev = $page - 1;
 $pagenext = $page + 1;
 
 // Default sort order (if not yet defined by previous GETPOST)
-if (!$sortfield) $sortfield = "c.rowid";
-if (!$sortorder) $sortorder = "DESC";
+if (!$sortfield) {
+	$sortfield = "c.rowid";
+}
+if (!$sortorder) {
+	$sortorder = "DESC";
+}
 
 
 // Security check
@@ -97,39 +103,43 @@ $errmsg = '';
 $defaultdelay = 1;
 $defaultdelayunit = 'y';
 
-if ($rowid)
-{
-    // Load member
-    $result = $object->fetch($rowid);
+if ($rowid) {
+	// Load member
+	$result = $object->fetch($rowid);
 
-    // Define variables to know what current user can do on users
-    $canadduser=($user->admin || $user->rights->user->user->creer);
-    // Define variables to know what current user can do on properties of user linked to edited member
-    if ($object->user_id)
-    {
-        // $user is the user editing, $object->user_id is the user's id linked to the edited member
-        $caneditfielduser=( (($user->id == $object->user_id) && $user->rights->user->self->creer)
-        || (($user->id != $object->user_id) && $user->rights->user->user->creer) );
-        $caneditpassworduser=( (($user->id == $object->user_id) && $user->rights->user->self->password)
-        || (($user->id != $object->user_id) && $user->rights->user->user->password) );
-    }
+	// Define variables to know what current user can do on users
+	$canadduser = ($user->admin || $user->rights->user->user->creer);
+	// Define variables to know what current user can do on properties of user linked to edited member
+	if ($object->user_id) {
+		// $user is the user editing, $object->user_id is the user's id linked to the edited member
+		$caneditfielduser = ((($user->id == $object->user_id) && $user->rights->user->self->creer)
+		|| (($user->id != $object->user_id) && $user->rights->user->user->creer));
+		$caneditpassworduser = ((($user->id == $object->user_id) && $user->rights->user->self->password)
+		|| (($user->id != $object->user_id) && $user->rights->user->user->password));
+	}
 }
 
 // Define variables to know what current user can do on members
-$canaddmember=$user->rights->adherent->creer;
+$canaddmember = $user->rights->adherent->creer;
 // Define variables to know what current user can do on properties of a member
-if ($rowid)
-{
-    $caneditfieldmember=$user->rights->adherent->creer;
+if ($rowid) {
+	$caneditfieldmember = $user->rights->adherent->creer;
 }
 
 // Initialize technical object to manage hooks of page. Note that conf->hooks_modules contains array of hook context
 $hookmanager->initHooks(array('subscription'));
 
+// Initialize technical object to manage hooks of page. Note that conf->hooks_modules contains array of hook context
+$hookmanager->initHooks(array('subscription'));
+
 // PDF
-$hidedetails = (GETPOST('hidedetails', 'int') ? GETPOST('hidedetails', 'int') : (! empty($conf->global->MAIN_GENERATE_DOCUMENTS_HIDE_DETAILS) ? 1 : 0));
-$hidedesc = (GETPOST('hidedesc', 'int') ? GETPOST('hidedesc', 'int') : (! empty($conf->global->MAIN_GENERATE_DOCUMENTS_HIDE_DESC) ? 1 : 0));
-$hideref = (GETPOST('hideref', 'int') ? GETPOST('hideref', 'int') : (! empty($conf->global->MAIN_GENERATE_DOCUMENTS_HIDE_REF) ? 1 : 0));
+$hidedetails = (GETPOST('hidedetails', 'int') ? GETPOST('hidedetails', 'int') : (!empty($conf->global->MAIN_GENERATE_DOCUMENTS_HIDE_DETAILS) ? 1 : 0));
+$hidedesc = (GETPOST('hidedesc', 'int') ? GETPOST('hidedesc', 'int') : (!empty($conf->global->MAIN_GENERATE_DOCUMENTS_HIDE_DESC) ? 1 : 0));
+$hideref = (GETPOST('hideref', 'int') ? GETPOST('hideref', 'int') : (!empty($conf->global->MAIN_GENERATE_DOCUMENTS_HIDE_REF) ? 1 : 0));
+
+$datefrom = 0;
+$dateto = 0;
+$paymentdate = -1;
 
 
 /*
@@ -459,23 +469,32 @@ $form = new Form($db);
 $now = dol_now();
 
 $title = $langs->trans("Member")." - ".$langs->trans("Subscriptions");
-$helpurl = "EN:Module_Foundations|FR:Module_Adh&eacute;rents|ES:M&oacute;dulo_Miembros";
-llxHeader("", $title, $helpurl);
+
+$help_url = "EN:Module_Foundations|FR:Module_Adh&eacute;rents|ES:M&oacute;dulo_Miembros|DE:Modul_Mitglieder";
+
+llxHeader("", $title, $help_url);
 
 
 $param = '';
-if (!empty($contextpage) && $contextpage != $_SERVER["PHP_SELF"]) $param .= '&contextpage='.urlencode($contextpage);
-if ($limit > 0 && $limit != $conf->liste_limit) $param .= '&limit='.urlencode($limit);
+if (!empty($contextpage) && $contextpage != $_SERVER["PHP_SELF"]) {
+	$param .= '&contextpage='.urlencode($contextpage);
+}
+if ($limit > 0 && $limit != $conf->liste_limit) {
+	$param .= '&limit='.urlencode($limit);
+}
 $param .= '&id='.$rowid;
-if ($optioncss != '')     $param .= '&optioncss='.urlencode($optioncss);
+if ($optioncss != '') {
+	$param .= '&optioncss='.urlencode($optioncss);
+}
 // Add $param from extra fields
 //include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_search_param.tpl.php';
 
 
-if ($rowid > 0)
-{
-    $res = $object->fetch($rowid);
-    if ($res < 0) { dol_print_error($db, $object->error); exit; }
+if ($rowid > 0) {
+	$res = $object->fetch($rowid);
+	if ($res < 0) {
+		dol_print_error($db, $object->error); exit;
+	}
 
     $adht->fetch($object->typeid);
 
@@ -483,29 +502,32 @@ if ($rowid > 0)
     
     $head = memberplus_prepare_head($object2);
 
-    $rowspan = 10;
-    if (empty($conf->global->ADHERENT_LOGIN_NOT_REQUIRED)) $rowspan++;
-    if (!empty($conf->societe->enabled)) $rowspan++;
+	$rowspan = 10;
+	if (empty($conf->global->ADHERENT_LOGIN_NOT_REQUIRED)) {
+		$rowspan++;
+	}
+	if (!empty($conf->societe->enabled)) {
+		$rowspan++;
+	}
 
-    print '<form action="'.$_SERVER["PHP_SELF"].'" method="POST">';
-    print '<input type="hidden" name="token" value="'.newToken().'">';
-    print '<input type="hidden" name="rowid" value="'.$object->id.'">';
+	print '<form action="'.$_SERVER["PHP_SELF"].'" method="POST">';
+	print '<input type="hidden" name="token" value="'.newToken().'">';
+	print '<input type="hidden" name="rowid" value="'.$object->id.'">';
 
-    dol_fiche_head($head, 'subscription', $langs->trans("Member"), -1, 'user');
+	print dol_get_fiche_head($head, 'subscription', $langs->trans("Member"), -1, 'user');
 
-    $linkback = '<a href="'.DOL_URL_ROOT.'/adherents/list.php?restore_lastsearch_values=1">'.$langs->trans("BackToList").'</a>';
+	$linkback = '<a href="'.DOL_URL_ROOT.'/adherents/list.php?restore_lastsearch_values=1">'.$langs->trans("BackToList").'</a>';
 
-    dol_banner_tab($object, 'rowid', $linkback);
+	dol_banner_tab($object, 'rowid', $linkback);
 
-    print '<div class="fichecenter">';
-    print '<div class="fichehalfleft">';
+	print '<div class="fichecenter">';
+	print '<div class="fichehalfleft">';
 
-    print '<div class="underbanner clearboth"></div>';
-    print '<table class="border centpercent tableforfield">';
+	print '<div class="underbanner clearboth"></div>';
+	print '<table class="border centpercent tableforfield">';
 
 	// Login
-	if (empty($conf->global->ADHERENT_LOGIN_NOT_REQUIRED))
-	{
+	if (empty($conf->global->ADHERENT_LOGIN_NOT_REQUIRED)) {
 		print '<tr><td class="titlefield">'.$langs->trans("Login").' / '.$langs->trans("Id").'</td><td class="valeur">'.$object->login.'&nbsp;</td></tr>';
 	}
 
@@ -524,96 +546,85 @@ if ($rowid > 0)
 	print '</tr>';
 
 	// Password
-	if (empty($conf->global->ADHERENT_LOGIN_NOT_REQUIRED))
-	{
+	if (empty($conf->global->ADHERENT_LOGIN_NOT_REQUIRED)) {
 		print '<tr><td>'.$langs->trans("Password").'</td><td>'.preg_replace('/./i', '*', $object->pass);
-		if ((!empty($object->pass) || !empty($object->pass_crypted)) && empty($object->user_id))
-		{
-		    $langs->load("errors");
-		    $htmltext = $langs->trans("WarningPasswordSetWithNoAccount");
-		    print ' '.$form->textwithpicto('', $htmltext, 1, 'warning');
+		if ($object->pass) {
+			print preg_replace('/./i', '*', $object->pass);
+		} else {
+			if ($user->admin) {
+				print $langs->trans("Crypted").': '.$object->pass_indatabase_crypted;
+			} else {
+				print $langs->trans("Hidden");
+			}
+		}
+		if ((!empty($object->pass) || !empty($object->pass_crypted)) && empty($object->user_id)) {
+			$langs->load("errors");
+			$htmltext = $langs->trans("WarningPasswordSetWithNoAccount");
+			print ' '.$form->textwithpicto('', $htmltext, 1, 'warning');
 		}
 		print '</td></tr>';
 	}
 
-    print '</table>';
+	// Date end subscription
+	print '<tr><td>'.$langs->trans("SubscriptionEndDate").'</td><td class="valeur">';
+	if ($object->datefin) {
+		print dol_print_date($object->datefin, 'day');
+		if ($object->hasDelay()) {
+			print " ".img_warning($langs->trans("Late"));
+		}
+	} else {
+		if (!$adht->subscription) {
+			print $langs->trans("SubscriptionNotRecorded");
+			if ($object->statut > 0) {
+				print " ".img_warning($langs->trans("Late")); // Display a delay picto only if it is not a draft and is not canceled
+			}
+		} else {
+			print $langs->trans("SubscriptionNotReceived");
+			if ($object->statut > 0) {
+				print " ".img_warning($langs->trans("Late")); // Display a delay picto only if it is not a draft and is not canceled
+			}
+		}
+	}
+	print '</td></tr>';
 
-    print '</div>';
-    print '<div class="fichehalfright"><div class="ficheaddleft">';
+	print '</table>';
 
-    print '<div class="underbanner clearboth"></div>';
-    print '<table class="border tableforfield" width="100%">';
+	print '</div>';
+	print '<div class="fichehalfright"><div class="ficheaddleft">';
+
+	print '<div class="underbanner clearboth"></div>';
+	print '<table class="border tableforfield" width="100%">';
 
 	// Birthday
-	print '<tr><td class="titlefield">'.$langs->trans("Birthday").'</td><td class="valeur">'.dol_print_date($object->birth, 'day').'</td></tr>';
+	print '<tr><td class="titlefield">'.$langs->trans("DateOfBirth").'</td><td class="valeur">'.dol_print_date($object->birth, 'day').'</td></tr>';
 
 	// Public
 	print '<tr><td>'.$langs->trans("Public").'</td><td class="valeur">'.yn($object->public).'</td></tr>';
 
 	// Categories
-	if (!empty($conf->categorie->enabled) && !empty($user->rights->categorie->lire))
-	{
+	if (!empty($conf->categorie->enabled) && !empty($user->rights->categorie->lire)) {
 		print '<tr><td>'.$langs->trans("Categories").'</td>';
 		print '<td colspan="2">';
-		print $form->showCategories($object->id, 'member', 1);
+		print $form->showCategories($object->id, Categorie::TYPE_MEMBER, 1);
 		print '</td></tr>';
 	}
 
-    // Other attributes
-    $cols = 2;
-    include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_view.tpl.php';
-
-	// Date end subscription
-	print '<tr><td>'.$langs->trans("SubscriptionEndDate").'</td><td class="valeur">';
-	if ($object->datefin)
-	{
-	    print dol_print_date($object->datefin, 'day');
-	    if ($object->hasDelay()) {
-	        print " ".img_warning($langs->trans("Late"));
-	    }
-	}
-	else
-	{
-	    if (!$adht->subscription)
-	    {
-	        print $langs->trans("SubscriptionNotRecorded");
-	        if ($object->statut > 0) print " ".img_warning($langs->trans("Late")); // Display a delay picto only if it is not a draft and is not canceled
-	    }
-	    else
-	    {
-	        print $langs->trans("SubscriptionNotReceived");
-	        if ($object->statut > 0) print " ".img_warning($langs->trans("Late")); // Display a delay picto only if it is not a draft and is not canceled
-	    }
-	}
-	print '</td></tr>';
-  
-    // Commitment
-    print '<tr><td>'.$langs->trans("Commitment").'</td><td class="valeur">';
-		if ($object->datecommitment)
-		{
-			print dol_print_date($object->datecommitment,'day');
-			if ($object->hasDelay()) {
-				print " ".img_warning($langs->trans("Late"));
-			}
-		}
-		else
-		{
-				print $langs->trans("None");
-		}     
-    print '</td>';
+	// Other attributes
+	$cols = 2;
+	include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_view.tpl.php';
 
 	// Third party Dolibarr
-	if (!empty($conf->societe->enabled))
-	{
+	if (!empty($conf->societe->enabled)) {
 		print '<tr><td>';
 		print '<table class="nobordernopadding" width="100%"><tr><td>';
 		print $langs->trans("LinkedToDolibarrThirdParty");
 		print '</td>';
-		if ($action != 'editthirdparty' && $user->rights->adherent->creer) print '<td class="right"><a class="editfielda" href="'.$_SERVER["PHP_SELF"].'?action=editthirdparty&amp;rowid='.$object->id.'">'.img_edit($langs->trans('SetLinkToThirdParty'), 1).'</a></td>';
+		if ($action != 'editthirdparty' && $user->rights->adherent->creer) {
+			print '<td class="right"><a class="editfielda" href="'.$_SERVER["PHP_SELF"].'?action=editthirdparty&amp;rowid='.$object->id.'">'.img_edit($langs->trans('SetLinkToThirdParty'), 1).'</a></td>';
+		}
 		print '</tr></table>';
 		print '</td><td colspan="2" class="valeur">';
-		if ($action == 'editthirdparty')
-		{
+		if ($action == 'editthirdparty') {
 			$htmlname = 'socid';
 			print '<form method="POST" action="'.$_SERVER['PHP_SELF'].'" name="form'.$htmlname.'">';
 			print '<input type="hidden" name="rowid" value="'.$object->id.'">';
@@ -625,17 +636,12 @@ if ($rowid > 0)
 			print '</td>';
 			print '<td class="left"><input type="submit" class="button" value="'.$langs->trans("Modify").'"></td>';
 			print '</tr></table></form>';
-		}
-		else
-		{
-			if ($object->fk_soc)
-			{
+		} else {
+			if ($object->fk_soc) {
 				$company = new Societe($db);
 				$result = $company->fetch($object->fk_soc);
 				print $company->getNomUrl(1);
-			}
-			else
-			{
+			} else {
 				print $langs->trans("NoThirdPartyAssociatedToMember");
 			}
 		}
@@ -647,44 +653,39 @@ if ($rowid > 0)
 	print '<table class="nobordernopadding" width="100%"><tr><td>';
 	print $langs->trans("LinkedToDolibarrUser");
 	print '</td>';
-	if ($action != 'editlogin' && $user->rights->adherent->creer)
-	{
+	if ($action != 'editlogin' && $user->rights->adherent->creer) {
 		print '<td class="right">';
-		if ($user->rights->user->user->creer)
-		{
+		if ($user->rights->user->user->creer) {
 			print '<a class="editfielda" href="'.$_SERVER["PHP_SELF"].'?action=editlogin&amp;rowid='.$object->id.'">'.img_edit($langs->trans('SetLinkToUser'), 1).'</a>';
 		}
 		print '</td>';
 	}
 	print '</tr></table>';
 	print '</td><td colspan="2" class="valeur">';
-	if ($action == 'editlogin')
-	{
+	if ($action == 'editlogin') {
 		$form->form_users($_SERVER['PHP_SELF'].'?rowid='.$object->id, $object->user_id, 'userid', '');
-	}
-	else
-	{
-		if ($object->user_id)
-		{
+	} else {
+		if ($object->user_id) {
 			$form->form_users($_SERVER['PHP_SELF'].'?rowid='.$object->id, $object->user_id, 'none');
+		} else {
+			print $langs->trans("NoDolibarrAccess");
 		}
-		else print $langs->trans("NoDolibarrAccess");
 	}
 	print '</td></tr>';
 
-    print "</table>\n";
+	print "</table>\n";
 
 	print "</div></div></div>\n";
-    print '<div style="clear:both"></div>';
+	print '<div style="clear:both"></div>';
 
-    dol_fiche_end();
+	print dol_get_fiche_end();
 
-    print '</form>';
+	print '</form>';
 
 
-    /*
-     * Action buttons
-     */
+	/*
+	 * Action bar
+	 */
 
     // Button to create a new subscription if member no draft neither resiliated
     if ($user->rights->adherent->cotisation->creer)
