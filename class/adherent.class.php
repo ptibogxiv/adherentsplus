@@ -1327,9 +1327,10 @@ class AdherentPlus extends CommonObject
 	{
 		global $conf, $langs;
 
-		$sql = "SELECT d.rowid, d.ref, d.ref_ext, d.civility as civility_code, d.firstname, d.lastname, d.societe as company, d.fk_soc, d.fk_parent, d.statut, d.public, d.address, d.zip, d.town, d.note_private,";
-		$sql.= " d.note_public,";
-		$sql.= " d.email, d.skype, d.twitter, d.facebook, d.linkedin, d.phone, d.phone_perso, d.phone_mobile, d.login, d.pass, d.pass_crypted,";
+		$sql = "SELECT d.rowid, d.ref, d.ref_ext, d.civility as civility_code, d.gender, d.firstname, d.lastname,";
+		$sql .= " d.societe as company, d.fk_soc, d.statut, d.public, d.address, d.zip, d.town, d.note_private,";
+		$sql .= " d.note_public,";
+		$sql .= " d.email, d.socialnetworks, d.phone, d.phone_perso, d.phone_mobile, d.login, d.pass, d.pass_crypted,";
 		$sql.= " d.photo, d.fk_adherent_type, d.morphy, d.entity,";
 		$sql.= " d.datec as datec,";
 		$sql.= " d.tms as datem,";
@@ -1404,26 +1405,30 @@ class AdherentPlus extends CommonObject
 				else
 					$this->country=$obj->country;
 
-				$this->phone			= $obj->phone;
-				$this->phone_perso		= $obj->phone_perso;
-				$this->phone_mobile		= $obj->phone_mobile;
-				$this->email			= $obj->email;
-        
-				$this->skype			= $obj->skype;
-				$this->twitter			= $obj->twitter;
-				$this->facebook			= $obj->facebook;
-				$this->linkedin			= $obj->linkedin;
+				$this->phone = $obj->phone;
+				$this->phone_perso = $obj->phone_perso;
+				$this->phone_mobile = $obj->phone_mobile;
+				$this->email = $obj->email;
 
-				$this->photo			= $obj->photo;
-				$this->statut			= $obj->statut;
-				$this->public			= $obj->public;
+				$this->socialnetworks = (array) json_decode($obj->socialnetworks, true);
 
-				$this->date_creation			= $this->db->jdate($obj->datec);
-				$this->date_modification			= $this->db->jdate($obj->datem);
-				$this->datefin			= $this->db->jdate($obj->datefin); 
-				$this->date_validation		= $this->db->jdate($obj->datev);   
+				$this->photo = $obj->photo;
+				$this->statut = $obj->statut;
+				$this->public = $obj->public;
+
+				$this->datec = $this->db->jdate($obj->datec);
+				$this->date_creation = $this->db->jdate($obj->datec);
+				$this->datem = $this->db->jdate($obj->datem);
+				$this->date_modification = $this->db->jdate($obj->datem);
+				$this->datefin = $this->db->jdate($obj->datefin);
+				$this->datevalid = $this->db->jdate($obj->datev);
+				$this->date_validation = $this->db->jdate($obj->datev);
+				$this->birth = $this->db->jdate($obj->birthday);
         $this->datecommitment			= $this->db->jdate($obj->datecommitment);
-				$this->birth			= $this->db->jdate($obj->birthday);
+
+				$this->note_private = $obj->note_private;
+				$this->note_public = $obj->note_public;
+				$this->morphy = $obj->morphy;
         
 $today=dol_now();
 $year = strftime("%Y", $today);
