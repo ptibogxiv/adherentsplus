@@ -824,9 +824,10 @@ if ($rowid > 0) {
 	/*
 	 * Add new subscription form
 	 */
-	if (($action != 'addsubscription' && $action != 'create_thirdparty')) {
+	if ($action != 'addsubscription' && $action != 'create_thirdparty') {
 if ($conf->global->MAIN_FEATURES_LEVEL >= 2) {     
 print '<br>';
+$adht = new AdherentTypePlus($db);
 $adht->fetch($object2->typeid);
 $adht->subscription_calculator($rowid);
     
