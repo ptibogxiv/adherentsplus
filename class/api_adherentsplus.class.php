@@ -405,6 +405,45 @@ class AdherentsPlus extends DolibarrApi
         }
         if ($member->create(DolibarrApiAccess::$user) < 0) {
             throw new RestException(500, 'Error creating member', array_merge(array($member->error), $member->errors));
+        } else {
+			// Send email to the foundation to say a new member subscribed with autosubscribe form
+			if (!empty($conf->global->MAIN_INFO_SOCIETE_MAIL) && !empty($conf->global->ADHERENT_AUTOREGISTER_NOTIF_MAIL_SUBJECT) &&
+				  !empty($conf->global->ADHERENT_AUTOREGISTER_NOTIF_MAIL)) {
+				// Define link to login card
+				$appli = constant('DOL_APPLICATION_TITLE');
+				if (!empty($conf->global->MAIN_APPLICATION_TITLE)) {
+					$appli = $conf->global->MAIN_APPLICATION_TITLE;
+					if (preg_match('/\d\.\d/', $appli)) {
+						if (!preg_match('/'.preg_quote(DOL_VERSION).'/', $appli)) {
+							$appli .= " (".DOL_VERSION.")"; // If new title contains a version that is different than core
+						}
+					} else {
+						$appli .= " ".DOL_VERSION;
+					}
+				} else {
+					$appli .= " ".DOL_VERSION;
+				}
+
+				$to = $adh->makeSubstitution($conf->global->MAIN_INFO_SOCIETE_MAIL);
+				$from = $conf->global->ADHERENT_MAIL_FROM;
+				$mailfile = new CMailFile(
+					'['.$appli.'] '.$conf->global->ADHERENT_AUTOREGISTER_NOTIF_MAIL_SUBJECT,
+					$to,
+					$from,
+					$adh->makeSubstitution($conf->global->ADHERENT_AUTOREGISTER_NOTIF_MAIL),
+					array(),
+					array(),
+					array(),
+					"",
+					"",
+					0,
+					-1
+				);
+
+				if (!$mailfile->sendfile()) {
+					dol_syslog($langs->trans("ErrorFailedToSendMail", $from, $to), LOG_ERR);
+				}
+			}
         }
         return $member->id;
     }
