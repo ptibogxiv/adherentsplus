@@ -290,12 +290,12 @@ if ((float) DOL_VERSION < 11.0) {
     }
     print '</td></tr>';
 
-    print '<tr><td>'.$langs->trans("Validation").'</td><td>';
-		print autoOrManual($object->automatic);
+    print '<tr><td>'.$langs->trans("AutomaticValidation").'</td><td>';
+		print yn($object->automatic);
 		print '</tr>';
     
-    print '<tr><td>'.$langs->trans("Renewal").'</td><td>';
-		print autoOrManual($object->automatic_renew);
+    print '<tr><td>'.$langs->trans("AutomaticRenewal").'</td><td>';
+		print yn($object->automatic_renew);
 		print '</tr>';
 
     	// Other attributes
