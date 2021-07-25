@@ -31,6 +31,7 @@ SubscriptionCard=Fiche cotisation
 Member=Adhérent
 Members=Adhérents
 Members+=Adhérents+
+Settings=Paramètres
 License=Licence
 BeginningFixedDate=Date de début fixe
 FederalPart=Part fédéral
