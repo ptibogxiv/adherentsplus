@@ -426,7 +426,7 @@ print ' '.$langs->trans("Currency".$conf->currency);
     print ' '.$langs->trans("Currency".$conf->currency);    
 		print '</td></tr>';
     
-if ($conf->global->ADHERENT_FEDERAL_PART > 0){    
+if (! empty($conf->global->ADHERENT_FEDERAL_PART)){    
     print '<tr><td>'.$langs->trans("FederalPart").$conf->global->ADHERENT_FEDERAL_PART;
 		print $form->textwithpicto($s,$langs->trans("IncludeInSubscritionPrice"),1);
     print '</td><td>';
@@ -445,7 +445,7 @@ if (!empty($conf->global->ADHERENT_SUBSCRIPTION_PRORATA) && $conf->global->ADHER
     }
     
     print '<tr><td>'.$langs->trans("Prorata");
-		print $form->textwithpicto($s,$langs->trans("IncludeInSubscritionPrice"),1);
+		print $form->textwithpicto('',$langs->trans("IncludeInSubscritionPrice"),1);
     print '</td><td>';
     
 if ($object->duration_unit == 'd') { 
@@ -458,14 +458,14 @@ $duration = 2629872*(!empty($object->duration_value)?$object->duration_value:1);
 $duration = 31558464*(!empty($object->duration_value)?$object->duration_value:1);
 }
     
-    $rate= array();
-    $rate[''] .= $langs->trans("None");
-if ($duration >= 86400) $rate['daily'] .= $langs->trans("daily");    
-if ($duration >= 604800) $rate['weekly'] .= $langs->trans("weekly");
-if ($duration >= 2629872) $rate['monthly'] .= $langs->trans("monthly");
-if ($duration >= (2629872*3)) $rate['quaterly'] .= $langs->trans("quaterly");
-if ($duration >= (2629872*4)) $rate['semester'] .= $langs->trans("semester");
-if ($duration >= (2629872*6)) $rate['biannual'] .= $langs->trans("biannual");
+    $rate = null;
+    $rate[''] = $langs->trans("None");
+if ($duration >= 86400) $rate['daily'] = $langs->trans("daily");    
+if ($duration >= 604800) $rate['weekly'] = $langs->trans("weekly");
+if ($duration >= 2629872) $rate['monthly'] = $langs->trans("monthly");
+if ($duration >= (2629872*3)) $rate['quaterly'] = $langs->trans("quaterly");
+if ($duration >= (2629872*4)) $rate['semester'] = $langs->trans("semester");
+if ($duration >= (2629872*6)) $rate['biannual'] = $langs->trans("biannual");
     print $form->selectarray('prorata', $rate, (!empty($object->prorata)?$object->prorata:null), null);
 		print '</tr>';
 
