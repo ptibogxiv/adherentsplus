@@ -230,7 +230,7 @@ if ($rowid > 0)
     print ' '.$langs->trans("Currency".$conf->currency);
 		print '</tr>';
     
-if ($conf->global->ADHERENT_FEDERAL_PART > 0){        
+if (! empty($conf->global->ADHERENT_FEDERAL_PART)){        
     print '<tr><td>'.$langs->trans("FederalPart");
 		print $form->textwithpicto($s,$langs->trans("IncludeInSubscritionPrice"),1);
     print '</td><td>';

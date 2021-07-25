@@ -878,6 +878,9 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
 
 $abo = $obj->datefin; 
 $commitment = $obj->datecommitment;
+            } else {    
+$abo = null; 
+$commitment = null;                
             }
             
         }
@@ -913,7 +916,7 @@ $datefrom = $date->format('Y-m-d H:i:s');
 $datefrom2 = $date->format('Y');
 $date = new DateTime($datefrom);
 
-                $this->date_from        = $this->db->jdate($datefrom); 
+$this->date_from        = $this->db->jdate($datefrom); 
                 
 $date->modify('NEXT YEAR');
 $date->modify('-1 SECONDS');
@@ -1050,7 +1053,7 @@ $date->modify('-1 SECONDS');
 }
 $date_end = $date->format('Y-m-d H:i:s');
 $dateend = $date->getTimestamp();
-                $this->date_end         = $dateend;
+$this->date_end = $dateend;
                 
 $date = new DateTime($commitment);
 $value = (!empty($this->commitment_value)?$this->commitment_value:0);
