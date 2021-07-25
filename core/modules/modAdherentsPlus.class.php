@@ -54,7 +54,7 @@ class modAdherentsPlus extends DolibarrModules
 		// Module label (no space allowed), used if translation string 'ModuleXXXName' not found (where XXX is value of numeric property 'numero' of module)
     $this->name = preg_replace('/^mod/i','',get_class($this));
         $this->description = "Management Extended of members";
-        $this->version = '13.0.3';                        // 'experimental' or 'dolibarr' or version
+        $this->version = '14.0.0';                        // 'experimental' or 'dolibarr' or version
         $this->const_name = 'MAIN_MODULE_'.strtoupper($this->name);
 		// Module description used if translation string 'ModuleXXXDesc' not found (XXX is id value)
     $this->editor_name = 'ptibogxiv.net';
@@ -80,7 +80,7 @@ class modAdherentsPlus extends DolibarrModules
         $this->depends = array('modAdherent');
         $this->requiredby = array();
         $this->langfiles = array("adherentsplus@adherentsplus");
-        $this->need_dolibarr_version = array(12,0);
+        $this->need_dolibarr_version = array(14,0);
         // Constants
         //-----------
         $this->const = array();
@@ -216,7 +216,7 @@ class modAdherentsPlus extends DolibarrModules
     		'member:+options:Options:adherentsplus@adherentsplus:$conf->global->ADHERENT_CONSUMPTION:/adherentsplus/member_options.php?rowid=__ID__',
     		'member:+consumption:Consumptions:adherentsplus@adherentsplus:$conf->global->ADHERENT_CONSUMPTION:/adherentsplus/consumption.php?rowid=__ID__',
         'member:+linkedmember:LinkedMembers:adherentsplus@adherentsplus:$conf->global->ADHERENT_LINKEDMEMBER:/adherentsplus/linkedmember.php?rowid=__ID__',
-        'membertype:+settings:Settings:adherentsplus@adherentsplus:1:/adherentsplus/type_settings.php?rowid=__ID__',
+        'membertype:+settings:TypeSettings:adherentsplus@adherentsplus:1:/adherentsplus/type_settings.php?rowid=__ID__',
         'membertype:+package:Package:adherentsplus@adherentsplus:$conf->global->ADHERENT_CONSUMPTION:/adherentsplus/type_package.php?rowid=__ID__'
 		);
 
