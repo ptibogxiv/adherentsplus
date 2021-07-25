@@ -247,7 +247,7 @@ if (!empty($conf->global->ADHERENT_SUBSCRIPTION_PRORATA) && $conf->global->ADHER
     }
     
     print '<tr><td>'.$langs->trans("Prorata");
-		print $form->textwithpicto($s,$langs->trans("IncludeInSubscritionPrice"),1);
+		print $form->textwithpicto('',$langs->trans("IncludeInSubscritionPrice"),1);
     print '</td><td>';
 		print $langs->trans((!empty($object->prorata)?$object->prorata:'None'));
 		print '</tr>';
