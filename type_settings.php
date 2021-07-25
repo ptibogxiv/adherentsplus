@@ -498,11 +498,11 @@ if ((float) DOL_VERSION < 11.0) {
     print "<input type='text' name='commitment_value' value='".$object->commitment_value."' size='4' />&nbsp;".$form->selectarray('commitment_unit', array('d'=>$langs->trans('Day'), 'w'=>$langs->trans('Week'), 'm'=>$langs->trans('Month'), 'y'=>$langs->trans('Year')), $object->commitment_unit);
     print '</td></tr>';
     
-    print '<tr><td>'.$langs->trans("Validation").'</td><td>';
+    print '<tr><td>'.$langs->trans("AutomaticValidation").'</td><td>';
 		print $formother->selectAutoManual("automatic",$object->automatic,1);
 		print '</td></tr>';
     
-    print '<tr><td>'.$langs->trans("Renewal").'</td><td>';
+    print '<tr><td>'.$langs->trans("AutomaticRenewal").'</td><td>';
 		print $formother->selectAutoManual("automatic_renew",$object->automatic_renew,1);
 		print '</td></tr>';
 
