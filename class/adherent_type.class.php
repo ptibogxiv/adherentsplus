@@ -129,6 +129,33 @@ class AdherentTypePlus extends CommonObject
 	}
   
   
+ public function autoOrManual($automaticmanual, $case = 1, $color = 0)
+ {
+     global $langs;
+     $result = 'unknown'; $classname = '';
+     if ($automaticmanual == 1 || strtolower($automaticmanual) == 'automatic' || strtolower($automaticmanual) == 'true')     // A mettre avant test sur no a cause du == 0
+     {
+         $result = $langs->trans('automatic');
+         if ($case == 1 || $case == 3) $result = $langs->trans("Automatic");
+         if ($case == 2) $result = '<input type="checkbox" value="1" checked disabled>';
+         if ($case == 3) $result = '<input type="checkbox" value="1" checked disabled> '.$result;
+  
+         $classname = 'ok';
+     } elseif ($automaticmanual == 0 || strtolower($automaticmanual) == 'manual' || strtolower($automaticmanual) == 'false')
+     {
+         $result = $langs->trans("manual");
+         if ($case == 1 || $case == 3) $result = $langs->trans("Manual");
+         if ($case == 2) $result = '<input type="checkbox" value="0" disabled>';
+         if ($case == 3) $result = '<input type="checkbox" value="0" disabled> '.$result;
+  
+         if ($color == 2) $classname = 'ok';
+         else $classname = 'error';
+     }
+     if ($color) return '<font class="'.$classname.'">'.$result.'</font>';
+     return $result;
+ }
+  
+  
     /**
      *    Load array this->multilangs
      *
@@ -861,7 +888,9 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
         global $langs, $conf;
         
         $typeid = $this->id;
-  
+        $abo = null;
+        $commitment = null; 
+
         if (!empty($rowid)) {
         $sql = "SELECT d.rowid, d.fk_adherent_type, d.datefin, d.datecommitment";
         $sql .= " FROM ".MAIN_DB_PREFIX."adherent as d";
@@ -878,11 +907,7 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
 
 $abo = $obj->datefin; 
 $commitment = $obj->datecommitment;
-            } else {    
-$abo = null; 
-$commitment = null;                
-            }
-            
+            }       
         }
         else
         {
