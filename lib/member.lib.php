@@ -53,21 +53,49 @@ function memberplus_prepare_head(AdherentPlus $object)
 		$h++;
 	}
 
-	if (! empty($user->rights->adherent->cotisation->lire))
-	{
-		$nbSubscription = is_array($object->subscriptions)?count($object->subscriptions):0;
+	if (!empty($user->rights->adherent->cotisation->lire)) {
+		$nbSubscription = is_array($object->subscriptions) ?count($object->subscriptions) : 0;
 		$head[$h][0] = DOL_URL_ROOT.'/adherents/subscription.php?rowid='.$object->id;
 		$head[$h][1] = $langs->trans("Subscriptions");
 		$head[$h][2] = 'subscription';
-		if ($nbSubscription > 0) $head[$h][1].= ' <span class="badge">'.$nbSubscription.'</span>';
+		if ($nbSubscription > 0) {
+			$head[$h][1] .= '<span class="badge marginleftonlyshort">'.$nbSubscription.'</span>';
+		}
 		$h++;
 	}
 
-    // Show more tabs from modules
-    // Entries must be declared in modules descriptor with line
-    // $this->tabs = array('entity:+tabname:Title:@mymodule:/mymodule/mypage.php?id=__ID__');   to add new tab
-    // $this->tabs = array('entity:-tabname:Title:@mymodule:/mymodule/mypage.php?id=__ID__');   to remove a tab
-    complete_head_from_modules($conf, $langs, $object, $head, $h, 'member');
+	$tabtoadd = (!empty(getDolGlobalString('PARTNERSHIP_IS_MANAGED_FOR')) && getDolGlobalString('PARTNERSHIP_IS_MANAGED_FOR') == 'member') ? 'member' : 'thirdparty';
+
+	if ($tabtoadd == 'member') {
+		if (!empty($user->rights->partnership->read)) {
+			$nbPartnership = is_array($object->partnerships) ? count($object->partnerships) : 0;
+			$head[$h][0] = DOL_URL_ROOT.'/adherents/partnership.php?rowid='.$object->id;
+			$head[$h][1] = $langs->trans("Partnership");
+			$head[$h][2] = 'partnership';
+			if ($nbPartnership > 0) {
+				$head[$h][1] .= '<span class="badge marginleftonlyshort">'.$nbPartnership.'</span>';
+			}
+			$h++;
+		}
+	} else {
+		if (!empty($user->rights->partnership->read)) {
+			$nbPartnership = is_array($object->partnerships) ? count($object->partnerships) : 0;
+			$head[$h][0] = DOL_URL_ROOT.'/societe/partnership.php?socid='.$object->id;
+			$head[$h][1] = $langs->trans("Partnership");
+			$head[$h][2] = 'partnership';
+			if ($nbPartnership > 0) {
+				$head[$h][1] .= '<span class="badge marginleftonlyshort">'.$nbPartnership.'</span>';
+			}
+			$h++;
+		}
+	}
+
+
+	// Show more tabs from modules
+	// Entries must be declared in modules descriptor with line
+	// $this->tabs = array('entity:+tabname:Title:@mymodule:/mymodule/mypage.php?id=__ID__');   to add new tab
+	// $this->tabs = array('entity:-tabname:Title:@mymodule:/mymodule/mypage.php?id=__ID__');   to remove a tab
+	complete_head_from_modules($conf, $langs, $object, $head, $h, 'member');
 
     $nbNote = 0;
     if(!empty($object->note)) $nbNote++;
