@@ -56,7 +56,7 @@ $action = GETPOST('action', 'alpha');
 $place = (GETPOST('place', 'aZ09') ? GETPOST('place', 'aZ09') : '0'); // $place is id of table for Bar or Restaurant
 $invoiceid = GETPOST('invoiceid', 'int');
 $cancel = GETPOST('cancel','alpha');
-$id=GETPOST('rowid','int');
+$rowid=GETPOST('rowid','int');
 $lineid=GETPOST('lineid','int');
 $productid  = GETPOST('productid','int');
 $qty  = GETPOST('quantity','int');
@@ -77,12 +77,12 @@ if ($invoiceid > 0)
 if ($constforcompanyid != $invoice->socid && !empty($invoice->socid)) { 
 $adh = new AdherentPlus($db);
 $result = $adh->fetch('', '', $invoice->socid, '', '', '', 1);
-$id = $adh->id;
+$rowid = $adh->id;
 }
 }
 
 // Security check
-if (!$id || (!$user->rights->adherent->creer && !$user->rights->takepos->run))
+if (!$rowid || (!$user->rights->adherent->creer && !$user->rights->takepos->run))
 {
 $message = null;
 if ($constforcompanyid == $invoice->socid || empty($invoice->socid))  $message = $langs->trans('MembershipNotAllowedForGenericCustomer');
@@ -90,10 +90,10 @@ if ($constforcompanyid == $invoice->socid || empty($invoice->socid))  $message =
 }
 
 // Security check
-$result=restrictedArea($user, 'adherent', $id);
+$result=restrictedArea($user, 'adherent', $rowid);
 
 $object = new AdherentPlus($db);
-$result=$object->fetch($id, '', '', '', '', '', 1);
+$result=$object->fetch($rowid, '', '', '', '', '', 1);
 if ($result > 0)
 {
     $adht = new AdherentTypePlus($db);
@@ -110,7 +110,7 @@ if ($action == 'confirm_create' && $user->rights->adherent->configurer)
 {
 	if (! $cancel)
 	{ 
-		$consumption->fk_adherent= $id;
+		$consumption->fk_adherent= $rowid;
 		$consumption->fk_type    = $rowid;
     $consumption->fk_product = $productid;
 		$consumption->qty        = $qty;
@@ -119,7 +119,7 @@ if ($action == 'confirm_create' && $user->rights->adherent->configurer)
 
 			$result = $consumption->create($user);
 			if ($result > 0) {
-				header("Location: ".$_SERVER["PHP_SELF"]."?rowid=".$id);
+				header("Location: ".$_SERVER["PHP_SELF"]."?rowid=".$rowid);
 				exit;
 			}
 			else
@@ -136,14 +136,14 @@ if ($action == 'update' && $user->rights->adherent->configurer)
 	if (! $cancel)
 	{
 		$consumption->id     = $lineid;
-		$consumption->fk_adherent     = $id;
+		$consumption->fk_adherent     = $rowid;
 		$consumption->qty        = $qty;
     $consumption->date_start = $date_start;
     $consumption->date_end = $date_end;
 
 		$result = $consumption->update($user);
 
-				header("Location: consumption.php?rowid=".$id);
+				header("Location: consumption.php?rowid=".$rowid);
 				exit;
 	}
 }
@@ -161,7 +161,7 @@ if ($action == 'update' && $user->rights->adherent->configurer)
 			}
 			else
 			{
-				header("Location: consumption.php?rowid=".$id);
+				header("Location: consumption.php?rowid=".$rowid);
 				exit;
 			}
 		}
@@ -181,7 +181,7 @@ llxHeader("",$title,$helpurl);
 
 $form = new Form($db);
 
-if ($id && $contextpage != 'takepos') 
+if ($rowid && $contextpage != 'takepos') 
 {  
 	$head = memberplus_prepare_head($object);
 
@@ -281,22 +281,22 @@ if ($id && $contextpage != 'takepos')
 
 }
 
-if ($id && $action == 'create' && $user->rights->adherent->creer)
+if ($rowid && $action == 'create' && $user->rights->adherent->creer)
 {
-	print '<form action="'.$_SERVER["PHP_SELF"].'?rowid='.$id.'" method="post">';
+	print '<form action="'.$_SERVER["PHP_SELF"].'?rowid='.$rowid.'" method="post">';
 if ($contextpage == 'takepos') print '<input type="hidden" name="contextpage" value="takepos">';
 	print '<input type="hidden" name="token" value="'.newToken().'">';
 	$actionforadd='confirm_create';
 	print '<input type="hidden" name="action" value="'.$actionforadd.'">';
-} elseif ($id && $action == 'edit' && $user->rights->adherent->creer)
+} elseif ($rowid && $action == 'edit' && $user->rights->adherent->creer)
 {
-	print '<form action="'.$_SERVER["PHP_SELF"].'?rowid='.$id.'" method="post">';
+	print '<form action="'.$_SERVER["PHP_SELF"].'?rowid='.$rowid.'" method="post">';
 if ($contextpage == 'takepos') print '<input type="hidden" name="contextpage" value="takepos">';
 	print '<input type="hidden" name="token" value="'.newToken().'">';
 	$actionforedit='update';
 	print '<input type="hidden" name="action" value="'.$actionforedit.'">';
 } else {
-	print '<form action="'.$_SERVER["PHP_SELF"].'?rowid='.$id.'" method="post">';
+	print '<form action="'.$_SERVER["PHP_SELF"].'?rowid='.$rowid.'" method="post">';
 if ($contextpage == 'takepos') print '<input type="hidden" name="contextpage" value="takepos">'; 
 	print '<input type="hidden" name="token" value="'.newToken().'">';
 }
@@ -304,7 +304,7 @@ if ($contextpage == 'takepos') print '<input type="hidden" name="contextpage" va
 	// Confirm delete ban
 	if ($action == 'delete')
 	{
-		print $form->formconfirm($_SERVER["PHP_SELF"]."?rowid=".$id."&lineid=".$lineid, $langs->trans("DeleteAConsumption"), $langs->trans("ConfirmDeleteConsumption", ''), "confirm_delete", '', 0, 1);
+		print $form->formconfirm($_SERVER["PHP_SELF"]."?rowid=".$rowid."&lineid=".$lineid, $langs->trans("DeleteAConsumption"), $langs->trans("ConfirmDeleteConsumption", ''), "confirm_delete", '', 0, 1);
 	}
   
 /* ************************************************************************** */
@@ -315,7 +315,7 @@ if ($contextpage == 'takepos') print '<input type="hidden" name="contextpage" va
 	if ($action != 'create' && $action != 'edit')
 	{
 
-     //print var_dump($object->overview_consumptions($id, $object->typeid));
+     //print var_dump($object->overview_consumptions($rowid, $object->typeid));
 
 			print '<input class="flat" type="hidden" name="rowid" value="'.$socid.'" size="12">';
       
@@ -487,13 +487,13 @@ if ($contextpage == 'takepos') print '<input type="hidden" name="contextpage" va
 		        print '<td align="center">';
 				if ($user->rights->adherent->configurer && empty($consumption->fk_facture))
         {
-				print '<a href="'.$_SERVER["PHP_SELF"].'?rowid='.$id.'&lineid='.$consumption->id.'&action=edit">';
+				print '<a href="'.$_SERVER["PHP_SELF"].'?rowid='.$rowid.'&lineid='.$consumption->id.'&action=edit">';
 				print img_picto($langs->trans("Modify"), 'edit');
 				print '</a>';
 
 		   	print '&nbsp;';
 
-		   	print '<a href="'.$_SERVER["PHP_SELF"].'?rowid='.$id.'&lineid='.$consumption->id.'&action=delete&token='.newToken().'">';
+		   	print '<a href="'.$_SERVER["PHP_SELF"].'?rowid='.$rowid.'&lineid='.$consumption->id.'&action=delete&token='.newToken().'">';
 		   	print img_picto($langs->trans("Delete"), 'delete');
 		   	print '</a>';
 		    } else {
@@ -510,7 +510,7 @@ if ($contextpage == 'takepos') print '<input type="hidden" name="contextpage" va
  }   
  
 // Create Card
-if ($id && $action == 'create' && $user->rights->adherent->creer)
+if ($rowid && $action == 'create' && $user->rights->adherent->creer)
 {
 
 	print '<div class="nofichecenter">';
@@ -558,7 +558,7 @@ if ($id && $action == 'create' && $user->rights->adherent->creer)
 }
 
 // Create Card
-if ($id && $action == 'edit' && $user->rights->adherent->creer)
+if ($rowid && $action == 'edit' && $user->rights->adherent->creer)
 {
 
   $consumption->fetch($lineid);  
