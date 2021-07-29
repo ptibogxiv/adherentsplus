@@ -85,7 +85,7 @@ if (! $sortorder) {  $sortorder="DESC"; }
 //if (! $sortfield) {  $sortfield="d.lastname"; }
 
 // Security check
-$result=restrictedArea($user,'adherent',$rowid,'adherent_type');
+$result=restrictedArea($user,'adherent',$rowid);
 
 $object = new AdherentTypePlus($db);
 

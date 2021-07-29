@@ -56,14 +56,14 @@ $action=GETPOST('action','alpha');
 $cancel=GETPOST('cancel','alpha');
 $backtopage=GETPOST('backtopage','alpha');
 $confirm=GETPOST('confirm','alpha');
-$id=GETPOST('rowid','int');
+$rowid=GETPOST('rowid','int');
 $link=GETPOST('link','int');
 
 // Security check
-$result=restrictedArea($user,'adherent',$id);
+$result=restrictedArea($user,'adherent',$rowid);
 
 $object = new Adherentplus($db);
-$result=$object->fetch($id, '', '', '', '', '', '', 1);
+$result=$object->fetch($rowid, '', '', '', '', '', '', 1);
 if ($result > 0)
 {
     $adht = new AdherentTypePlus($db);
@@ -92,7 +92,7 @@ $permissionnote=$user->rights->adherent->creer;  // Used by the include of actio
 		if ($result > 0)
 		{
 
-				header("Location: ".$dolibarr_main_url_root.dol_buildpath('/adherentsplus/linkedmember.php?rowid='.$id, 1));
+				header("Location: ".$dolibarr_main_url_root.dol_buildpath('/adherentsplus/linkedmember.php?rowid='.$rowid, 1));
 				exit;
 		}
 		else
@@ -107,7 +107,7 @@ $permissionnote=$user->rights->adherent->creer;  // Used by the include of actio
 		if ($result > 0)
 		{
 
-				header("Location: ".$dolibarr_main_url_root.dol_buildpath('/adherentsplus/linkedmember.php?rowid='.$id, 1));
+				header("Location: ".$dolibarr_main_url_root.dol_buildpath('/adherentsplus/linkedmember.php?rowid='.$rowid, 1));
 				exit;
 		}
 		else
@@ -134,7 +134,7 @@ $permissionnote=$user->rights->adherent->creer;  // Used by the include of actio
 
 		// Insert member
 		$sql = "UPDATE ".MAIN_DB_PREFIX."adherent";
-    $sql.= " SET fk_parent = '".$id."'";
+    $sql.= " SET fk_parent = '".$rowid."'";
     $sql.= " WHERE rowid = '".GETPOST('memberid', 'alpha')."'";
 
 		//dol_syslog(get_class($this)."::create", LOG_DEBUG);
@@ -173,7 +173,7 @@ $title=$langs->trans("Member") . " - " . $langs->trans("LinkedMembers");
 $helpurl="EN:Module_Foundations|FR:Module_Adh&eacute;rents|ES:M&oacute;dulo_Miembros";
 llxHeader("",$title,$helpurl);
 
-if ($id && $action == 'create' && $user->rights->societe->creer)
+if ($rowid && $action == 'create' && $user->rights->societe->creer)
 {
 	print '<form action="'.$_SERVER["PHP_SELF"].'?rowid='.$object->id.'" method="post">';
 	print '<input type="hidden" name="token" value="'.newToken().'">';
@@ -184,7 +184,7 @@ if ($id && $action == 'create' && $user->rights->societe->creer)
 $form = new Form($db);
 
 // Create Card
-if ($id && $action == 'create' && $user->rights->adherent->creer)
+if ($rowid && $action == 'create' && $user->rights->adherent->creer)
 {
 
 	$head = memberplus_prepare_head($object);
@@ -266,7 +266,7 @@ print '</SELECT>';
 	print '<input name="cancel" class="button" value="'.$langs->trans("Cancel").'" type="submit">';
 	print '</div>';
 
-} elseif ($id) {
+} elseif ($rowid) {
 
 	$head = memberplus_prepare_head($object);
 
