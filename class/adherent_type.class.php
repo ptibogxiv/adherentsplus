@@ -974,12 +974,12 @@ $date->modify('+1 SECONDS');
 $date = new DateTime($abo);
 $date->modify('+1 SECONDS');
 //$date->modify('NEXT DAY MIDNIGHT');
-$date->modify('+ '.$conf->global->ADHERENT_WELCOME_MONTH.' MONTHS');     
+if (!empty($conf->global->ADHERENT_WELCOME_MONTH)) $date->modify('+ '.$conf->global->ADHERENT_WELCOME_MONTH.' MONTHS');     
 } else {
 $date = new DateTime($datefrom);
 //$date->modify('+1 SECONDS');
 //$date->modify('NEXT DAY MIDNIGHT');
-$date->modify('- '.$conf->global->ADHERENT_WELCOME_MONTH.' MONTHS');       
+if (!empty($conf->global->ADHERENT_WELCOME_MONTH)) $date->modify(''.$conf->global->ADHERENT_WELCOME_MONTH.' MONTHS');       
 }
 //$datewelcomefee = $date->format('Y-m-d H:i:s');
 $datewf = $date->getTimestamp();
