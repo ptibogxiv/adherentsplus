@@ -483,9 +483,9 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
                     	$soc = new Societe($this->db);
                       $soc->fetch($objp->id);
                       if (!empty($objp->statut)) {
-                      $soc->set_price_level($this->price_level, $user);
+                      $soc->setPriceLevel($this->price_level, $user);
                       } elseif($objp->price_level != '1') {
-                      $soc->set_price_level('1', $user);
+                      $soc->setPriceLevel('1', $user);
                       }
                       }
                       $i++;
