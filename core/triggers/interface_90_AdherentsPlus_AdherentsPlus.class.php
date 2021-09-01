@@ -265,13 +265,13 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES) && !empty($object->fk_soc)){
 
 	$soc = new Societe($db);
 	$soc->fetch($object->fk_soc);
-	$soc->set_price_level($type->price_level, $user);
+	$soc->setPriceLevel($type->price_level, $user);
 } 
     	}  else if ($action == 'MEMBER_RESILIATE' || $action == 'MEMBER_DELETE' ){
 if (! empty($conf->global->PRODUIT_MULTIPRICES) && !empty($object->fk_soc)){
 	$soc = new Societe($db);
 	$soc->fetch($object->fk_soc);
-	$soc->set_price_level('1', $user);
+	$soc->setPriceLevel('1', $user);
 } 
 }  else if ($action == 'MEMBER_SUBSCRIPTION_CREATE' && !empty($conf->global->ADHERENT_FEDERAL_PART)){
 require_once DOL_DOCUMENT_ROOT.'/fourn/class/fournisseur.facture.class.php';
