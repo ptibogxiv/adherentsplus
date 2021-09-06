@@ -90,7 +90,7 @@ class AdherentTypePlus extends CommonObject
 	/** @var bool Email sent during validation */
 	public $mail_valid;
   public $welcome;
-	public $price;
+	public $amount;
 	public $federal;
 	public $prorata;
   public $prorata_date;
@@ -429,7 +429,7 @@ class AdherentTypePlus extends CommonObject
     $sql.= "libelle = '".$this->db->escape($this->label) ."',";
     $sql.= "subscription = '".$this->subscription."',";
     $sql.= "welcome = '".$this->welcome."',";
-    $sql.= "price = '".$this->price."',";
+    $sql.= "amount= '".$this->amount."',";
     $sql.= "federal= '".$this->federal."',";
     $sql.= "price_level = '".$this->price_level."',";
     $sql.= "duration = '" . $this->db->escape($this->duration_value . $this->duration_unit) ."',";
@@ -575,7 +575,7 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
 	{
         global $langs, $conf;
   
-        $sql = "SELECT d.rowid, d.tms as datem, d.libelle as label, d.statut as status, d.morphy, d.subscription, d.welcome, d.price, d.federal, d.price_level, d.duration, d.commitment, d.prorata, d.prorata_date, d.automatic, d.automatic_renew, d.family, d.mail_valid, d.note, d.vote";
+        $sql = "SELECT d.rowid, d.tms as datem, d.libelle as label, d.statut as status, d.morphy, d.subscription, d.welcome, d.amount, d.federal, d.price_level, d.duration, d.commitment, d.prorata, d.prorata_date, d.automatic, d.automatic_renew, d.family, d.mail_valid, d.note, d.vote";
         $sql .= " FROM ".MAIN_DB_PREFIX."adherent_type as d";
         $sql .= " WHERE d.rowid = ".$rowid;
 
@@ -593,7 +593,7 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
                 $this->id             = $obj->rowid;
                 $this->ref            = $obj->rowid;
                 $this->welcome        = $obj->welcome;
-                $this->price          = $obj->price;
+                $this->amount         = $obj->amount;
                 $this->federal        = $obj->federal;
                 $this->prorata        = $obj->prorata;
                 $this->prorata_date   = $obj->prorata_date; 
@@ -1144,9 +1144,9 @@ if ($rate > 1) $rate = 1;
                  //$this->timestamp_prorata         = $rate2; 
                  
 if ( $datewf <= $datebegin) {
-$price = $this->welcome + ($this->price * $rate);
+$price = $this->welcome + ($this->amount * $rate);
 } else {
-$price = ($this->price * $rate);
+$price = ($this->amount * $rate);
 }
 if ($price < 0) $price = 0;
                  $this->price_prorata         = $price; 
@@ -1197,7 +1197,7 @@ $date->modify('-1 SECONDS');
 $datenextend = $date->getTimestamp();
                 $this->date_nextend         = $datenextend;        
                                          
-                $this->nextprice         = $this->price;                       
+                $this->nextprice         = $this->amount;                       
 return 1;
     }
 

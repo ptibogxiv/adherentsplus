@@ -216,19 +216,14 @@ if ($rowid > 0)
 
     print '<tr><td class="titlefield">'.$langs->trans("GroupSubscription").'</td><td>';
 		print yn($object->family);
-		print '</tr>';
+		print '</td></tr>';
 
     if (! empty($object->subscription))
     {        
     print '<tr><td>'.$langs->trans("SubscriptionWelcome").'</td><td>';
 		print price($object->welcome);
     print ' '.$langs->trans("Currency".$conf->currency);
-		print '</tr>';
-    
-    print '<tr><td>'.$langs->trans("SubscriptionPrice").'</td><td>';
-		print price($object->price);
-    print ' '.$langs->trans("Currency".$conf->currency);
-		print '</tr>';
+		print '</td></tr>';
     
 if (! empty($conf->global->ADHERENT_FEDERAL_PART)){        
     print '<tr><td>'.$langs->trans("FederalPart");
@@ -236,21 +231,21 @@ if (! empty($conf->global->ADHERENT_FEDERAL_PART)){
     print '</td><td>';
 		print price($object->federal);
     print ' '.$langs->trans("Currency".$conf->currency);
-		print '</tr>';
+		print '</td></tr>';
 }    
     }
 
 if (!empty($conf->global->ADHERENT_SUBSCRIPTION_PRORATA) && $conf->global->ADHERENT_SUBSCRIPTION_PRORATA == '2') {    
     print '<tr><td>'.$langs->trans("BeginningFixedDate").'</td><td>';
     print yn($object->prorata_date);
-		print '</tr>';
+		print '</td></tr>';
     }
     
     print '<tr><td>'.$langs->trans("Prorata");
 		print $form->textwithpicto('',$langs->trans("IncludeInSubscritionPrice"),1);
     print '</td><td>';
 		print $langs->trans((!empty($object->prorata)?$object->prorata:'None'));
-		print '</tr>';
+		print '</td></tr>';
 
 if (! empty($conf->global->PRODUIT_MULTIPRICES)){
     print '<tr><td>'.$langs->trans("PriceLevel").'</td><td>';
@@ -421,13 +416,8 @@ print ' '.$langs->trans("Currency".$conf->currency);
     print ' '.$langs->trans("Currency".$conf->currency);    
 		print '</td></tr>';
     
-    print '<tr ><td>'.$langs->trans("SubscriptionPrice").'</td><td>';
-		print '<input size="10" type="text" value="' . price($object->price) . '" name="price">';   
-    print ' '.$langs->trans("Currency".$conf->currency);    
-		print '</td></tr>';
-    
 if (! empty($conf->global->ADHERENT_FEDERAL_PART)){    
-    print '<tr><td>'.$langs->trans("FederalPart").$conf->global->ADHERENT_FEDERAL_PART;
+    print '<tr><td>'.$langs->trans("FederalPart");
 		print $form->textwithpicto($s,$langs->trans("IncludeInSubscritionPrice"),1);
     print '</td><td>';
 		print '<input size="10" type="text" value="' . price($object->federal) . '" name="federal">';   
