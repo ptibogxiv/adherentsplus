@@ -137,8 +137,8 @@ if ($action == "resiliate") // resiliate member from POS
       $adht = new AdherentType($db);
 			$adht->fetch($adh->typeid);
 
-			if ($result >= 0 && !count($object->errors)) {
-				if ($object->email && GETPOST("send_mail")) {
+			if ($result >= 0 && !count($adh->errors)) {
+				if ($adh->email && GETPOST("send_mail")) {
 					$subject = '';
 					$msg = '';
 
@@ -147,7 +147,7 @@ if ($action == "resiliate") // resiliate member from POS
 					$formmail = new FormMail($db);
 					// Set output language
 					$outputlangs = new Translate('', $conf);
-					$outputlangs->setDefaultLang(empty($object->thirdparty->default_lang) ? $mysoc->default_lang : $object->thirdparty->default_lang);
+					$outputlangs->setDefaultLang(empty($adh->thirdparty->default_lang) ? $mysoc->default_lang : $adh->thirdparty->default_lang);
 					// Load traductions files required by page
 					$outputlangs->loadLangs(array("main", "members", "companies", "install", "other"));
 					// Get email content from template
@@ -168,17 +168,17 @@ if ($action == "resiliate") // resiliate member from POS
 						setEventMessages('WarningMandatorySetupNotComplete', null, 'errors');
 						$error++;
 					} else {
-						$substitutionarray = getCommonSubstitutionArray($outputlangs, 0, null, $object);
-						complete_substitutions_array($substitutionarray, $outputlangs, $object);
+						$substitutionarray = getCommonSubstitutionArray($outputlangs, 0, null, $adh);
+						complete_substitutions_array($substitutionarray, $outputlangs, $adh);
 						$subjecttosend = make_substitutions($subject, $substitutionarray, $outputlangs);
 						$texttosend = make_substitutions(dol_concatdesc($msg, $adht->getMailOnExclude()), $substitutionarray, $outputlangs);
 
 						$moreinheader = 'X-Dolibarr-Info: send_an_email by adherents/card.php'."\r\n";
 
-						$result = $object->send_an_email($texttosend, $subjecttosend, array(), array(), array(), "", "", 0, -1, '', $moreinheader);
+						$result = $adh->send_an_email($texttosend, $subjecttosend, array(), array(), array(), "", "", 0, -1, '', $moreinheader);
 						if ($result < 0) {
 							$error++;
-							setEventMessages($object->error, $object->errors, 'errors');
+							setEventMessages($adh->error, $adh->errors, 'errors');
 						}
 					}
 				}
