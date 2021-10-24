@@ -111,8 +111,85 @@ if ($conf->global->TAKEPOS_COLOR_THEME == 1) print '<link rel="stylesheet" href=
 </head>
 <body>
 <?php 
+		// Confirm validate member
+		if ($action == 'valid') {
+    
+			$adh = new Adherent($db);
+      $adh->fetch('', '', $invoice->socid);
+      $result = $adh->validate($user);
+    
+		$adht = new AdherentType($db);
+		$adht->fetch($adh->typeid);
 
-if ($action == "resiliate") // resiliate member from POS
+		if ($result >= 0 && !count($adh->errors)) {
+			// Send confirmation email (according to parameters of member type. Otherwise generic)
+			if ($adh->email && GETPOST("send_mail")) {
+				$subject = '';
+				$msg = '';
+
+				// Send subscription email
+				include_once DOL_DOCUMENT_ROOT.'/core/class/html.formmail.class.php';
+				$formmail = new FormMail($db);
+				// Set output language
+				$outputlangs = new Translate('', $conf);
+				$outputlangs->setDefaultLang(empty($adh->thirdparty->default_lang) ? $mysoc->default_lang : $adh->thirdparty->default_lang);
+				// Load traductions files required by page
+				$outputlangs->loadLangs(array("main", "members", "companies", "install", "other"));
+				// Get email content from template
+				$arraydefaultmessage = null;
+				$labeltouse = $conf->global->ADHERENT_EMAIL_TEMPLATE_MEMBER_VALIDATION;
+
+				if (!empty($labeltouse)) {
+					$arraydefaultmessage = $formmail->getEMailTemplate($db, 'member', $user, $outputlangs, 0, 1, $labeltouse);
+				}
+
+				if (!empty($labeltouse) && is_object($arraydefaultmessage) && $arraydefaultmessage->id > 0) {
+					$subject = $arraydefaultmessage->topic;
+					$msg     = $arraydefaultmessage->content;
+				}
+
+				if (empty($labeltouse) || (int) $labeltouse === -1) {
+					//fallback on the old configuration.
+					setEventMessages('WarningMandatorySetupNotComplete', null, 'errors');
+					$error++;
+				} else {
+					$substitutionarray = getCommonSubstitutionArray($outputlangs, 0, null, $adh);
+					complete_substitutions_array($substitutionarray, $outputlangs, $adh);
+					$subjecttosend = make_substitutions($subject, $substitutionarray, $outputlangs);
+					$texttosend = make_substitutions(dol_concatdesc($msg, $adht->getMailOnValid()), $substitutionarray, $outputlangs);
+
+					$moreinheader = 'X-Dolibarr-Info: send_an_email by adherents/card.php'."\r\n";
+
+					$result = $adh->send_an_email($texttosend, $subjecttosend, array(), array(), array(), "", "", 0, -1, '', $moreinheader);
+					if ($result < 0) {
+						$error++;
+						setEventMessages($adh->error, $adh->errors, 'errors');
+					}
+				}
+			}
+    ?>
+	    <script>
+	    console.log("Reload page invoice.php with place=<?php print $place; ?>");
+	    parent.$("#poslines").load("invoice.php?place=<?php print $place; ?>", function() {
+	        //parent.$("#poslines").scrollTop(parent.$("#poslines")[0].scrollHeight);
+			<?php if (!$result) { ?>
+				alert('Error failed to update member on draft invoice.');
+			<?php } ?>
+	        parent.$.colorbox.close(); /* Close the popup */
+	    });
+	    </script>
+    <?php
+    exit;
+		} else {
+			$error++;
+			if ($adh->error) {
+				setEventMessages($adh->error, $adh->errors, 'errors');
+			} else {
+				setEventMessages($adh->error, $adh->errors, 'errors');
+			}
+		}
+		$action = '';
+} elseif ($action == "resiliate") // resiliate member from POS
 {
 			$adh = new Adherent($db);
       $adh->fetch('', '', $invoice->socid);
