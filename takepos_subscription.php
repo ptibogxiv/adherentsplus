@@ -114,7 +114,58 @@ if ($conf->global->TAKEPOS_COLOR_THEME == 1) print '<link rel="stylesheet" href=
 
 if ($action == "resiliate") // resiliate member from POS
 {
+			$adh = new Adherent($db);
+      $adh->fetch('', '', $invoice->socid);
+      $result = $adh->resiliate($user); 			
+      
+      $adht = new AdherentType($db);
+			$adht->fetch($adh->typeid);
 
+			if ($result >= 0 && !count($adh->errors)) {
+				if ($adh->email) {  //&& GETPOST("send_mail")
+					$subject = '';
+					$msg = '';
+
+					// Send subscription email
+					include_once DOL_DOCUMENT_ROOT.'/core/class/html.formmail.class.php';
+					$formmail = new FormMail($db);
+					// Set output language
+					$outputlangs = new Translate('', $conf);
+					$outputlangs->setDefaultLang(empty($adh->thirdparty->default_lang) ? $mysoc->default_lang : $adh->thirdparty->default_lang);
+					// Load traductions files required by page
+					$outputlangs->loadLangs(array("main", "members", "companies", "install", "other"));
+					// Get email content from template
+					$arraydefaultmessage = null;
+					$labeltouse = $conf->global->ADHERENT_EMAIL_TEMPLATE_CANCELATION;
+
+					if (!empty($labeltouse)) {
+						$arraydefaultmessage = $formmail->getEMailTemplate($db, 'member', $user, $outputlangs, 0, 1, $labeltouse);
+					}
+
+					if (!empty($labeltouse) && is_object($arraydefaultmessage) && $arraydefaultmessage->id > 0) {
+						$subject = $arraydefaultmessage->topic;
+						$msg     = $arraydefaultmessage->content;
+					}
+
+					if (empty($labeltouse) || (int) $labeltouse === -1) {
+						//fallback on the old configuration.
+						setEventMessages('WarningMandatorySetupNotComplete', null, 'errors');
+						$error++;
+					} else {
+						$substitutionarray = getCommonSubstitutionArray($outputlangs, 0, null, $adh);
+						complete_substitutions_array($substitutionarray, $outputlangs, $adh);
+						$subjecttosend = make_substitutions($subject, $substitutionarray, $outputlangs);
+						$texttosend = make_substitutions(dol_concatdesc($msg, $adht->getMailOnResiliate()), $substitutionarray, $outputlangs);
+
+						$moreinheader = 'X-Dolibarr-Info: send_an_email by adherents/card.php'."\r\n";
+
+						$result = $adh->send_an_email($texttosend, $subjecttosend, array(), array(), array(), "", "", 0, -1, '', $moreinheader);
+						if ($result < 0) {
+							$error++;
+							setEventMessages($adh->error, $adh->errors, 'errors');
+						}
+					}
+				}
     ?>
 	    <script>
 	    console.log("Reload page invoice.php with place=<?php print $place; ?>");
@@ -127,7 +178,17 @@ if ($action == "resiliate") // resiliate member from POS
 	    });
 	    </script>
     <?php
-    exit;
+    exit; 
+			} else {
+				$error++;
+
+				if ($adh->error) {
+					setEventMessages($adh->error, $adh->errors, 'errors');
+				} else {
+					setEventMessages($adh->error, $adh->errors, 'errors');
+				}
+				$action = '';
+			}
 } elseif ($action == "exclude") // exclude member from POS
 {
 			$adh = new Adherent($db);
@@ -138,7 +199,7 @@ if ($action == "resiliate") // resiliate member from POS
 			$adht->fetch($adh->typeid);
 
 			if ($result >= 0 && !count($adh->errors)) {
-				if ($adh->email && GETPOST("send_mail")) {
+				if ($adh->email) {  //&& GETPOST("send_mail")
 					$subject = '';
 					$msg = '';
 
@@ -198,10 +259,10 @@ if ($action == "resiliate") // resiliate member from POS
 			} else {
 				$error++;
 
-				if ($object->error) {
-					setEventMessages($object->error, $object->errors, 'errors');
+				if ($adh->error) {
+					setEventMessages($adh->error, $adh->errors, 'errors');
 				} else {
-					setEventMessages($object->error, $object->errors, 'errors');
+					setEventMessages($adh->error, $adh->errors, 'errors');
 				}
 				$action = '';
 			}
