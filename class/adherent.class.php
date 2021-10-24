@@ -163,7 +163,77 @@ class AdherentPlus extends CommonObject
       
 	var $oldcopy;		// To contains a clone of this when we need to save old properties of object
 
+	/**
+	 * @var int Entity
+	 */
 	public $entity;
+
+	/**
+	 * @var array fields
+	 */
+	public $fields = array(
+		'rowid' => array('type' => 'integer', 'label' => 'TechnicalID', 'enabled' => 1, 'visible' => -1, 'notnull' => 1, 'position' => 10),
+		'ref' => array('type' => 'varchar(30)', 'label' => 'Ref', 'default' => 1, 'enabled' => 1, 'visible' => -1, 'notnull' => 1, 'position' => 12, 'index' => 1),
+		'entity' => array('type' => 'integer', 'label' => 'Entity', 'default' => 1, 'enabled' => 1, 'visible' => -2, 'notnull' => 1, 'position' => 15, 'index' => 1),
+		'ref_ext' => array('type' => 'varchar(128)', 'label' => 'Ref ext', 'enabled' => 1, 'visible' => 0, 'position' => 20),
+		'civility' => array('type' => 'varchar(6)', 'label' => 'Civility', 'enabled' => 1, 'visible' => -1, 'position' => 25),
+		'lastname' => array('type' => 'varchar(50)', 'label' => 'Lastname', 'enabled' => 1, 'visible' => -1, 'position' => 30, 'showoncombobox'=>1),
+		'firstname' => array('type' => 'varchar(50)', 'label' => 'Firstname', 'enabled' => 1, 'visible' => -1, 'position' => 35, 'showoncombobox'=>1),
+		'login' => array('type' => 'varchar(50)', 'label' => 'Login', 'enabled' => 1, 'visible' => -1, 'position' => 40),
+		'gender' => array('type' => 'varchar(10)', 'label' => 'Gender', 'enabled' => 1, 'visible' => -1, 'position' => 250),
+		'pass' => array('type' => 'varchar(50)', 'label' => 'Pass', 'enabled' => 1, 'visible' => -1, 'position' => 45),
+		'pass_crypted' => array('type' => 'varchar(128)', 'label' => 'Pass crypted', 'enabled' => 1, 'visible' => -1, 'position' => 50),
+		'fk_adherent_type' => array('type' => 'integer', 'label' => 'Fk adherent type', 'enabled' => 1, 'visible' => -1, 'notnull' => 1, 'position' => 55),
+		'morphy' => array('type' => 'varchar(3)', 'label' => 'MorPhy', 'enabled' => 1, 'visible' => -1, 'notnull' => 1, 'position' => 60),
+		'societe' => array('type' => 'varchar(128)', 'label' => 'Societe', 'enabled' => 1, 'visible' => -1, 'position' => 65, 'showoncombobox'=>2),
+		'fk_soc' => array('type' => 'integer:Societe:societe/class/societe.class.php', 'label' => 'ThirdParty', 'enabled' => 1, 'visible' => -1, 'position' => 70),
+		'address' => array('type' => 'text', 'label' => 'Address', 'enabled' => 1, 'visible' => -1, 'position' => 75),
+		'zip' => array('type' => 'varchar(10)', 'label' => 'Zip', 'enabled' => 1, 'visible' => -1, 'position' => 80),
+		'town' => array('type' => 'varchar(50)', 'label' => 'Town', 'enabled' => 1, 'visible' => -1, 'position' => 85),
+		'state_id' => array('type' => 'integer', 'label' => 'State id', 'enabled' => 1, 'visible' => -1, 'position' => 90),
+		'country' => array('type' => 'integer:Ccountry:core/class/ccountry.class.php', 'label' => 'Country', 'enabled' => 1, 'visible' => -1, 'position' => 95),
+		'email' => array('type' => 'varchar(255)', 'label' => 'Email', 'enabled' => 1, 'visible' => -1, 'position' => 100),
+		'url' =>array('type'=>'varchar(255)', 'label'=>'Url', 'enabled'=>1, 'visible'=>-1, 'position'=>110),
+		'socialnetworks' => array('type' => 'text', 'label' => 'Socialnetworks', 'enabled' => 1, 'visible' => -1, 'position' => 105),
+		'phone' => array('type' => 'varchar(30)', 'label' => 'Phone', 'enabled' => 1, 'visible' => -1, 'position' => 115),
+		'phone_perso' => array('type' => 'varchar(30)', 'label' => 'Phone perso', 'enabled' => 1, 'visible' => -1, 'position' => 120),
+		'phone_mobile' => array('type' => 'varchar(30)', 'label' => 'Phone mobile', 'enabled' => 1, 'visible' => -1, 'position' => 125),
+		'birth' => array('type' => 'date', 'label' => 'DateOfBirth', 'enabled' => 1, 'visible' => -1, 'position' => 130),
+		'photo' => array('type' => 'varchar(255)', 'label' => 'Photo', 'enabled' => 1, 'visible' => -1, 'position' => 135),
+		'public' => array('type' => 'smallint(6)', 'label' => 'Public', 'enabled' => 1, 'visible' => -1, 'notnull' => 1, 'position' => 145),
+		'datefin' => array('type' => 'datetime', 'label' => 'DateEnd', 'enabled' => 1, 'visible' => -1, 'position' => 150),
+		'note_private' => array('type' => 'text', 'label' => 'NotePublic', 'enabled' => 1, 'visible' => 0, 'position' => 155),
+		'note_public' => array('type' => 'text', 'label' => 'NotePrivate', 'enabled' => 1, 'visible' => 0, 'position' => 160),
+		'datevalid' => array('type' => 'datetime', 'label' => 'DateValidation', 'enabled' => 1, 'visible' => -1, 'position' => 165),
+		'datec' => array('type' => 'datetime', 'label' => 'DateCreation', 'enabled' => 1, 'visible' => -1, 'position' => 170),
+		'tms' => array('type' => 'timestamp', 'label' => 'DateModification', 'enabled' => 1, 'visible' => -1, 'notnull' => 1, 'position' => 175),
+		'fk_user_author' => array('type' => 'integer:User:user/class/user.class.php', 'label' => 'Fk user author', 'enabled' => 1, 'visible' => -1, 'position' => 180),
+		'fk_user_mod' => array('type' => 'integer:User:user/class/user.class.php', 'label' => 'Fk user mod', 'enabled' => 1, 'visible' => -1, 'position' => 185),
+		'fk_user_valid' => array('type' => 'integer:User:user/class/user.class.php', 'label' => 'UserValidation', 'enabled' => 1, 'visible' => -1, 'position' => 190),
+		'canvas' => array('type' => 'varchar(32)', 'label' => 'Canvas', 'enabled' => 1, 'visible' => -1, 'position' => 195),
+		'statut' => array('type' => 'smallint(6)', 'label' => 'Statut', 'enabled' => 1, 'visible' => -1, 'notnull' => 1, 'position' => 500,
+		'arrayofkeyval' => array(-1 => 'Draft', 1 => 'Validated', 0 => 'MemberStatusResiliatedShort', -2 => 'MemberStatusExcludedShort')),
+		'model_pdf' => array('type' => 'varchar(255)', 'label' => 'Model pdf', 'enabled' => 1, 'visible' => 0, 'position' => 800),
+		'import_key' => array('type' => 'varchar(14)', 'label' => 'ImportId', 'enabled' => 1, 'visible' => -2, 'position' => 805)
+	);
+
+	/**
+	 * Draft status
+	 */
+	const STATUS_DRAFT = -1;
+	/**
+	 * Validated status
+	 */
+	const STATUS_VALIDATED = 1;
+	/**
+	 * Resiliated
+	 */
+	const STATUS_RESILIATED = 0;
+	/**
+	 * Excluded
+	 */
+	const STATUS_EXCLUDED = -2;
+
 
 	/**
 	 *	Constructor
@@ -173,11 +243,12 @@ class AdherentPlus extends CommonObject
 	public function __construct($db)
 	{
 		$this->db = $db;
-		$this->statut = -1;
+		$this->statut = self::STATUS_DRAFT;
+		$this->status = $this->statut;
 		// l'adherent n'est pas public par defaut
 		$this->public = 0;
 		// les champs optionnels sont vides
-		$this->array_options=array();
+		$this->array_options = array();
 	}
 
 
@@ -2590,7 +2661,7 @@ dol_include_once('/adherentsplus/class/consumption.class.php');
 	}
 
 	/**
-	 *  Retourne le libelle du statut d'un adherent (brouillon, valide, resilie)
+	 *  Retourne le libelle du statut d'un adherent (brouillon, valide, resilie, exclu)
 	 *
 	 *  @param	int		$mode       0=libelle long, 1=libelle court, 2=Picto + Libelle court, 3=Picto, 4=Picto + Libelle long, 5=Libelle court + Picto
 	 *  @return string				Label
@@ -2620,11 +2691,11 @@ dol_include_once('/adherentsplus/class/consumption.class.php');
 		$labelStatus = '';
 		$labelStatusShort = '';
 
-		if ($status == -1) {
+		if ($status == self::STATUS_DRAFT) {
 			$statusType = 'status0';
 			$labelStatus = $langs->trans("MemberStatusDraft");
 			$labelStatusShort = $langs->trans("MemberStatusDraftShort");
-		} elseif ($status >= 1) {
+		} elseif ($status >= self::STATUS_VALIDATED) {
 			if ($need_subscription == 0) {
 				$statusType = 'status4';
 				$labelStatus = $langs->trans("MemberStatusNoSubscription");
@@ -2633,7 +2704,7 @@ dol_include_once('/adherentsplus/class/consumption.class.php');
 				$statusType = 'status1';
 				$labelStatus = $langs->trans("MemberStatusActive");
 				$labelStatusShort = $langs->trans("MemberStatusActiveShort");
-			} elseif ($date_end_subscription < time()) {
+			} elseif ($date_end_subscription < dol_now()) {
 				$statusType = 'status3';
 				$labelStatus = $langs->trans("MemberStatusActiveLate");
 				$labelStatusShort = $langs->trans("MemberStatusActiveLateShort");
@@ -2642,48 +2713,50 @@ dol_include_once('/adherentsplus/class/consumption.class.php');
 				$labelStatus = $langs->trans("MemberStatusPaid");
 				$labelStatusShort = $langs->trans("MemberStatusPaidShort");
 			}
-		} elseif ($status == 0) {
+		} elseif ($status == self::STATUS_RESILIATED) {
 			$statusType = 'status6';
-			$labelStatus = $langs->trans("MemberStatusResiliated");
-			$labelStatusShort = $langs->trans("MemberStatusResiliatedShort");
+			$labelStatus = $langs->transnoentitiesnoconv("MemberStatusResiliated");
+			$labelStatusShort = $langs->transnoentitiesnoconv("MemberStatusResiliatedShort");
+		} elseif ($status == self::STATUS_EXCLUDED) {
+			$statusType = 'status10';
+			$labelStatus = $langs->transnoentitiesnoconv("MemberStatusExcluded");
+			$labelStatusShort = $langs->transnoentitiesnoconv("MemberStatusExcludedShort");
 		}
 
 		return dolGetStatus($labelStatus, $labelStatusShort, '', $statusType, $mode);
 	}
 
+
+	// phpcs:disable PEAR.NamingConventions.ValidFunctionName.ScopeNotCamelCaps
 	/**
 	 *      Charge indicateurs this->nb de tableau de bord
 	 *
 	 *      @return     int         <0 if KO, >0 if OK
 	 */
-	function load_state_board()
+	public function load_state_board()
 	{
+		// phpcs:enable
 		global $conf;
 
-		$this->nb=array();
+		$this->nb = array();
 
 		$sql = "SELECT count(a.rowid) as nb";
-		$sql.= " FROM ".MAIN_DB_PREFIX."adherent as a";
-		$sql.= " WHERE a.statut > 0";
-		$sql.= " AND a.entity IN (".getEntity('adherent').")";
+		$sql .= " FROM ".MAIN_DB_PREFIX."adherent as a";
+		$sql .= " WHERE a.statut > 0";
+		$sql .= " AND a.entity IN (".getEntity('adherent').")";
 
-		$resql=$this->db->query($sql);
-		if ($resql)
-		{
-			while ($obj=$this->db->fetch_object($resql))
-			{
-				$this->nb["members"]=$obj->nb;
+		$resql = $this->db->query($sql);
+		if ($resql) {
+			while ($obj = $this->db->fetch_object($resql)) {
+				$this->nb["members"] = $obj->nb;
 			}
 			$this->db->free($resql);
 			return 1;
-		}
-		else
-		{
+		} else {
 			dol_print_error($this->db);
-			$this->error=$this->db->error();
+			$this->error = $this->db->error();
 			return -1;
 		}
-
 	}
 
 

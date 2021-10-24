@@ -383,7 +383,7 @@ echo $langs->trans("None");
 
 <div style="position:absolute; left:5%; height:52%; width:92%;">
 <?php
-
+if ($adh->statut != -2) {
 	$sql = "SELECT d.rowid as rowid, d.libelle as label, d.subscription, d.vote, d.morphy, d.tms as tms";
 	$sql .= " FROM ".MAIN_DB_PREFIX."adherent_type as d";
 	$sql .= " WHERE d.entity IN (".getEntity('member_type').")";
@@ -439,12 +439,33 @@ print '</small></button>';
 	{
 		dol_print_error($db);
 	}
-if ($user->rights->adherent->supprimer && $adh->id > 0 && $adh->statut != 0) {
-print '<button type="button" class="calcbutton2" onclick="location.href=\'takepos_subscription.php?action=resiliate&idmember='.$adh->id.'&type=0&invoiceid='.$invoiceid.'&place='.urlencode($place).'\'">'.$langs->trans("Resiliate").'</button>';
+
+				// Resiliate
+				if (Adherent::STATUS_VALIDATED == $adh->statut) {
+					if ($user->rights->adherent->supprimer) {
+						print '<button type="button" class="calcbutton2" onclick="location.href=\'takepos_subscription.php?action=resiliate&idmember='.$adh->id.'&type=0&invoiceid='.$invoiceid.'&place='.urlencode($place).'\'">'.$langs->trans("Exclude").'</button>';
+					} else {
+						print '<span class="butActionRefused classfortooltip" title="'.dol_escape_htmltag($langs->trans("NotEnoughPermissions")).'">'.$langs->trans("Resiliate").'</span>'."\n";
+					}
+				}
+        
+				// Exclude
+				if (Adherent::STATUS_VALIDATED == $object->statut) {
+					if ($user->rights->adherent->supprimer) {
+						print '<button type="button" class="calcbutton2" onclick="location.href=\'takepos_subscription.php?action=exclude&idmember='.$adh->id.'&type=0&invoiceid='.$invoiceid.'&place='.urlencode($place).'\'">'.$langs->trans("Exclude").'</button>';
+					} else {
+						print '<span class="butActionRefused classfortooltip" title="'.dol_escape_htmltag($langs->trans("NotEnoughPermissions")).'">'.$langs->trans("Exclude").'</span>'."\n";
+					}
+				} 
 }
-if ($user->rights->adherent->supprimer && $adh->id > 0 && $adh->statut != 0) {
-print '<button type="button" class="calcbutton2" onclick="location.href=\'takepos_subscription.php?action=exclude&idmember='.$adh->id.'&type=0&invoiceid='.$invoiceid.'&place='.urlencode($place).'\'">'.$langs->trans("Exclude").'</button>';
-}
+				// Reactivate
+				if (Adherent::STATUS_RESILIATED == $adh->statut || Adherent::STATUS_EXCLUDED == $adh->statut) {
+					if ($user->rights->adherent->creer) {
+						print '<button type="button" class="calcbutton2" onclick="location.href=\'takepos_subscription.php?action=valid&idmember='.$adh->id.'&type=0&invoiceid='.$invoiceid.'&place='.urlencode($place).'\'">'.$langs->trans("Reenable").'</button>';
+					} else {
+						print '<span class="butActionRefused classfortooltip" title="'.dol_escape_htmltag($langs->trans("NotEnoughPermissions")).'">'.$langs->trans("Reenable").'</span>'."\n";
+					}
+				}
 if (!empty($adh->id)) {
 ?>
 <div>
