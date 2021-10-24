@@ -112,7 +112,100 @@ if ($conf->global->TAKEPOS_COLOR_THEME == 1) print '<link rel="stylesheet" href=
 <body>
 <?php 
 
-if ($action == "change") // change member from POS
+if ($action == "resiliate") // resiliate member from POS
+{
+
+    ?>
+	    <script>
+	    console.log("Reload page invoice.php with place=<?php print $place; ?>");
+	    parent.$("#poslines").load("invoice.php?place=<?php print $place; ?>", function() {
+	        //parent.$("#poslines").scrollTop(parent.$("#poslines")[0].scrollHeight);
+			<?php if (!$result) { ?>
+				alert('Error failed to update member on draft invoice.');
+			<?php } ?>
+	        parent.$.colorbox.close(); /* Close the popup */
+	    });
+	    </script>
+    <?php
+    exit;
+} elseif ($action == "exclude") // exclude member from POS
+{
+			$adh = new Adherent($db);
+      $adh->fetch('', '', $invoice->socid);
+      $result = $adh->exclude($user); 			
+      
+      $adht = new AdherentType($db);
+			$adht->fetch($adh->typeid);
+
+			if ($result >= 0 && !count($object->errors)) {
+				if ($object->email && GETPOST("send_mail")) {
+					$subject = '';
+					$msg = '';
+
+					// Send subscription email
+					include_once DOL_DOCUMENT_ROOT.'/core/class/html.formmail.class.php';
+					$formmail = new FormMail($db);
+					// Set output language
+					$outputlangs = new Translate('', $conf);
+					$outputlangs->setDefaultLang(empty($object->thirdparty->default_lang) ? $mysoc->default_lang : $object->thirdparty->default_lang);
+					// Load traductions files required by page
+					$outputlangs->loadLangs(array("main", "members", "companies", "install", "other"));
+					// Get email content from template
+					$arraydefaultmessage = null;
+					$labeltouse = $conf->global->ADHERENT_EMAIL_TEMPLATE_EXCLUSION;
+
+					if (!empty($labeltouse)) {
+						$arraydefaultmessage = $formmail->getEMailTemplate($db, 'member', $user, $outputlangs, 0, 1, $labeltouse);
+					}
+
+					if (!empty($labeltouse) && is_object($arraydefaultmessage) && $arraydefaultmessage->id > 0) {
+						$subject = $arraydefaultmessage->topic;
+						$msg     = $arraydefaultmessage->content;
+					}
+
+					if (empty($labeltouse) || (int) $labeltouse === -1) {
+						//fallback on the old configuration.
+						setEventMessages('WarningMandatorySetupNotComplete', null, 'errors');
+						$error++;
+					} else {
+						$substitutionarray = getCommonSubstitutionArray($outputlangs, 0, null, $object);
+						complete_substitutions_array($substitutionarray, $outputlangs, $object);
+						$subjecttosend = make_substitutions($subject, $substitutionarray, $outputlangs);
+						$texttosend = make_substitutions(dol_concatdesc($msg, $adht->getMailOnExclude()), $substitutionarray, $outputlangs);
+
+						$moreinheader = 'X-Dolibarr-Info: send_an_email by adherents/card.php'."\r\n";
+
+						$result = $object->send_an_email($texttosend, $subjecttosend, array(), array(), array(), "", "", 0, -1, '', $moreinheader);
+						if ($result < 0) {
+							$error++;
+							setEventMessages($object->error, $object->errors, 'errors');
+						}
+					}
+				}
+    ?>
+	    <script>
+	    console.log("Reload page invoice.php with place=<?php print $place; ?>");
+	    parent.$("#poslines").load("invoice.php?place=<?php print $place; ?>", function() {
+	        //parent.$("#poslines").scrollTop(parent.$("#poslines")[0].scrollHeight);
+			<?php if (!$result) { ?>
+				alert('Error failed to update member on draft invoice.');
+			<?php } ?>
+	        parent.$.colorbox.close(); /* Close the popup */
+	    });
+	    </script>
+    <?php
+    exit;
+			} else {
+				$error++;
+
+				if ($object->error) {
+					setEventMessages($object->error, $object->errors, 'errors');
+				} else {
+					setEventMessages($object->error, $object->errors, 'errors');
+				}
+				$action = '';
+			}
+} elseif ($action == "change") // change member from POS
 {
 		$idmember = GETPOST('$idmember', 'int');
     
@@ -121,9 +214,7 @@ if ($action == "change") // change member from POS
     if (!empty($type) && empty($adh->statut)) {
     $result = $adh->validate($user); 
     }
-    if (empty($type)) {
-    $result = $adh->resiliate($user);    
-    } elseif ($adh->typeid != $type) {
+    if ($adh->typeid != $type) {
     $adh->typeid = $type;
     $result = $adh->update($user);  
     } else {
@@ -154,7 +245,6 @@ if ($action == "change") // change member from POS
         }
         
     }
-
     ?>
 	    <script>
 	    console.log("Reload page invoice.php with place=<?php print $place; ?>");
