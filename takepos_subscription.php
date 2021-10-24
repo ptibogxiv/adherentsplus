@@ -460,7 +460,7 @@ echo $langs->trans("None");
 
 <div style="position:absolute; left:5%; height:52%; width:92%;">
 <?php
-if ($adh->statut != -2) {
+if ($user->rights->adherent->cotisation->creer && $adh->statut != -2) {
 	$sql = "SELECT d.rowid as rowid, d.libelle as label, d.subscription, d.vote, d.morphy, d.tms as tms";
 	$sql .= " FROM ".MAIN_DB_PREFIX."adherent_type as d";
 	$sql .= " WHERE d.entity IN (".getEntity('member_type').")";
