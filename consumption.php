@@ -66,12 +66,29 @@ $contextpage = GETPOST('contextpage', 'aZ') ?GETPOST('contextpage', 'aZ') : 'thi
 
 if ($contextpage == 'takepos')
 {
-	$_GET['optioncss'] = 'print';
 $constforcompanyid = $conf->global->{'CASHDESK_ID_THIRDPARTY'.$_SESSION["takeposterminal"]};  
 $invoice = new Facture($db);
 if ($invoiceid > 0)
 {
     $invoice->fetch($invoiceid);
+}
+else
+{
+    $sql = "SELECT rowid FROM ".MAIN_DB_PREFIX."facture where ref='(PROV-POS".$_SESSION["takeposterminal"]."-".$place.")'";
+    $resql = $db->query($sql);
+    $obj = $db->fetch_object($resql);
+    if ($obj)
+    {
+        $invoiceid = $obj->rowid;
+    }
+    if (!$invoiceid)
+    {
+        $invoiceid = 0; // Invoice does not exist yet
+    }
+    else
+    {
+        $invoice->fetch($invoiceid);
+    }
 }
 
 if ($constforcompanyid != $invoice->socid && !empty($invoice->socid)) { 
