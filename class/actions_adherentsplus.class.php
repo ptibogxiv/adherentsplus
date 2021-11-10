@@ -85,37 +85,29 @@ class Actionsadherentsplus
 	 */
 	function ActionButtons($parameters)
 	{
-  global $conf, $langs;
-  
-$reshook = array();
+       global $conf, $user, $langs;
 
-?>
-<script language="javascript"> 
-  function Customer33() {
-	invoiceid = $("#invoiceid").val();
-	console.log("Open box to select the thirdparty place="+place);
-	$.colorbox({href:"../custom/adherentsplus/takepos_subscription.php?place="+place+"&invoiceid="+invoiceid, width:"80%", height:"90%", transition:"none", iframe:"true", title:"<?php echo $langs->trans("Subscription"); ?>"});
-}
-</script>
-<?php
-$reshook[] = array('title'=>'<span class="fas fa-users paddingrightonly"></span><div class="trunc">'.$langs->trans("Subscription").'</div>', 'action'=>'Customer33();');
+        $error = 0; // Error counter
 
-if (!empty($conf->global->ADHERENT_CONSUMPTION)) {
-?>
-<script language="javascript"> 
-function CloseBillConsumption() {
-	invoiceid = $("#invoiceid").val();
-	console.log("Open popup to enter payment on invoiceid="+invoiceid);
-	$.colorbox({href:"../custom/adherentsplus/consumption.php?place="+place+"&invoiceid="+invoiceid+"&contextpage=takepos", width:"80%", height:"90%", transition:"none", iframe:"true", title:"<?php echo $langs->trans("Consumptions"); ?>"});
-}
-</script>
-<?php 
-$reshook[] = array('title'=>'<span class="fas fa-users paddingrightonly"></span><div class="trunc">'.$langs->trans("Consumptions").'</div>', 'action'=>'CloseBillConsumption();');  
+        /* print_r($parameters); print_r($object); echo "action: " . $action; */
+        if (in_array($parameters['currentcontext'], array('takeposfrontend')))		// do something only for the context 'somecontext1' or 'somecontext2'
+        {
+			$langs->loadLangs(array("members", 'adherentsplus@adherentsplus'));
+			$buttons[0] = array('title'=>'<span class="fas fa-users paddingrightonly"></span><div class="trunc">'.$langs->trans("Subscription").'</div>', 'action'=>'$.colorbox({href:\'../custom/adherentsplus/takepos_subscription.php?place=\'+place+\'&invoiceid=\'+invoiceid, width:\'80%\', height:\'90%\', transition:\'none\', iframe:\'true\', title:\''.$langs->trans("Subscription").'\'});');
+        if (!empty($conf->global->ADHERENT_CONSUMPTION)) {
+      $buttons[1] = array('title'=>'<span class="fas fa-users paddingrightonly"></span><div class="trunc">'.$langs->trans("Consumptions").'</div>', 'action'=>'$.colorbox({href:\'../custom/adherentsplus/consumption.php?place=\'+place+\'&invoiceid=\'+invoiceid+\'&contextpage=takepos\', width:\'80%\', height:\'90%\', transition:\'none\', iframe:\'true\', title:\''.$langs->trans("Consumptions").'\'});');
+        }       
+            //return $buttons;
+        }
 
-} 
-
-  return $reshook;
-
+        if (! $error) {
+            $this->results = array($buttons);
+        //    $this->resprints = 'A text to show';
+            return 0; // or return 1 to replace standard code
+        } else {
+            $this->errors[] = 'Error message';
+            return -1;
+        }
   }
 
 }
