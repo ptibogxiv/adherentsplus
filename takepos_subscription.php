@@ -409,7 +409,7 @@ exit;
 $adht = new AdherentTypePlus($db);
 $result=$adht->fetch($adh->typeid);
 ?>
-<div style="position:relative; padding-top: 10px; left:5%; height:150px; width:92%;">
+<div style="position:relative; padding-top: 10px; left:5%; height:120px; width:92%;">
 <center>
 <div class="paymentbordline paymentbordlinetotal">
 <center><span class="takepospay"><font color="white"><?php echo $langs->trans("Status"); ?>: </font><span id="totaldisplay" class="colorwhite"><?php 
@@ -559,7 +559,7 @@ if (!empty($adh->id)) {
         $sql .= " LEFT JOIN ".MAIN_DB_PREFIX."bank as b ON c.fk_bank = b.rowid";
         $sql .= " LEFT JOIN ".MAIN_DB_PREFIX."bank_account as ba ON b.fk_account = ba.rowid";
         $sql .= " WHERE d.rowid = c.fk_adherent AND d.rowid=".$adh->id;
-        $sql .= " ORDER BY c.datef DESC LIMIT 5";
+        $sql .= " ORDER BY c.datef DESC LIMIT 4";
 
         $result = $db->query($sql);
         if ($result)
