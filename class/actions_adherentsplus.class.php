@@ -93,9 +93,9 @@ class Actionsadherentsplus
         if (in_array($parameters['currentcontext'], array('takeposfrontend')))		// do something only for the context 'somecontext1' or 'somecontext2'
         {
 			$langs->loadLangs(array("members", 'adherentsplus@adherentsplus'));
-			$buttons[0] = array('title'=>'<span class="fas fa-users paddingrightonly"></span><div class="trunc">'.$langs->trans("Subscription").'</div>', 'action'=>'$.colorbox({href:\'../custom/adherentsplus/takepos_subscription.php?place=\'+place+\'&invoiceid=\'+invoiceid, width:\'80%\', height:\'90%\', transition:\'none\', iframe:\'true\', title:\''.$langs->trans("Subscription").'\'});');
+			$buttons['subscription'] = array('title'=>'<span class="fas fa-users paddingrightonly"></span><div class="trunc">'.$langs->trans("Subscription").'</div>', 'action'=>'$.colorbox({href:\'../custom/adherentsplus/takepos_subscription.php?place=\'+place+\'&invoiceid=\'+invoiceid, width:\'80%\', height:\'90%\', transition:\'none\', iframe:\'true\', title:\''.$langs->trans("Subscription").'\'});');
         if (!empty($conf->global->ADHERENT_CONSUMPTION)) {
-			$buttons[1] = array('title'=>'<span class="fas fa-users paddingrightonly"></span><div class="trunc">'.$langs->trans("Consumptions").'</div>', 'action'=>'$.colorbox({href:\'../custom/adherentsplus/consumption.php?place=\'+place+\'&invoiceid=\'+invoiceid+\'&contextpage=takepos\', width:\'80%\', height:\'90%\', transition:\'none\', iframe:\'true\', title:\''.$langs->trans("Consumptions").'\'});');
+			$buttons['consumption'] = array('title'=>'<span class="fas fa-users paddingrightonly"></span><div class="trunc">'.$langs->trans("Consumptions").'</div>', 'action'=>'$.colorbox({href:\'../custom/adherentsplus/consumption.php?place=\'+place+\'&invoiceid=\'+invoiceid+\'&contextpage=takepos\', width:\'80%\', height:\'90%\', transition:\'none\', iframe:\'true\', title:\''.$langs->trans("Consumptions").'\'});');
         }       
             //return $buttons;
         }
