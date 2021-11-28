@@ -104,10 +104,6 @@ top_htmlhead($head, $title, $disablejs, $disablehead, $arrayofjs, $arrayofcss);
 $langs->loadLangs(array("main", "bills", "cashdesk", "members", "banks", "adherentsplus@adherentsplus"));
 
 ?>
-<link rel="stylesheet" href="/takepos/css/pos.css.php">
-<?php
-if ($conf->global->TAKEPOS_COLOR_THEME == 1) print '<link rel="stylesheet" href="css/colorful.css">';
-?>
 </head>
 <body>
 <?php 
