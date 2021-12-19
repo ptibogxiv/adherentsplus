@@ -92,12 +92,13 @@ class Actionsadherentsplus
         /* print_r($parameters); print_r($object); echo "action: " . $action; */
         if (in_array($parameters['currentcontext'], array('takeposfrontend')))		// do something only for the context 'somecontext1' or 'somecontext2'
         {
+			?><script>var invoiceid = $("#invoiceid").val();</script><?php
 			$langs->loadLangs(array("members", 'adherentsplus@adherentsplus'));
-			$buttons['subscription'] = array('title'=>'<span class="fas fa-users paddingrightonly"></span><div class="trunc">'.$langs->trans("Subscription").'</div>', 'action'=>'$.colorbox({href:\'../custom/adherentsplus/takepos_subscription.php?place=\'+place+\'&invoiceid=\'+$("#invoiceid").val(), width:\'80%\', height:\'90%\', transition:\'none\', iframe:\'true\', title:\''.$langs->trans("Subscription").'\'});');
+			$buttons['subscription'] = array('title'=>'<span class="fas fa-users paddingrightonly"></span><div class="trunc">'.$langs->trans("Subscription").'</div>', 'action'=>'$.colorbox({href:\'../custom/adherentsplus/takepos_subscription.php?place=\'+place+\'&invoiceid=\'+invoiceid+\'&contextpage=takepos\', width:\'80%\', height:\'90%\', transition:\'none\', iframe:\'true\', title:\''.$langs->trans("Subscription").'\'});');
         if (!empty($conf->global->ADHERENT_CONSUMPTION)) {
-			$buttons['consumption'] = array('title'=>'<span class="fas fa-users paddingrightonly"></span><div class="trunc">'.$langs->trans("Consumptions").'</div>', 'action'=>'$.colorbox({href:\'../custom/adherentsplus/consumption.php?place=\'+place+\'&invoiceid=\'+$("#invoiceid").val()+\'&contextpage=takepos\', width:\'80%\', height:\'90%\', transition:\'none\', iframe:\'true\', title:\''.$langs->trans("Consumptions").'\'});');
+			$buttons['consumption'] = array('title'=>'<span class="fas fa-users paddingrightonly"></span><div class="trunc">'.$langs->trans("Consumptions").'</div>', 'action'=>'$.colorbox({href:\'../custom/adherentsplus/consumption.php?place=\'+place+\'&invoiceid=\'+invoiceid+\'&contextpage=takepos\', width:\'80%\', height:\'90%\', transition:\'none\', iframe:\'true\', title:\''.$langs->trans("Consumptions").'\'});');
         }       
-            //return $buttons;
+
         }
 
         if (! $error) {
