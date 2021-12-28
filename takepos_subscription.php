@@ -88,6 +88,7 @@ else
     }
 }
 
+if ($constforcompanyid != $invoice->socid && !empty($invoice->socid)) { 
 $arrayofcss = array('/takepos/css/pos.css.php');
 $arrayofjs = array();
 
@@ -97,6 +98,7 @@ $disablejs = 0;
 $disablehead = 0;
 
 top_htmlhead($head, $title, $disablejs, $disablehead, $arrayofjs, $arrayofcss);
+}
 
 $langs->loadLangs(array("main", "bills", "cashdesk", "members", "banks", "adherentsplus@adherentsplus"));
 
