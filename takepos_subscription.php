@@ -91,7 +91,7 @@ else
 $arrayofcss = array('/takepos/css/pos.css.php');
 $arrayofjs = array();
 
-top_htmlhead($head, $title, $disablejs, $disablehead, $arrayofjs, $arrayofcss);
+//top_htmlhead($head, $title, $disablejs, $disablehead, $arrayofjs, $arrayofcss);
 
 $langs->loadLangs(array("main", "bills", "cashdesk", "members", "banks", "adherentsplus@adherentsplus"));
 
