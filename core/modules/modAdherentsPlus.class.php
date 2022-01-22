@@ -256,17 +256,24 @@ $r=0;
 	 */
     function init($options='')
     {
-        global $conf;
+        global $db,$conf;
+        	
+        $sql = array();
+
+// Création extrafield pour choix si frais de port doit apparaitre sur doc.
+dol_include_once('/core/class/extrafields.class.php');
+$ext = new ExtraFields($db);
+$res = $ext->addExtraField("member_beneficiary", 'MemberBeneficiary', 'link', 10, null, 'commandedet', 0, 0, '0', 'a:1:{s:7:"options";a:1:{s:43:"Adherent:adherents/class/adherent.class.php";N;}}', 1, '', '3', '', '', '0', 'adherentsplus@adherentsplus', '1', 0, 4);
+$res = $ext->addExtraField("member_beneficiary", 'MemberBeneficiary', 'link', 10, null, 'facturedet', 0, 0, '0', 'a:1:{s:7:"options";a:1:{s:43:"Adherent:adherents/class/adherent.class.php";N;}}', 1, '', '3', '', '', '0', 'adherentsplus@adherentsplus', '1', 0, 4);
 
         // Permissions
         $this->remove($options);
 
-        $sql = array();
         $result=$this->load_tables();
         if ($result != 1)
             var_dump($this);
 
-        return $this->_init($sql, $options);
+            return $this->_init($sql, $options);
     }
 
 	/**
