@@ -68,24 +68,7 @@ class AdherentPlus extends CommonObject
 	var $state;                 // Label of department
 
 	var $email;
-    /**
-     * @var string skype account
-     */
-    public $skype;
 
-    /**
-     * @var string twitter account
-     */
-    public $twitter;
-
-    /**
-     * @var string facebook account
-     */
-	public $facebook;
-      /**
-     * @var string linked account
-     */
-  public $linkedin;
     /**
      * @var string Phone number
      */
@@ -529,7 +512,6 @@ class AdherentPlus extends CommonObject
 		$lthirdparty->country_id=$member->country_id;
 		$lthirdparty->phone=$member->phone;       // Prof phone
 		$lthirdparty->email=$member->email;
-		$lthirdparty->skype=$member->skype;
 
 		$lthirdparty->client = 1;				// A member is a customer by default
 		$lthirdparty->code_client = -1;
@@ -638,10 +620,6 @@ class AdherentPlus extends CommonObject
 		$sql.= ", country = ".($this->country_id>0?$this->db->escape($this->country_id):"null");
 		$sql.= ", state_id = ".($this->state_id>0?$this->db->escape($this->state_id):"null");
 		$sql.= ", email = '".$this->db->escape($this->email)."'";
-		$sql.= ", skype = '".$this->db->escape($this->skype)."'";
-		$sql.= ", twitter = '".$this->db->escape($this->twitter)."'";
-		$sql.= ", facebook = '".$this->db->escape($this->facebook)."'";
-		$sql.= ", linkedin = '".$this->db->escape($this->linkedin)."'";
 		$sql.= ", phone = ".($this->phone?"'".$this->db->escape($this->phone)."'":"null");
 		$sql.= ", phone_perso = ".($this->phone_perso?"'".$this->db->escape($this->phone_perso)."'":"null");
 		$sql.= ", phone_mobile = ".($this->phone_mobile?"'".$this->db->escape($this->phone_mobile)."'":"null");
@@ -756,11 +734,6 @@ class AdherentPlus extends CommonObject
             $luser->country_id=$this->country_id; 
             $luser->state_id=$this->state_id; 
             
-						$luser->email=$this->email;
-						$luser->skype=$this->skype;
-						$luser->twitter=$this->twitter;
-						$luser->facebook=$this->facebook;
-            $luser->linkedin=$this->linkedin;
 						$luser->office_phone=$this->phone;
 						$luser->user_mobile=$this->phone_mobile;
 
@@ -810,10 +783,6 @@ class AdherentPlus extends CommonObject
 						$lthirdparty->zip=$this->zip;
 						$lthirdparty->town=$this->town;
 						$lthirdparty->email=$this->email;
-						$lthirdparty->skype=$this->skype;
-						$lthirdparty->twitter=$this->twitter;
-						$lthirdparty->facebook=$this->facebook;
-						$lthirdparty->linkedin=$this->linkedin;
 						$lthirdparty->phone=$this->phone;
 						$lthirdparty->state_id=$this->state_id;
 						$lthirdparty->country_id=$this->country_id;
@@ -1722,7 +1691,7 @@ $tx = ceil((($dateto-$today)/31558464)*$conf->global->ADHERENT_SUBSCRIPTION_PROR
 
 		$sql = "SELECT d.rowid as id, d.ref, d.ref_ext, d.fk_adherent_type, d.fk_parent, d.civility as civility_code, d.firstname, d.lastname, d.societe as company, d.fk_soc, d.fk_parent, d.statut, d.public, d.address, d.zip, d.town, d.note_private,";
 		$sql.= " d.note_public,";
-		$sql.= " d.email, d.skype, d.twitter, d.facebook, d.linkedin, d.phone, d.phone_perso, d.phone_mobile, d.login, d.pass, d.pass_crypted,";
+		$sql.= " d.email, d.phone, d.phone_perso, d.phone_mobile, d.login, d.pass, d.pass_crypted,";
 		$sql.= " d.photo, d.morphy, d.entity,";
 		$sql.= " d.datec as datec,";
 		$sql.= " d.tms as datem,";
@@ -1797,11 +1766,6 @@ $tx = ceil((($dateto-$today)/31558464)*$conf->global->ADHERENT_SUBSCRIPTION_PROR
                 $linkedmember->phone_perso		= $obj->phone_perso;
                 $linkedmember->phone_mobile		= $obj->phone_mobile;
                 $linkedmember->email			= $obj->email;
-        
-                $linkedmember->skype			= $obj->skype;
-                $linkedmember->twitter			= $obj->twitter;
-                $linkedmember->facebook			= $obj->facebook;
-                $linkedmember->linkedin			= $obj->linkedin;
 
                 $linkedmember->photo			= $obj->photo;
                 $linkedmember->statut			= $obj->statut;
@@ -2877,7 +2841,6 @@ dol_include_once('/adherentsplus/class/consumption.class.php');
 		$this->country = 'France';
 		$this->morphy = 1;
 		$this->email = 'specimen@specimen.com';
-		$this->skype = 'tom.hanson';
 		$this->phone        = '0999999999';
 		$this->phone_perso  = '0999999998';
 		$this->phone_mobile = '0999999997';
@@ -2974,7 +2937,6 @@ dol_include_once('/adherentsplus/class/consumption.class.php');
 		if ($this->zip && ! empty($conf->global->LDAP_MEMBER_FIELD_ZIP))						$info[$conf->global->LDAP_MEMBER_FIELD_ZIP] = $this->zip;
 		if ($this->town && ! empty($conf->global->LDAP_MEMBER_FIELD_TOWN))					$info[$conf->global->LDAP_MEMBER_FIELD_TOWN] = $this->town;
 		if ($this->country_code && ! empty($conf->global->LDAP_MEMBER_FIELD_COUNTRY))			$info[$conf->global->LDAP_MEMBER_FIELD_COUNTRY] = $this->country_code;
-		if ($this->skype && ! empty($conf->global->LDAP_MEMBER_FIELD_SKYPE))					$info[$conf->global->LDAP_MEMBER_FIELD_SKYPE] = $this->skype;
 		if ($this->phone && ! empty($conf->global->LDAP_MEMBER_FIELD_PHONE))					$info[$conf->global->LDAP_MEMBER_FIELD_PHONE] = $this->phone;
 		if ($this->phone_perso && ! empty($conf->global->LDAP_MEMBER_FIELD_PHONE_PERSO))		$info[$conf->global->LDAP_MEMBER_FIELD_PHONE_PERSO] = $this->phone_perso;
 		if ($this->phone_mobile && ! empty($conf->global->LDAP_MEMBER_FIELD_MOBILE))			$info[$conf->global->LDAP_MEMBER_FIELD_MOBILE] = $this->phone_mobile;
