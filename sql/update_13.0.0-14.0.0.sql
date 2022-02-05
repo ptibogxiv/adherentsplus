@@ -9,5 +9,5 @@
  */
 
 
-UPDATE llx_adherent_type as A SET amount= (SELECT B.price FROM llx_adherent_type as B WHERE A.rowid=B.rowid);
+UPDATE llx_adherent_type as A SET amount=price WHERE price > 0;
 ALTER TABLE llx_adherent_type DROP COLUMN price;
