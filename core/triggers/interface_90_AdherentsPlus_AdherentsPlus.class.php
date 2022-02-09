@@ -121,10 +121,12 @@ if ($action == 'BILL_PAYED') {
 dol_include_once('/adherentsplus/class/adherent.class.php');
 dol_include_once('/adherentsplus/class/adherent_type.class.php'); 
 require_once DOL_DOCUMENT_ROOT.'/compta/facture/class/facture.class.php';
-      
-        $sql1 = "SELECT fk_product, date_start, date_end, total_ttc";               
-        $sql1.= " FROM ".MAIN_DB_PREFIX."facturedet";
-        $sql1.= " WHERE fk_facture=".$object->id." ";
+
+        $sql1 = "SELECT f.fk_product, f.date_start, f.date_end, f.total_ttc"; 
+        $sql1.= " ,e.member_beneficiary";		              
+        $sql1.= " FROM ".MAIN_DB_PREFIX."facturedet as f";
+        $sql1.= " LEFT JOIN ".MAIN_DB_PREFIX."facturedet_extrafields as e ON e.fk_object = f.rowid";		
+        $sql1.= " WHERE f.fk_facture=".$object->id." ";
         
         $result1 = $db->query($sql1);
         if ($result1)
@@ -141,7 +143,7 @@ require_once DOL_DOCUMENT_ROOT.'/compta/facture/class/facture.class.php';
 if ($objp1->fk_product==$conf->global->ADHERENT_PRODUCT_ID_FOR_SUBSCRIPTIONS) { 
 
 $member=new AdherentPlus($db);
-$member->fetch('','',$object->socid);
+if (isset($objp1->member_beneficiary) && !empty($objp1->member_beneficiary)) { $member->fetch($objp1->member_beneficiary); } else { $member->fetch('','',$object->socid); }
 $adht = new AdherentTypePlus($db);
 $adht->fetch($member->typeid);
 
