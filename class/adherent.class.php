@@ -1369,7 +1369,7 @@ class AdherentPlus extends CommonObject
 
 		$sql = "SELECT d.rowid, d.ref, d.ref_ext, d.civility as civility_code, d.gender, d.firstname, d.lastname,";
 		$sql .= " d.societe as company, d.fk_soc, d.statut, d.public, d.address, d.zip, d.town, d.note_private,";
-		$sql .= " d.note_public,";
+		$sql .= " d.note_public, d.fk_parent,";
 		$sql .= " d.email, d.socialnetworks, d.phone, d.phone_perso, d.phone_mobile, d.login, d.pass, d.pass_crypted,";
 		$sql.= " d.photo, d.fk_adherent_type, d.morphy, d.entity,";
 		$sql.= " d.datec as datec,";
@@ -1424,8 +1424,8 @@ class AdherentPlus extends CommonObject
 				$this->societe			= $obj->company;
 				$this->company			= $obj->company;
 				$this->fk_soc			= $obj->fk_soc;
-        $this->socid			= $obj->fk_soc;
-        $this->fk_parent			= $obj->fk_parent;
+				$this->socid			= $obj->fk_soc;
+				$this->fk_parent			= $obj->fk_parent;
 				$this->address			= $obj->address;
 				$this->zip				= $obj->zip;
 				$this->town				= $obj->town;
