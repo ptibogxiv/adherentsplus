@@ -963,7 +963,7 @@ $date->modify('MIDNIGHT');
 $date = new DateTime($dateto); 
 $date->modify('NEXT DAY MIDNIGHT');
 }                
-$date->modify('- '.$conf->global->SOCIETE_SUBSCRIBE_MONTH_PRESTART.' MONTHS');  
+if (!empty($conf->global->SOCIETE_SUBSCRIBE_MONTH_PRESTART)) $date->modify('- '.$conf->global->SOCIETE_SUBSCRIBE_MONTH_PRESTART.' MONTHS');  
 $daterenew = $date->format('Y-m-d H:i:s');
                 $this->date_renew         = $this->db->jdate($daterenew);
                 
