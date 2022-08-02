@@ -1204,7 +1204,7 @@ return 1;
     // phpcs:disable PEAR.NamingConventions.ValidFunctionName.ScopeNotCamelCaps
 	/**
 	 *  Return list of members' type
-	 *
+     *  @param		int		$forceentity		Entity to force
 	 *  @return 	array	List of types of members
 	 */
 	public function liste_array()
@@ -1212,7 +1212,7 @@ return 1;
         // phpcs:enable
 		global $conf,$langs;
 
-		$adherenttypes = array();
+		$adherenttypes = array($forceentity = 0);
 
 		$sql = "SELECT rowid, libelle as label";
 		$sql.= " FROM ".MAIN_DB_PREFIX."adherent_type";
@@ -1230,7 +1230,7 @@ return 1;
 				{
 					$obj = $this->db->fetch_object($resql);
 
-					$adherenttypes[$obj->rowid] = $langs->trans($obj->label);
+					$adherenttypes[$obj->rowid] = $langs->trans($obj->label).' - '.price(0);
 					$i++;
 				}
 			}
@@ -1244,7 +1244,7 @@ return 1;
 
     /**
      *  Return list of members' type
-     *
+     *  @param		int		$forceentity		Entity to force
      *  @return 	array	List of types of members
      */
     function liste_array_alt()

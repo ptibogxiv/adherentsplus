@@ -418,14 +418,17 @@ print ' '.$langs->trans("Currency".$conf->currency);
     
 if (! empty($conf->global->ADHERENT_FEDERAL_PART)){    
     print '<tr><td>'.$langs->trans("FederalPart");
-		print $form->textwithpicto($s,$langs->trans("IncludeInSubscritionPrice"),1);
+	print $form->textwithpicto($s,$langs->trans("IncludeInSubscritionPrice"),1);
     print '</td><td>';
-		print '<input size="10" type="text" value="' . price($object->federal) . '" name="federal">';   
-    print ' '.$langs->trans("Currency".$conf->currency);    
-		print '</td></tr>';
+	if (!empty($conf->multicompany->enabled)) {
+		print $form->selectarray("federal", $object->liste_array(1), (GETPOSTISSET("typeid") ? GETPOST("typeid", 'int') : $object->federal), 0, 0, 0, '', 0, 0, 0, '', '', 1);
+	} else {
+		print '<input size="10" type="text" value="' . price($object->federal) . '" name="federal"> '.$langs->trans("Currency".$conf->currency);  
+	}
+	print '</td></tr>';
 } 
     } else {
-    print '<input size="10" type="text" value="0" name="welcome"><input size="10" type="text" value="0" name="price">';
+    print '<input size="10" type="text" value="0" name="welcome">';
     }
     
 if (!empty($conf->global->ADHERENT_SUBSCRIPTION_PRORATA) && $conf->global->ADHERENT_SUBSCRIPTION_PRORATA == '2') {    
