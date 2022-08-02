@@ -166,7 +166,7 @@ $head = member_admin_prepare_head();
 
 dol_fiche_head($head, 'general', $langs->trans("Members"), -1, 'user');  	
 
-$urlwithroot = $urlwithouturlroot.DOL_URL_ROOT; // This is to use external domain name found into config file
+$urlwithroot = DOL_URL_ROOT; // This is to use external domain name found into config file
 print '<br><a href="'.$urlwithroot.'/adherents/admin/member.php">'.$langs->trans("AccessToMembersSetup").'</a>';
 
 print '<form action="'.$_SERVER["PHP_SELF"].'" method="POST">';
