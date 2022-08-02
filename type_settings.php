@@ -230,7 +230,9 @@ if (! empty($conf->global->ADHERENT_FEDERAL_PART)){
 		print $form->textwithpicto($s,$langs->trans("IncludeInSubscritionPrice"),1);
     print '</td><td>';
 	if (!empty($conf->multicompany->enabled) && !empty($conf->global->MULTICOMPANY_MEMBER_SHARING_ENABLED)) {
-		print $form->selectarray("federal", $object->liste_array(1), (GETPOSTISSET("typeid") ? GETPOST("typeid", 'int') : $object->federal), 0, 0, 0, '', 0, 0, 0, '', '', 1);
+		$adht = new AdherentTypePlus($db);
+		$adht->fetch($object->federal);
+		print $adht->getNomUrl(1);
 	} else {
 		print price($object->federal).' '.$langs->trans("Currency".$conf->currency);
 	}
