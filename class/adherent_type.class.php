@@ -1207,12 +1207,12 @@ return 1;
      *  @param		int		$forceentity		Entity to force
 	 *  @return 	array	List of types of members
 	 */
-	public function liste_array()
+	public function liste_array($forceentity = 0)
 	{
         // phpcs:enable
 		global $conf,$langs;
 
-		$adherenttypes = array($forceentity = 0);
+		$adherenttypes = array();
 
 		$sql = "SELECT rowid, libelle as label";
 		$sql.= " FROM ".MAIN_DB_PREFIX."adherent_type";
