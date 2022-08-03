@@ -78,7 +78,7 @@ class modAdherentsPlus extends DolibarrModules
         // Dependencies
         //------------
         $this->depends = array('modAdherent');
-        $this->requiredby = array();
+        $this->requiredby = array('modAdherent');
         $this->langfiles = array("adherentsplus@adherentsplus");
         $this->need_dolibarr_version = array(14,0);
         // Constants
