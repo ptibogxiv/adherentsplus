@@ -810,7 +810,7 @@ if ($rowid > 0) {
 
 	if (($action != 'addsubscription' && $action != 'create_thirdparty')) {
 		// Shon online payment link
-		$useonlinepayment = (!empty($conf->paypal->enabled) || !empty($conf->stripe->enabled) || !empty($conf->paybox->enabled));
+		$useonlinepayment = (isModEnabled('paypal') || isModEnabled('stripe') || isModEnabled('paybox'));
 
 		if ($useonlinepayment) {
 			print '<br>';
