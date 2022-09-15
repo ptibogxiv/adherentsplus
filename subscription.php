@@ -99,6 +99,7 @@ $adht = new AdherentTypePlus($db);
 $extrafields->fetch_name_optionals_label($object->table_element);
 
 $errmsg = '';
+$optioncss = '';
 
 $defaultdelay = 1;
 $defaultdelayunit = 'y';
