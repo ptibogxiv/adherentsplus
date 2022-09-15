@@ -59,6 +59,8 @@ $confirm=GETPOST('confirm','alpha');
 $rowid=GETPOST('rowid','int');
 $link=GETPOST('link','int');
 
+$filter = GETPOST("filter", 'alpha');
+
 // Security check
 $result=restrictedArea($user,'adherent',$rowid);
 
@@ -69,6 +71,7 @@ if ($result > 0)
     $adht = new AdherentTypePlus($db);
     $result=$adht->fetch($object->typeid);
 }
+
 
 $limit = GETPOST('limit', 'int') ?GETPOST('limit', 'int') : $conf->liste_limit;
 $sortfield = GETPOST('sortfield', 'aZ09comma');
@@ -411,10 +414,11 @@ $form = new Form($db);
 $formconfirm=$form->formconfirm($_SERVER["PHP_SELF"].'?rowid='.$object->id.'&link='.$link, $langs->trans('Confirm'), $langs->trans('ConfirmLinkedMember'), 'confirm_deletelinkedmember', '', 0, 1);
 print $formconfirm;	
 }
-
-			print '<input class="flat" type="hidden" name="rowid" value="'.$socid.'" size="12">';
+$moreforfilter = '';
+$param = '';
+			print '<input class="flat" type="hidden" name="rowid" value="'.$rowid.'" size="12">';
       
-      		print_barre_liste('',$page,$_SERVER["PHP_SELF"],$param,$sortfield,$sortorder,'',$num,$nbtotalofrecords);
+      		print_barre_liste('',$page,$_SERVER["PHP_SELF"],$param, $sortfield,$sortorder,'', '', '');
 
   			$morehtmlright= dolGetButtonTitle($langs->trans('Add'), '', 'fa fa-plus-circle', $_SERVER["PHP_SELF"].'?rowid='.$object->id.'&action=create');
 
