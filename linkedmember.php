@@ -70,6 +70,23 @@ if ($result > 0)
     $result=$adht->fetch($object->typeid);
 }
 
+$limit = GETPOST('limit', 'int') ?GETPOST('limit', 'int') : $conf->liste_limit;
+$sortfield = GETPOST('sortfield', 'aZ09comma');
+$sortorder = GETPOST('sortorder', 'aZ09comma');
+$page = GETPOSTISSET('pageplusone') ? (GETPOST('pageplusone') - 1) : GETPOST("page", 'int');
+if (empty($page) || $page == -1) {
+	$page = 0;
+}     // If $page is not defined, or '' or -1
+$offset = $limit * $page;
+$pageprev = $page - 1;
+$pagenext = $page + 1;
+if (!$sortorder) {
+	$sortorder = ($filter == 'outofdate' ? "DESC" : "ASC");
+}
+if (!$sortfield) {
+	$sortfield = ($filter == 'outofdate' ? "d.datefin" : "d.lastname");
+}   // If $page is not defined, or '' or -1
+
 /*
  *	Actions
  */
@@ -79,7 +96,7 @@ if ($cancel)
 	$action='';
 }
 
-$parameters=array('id'=>$socid, 'objcanvas'=>$objcanvas);
+$parameters=array();
 $reshook=$hookmanager->executeHooks('doActions', $parameters, $object, $action);    // Note that $action and $object may have been modified by some hooks
 if ($reshook < 0) setEventMessages($hookmanager->error, $hookmanager->errors, 'errors');
 
@@ -147,7 +164,7 @@ $permissionnote=$user->rights->adherent->creer;  // Used by the include of actio
 				{
 					$error++;
 					//setEventMessages($companypaymentmode->error, $companypaymentmode->errors, 'errors');
-					$action='create';     // Force chargement page création
+					$action='create';     // Force chargement page crï¿½ation
 				}
 			}
 
@@ -397,14 +414,14 @@ print $formconfirm;
 
 			print '<input class="flat" type="hidden" name="rowid" value="'.$socid.'" size="12">';
       
-      print_barre_liste('',$page,$_SERVER["PHP_SELF"],$param,$sortfield,$sortorder,'',$num,$nbtotalofrecords);
+      		print_barre_liste('',$page,$_SERVER["PHP_SELF"],$param,$sortfield,$sortorder,'',$num,$nbtotalofrecords);
 
-  $morehtmlright= dolGetButtonTitle($langs->trans('Add'), '', 'fa fa-plus-circle', $_SERVER["PHP_SELF"].'?rowid='.$object->id.'&action=create');
+  			$morehtmlright= dolGetButtonTitle($langs->trans('Add'), '', 'fa fa-plus-circle', $_SERVER["PHP_SELF"].'?rowid='.$object->id.'&action=create');
 
-      print load_fiche_titre($langs->trans("ListOfLinkedMembers"), $morehtmlright, '');
+      		print load_fiche_titre($langs->trans("ListOfLinkedMembers"), $morehtmlright, '');
 
-      print '<div class="div-table-responsive">';
-      print '<table class="tagtable liste'.($moreforfilter?" listwithfilterbefore":"").'">'."\n";
+      		print '<div class="div-table-responsive">';
+      		print '<table class="tagtable liste'.($moreforfilter?" listwithfilterbefore":"").'">'."\n";
 
             print '<tr class="liste_titre">';
             print '<td>'.$langs->trans("Name")." / ".$langs->trans("Company").'</td>';
