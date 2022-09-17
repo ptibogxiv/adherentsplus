@@ -227,7 +227,7 @@ if ($rowid > 0)
     
 if (! empty($conf->global->ADHERENT_FEDERAL_PART)){        
     print '<tr><td>'.$langs->trans("FederalPart");
-		print $form->textwithpicto($s,$langs->trans("IncludeInSubscritionPrice"),1);
+		print $form->textwithpicto('', $langs->trans("IncludeInSubscritionPrice"),1);
     print '</td><td>';
 	if (!empty($conf->multicompany->enabled) && !empty($conf->global->MULTICOMPANY_MEMBER_SHARING_ENABLED)) {
 		if (!$conf->entity == 1) {
@@ -425,7 +425,7 @@ print ' '.$langs->trans("Currency".$conf->currency);
     
 if (! empty($conf->global->ADHERENT_FEDERAL_PART)){    
     print '<tr><td>'.$langs->trans("FederalPart");
-	print $form->textwithpicto($s,$langs->trans("IncludeInSubscritionPrice"),1);
+	print $form->textwithpicto('', $langs->trans("IncludeInSubscritionPrice"),1);
     print '</td><td>';
 	if (!empty($conf->multicompany->enabled) && !empty($conf->global->MULTICOMPANY_MEMBER_SHARING_ENABLED)) {
 		if (!$conf->entity == 1) {
