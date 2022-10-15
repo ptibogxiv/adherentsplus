@@ -630,7 +630,6 @@ class AdherentPlus extends CommonObject
 		$sql.= ", statut = ".$this->db->escape($this->statut);
 		$sql.= ", fk_adherent_type = ".$this->db->escape($this->typeid);
 		$sql.= ", morphy = '".$this->db->escape($this->morphy)."'";
-    $sql.= ", ref_ext = '".$this->db->escape($this->license)."'";
 		$sql.= ", birth = ".($this->birth?"'".$this->db->idate($this->birth)."'":"null");
 		if ($this->datefin)   $sql.= ", datefin = '".$this->db->idate($this->datefin)."'";		// Must be modified only when deleting a subscription
 		if ($this->datevalid) $sql.= ", datevalid = '".$this->db->idate($this->datevalid)."'";	// Must be modified only when validating a member
