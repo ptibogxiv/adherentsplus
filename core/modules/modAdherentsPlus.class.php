@@ -57,8 +57,8 @@ class modAdherentsPlus extends DolibarrModules
         $this->version = '16.0.2';                        // 'experimental' or 'dolibarr' or version
         $this->const_name = 'MAIN_MODULE_'.strtoupper($this->name);
 		// Module description used if translation string 'ModuleXXXDesc' not found (XXX is id value)
-        $this->editor_name = 'ptibogxiv.net';
-        $this->editor_url = 'https://www.ptibogxiv.net';
+        $this->editor_name = 'ptibogxiv.eu';
+        $this->editor_url = 'https://www.ptibogxiv.eu';
         $this->special = 0;
         $this->picto='user';
 
