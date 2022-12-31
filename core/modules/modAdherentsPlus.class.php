@@ -54,7 +54,7 @@ class modAdherentsPlus extends DolibarrModules
 		// Module label (no space allowed), used if translation string 'ModuleXXXName' not found (where XXX is value of numeric property 'numero' of module)
         $this->name = preg_replace('/^mod/i','',get_class($this));
         $this->description = "Management Extended of members";
-        $this->version = '16.0.2';                        // 'experimental' or 'dolibarr' or version
+        $this->version = '16.0.3';                        // 'experimental' or 'dolibarr' or version
         $this->const_name = 'MAIN_MODULE_'.strtoupper($this->name);
 		// Module description used if translation string 'ModuleXXXDesc' not found (XXX is id value)
         $this->editor_name = 'ptibogxiv.eu';
