@@ -63,8 +63,11 @@ $langs->loadLangs(array("companies", "bills", "members", "users", "mails", 'othe
 
 $action = GETPOST('action', 'aZ09');
 $confirm = GETPOST('confirm', 'alpha');
-$rowid = GETPOST('rowid', 'int') ?GETPOST('rowid', 'int') : GETPOST('id', 'int');
+$id = GETPOST('rowid', 'int') ?GETPOST('rowid', 'int') : GETPOST('id', 'int');
+$rowid = $id;
+$ref = GETPOST('ref', 'alphanohtml');
 $typeid = GETPOST('typeid', 'int');
+$cancel = GETPOST('cancel');
 
 // Load variable for pagination
 $limit = GETPOST('limit', 'int') ?GETPOST('limit', 'int') : $conf->liste_limit;
@@ -85,7 +88,6 @@ if (!$sortfield) {
 if (!$sortorder) {
 	$sortorder = "DESC";
 }
-
 
 // Security check
 $result = restrictedArea($user, 'adherent', $rowid, '', 'cotisation');
@@ -144,88 +146,78 @@ $paymentdate = -1;
  * 	Actions
  */
 
-// Create third party from a member
-if ($action == 'confirm_create_thirdparty' && $confirm == 'yes' && $user->rights->societe->creer)
-{
-	if ($result > 0)
-	{
-		// Creation of thirdparty
-		$company = new Societe($db);
-		$result = $company->create_from_member($object, GETPOST('companyname', 'alpha'), GETPOST('companyalias', 'alpha'), GETPOST('customercode', 'alpha'));
+ $parameters = array();
+ $reshook = $hookmanager->executeHooks('doActions', $parameters, $object, $action);
+ if ($reshook < 0) {
+     setEventMessages($hookmanager->error, $hookmanager->errors, 'errors');
+ }
+ 
+ // Create third party from a member
+ if (empty($reshook) && $action == 'confirm_create_thirdparty' && $confirm == 'yes' && $user->rights->societe->creer) {
+     if ($result > 0) {
+         // Creation of thirdparty
+         $company = new Societe($db);
+         $result = $company->create_from_member($object, GETPOST('companyname', 'alpha'), GETPOST('companyalias', 'alpha'), GETPOST('customercode', 'alpha'));
+ 
+         if ($result < 0) {
+             $langs->load("errors");
+             setEventMessages($company->error, $company->errors, 'errors');
+         } else {
+             $action = 'addsubscription';
+         }
+     } else {
+         setEventMessages($object->error, $object->errors, 'errors');
+     }
+ }
 
-		if ($result < 0)
-		{
-			$langs->load("errors");
-			setEventMessages($company->error, $company->errors, 'errors');
-		}
-		else
-		{
-			$action = 'addsubscription';
+ if (empty($reshook) && $action == 'setuserid' && ($user->rights->user->self->creer || $user->hasRight('user', 'user', 'creer'))) {
+	$error = 0;
+	if (!$user->hasRight('user', 'user', 'creer')) {    // If can edit only itself user, we can link to itself only
+		if (GETPOST("userid", 'int') != $user->id && GETPOST("userid", 'int') != $object->user_id) {
+			$error++;
+			setEventMessages($langs->trans("ErrorUserPermissionAllowsToLinksToItselfOnly"), null, 'errors');
 		}
 	}
-	else
-	{
-		setEventMessages($object->error, $object->errors, 'errors');
+
+	if (!$error) {
+		if (GETPOST("userid", 'int') != $object->user_id) {  // If link differs from currently in database
+			$result = $object->setUserId(GETPOST("userid", 'int'));
+			if ($result < 0) {
+				dol_print_error('', $object->error);
+			}
+			$action = '';
+		}
 	}
 }
 
-if ($action == 'setuserid' && ($user->rights->user->self->creer || $user->rights->user->user->creer))
-{
-    $error = 0;
-    if (empty($user->rights->user->user->creer))    // If can edit only itself user, we can link to itself only
-    {
-        if ($_POST["userid"] != $user->id && $_POST["userid"] != $object->user_id)
-        {
-            $error++;
-            setEventMessages($langs->trans("ErrorUserPermissionAllowsToLinksToItselfOnly"), null, 'errors');
-        }
-    }
+if (empty($reshook) && $action == 'setsocid') {
+	$error = 0;
+	if (!$error) {
+		if (GETPOST('socid', 'int') != $object->fk_soc) {    // If link differs from currently in database
+			$sql = "SELECT rowid FROM ".MAIN_DB_PREFIX."adherent";
+			$sql .= " WHERE fk_soc = '".GETPOST('socid', 'int')."'";
+			$resql = $db->query($sql);
+			if ($resql) {
+				$obj = $db->fetch_object($resql);
+				if ($obj && $obj->rowid > 0) {
+					$othermember = new Adherent($db);
+					$othermember->fetch($obj->rowid);
+					$thirdparty = new Societe($db);
+					$thirdparty->fetch(GETPOST('socid', 'int'));
+					$error++;
+					setEventMessages($langs->trans("ErrorMemberIsAlreadyLinkedToThisThirdParty", $othermember->getFullName($langs), $othermember->login, $thirdparty->name), null, 'errors');
+				}
+			}
 
-    if (!$error)
-    {
-        if ($_POST["userid"] != $object->user_id)  // If link differs from currently in database
-        {
-            $result = $object->setUserId($_POST["userid"]);
-            if ($result < 0) dol_print_error('', $object->error);
-            $_POST['action'] = '';
-            $action = '';
-        }
-    }
-}
-
-if ($action == 'setsocid')
-{
-    $error = 0;
-    if (!$error)
-    {
-        if (GETPOST('socid', 'int') != $object->fk_soc)    // If link differs from currently in database
-        {
-            $sql = "SELECT rowid FROM ".MAIN_DB_PREFIX."adherent";
-            $sql .= " WHERE fk_soc = '".GETPOST('socid', 'int')."'";
-            $resql = $db->query($sql);
-            if ($resql)
-            {
-                $obj = $db->fetch_object($resql);
-                if ($obj && $obj->rowid > 0)
-                {
-                    $othermember = new Adherent($db);
-                    $othermember->fetch($obj->rowid);
-                    $thirdparty = new Societe($db);
-                    $thirdparty->fetch(GETPOST('socid', 'int'));
-                    $error++;
-	                setEventMessages($langs->trans("ErrorMemberIsAlreadyLinkedToThisThirdParty", $othermember->getFullName($langs), $othermember->login, $thirdparty->name), null, 'errors');
-                }
-            }
-
-            if (!$error)
-            {
-                $result = $object->setThirdPartyId(GETPOST('socid', 'int'));
-                if ($result < 0) dol_print_error('', $object->error);
-                $_POST['action'] = '';
-                $action = '';
-            }
-        }
-    }
+			if (!$error) {
+				$result = $object->setThirdPartyId(GETPOST('socid', 'int'));
+				if ($result < 0) {
+					dol_print_error('', $object->error);
+				}
+				$action = '';
+			}
+		}
+	}
 }
 
 if ($user->rights->adherent->cotisation->creer && $action == 'subscription' && ! $_POST["cancel"])
@@ -359,101 +351,107 @@ if ($user->rights->adherent->cotisation->creer && $action == 'subscription' && !
 			}
         }
 
-        if (! $error)
-        {
-            $db->commit();
-        }
-        else
-        {
-            $db->rollback();
-            $action = 'addsubscription';
-        }
+        if (!$error) {
+			$db->commit();
+		} else {
+			$db->rollback();
+			$action = 'addsubscription';
+		}
 
-        if (! $error)
-        {
-        	setEventMessages("SubscriptionRecorded", null, 'mesgs');
-        }
+		if (!$error) {
+			setEventMessages("SubscriptionRecorded", null, 'mesgs');
+		}
 
-        // Send email
-        if (! $error)
-        {
-            // Send confirmation Email
-            if ($object->email && $sendalsoemail)   // $object is 'Adherent'
-            {
-            	$subject = '';
-            	$msg= '';
+		// Send email
+		if (!$error) {
+			// Send confirmation Email
+			if ($object->email && $sendalsoemail) {   // $object is 'Adherent'
+				$parameters = array(
+					'datesubscription' => $datesubscription,
+					'amount' => $amount,
+					'ccountid' => $accountid,
+					'operation' => $operation,
+					'label' => $label,
+					'num_chq' => $num_chq,
+					'emetteur_nom' => $emetteur_nom,
+					'emetteur_banque' => $emetteur_banque,
+					'datesubend' => $datesubend
+				);
+				$reshook = $hookmanager->executeHooks('sendMail', $parameters, $object, $action); // Note that $action and $object may have been modified by some hooks
+				if ($reshook < 0) {
+					setEventMessages($hookmanager->error, $hookmanager->errors, 'errors');
+				}
 
-            	// Send subscription email
-            	include_once DOL_DOCUMENT_ROOT.'/core/class/html.formmail.class.php';
-            	$formmail=new FormMail($db);
-            	// Set output language
-            	$outputlangs = new Translate('', $conf);
-            	$outputlangs->setDefaultLang(empty($object->thirdparty->default_lang) ? $mysoc->default_lang : $object->thirdparty->default_lang);
-            	// Load traductions files requiredby by page
-            	$outputlangs->loadLangs(array("main", "members"));
+				if (empty($reshook)) {
+					$subject = '';
+					$msg = '';
 
-            	// Get email content from template
-            	$arraydefaultmessage=null;
-            	$labeltouse = $conf->global->ADHERENT_EMAIL_TEMPLATE_SUBSCRIPTION;
+					// Send subscription email
+					include_once DOL_DOCUMENT_ROOT.'/core/class/html.formmail.class.php';
+					$formmail = new FormMail($db);
+					// Set output language
+					$outputlangs = new Translate('', $conf);
+					$outputlangs->setDefaultLang(empty($object->thirdparty->default_lang) ? $mysoc->default_lang : $object->thirdparty->default_lang);
+					// Load traductions files required by page
+					$outputlangs->loadLangs(array("main", "members"));
 
-            	if (! empty($labeltouse)) $arraydefaultmessage=$formmail->getEMailTemplate($db, 'member', $user, $outputlangs, 0, 1, $labeltouse);
+					// Get email content from template
+					$arraydefaultmessage = null;
+					$labeltouse = $conf->global->ADHERENT_EMAIL_TEMPLATE_SUBSCRIPTION;
 
-            	if (! empty($labeltouse) && is_object($arraydefaultmessage) && $arraydefaultmessage->id > 0)
-            	{
-            		$subject = $arraydefaultmessage->topic;
-            		$msg     = $arraydefaultmessage->content;
-            	}
+					if (!empty($labeltouse)) {
+						$arraydefaultmessage = $formmail->getEMailTemplate($db, 'member', $user, $outputlangs, 0, 1, $labeltouse);
+					}
 
-            	$substitutionarray=getCommonSubstitutionArray($outputlangs, 0, null, $object);
-            	complete_substitutions_array($substitutionarray, $outputlangs, $object);
-            	$subjecttosend = make_substitutions($subject, $substitutionarray, $outputlangs);
-            	$texttosend = make_substitutions(dol_concatdesc($msg, $adht->getMailOnSubscription()), $substitutionarray, $outputlangs);
+					if (!empty($labeltouse) && is_object($arraydefaultmessage) && $arraydefaultmessage->id > 0) {
+						$subject = $arraydefaultmessage->topic;
+						$msg     = $arraydefaultmessage->content;
+					}
 
-                // Attach a file ?
-                $file='';
-                $listofpaths=array();
-                $listofnames=array();
-                $listofmimes=array();
-                if (is_object($object->invoice))
-                {
-                	$invoicediroutput = $conf->facture->dir_output;
-                	$fileparams = dol_most_recent_file($invoicediroutput . '/' . $object->invoice->ref, preg_quote($object->invoice->ref, '/').'[^\-]+');
-                	$file = $fileparams['fullname'];
+					$substitutionarray = getCommonSubstitutionArray($outputlangs, 0, null, $object);
+					complete_substitutions_array($substitutionarray, $outputlangs, $object);
+					$subjecttosend = make_substitutions($subject, $substitutionarray, $outputlangs);
+					$texttosend = make_substitutions(dol_concatdesc($msg, $adht->getMailOnSubscription()), $substitutionarray, $outputlangs);
 
-                	$listofpaths=array($file);
-                	$listofnames=array(basename($file));
-                	$listofmimes=array(dol_mimetype($file));
-                }
+					// Attach a file ?
+					$file = '';
+					$listofpaths = array();
+					$listofnames = array();
+					$listofmimes = array();
+					if (is_object($object->invoice) && (!is_object($arraydefaultmessage) || intval($arraydefaultmessage->joinfiles))) {
+						$invoicediroutput = $conf->facture->dir_output;
+						$fileparams = dol_most_recent_file($invoicediroutput.'/'.$object->invoice->ref, preg_quote($object->invoice->ref, '/').'[^\-]+');
+						$file = $fileparams['fullname'];
 
-                $moreinheader='X-Dolibarr-Info: send_an_email by adherents/subscription.php'."\r\n";
+						$listofpaths = array($file);
+						$listofnames = array(basename($file));
+						$listofmimes = array(dol_mimetype($file));
+					}
 
-                $result=$object->send_an_email($texttosend, $subjecttosend, $listofpaths, $listofnames, $listofmimes, "", "", 0, -1, '', $moreinheader);
-                if ($result < 0)
-                {
-                	$errmsg=$object->error;
-                	setEventMessages($object->error, $object->errors, 'errors');
-                }
-                else
-                {
-                	setEventMessages($langs->trans("EmailSentToMember", $object->email), null, 'mesgs');
-                }
-            }
-            else
-            {
-            	setEventMessages($langs->trans("NoEmailSentToMember"), null, 'mesgs');
-            }
-        }
+					$moreinheader = 'X-Dolibarr-Info: send_an_email by adherents/subscription.php'."\r\n";
 
-        // Clean some POST vars
-        if (! $error)
-        {
-            $_POST["subscription"]='';
-            $_POST["accountid"]='';
-            $_POST["operation"]='';
-            $_POST["label"]='';
-            $_POST["num_chq"]='';
-        }
-    }
+					$result = $object->send_an_email($texttosend, $subjecttosend, $listofpaths, $listofmimes, $listofnames, "", "", 0, -1, '', $moreinheader);
+					if ($result < 0) {
+						$errmsg = $object->error;
+						setEventMessages($object->error, $object->errors, 'errors');
+					} else {
+						setEventMessages($langs->trans("EmailSentToMember", $object->email), null, 'mesgs');
+					}
+				}
+			} else {
+				setEventMessages($langs->trans("NoEmailSentToMember"), null, 'mesgs');
+			}
+		}
+
+		// Clean some POST vars
+		if (!$error) {
+			$_POST["subscription"] = '';
+			$_POST["accountid"] = '';
+			$_POST["operation"] = '';
+			$_POST["label"] = '';
+			$_POST["num_chq"] = '';
+		}
+	}
 }
 
 
@@ -462,30 +460,30 @@ if ($user->rights->adherent->cotisation->creer && $action == 'subscription' && !
  * View
  */
 
-$form = new Form($db);
+ $form = new Form($db);
 
-$now = dol_now();
-
-$title = $langs->trans("Member")." - ".$langs->trans("Subscriptions");
-
-$help_url = "EN:Module_Foundations|FR:Module_Adh&eacute;rents|ES:M&oacute;dulo_Miembros|DE:Modul_Mitglieder";
-
-llxHeader("", $title, $help_url);
-
-
-$param = '';
-if (!empty($contextpage) && $contextpage != $_SERVER["PHP_SELF"]) {
-	$param .= '&contextpage='.urlencode($contextpage);
-}
-if ($limit > 0 && $limit != $conf->liste_limit) {
-	$param .= '&limit='.urlencode($limit);
-}
-$param .= '&id='.$rowid;
-if ($optioncss != '') {
-	$param .= '&optioncss='.urlencode($optioncss);
-}
-// Add $param from extra fields
-//include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_search_param.tpl.php';
+ $now = dol_now();
+ 
+ $title = $langs->trans("Member")." - ".$langs->trans("Subscriptions");
+ 
+ $help_url = "EN:Module_Foundations|FR:Module_Adh&eacute;rents|ES:M&oacute;dulo_Miembros|DE:Modul_Mitglieder";
+ 
+ llxHeader("", $title, $help_url);
+ 
+ 
+ $param = '';
+ if (!empty($contextpage) && $contextpage != $_SERVER["PHP_SELF"]) {
+     $param .= '&contextpage='.urlencode($contextpage);
+ }
+ if ($limit > 0 && $limit != $conf->liste_limit) {
+     $param .= '&limit='.urlencode($limit);
+ }
+ $param .= '&id='.$rowid;
+ if ($optioncss != '') {
+     $param .= '&optioncss='.urlencode($optioncss);
+ }
+ // Add $param from extra fields
+ //include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_search_param.tpl.php';
 
 
 if ($rowid > 0) {
@@ -685,19 +683,20 @@ if ($rowid > 0) {
 	 * Action bar
 	 */
 
-    // Button to create a new subscription if member no draft neither resiliated
-    if ($user->rights->adherent->cotisation->creer)
-    {
-        if ($action != 'addsubscription' && $action != 'create_thirdparty')
-        {
-            print '<div class="tabsAction">';
+	// Button to create a new subscription if member no draft (-1) neither resiliated (0) neither excluded (-2)
+	if ($user->hasRight('adherent', 'cotisation', 'creer')) {
+		if ($action != 'addsubscription' && $action != 'create_thirdparty') {
+			print '<div class="tabsAction">';
 
-            if ($object->statut > 0) print '<div class="inline-block divButAction"><a class="butAction" href="'.$_SERVER["PHP_SELF"].'?rowid='.$rowid.'&action=addsubscription&token='.newToken().'">'.$langs->trans("AddSubscription")."</a></div>";
-            else print '<div class="inline-block divButAction"><a class="butActionRefused classfortooltip" href="#" title="'.dol_escape_htmltag($langs->trans("ValidateBefore")).'">'.$langs->trans("AddSubscription").'</a></div>';
+			if ($object->statut > 0) {
+				print '<div class="inline-block divButAction"><a class="butAction" href="'.$_SERVER["PHP_SELF"].'?rowid='.$rowid.'&action=addsubscription&token='.newToken().'">'.$langs->trans("AddSubscription")."</a></div>";
+			} else {
+				print '<div class="inline-block divButAction"><a class="butActionRefused classfortooltip" href="#" title="'.dol_escape_htmltag($langs->trans("ValidateBefore")).'">'.$langs->trans("AddSubscription").'</a></div>';
+			}
 
-            print '</div>';
-        }
-    }
+			print '</div>';
+		}
+	}
 
 	/*
 	 * List of subscriptions
@@ -714,7 +713,7 @@ if ($rowid > 0) {
 		$sql .= " FROM ".MAIN_DB_PREFIX."adherent as d, ".MAIN_DB_PREFIX."subscription as c";
 		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."bank as b ON c.fk_bank = b.rowid";
 		$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."bank_account as ba ON b.fk_account = ba.rowid";
-		$sql .= " WHERE d.rowid = c.fk_adherent AND d.rowid=".$rowid;
+		$sql .= " WHERE d.rowid = c.fk_adherent AND d.rowid=".((int) $rowid);
 		$sql .= $db->order($sortfield, $sortorder);
 
 		$result = $db->query($sql);
@@ -732,7 +731,7 @@ if ($rowid > 0) {
 			print_liste_field_titre('DateStart', $_SERVER["PHP_SELF"], '', '', $param, '', $sortfield, $sortorder, 'center ');
 			print_liste_field_titre('DateEnd', $_SERVER["PHP_SELF"], '', '', $param, '', $sortfield, $sortorder, 'center ');
 			print_liste_field_titre('Amount', $_SERVER["PHP_SELF"], '', '', $param, '', $sortfield, $sortorder, 'right ');
-			if (!empty($conf->banque->enabled)) {
+			if (isModEnabled('banque')) {
 				print_liste_field_titre('Account', $_SERVER["PHP_SELF"], '', '', $param, '', $sortfield, $sortorder, 'right ');
 			}
 			print "</tr>\n";
@@ -767,7 +766,7 @@ if ($rowid > 0) {
 				print '<td class="center">'.dol_print_date($db->jdate($objp->dateh), 'day')."</td>\n";
 				print '<td class="center">'.dol_print_date($db->jdate($objp->datef), 'day')."</td>\n";
 				print '<td class="right">'.price($objp->subscription).'</td>';
-				if (!empty($conf->banque->enabled)) {
+				if (isModEnabled('banque')) {
 					print '<td class="right">';
 					if ($objp->bid) {
 						$accountstatic->label = $objp->label;
@@ -776,7 +775,7 @@ if ($rowid > 0) {
 						$accountstatic->account_number = $objp->account_number;
 						$accountstatic->currency_code = $objp->currency_code;
 
-						if (!empty($conf->accounting->enabled) && $objp->fk_accountancy_journal > 0) {
+						if (isModEnabled('accounting') && $objp->fk_accountancy_journal > 0) {
 							$accountingjournal = new AccountingJournal($db);
 							$accountingjournal->fetch($objp->fk_accountancy_journal);
 
@@ -796,7 +795,7 @@ if ($rowid > 0) {
 
 			if (empty($num)) {
 				$colspan = 6;
-				if (!empty($conf->banque->enabled)) {
+				if (isModEnabled('banque')) {
 					$colspan++;
 				}
 				print '<tr><td colspan="'.$colspan.'"><span class="opacitymedium">'.$langs->trans("None").'</span></td></tr>';
