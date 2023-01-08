@@ -42,9 +42,8 @@ function memberplus_prepare_head(AdherentPlus $object)
 	$head[$h][2] = 'general';
 	$h++;
 
-	if ((! empty($conf->ldap->enabled) && ! empty($conf->global->LDAP_MEMBER_ACTIVE))
-		&& (empty($conf->global->MAIN_DISABLE_LDAP_TAB) || ! empty($user->admin)))
-	{
+	if ((!empty($conf->ldap->enabled) && !empty($conf->global->LDAP_MEMBER_ACTIVE))
+		&& (empty($conf->global->MAIN_DISABLE_LDAP_TAB) || !empty($user->admin))) {
 		$langs->load("ldap");
 
 		$head[$h][0] = DOL_URL_ROOT.'/adherents/ldap.php?id='.$object->id;
@@ -64,74 +63,81 @@ function memberplus_prepare_head(AdherentPlus $object)
 		$h++;
 	}
 
-	$tabtoadd = (!empty(getDolGlobalString('PARTNERSHIP_IS_MANAGED_FOR')) && getDolGlobalString('PARTNERSHIP_IS_MANAGED_FOR') == 'member') ? 'member' : 'thirdparty';
-
-	if ($tabtoadd == 'member') {
+	if (getDolGlobalString('PARTNERSHIP_IS_MANAGED_FOR') == 'member') {
 		if (!empty($user->rights->partnership->read)) {
 			$nbPartnership = is_array($object->partnerships) ? count($object->partnerships) : 0;
-			$head[$h][0] = DOL_URL_ROOT.'/adherents/partnership.php?rowid='.$object->id;
-			$head[$h][1] = $langs->trans("Partnership");
-			$head[$h][2] = 'partnership';
-			if ($nbPartnership > 0) {
-				$head[$h][1] .= '<span class="badge marginleftonlyshort">'.$nbPartnership.'</span>';
+			$head[$h][0] = DOL_URL_ROOT.'/partnership/partnership_list.php?rowid='.$object->id;
+			$head[$h][1] = $langs->trans("Partnerships");
+			$nbNote = 0;
+			$sql = "SELECT COUNT(n.rowid) as nb";
+			$sql .= " FROM ".MAIN_DB_PREFIX."partnership as n";
+			$sql .= " WHERE fk_member = ".((int) $object->id);
+			$resql = $db->query($sql);
+			if ($resql) {
+				$obj = $db->fetch_object($resql);
+				$nbNote = $obj->nb;
+			} else {
+				dol_print_error($db);
 			}
-			$h++;
-		}
-	} else {
-		if (!empty($user->rights->partnership->read)) {
-			$nbPartnership = is_array($object->partnerships) ? count($object->partnerships) : 0;
-			$head[$h][0] = DOL_URL_ROOT.'/societe/partnership.php?socid='.$object->id;
-			$head[$h][1] = $langs->trans("Partnership");
-			$head[$h][2] = 'partnership';
+			if ($nbNote > 0) {
+				$head[$h][1] .= '<span class="badge marginleftonlyshort">'.$nbNote.'</span>';
+			}
+			$head[$h][2] = 'partnerships';
 			if ($nbPartnership > 0) {
 				$head[$h][1] .= '<span class="badge marginleftonlyshort">'.$nbPartnership.'</span>';
 			}
 			$h++;
 		}
 	}
-
 
 	// Show more tabs from modules
 	// Entries must be declared in modules descriptor with line
 	// $this->tabs = array('entity:+tabname:Title:@mymodule:/mymodule/mypage.php?id=__ID__');   to add new tab
 	// $this->tabs = array('entity:-tabname:Title:@mymodule:/mymodule/mypage.php?id=__ID__');   to remove a tab
-	complete_head_from_modules($conf, $langs, $object, $head, $h, 'member');
+	complete_head_from_modules($conf, $langs, $object, $head, $h, 'member', 'add', 'core');
 
-    $nbNote = 0;
-    if(!empty($object->note)) $nbNote++;
-    if(!empty($object->note_private)) $nbNote++;
-    if(!empty($object->note_public)) $nbNote++;
-    $head[$h][0] = DOL_URL_ROOT.'/adherents/note.php?id='.$object->id;
+	$nbNote = 0;
+	if (!empty($object->note_private)) {
+		$nbNote++;
+	}
+	if (!empty($object->note_public)) {
+		$nbNote++;
+	}
+	$head[$h][0] = DOL_URL_ROOT.'/adherents/note.php?id='.$object->id;
 	$head[$h][1] = $langs->trans("Note");
 	$head[$h][2] = 'note';
-    if ($nbNote > 0) $head[$h][1].= ' <span class="badge">'.$nbNote.'</span>';
+	if ($nbNote > 0) {
+		$head[$h][1] .= '<span class="badge marginleftonlyshort">'.$nbNote.'</span>';
+	}
 	$h++;
 
-    // Attachments
-    require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
-    require_once DOL_DOCUMENT_ROOT.'/core/class/link.class.php';
-    $upload_dir = $conf->adherent->multidir_output[$object->entity].'/'.get_exdir(0, 0, 0, 1, $object, 'member');
-    $nbFiles = count(dol_dir_list($upload_dir, 'files', 0, '', '(\.meta|_preview.*\.png)$'));
-    $nbLinks=Link::count($db, $object->element, $object->id);
-    $head[$h][0] = DOL_URL_ROOT.'/adherents/document.php?id='.$object->id;
-    $head[$h][1] = $langs->trans('Documents');
-    if (($nbFiles+$nbLinks) > 0) $head[$h][1].= ' <span class="badge">'.($nbFiles+$nbLinks).'</span>';
-    $head[$h][2] = 'document';
-    $h++;
+	// Attachments
+	require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+	require_once DOL_DOCUMENT_ROOT.'/core/class/link.class.php';
+	$upload_dir = $conf->adherent->multidir_output[$object->entity].'/'.get_exdir(0, 0, 0, 1, $object, 'member');
+	$nbFiles = count(dol_dir_list($upload_dir, 'files', 0, '', '(\.meta|_preview.*\.png)$'));
+	$nbLinks = Link::count($db, $object->element, $object->id);
+	$head[$h][0] = DOL_URL_ROOT.'/adherents/document.php?id='.$object->id;
+	$head[$h][1] = $langs->trans('Documents');
+	if (($nbFiles + $nbLinks) > 0) {
+		$head[$h][1] .= '<span class="badge marginleftonlyshort">'.($nbFiles + $nbLinks).'</span>';
+	}
+	$head[$h][2] = 'document';
+	$h++;
 
 	// Show agenda tab
-	if (! empty($conf->agenda->enabled))
-	{
-	    $head[$h][0] = DOL_URL_ROOT."/adherents/agenda.php?id=".$object->id;
-	    $head[$h][1] = $langs->trans("Events");
-	    if (! empty($conf->agenda->enabled) && (!empty($user->rights->agenda->myactions->read) || !empty($user->rights->agenda->allactions->read) ))
-	    {
-	        $head[$h][1].= '/';
-	        $head[$h][1].= $langs->trans("Agenda");
-	    }
-	    $head[$h][2] = 'agenda';
-	    $h++;
+	if (isModEnabled('agenda')) {
+		$head[$h][0] = DOL_URL_ROOT."/adherents/agenda.php?id=".$object->id;
+		$head[$h][1] = $langs->trans("Events");
+		if (isModEnabled('agenda') && (!empty($user->rights->agenda->myactions->read) || !empty($user->rights->agenda->allactions->read))) {
+			$head[$h][1] .= '/';
+			$head[$h][1] .= $langs->trans("Agenda");
+		}
+		$head[$h][2] = 'agenda';
+		$h++;
 	}
+
+	complete_head_from_modules($conf, $langs, $object, $head, $h, 'member', 'add', 'external');
 
 	complete_head_from_modules($conf, $langs, $object, $head, $h, 'member', 'remove');
 
