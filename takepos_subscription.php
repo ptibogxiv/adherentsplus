@@ -55,6 +55,25 @@ $place = (GETPOST('place', 'aZ09') ? GETPOST('place', 'aZ09') : '0'); // $place 
 $invoiceid = GETPOST('invoiceid', 'int');
 $type = GETPOST('type', 'int');
 
+// Load variable for pagination
+$limit = GETPOST('limit', 'int') ?GETPOST('limit', 'int') : $conf->liste_limit;
+$sortfield = GETPOST('sortfield', 'aZ09comma');
+$sortorder = GETPOST('sortorder', 'aZ09comma');
+$page = GETPOSTISSET('pageplusone') ? (GETPOST('pageplusone') - 1) : GETPOST("page", 'int');
+if (empty($page) || $page < 0 || GETPOST('button_search', 'alpha') || GETPOST('button_removefilter', 'alpha')) {
+	$page = 0;
+}     // If $page is not defined, or '' or -1 or if we click on clear filters
+$offset = $limit * $page;
+$pageprev = $page - 1;
+$pagenext = $page + 1;
+if (!$sortfield) {
+	$sortfield = 'c.ref';
+}
+if (!$sortorder) {
+	$sortorder = 'DESC';
+}
+$param = '';
+
 if (empty($user->rights->takepos->run)) {
 	$message = null;
 	if ($constforcompanyid == $invoice->socid || empty($invoice->socid))  $message = $langs->trans('MembershipNotAllowedForGenericCustomer');
