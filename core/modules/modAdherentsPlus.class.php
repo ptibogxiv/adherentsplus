@@ -239,7 +239,7 @@ $r=0;
             'unitfrequency'=> 3600,
             'priority'=>50,
             'status'=>1,
-            'test'=>$conf->adherentsplus->enabled,
+            'test'=>'isModEnabled("societe")',
             'datestart'=>$datestart
         ),
     );
