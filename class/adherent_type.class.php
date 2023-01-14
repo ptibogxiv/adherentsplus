@@ -101,7 +101,6 @@ class AdherentTypePlus extends CommonObject
 	/** @var bool Email sent during validation */
 	public $mail_valid;
   public $welcome;
-	public $amount;
 	public $federal;
 	public $prorata;
   public $prorata_date;
