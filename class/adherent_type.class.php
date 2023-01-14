@@ -77,6 +77,17 @@ class AdherentTypePlus extends CommonObject
 	 * @see subscription
 	 */
 	public $cotisation;
+
+    /**
+	 * @var float|string 	Amount for subscription (null or '' means not defined)
+	 */
+	public $amount;
+
+	/**
+	 * @var int Amount can be choosen by the visitor during subscription (0 or 1)
+	 */
+	public $caneditamount;
+
 	/**
 	 * @var int Subsription required (0 or 1)
 	 * @since 5.0
@@ -424,25 +435,26 @@ class AdherentTypePlus extends CommonObject
 
 		$sql = "UPDATE ".MAIN_DB_PREFIX."adherent_type ";
 		$sql.= "SET ";
-    $sql.= "statut = ".$this->statut.",";
-    $sql.= "morphy = '".$this->morphy."',";
-    $sql.= "libelle = '".$this->db->escape($this->label) ."',";
-    $sql.= "subscription = '".$this->subscription."',";
-    $sql.= "welcome = '".$this->welcome."',";
-    $sql.= "amount= '".$this->amount."',";
-    $sql.= "federal= '".$this->federal."',";
-    $sql.= "price_level = '".$this->price_level."',";
-    $sql.= "duration = '" . $this->db->escape($this->duration_value . $this->duration_unit) ."',";
-    $sql.= "commitment = '" . $this->db->escape($this->commitment_value . $this->commitment_unit) ."',";
-    $sql.= "prorata = '".$this->db->escape($this->prorata)."',";
-    $sql.= "prorata_date = '".$this->prorata_date."',";
-    $sql.= "note = '".$this->db->escape($this->note)."',";
-    $sql.= "vote = '".$this->vote."',";
-    $sql.= "automatic = '".$this->automatic."',";
-    $sql.= "automatic_renew = '".$this->automatic_renew."',";
-    $sql.= "family = '".$this->family."',";
-    $sql.= "mail_valid = '".$this->db->escape($this->mail_valid)."'";
-    $sql.= " WHERE rowid =".$this->id;
+    $sql .= "statut = ".$this->statut.",";
+    $sql .= "morphy = '".$this->morphy."',";
+    $sql .= "libelle = '".$this->db->escape($this->label) ."',";
+    $sql .= "subscription = '".$this->subscription."',";
+    $sql .= "welcome = '".$this->welcome."',";
+    $sql .= "amount = ".((empty($this->amount) && $this->amount == '') ? 'null' : ((float) $this->amount)).",";
+    $sql .= "caneditamount = ".((int) $this->caneditamount).",";
+    $sql .= "federal= '".$this->federal."',";
+    $sql .= "price_level = '".$this->price_level."',";
+    $sql .= "duration = '" . $this->db->escape($this->duration_value . $this->duration_unit) ."',";
+    $sql .= "commitment = '" . $this->db->escape($this->commitment_value . $this->commitment_unit) ."',";
+    $sql .= "prorata = '".$this->db->escape($this->prorata)."',";
+    $sql .= "prorata_date = '".$this->prorata_date."',";
+    $sql .= "note = '".$this->db->escape($this->note)."',";
+    $sql .= "vote = '".$this->vote."',";
+    $sql .= "automatic = '".$this->automatic."',";
+    $sql .= "automatic_renew = '".$this->automatic_renew."',";
+    $sql .= "family = '".$this->family."',";
+    $sql .= "mail_valid = '".$this->db->escape($this->mail_valid)."'";
+    $sql .= " WHERE rowid =".$this->id;
 
 		$result = $this->db->query($sql);
 		if ($result)
@@ -575,7 +587,7 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
 	{
         global $langs, $conf;
   
-        $sql = "SELECT d.rowid, d.tms as datem, d.libelle as label, d.statut as status, d.morphy, d.subscription, d.welcome, d.amount, d.federal, d.price_level, d.duration, d.commitment, d.prorata, d.prorata_date, d.automatic, d.automatic_renew, d.family, d.mail_valid, d.note, d.vote";
+        $sql = "SELECT d.rowid, d.tms as datem, d.libelle as label, d.statut as status, d.morphy, d.subscription, d.welcome, d.amount, d.caneditamount, d.federal, d.price_level, d.duration, d.commitment, d.prorata, d.prorata_date, d.automatic, d.automatic_renew, d.family, d.mail_valid, d.note, d.vote";
         $sql .= " FROM ".MAIN_DB_PREFIX."adherent_type as d";
         $sql .= " WHERE d.rowid = ".$rowid;
 
@@ -593,7 +605,8 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES)){
                 $this->id             = $obj->rowid;
                 $this->ref            = $obj->rowid;
                 $this->welcome        = $obj->welcome;
-                $this->amount         = $obj->amount;
+				$this->amount         = $obj->amount;
+				$this->caneditamount  = $obj->caneditamount;
                 $this->federal        = $obj->federal;
                 $this->prorata        = $obj->prorata;
                 $this->prorata_date   = $obj->prorata_date; 
