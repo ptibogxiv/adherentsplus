@@ -998,15 +998,7 @@ $datewf = $date->getTimestamp();
                 $this->date_welcomefee         = $datewf; 
                                
 if (!empty($prorata)) {
-if (!empty($this->prorata)) {
 if ($daterenew > $abo && $abo > $datefrom) {
-$date = new DateTime($abo);
-$date->modify('+1 SECONDS');
-} else {
-$date = new DateTime();
-$date->modify('NOW');   
-} 
-} elseif ($daterenew > $abo && $abo > $datefrom) {
 $date = new DateTime($abo);
 $date->modify('+1 SECONDS');  
 } elseif ($this->duration_unit == 'y') {
