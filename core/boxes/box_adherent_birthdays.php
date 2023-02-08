@@ -83,14 +83,13 @@ class box_adherent_birthdays extends ModeleBoxes
 
 		if ($user->rights->adherent->lire)
 		{
-			$sql = "SELECT u.rowid, u.firstname, u.lastname";
-      $sql.= ", u.birth";
+			$sql = "SELECT u.rowid, u.firstname, u.lastname,u.email, u.birth";
 			$sql.= " FROM ".MAIN_DB_PREFIX."adherent as u";
 			$sql.= " WHERE u.entity IN (".getEntity('adherent').")";
-      $sql.= " AND u.statut = 1";
-      //$sql.= " AND MONTH(u.birth) >= ".date('m');
-      //$sql.= " AND DAY(u.birth) >= ".date('d');
-      $sql.= " AND date_format(u.birth, '%m-%d') >= date_format(curdate(), '%m-%d')";      
+			$sql.= " AND u.statut = 1";
+			//$sql.= " AND MONTH(u.birth) >= ".date('m');
+			//$sql.= " AND DAY(u.birth) >= ".date('d');
+			$sql.= " AND date_format(u.birth, '%m-%d') >= date_format(curdate(), '%m-%d')";      
 			$sql.= " ORDER BY date_format(u.birth, '%m-%d') ASC";
 			$sql.= $db->plimit($max, 0);
 
