@@ -470,7 +470,7 @@ $param = '';
 		        }
 		        else
 		        {
-			        if ($adh->subscription == 'yes')
+			        if (isset($adh->subscription) && $adh->subscription == 'yes')
 			        {
 		                print $langs->trans("SubscriptionNotReceived");
 		                if ($adh->statut > 0) print " ".img_warning();
