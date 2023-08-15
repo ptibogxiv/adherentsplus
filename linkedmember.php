@@ -64,7 +64,7 @@ $filter = GETPOST("filter", 'alpha');
 // Security check
 $result=restrictedArea($user,'adherent',$rowid);
 
-$object = new Adherentplus($db);
+$object = new Adherent($db);
 $result=$object->fetch($rowid, '', '', '', '', '', '', 1);
 if ($result > 0)
 {

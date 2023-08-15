@@ -30,7 +30,7 @@
  *  @param	Adherent	$object		Member
  *  @return array					head
  */
-function memberplus_prepare_head(AdherentPlus $object)
+function memberplus_prepare_head(Adherent $object)
 {
 	global $db, $langs, $conf, $user;
 
