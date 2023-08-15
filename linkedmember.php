@@ -70,6 +70,8 @@ if ($result > 0)
 {
     $adht = new AdherentTypePlus($db);
     $result=$adht->fetch($object->typeid);
+	$object2 = new AdherentPlus($db);
+	$object2->fetch($object->id, '', '', '', '', '', '', 1);
 }
 
 
@@ -362,9 +364,9 @@ print '</SELECT>';
 
     // Civility
     print '<tr><td>'.$langs->trans("Commitment").'</td><td class="valeur">';
-		if ($object->datecommitment)
+		if (!empty($object2->datecommitment))
 		{
-			print dol_print_date($object->datecommitment,'day');
+			print dol_print_date($object2->datecommitment,'day');
 			if ($object->hasDelay()) {
 				print " ".img_warning($langs->trans("Late"));
 			}
@@ -437,7 +439,7 @@ $param = '';
             print '<td align="right">'.$langs->trans('Action').'</td>';
             print "</tr>\n";
             
-            foreach ($object->linkedmembers as $linkedmember)
+            foreach ($object2->linkedmembers as $linkedmember)
             {
 
 		        $adh=new Adherent($db);
