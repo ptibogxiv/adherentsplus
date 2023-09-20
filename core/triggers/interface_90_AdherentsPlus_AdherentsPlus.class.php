@@ -117,7 +117,8 @@ if ($action == 'BILL_PAYED') {
 			dol_syslog(
 				"Trigger '" . $this->name . "' for action '$action' launched by " . __FILE__ . ". id=" . $object->id
 			); 
-         
+
+require_once DOL_DOCUMENT_ROOT.'/adherents/class/adherent.class.php';        
 dol_include_once('/adherentsplus/class/adherent.class.php');
 dol_include_once('/adherentsplus/class/adherent_type.class.php'); 
 require_once DOL_DOCUMENT_ROOT.'/compta/facture/class/facture.class.php';
@@ -142,8 +143,9 @@ require_once DOL_DOCUMENT_ROOT.'/compta/facture/class/facture.class.php';
               
 if ($objp1->fk_product==$conf->global->ADHERENT_PRODUCT_ID_FOR_SUBSCRIPTIONS) { 
 
-$member=new AdherentPlus($db);
+$member = new AdherentPlus($db);
 if (isset($objp1->member_beneficiary) && !empty($objp1->member_beneficiary)) { $member->fetch($objp1->member_beneficiary); } else { $member->fetch('','',$object->socid); }
+$memberid = $member->id;
 $adht = new AdherentTypePlus($db);
 $adht->fetch($member->typeid);
 
@@ -209,8 +211,9 @@ $invoice->add_object_linked('subscription', $idcot);
             if ($idcot>0 && $member->email && ! empty($conf->global->ADHERENT_DEFAULT_SENDINFOBYMAIL))   // $object is 'Adherent'
             {
 				$subject = '';
-				$msg= '';
-
+				$msg = '';
+				$member = new Adherent($db);
+				$member->fetch($memberid);
 				// Send subscription email
 				include_once DOL_DOCUMENT_ROOT.'/core/class/html.formmail.class.php';
 				$formmail=new FormMail($db);
