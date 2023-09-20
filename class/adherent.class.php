@@ -306,57 +306,63 @@ class AdherentPlus extends CommonObject
 	 */
 	public function makeSubstitution($text)
 	{
-		global $conf,$langs;
+		global $conf, $langs;
 
 		$birthday = dol_print_date($this->birth, 'day');
 
 		$msgishtml = 0;
-		if (dol_textishtml($text, 1)) $msgishtml = 1;
-
-		$infos='';
-		if ($this->civility_id) $infos.= $langs->transnoentities("UserTitle").": ".$this->getCivilityLabel()."\n";
-		$infos.= $langs->transnoentities("id").": ".$this->id."\n";
-		$infos.= $langs->transnoentities("Lastname").": ".$this->lastname."\n";
-		$infos.= $langs->transnoentities("Firstname").": ".$this->firstname."\n";
-		$infos.= $langs->transnoentities("Company").": ".$this->societe."\n";
-		$infos.= $langs->transnoentities("Address").": ".$this->address."\n";
-		$infos.= $langs->transnoentities("Zip").": ".$this->zip."\n";
-		$infos.= $langs->transnoentities("Town").": ".$this->town."\n";
-		$infos.= $langs->transnoentities("Country").": ".$this->country."\n";
-		$infos.= $langs->transnoentities("EMail").": ".$this->email."\n";
-		$infos.= $langs->transnoentities("PhonePro").": ".$this->phone."\n";
-		$infos.= $langs->transnoentities("PhonePerso").": ".$this->phone_perso."\n";
-		$infos.= $langs->transnoentities("PhoneMobile").": ".$this->phone_mobile."\n";
-		if (empty($conf->global->ADHERENT_LOGIN_NOT_REQUIRED))
-		{
-			$infos.= $langs->transnoentities("Login").": ".$this->login."\n";
-			$infos.= $langs->transnoentities("Password").": ".$this->pass."\n";
+		if (dol_textishtml($text, 1)) {
+			$msgishtml = 1;
 		}
-		$infos.= $langs->transnoentities("Birthday").": ".$birthday."\n";
-		$infos.= $langs->transnoentities("Photo").": ".$this->photo."\n";
-		$infos.= $langs->transnoentities("Public").": ".yn($this->public);
+
+		$infos = '';
+		if ($this->civility_id) {
+			$infos .= $langs->transnoentities("UserTitle").": ".$this->getCivilityLabel()."\n";
+		}
+		$infos .= $langs->transnoentities("id").": ".$this->id."\n";
+		$infos .= $langs->transnoentities("ref").": ".$this->ref."\n";
+		$infos .= $langs->transnoentities("Lastname").": ".$this->lastname."\n";
+		$infos .= $langs->transnoentities("Firstname").": ".$this->firstname."\n";
+		$infos .= $langs->transnoentities("Company").": ".$this->company."\n";
+		$infos .= $langs->transnoentities("Address").": ".$this->address."\n";
+		$infos .= $langs->transnoentities("Zip").": ".$this->zip."\n";
+		$infos .= $langs->transnoentities("Town").": ".$this->town."\n";
+		$infos .= $langs->transnoentities("Country").": ".$this->country."\n";
+		$infos .= $langs->transnoentities("EMail").": ".$this->email."\n";
+		$infos .= $langs->transnoentities("PhonePro").": ".$this->phone."\n";
+		$infos .= $langs->transnoentities("PhonePerso").": ".$this->phone_perso."\n";
+		$infos .= $langs->transnoentities("PhoneMobile").": ".$this->phone_mobile."\n";
+		if (empty($conf->global->ADHERENT_LOGIN_NOT_REQUIRED)) {
+			$infos .= $langs->transnoentities("Login").": ".$this->login."\n";
+			$infos .= $langs->transnoentities("Password").": ".$this->pass."\n";
+		}
+		$infos .= $langs->transnoentities("Birthday").": ".$birthday."\n";
+		$infos .= $langs->transnoentities("Photo").": ".$this->photo."\n";
+		$infos .= $langs->transnoentities("Public").": ".yn($this->public);
 
 		// Substitutions
-		$substitutionarray=array(
-		    '__ID__'=>$this->id,
-		    '__MEMBER_ID__'=>$this->id,
-			'__CIVILITY__'=>$this->getCivilityLabel(),
-			'__FIRSTNAME__'=>$msgishtml?dol_htmlentitiesbr($this->firstname):($this->firstname?$this->firstname:''),
-			'__LASTNAME__'=>$msgishtml?dol_htmlentitiesbr($this->lastname):($this->lastname?$this->lastname:''),
-			'__FULLNAME__'=>$msgishtml?dol_htmlentitiesbr($this->getFullName($langs)):$this->getFullName($langs),
-			'__COMPANY__'=>$msgishtml?dol_htmlentitiesbr($this->societe):($this->societe?$this->societe:''),
-			'__ADDRESS__'=>$msgishtml?dol_htmlentitiesbr($this->address):($this->address?$this->address:''),
-			'__ZIP__'=>$msgishtml?dol_htmlentitiesbr($this->zip):($this->zip?$this->zip:''),
-			'__TOWN__'=>$msgishtml?dol_htmlentitiesbr($this->town):($this->town?$this->town:''),
-			'__COUNTRY__'=>$msgishtml?dol_htmlentitiesbr($this->country):($this->country?$this->country:''),
-			'__EMAIL__'=>$msgishtml?dol_htmlentitiesbr($this->email):($this->email?$this->email:''),
-			'__BIRTH__'=>$msgishtml?dol_htmlentitiesbr($birthday):($birthday?$birthday:''),
-			'__PHOTO__'=>$msgishtml?dol_htmlentitiesbr($this->photo):($this->photo?$this->photo:''),
-			'__LOGIN__'=>$msgishtml?dol_htmlentitiesbr($this->login):($this->login?$this->login:''),
-			'__PASSWORD__'=>$msgishtml?dol_htmlentitiesbr($this->pass):($this->pass?$this->pass:''),
-			'__PHONE__'=>$msgishtml?dol_htmlentitiesbr($this->phone):($this->phone?$this->phone:''),
-			'__PHONEPRO__'=>$msgishtml?dol_htmlentitiesbr($this->phone_perso):($this->phone_perso?$this->phone_perso:''),
-			'__PHONEMOBILE__'=>$msgishtml?dol_htmlentitiesbr($this->phone_mobile):($this->phone_mobile?$this->phone_mobile:'')
+		$substitutionarray = array(
+			'__ID__' => $this->id,
+			'__REF__' => $this->ref,
+			'__MEMBER_ID__' => $this->id,
+			'__CIVILITY__' => $this->getCivilityLabel(),
+			'__FIRSTNAME__' => $msgishtml ? dol_htmlentitiesbr($this->firstname) : ($this->firstname ? $this->firstname : ''),
+			'__LASTNAME__' => $msgishtml ? dol_htmlentitiesbr($this->lastname) : ($this->lastname ? $this->lastname : ''),
+			'__FULLNAME__' => $msgishtml ? dol_htmlentitiesbr($this->getFullName($langs)) : $this->getFullName($langs),
+			'__COMPANY__' => $msgishtml ? dol_htmlentitiesbr($this->company) : ($this->company ? $this->company : ''),
+			'__ADDRESS__' => $msgishtml ? dol_htmlentitiesbr($this->address) : ($this->address ? $this->address : ''),
+			'__ZIP__' => $msgishtml ? dol_htmlentitiesbr($this->zip) : ($this->zip ? $this->zip : ''),
+			'__TOWN__' => $msgishtml ? dol_htmlentitiesbr($this->town) : ($this->town ? $this->town : ''),
+			'__COUNTRY__' => $msgishtml ? dol_htmlentitiesbr($this->country) : ($this->country ? $this->country : ''),
+			'__EMAIL__' => $msgishtml ? dol_htmlentitiesbr($this->email) : ($this->email ? $this->email : ''),
+			'__BIRTH__' => $msgishtml ? dol_htmlentitiesbr($birthday) : ($birthday ? $birthday : ''),
+			'__PHOTO__' => $msgishtml ? dol_htmlentitiesbr($this->photo) : ($this->photo ? $this->photo : ''),
+			'__LOGIN__' => $msgishtml ? dol_htmlentitiesbr($this->login) : ($this->login ? $this->login : ''),
+			'__PASSWORD__' => $msgishtml ? dol_htmlentitiesbr($this->pass) : ($this->pass ? $this->pass : ''),
+			'__PHONE__' => $msgishtml ? dol_htmlentitiesbr($this->phone) : ($this->phone ? $this->phone : ''),
+			'__PHONEPRO__' => $msgishtml ? dol_htmlentitiesbr($this->phone_perso) : ($this->phone_perso ? $this->phone_perso : ''),
+			'__PHONEMOBILE__' => $msgishtml ? dol_htmlentitiesbr($this->phone_mobile) : ($this->phone_mobile ? $this->phone_mobile : ''),
+			'__TYPE__' => $msgishtml ? dol_htmlentitiesbr($this->type) : ($this->type ? $this->type : '')
 		);
 
 		complete_substitutions_array($substitutionarray, $langs, $this);
