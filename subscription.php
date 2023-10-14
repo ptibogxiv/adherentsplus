@@ -385,9 +385,7 @@ if ($user->rights->adherent->cotisation->creer && $action == 'subscription' && !
 				if (empty($reshook)) {
 					$subject = '';
 					$msg = '';
-					$object = new Adherent($db);
-					$object->fetch($memberid);
-					$memberid = $object->id;
+
 					// Send subscription email
 					include_once DOL_DOCUMENT_ROOT.'/core/class/html.formmail.class.php';
 					$formmail = new FormMail($db);
