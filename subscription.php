@@ -220,9 +220,8 @@ if (empty($reshook) && $action == 'setsocid') {
 	}
 }
 
-if ($user->rights->adherent->cotisation->creer && $action == 'subscription' && ! $_POST["cancel"])
-{
-    $error=0;
+if ($user->hasRight('adherent', 'cotisation', 'creer') && $action == 'subscription' && !$cancel) {
+	$error = 0;
 
     $langs->load("banks");
 
