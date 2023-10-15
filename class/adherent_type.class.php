@@ -929,19 +929,19 @@ $commitment = $obj->datecommitment;
         } else {
 $abo = null; 
         }
-if (!empty($conf->global->ADHERENT_SUBSCRIPTION_PRORATA) && $conf->global->ADHERENT_SUBSCRIPTION_PRORATA == '2') { 
+if (getDolGlobalInt('ADHERENT_SUBSCRIPTION_PRORATA') == '2') { 
 $prorata = $this->prorata_date;  
 } else {
-$prorata = $conf->global->ADHERENT_SUBSCRIPTION_PRORATA;  
+$prorata = getDolGlobalInt('ADHERENT_SUBSCRIPTION_PRORATA');  
 }              
 
 $date = new DateTime();  
-$monthName = date("F", mktime(0, 0, 0, $conf->global->SOCIETE_SUBSCRIBE_MONTH_START, 10));
+$monthName = date("F", mktime(0, 0, 0, getDolGlobalInt('SOCIETE_SUBSCRIBE_MONTH_START'), 10));
 $date->modify('FIRST DAY OF '.$monthName.' MIDNIGHT');
 if ($date->getTimestamp() > dol_now()) {
 $date->modify('LAST YEAR');
 }
-$prestart = 12 - $conf->global->SOCIETE_SUBSCRIBE_MONTH_PRESTART;
+$prestart = 12 - getDolGlobalInt('SOCIETE_SUBSCRIBE_MONTH_PRESTART');
 $date->modify(' + '.$prestart.' MONTHS'); 
 //print 'renew: '.$date->format('Y-m-d H:i:s').'<br>'; 
 $daterenew = $date->getTimestamp();
@@ -975,7 +975,7 @@ $date->modify('MIDNIGHT');
 $date = new DateTime($dateto); 
 $date->modify('NEXT DAY MIDNIGHT');
 }                
-if (!empty($conf->global->SOCIETE_SUBSCRIBE_MONTH_PRESTART)) $date->modify('- '.$conf->global->SOCIETE_SUBSCRIBE_MONTH_PRESTART.' MONTHS');  
+if (!empty(getDolGlobalInt('SOCIETE_SUBSCRIBE_MONTH_PRESTART'))) $date->modify('- '.getDolGlobalInt('SOCIETE_SUBSCRIBE_MONTH_PRESTART').' MONTHS');  
 $daterenew = $date->format('Y-m-d H:i:s');
                 $this->date_renew         = $this->db->jdate($daterenew);
                 
