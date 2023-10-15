@@ -44,7 +44,9 @@ if (! $res)
 }
 
 dol_include_once('/adherentsplus/lib/member.lib.php');
+require_once DOL_DOCUMENT_ROOT.'/adherents/class/adherent.class.php';
 dol_include_once('/adherentsplus/class/adherent.class.php');
+dol_include_once('/adherentsplus/class/consumption.class.php');
 dol_include_once('/adherentsplus/class/adherent_type.class.php');  
 require_once DOL_DOCUMENT_ROOT.'/adherents/class/subscription.class.php';
 require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
