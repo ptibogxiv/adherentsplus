@@ -929,7 +929,7 @@ $commitment = $obj->datecommitment;
         } else {
 $abo = null; 
         }
-if (getDolGlobalInt('ADHERENT_SUBSCRIPTION_PRORATA') == '2') { 
+if (getDolGlobalInt('ADHERENT_SUBSCRIPTION_PRORATA') == 2) { 
 $prorata = $this->prorata_date;  
 } else {
 $prorata = getDolGlobalInt('ADHERENT_SUBSCRIPTION_PRORATA');  
@@ -998,7 +998,15 @@ $datewf = $date->getTimestamp();
                 $this->date_welcomefee         = $datewf; 
                                
 if (!empty($prorata)) {
-if ($daterenew > $abo && $abo > $datefrom) {
+if (!empty($this->prorata)) {
+	if ($daterenew > $abo && $abo > $datefrom) {
+		$date = new DateTime($abo);
+		$date->modify('+1 SECONDS');
+	} else {
+		$date = new DateTime();
+		$date->modify('NOW');   
+	} 
+} elseif ($daterenew > $abo && $abo > $datefrom) {
 $date = new DateTime($abo);
 $date->modify('+1 SECONDS');  
 } elseif ($this->duration_unit == 'y') {
