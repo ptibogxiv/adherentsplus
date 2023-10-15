@@ -323,33 +323,38 @@ if ($user->rights->adherent->cotisation->creer && $action == 'subscription' && !
         }
     }
 
-    // Record the subscription then complementary actions
-    if (! $error && $action=='subscription')
-    {
-        $db->begin();
+	// Record the subscription then complementary actions
+	if (!$error && $action == 'subscription') {
+		$db->begin();
 
-        // Create subscription
-        $crowid=$object->subscription($datesubscription, $amount, $accountid, $operation, $label, $num_chq, $emetteur_nom, $emetteur_banque, $datesubend);
-        if ($crowid <= 0)
-        {
-            $error++;
-            $errmsg=$object->error;
-	        setEventMessages($object->error, $object->errors, 'errors');
-        }
+		// Create subscription
+		$crowid = $object->subscription($datesubscription, $amount, $accountid, $operation, $label, $num_chq, $emetteur_nom, $emetteur_banque, $datesubend);
+		if ($crowid <= 0) {
+			$error++;
+			$errmsg = $object->error;
+			setEventMessages($object->error, $object->errors, 'errors');
+		}
 
-        if (! $error)
-        {
-        	$result = $object->subscriptionComplementaryActions($crowid, $option, $accountid, $datesubscription, $datesubend, $paymentdate, $operation, $label, $amount, $num_chq, $emetteur_nom, $emetteur_banque);
-			if ($result < 0)
-			{
+		if (!$error) {
+			$result = $object->subscriptionComplementaryActions($crowid, $option, $accountid, $datesubscription, $paymentdate, $operation, $label, $amount, $num_chq, $emetteur_nom, $emetteur_banque);
+			if ($result < 0) {
 				$error++;
 				setEventMessages($object->error, $object->errors, 'errors');
-			}
-			else
-			{
+			} else {
 				// If an invoice was created, it is into $object->invoice
 			}
-        }
+		}
+
+		if (!$error) {
+			$db->commit();
+		} else {
+			$db->rollback();
+			$action = 'addsubscription';
+		}
+
+		if (!$error) {
+			setEventMessages("SubscriptionRecorded", null, 'mesgs');
+		}
 
         if (!$error) {
 			$db->commit();
