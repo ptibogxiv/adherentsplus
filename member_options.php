@@ -48,6 +48,7 @@ if (! $res)
 }
 
 dol_include_once('/adherentsplus/lib/member.lib.php');
+require_once DOL_DOCUMENT_ROOT.'/adherents/class/adherent.class.php';
 dol_include_once('/adherentsplus/class/adherent.class.php');
 dol_include_once('/adherentsplus/class/adherent_type.class.php');
 require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
@@ -161,7 +162,8 @@ $form=new Form($db);
 $formother=new FormOther($db);
 $formproduct = new FormProduct($db);
 
-$object = new AdherentPlus($db);
+$object = new Adherent($db);
+$object2 = new Adherent($db);
 $object->fetch($rowid);
 
 $head = memberplus_prepare_head($object);

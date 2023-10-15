@@ -109,7 +109,8 @@ if ($constforcompanyid == $invoice->socid || empty($invoice->socid))  $message =
 // Security check
 $result=restrictedArea($user, 'adherent', $rowid);
 
-$object = new AdherentPlus($db);
+$object = new Adherent($db);
+$object2 = new Adherent($db);
 $result=$object->fetch($rowid, '', '', '', '', '', 1);
 if ($result > 0)
 {
