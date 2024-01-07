@@ -953,21 +953,21 @@ $datefrom = $date->format('Y-m-d H:i:s');
 $datefrom2 = $date->format('Y');
 $date = new DateTime($datefrom);
 
-$this->date_from        = $this->db->jdate($datefrom); 
+$this->date_from = $this->db->jdate($datefrom); 
                 
 $date->modify('NEXT YEAR');
 $date->modify('-1 SECONDS');
 $dateto = $date->format('Y-m-d H:i:s');
 $dateto2 = $date->format('Y');
 
-$this->date_to        = $this->db->jdate($dateto); 
+$this->date_to = $this->db->jdate($dateto); 
                 
 if ($datefrom2 != $dateto2) {
 $season = $datefrom2.'/'.$dateto2;
 } else {
 $season = $datefrom2;
 }  
-                $this->season         = $season; 
+$this->season = $season; 
 if (empty($prorata) && $abo < $dateto) {
 $date = new DateTime($abo);
 $date->modify('MIDNIGHT');
@@ -977,7 +977,7 @@ $date->modify('NEXT DAY MIDNIGHT');
 }                
 if (!empty(getDolGlobalInt('SOCIETE_SUBSCRIBE_MONTH_PRESTART'))) $date->modify('- '.getDolGlobalInt('SOCIETE_SUBSCRIBE_MONTH_PRESTART').' MONTHS');  
 $daterenew = $date->format('Y-m-d H:i:s');
-                $this->date_renew         = $this->db->jdate($daterenew);
+$this->date_renew = $this->db->jdate($daterenew);
                 
 if (!empty($abo) && $conf->global->ADHERENT_WELCOME_MONTH < 0) {
 $date = new DateTime($dateto);
