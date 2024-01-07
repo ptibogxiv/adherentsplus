@@ -1003,8 +1003,8 @@ if (!empty($this->prorata)) {
 		$date = new DateTime($abo);
 		$date->modify('+1 SECONDS');
 	} else {
-		$date = new DateTime();
-		$date->modify('NOW');   
+		$date = new DateTime($datefrom);
+		$date->modify('+1 SECONDS');   
 	} 
 } elseif ($daterenew > $abo && $abo > $datefrom) {
 $date = new DateTime($abo);
