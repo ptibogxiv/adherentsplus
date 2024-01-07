@@ -960,7 +960,7 @@ $date->modify('-1 SECONDS');
 $dateto = $date->format('Y-m-d H:i:s');
 $dateto2 = $date->format('Y');
 
-                $this->date_to        = $this->db->jdate($dateto); 
+$this->date_to        = $this->db->jdate($dateto); 
                 
 if ($datefrom2 != $dateto2) {
 $season = $datefrom2.'/'.$dateto2;
