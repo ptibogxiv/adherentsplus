@@ -59,7 +59,6 @@ class modAdherentsPlus extends DolibarrModules
 		// Module description used if translation string 'ModuleXXXDesc' not found (XXX is id value)
         $this->editor_name = 'ptibogxiv.eu';
         $this->editor_url = 'https://www.ptibogxiv.eu';
-        $this->special = 0;
         $this->picto='user';
 
         // Data directories to create when module is enabled
