@@ -263,7 +263,8 @@ $invoice->add_object_linked('subscription', $idcot);
 $i++;
         }  }
     	} else if ($action == 'MEMBER_VALIDATE' || ($action == 'MEMBER_MODIFY' && !empty($object->statut)) ){
-if (! empty($conf->global->PRODUIT_MULTIPRICES) && !empty($object->fk_soc)){
+if ( ( getDolGlobalString('PRODUIT_MULTIPRICES') || getDolGlobalString('PRODUIT_CUSTOMER_PRICES_AND_MULTIPRICES') || getDolGlobalString('PRODUIT_CUSTOMER_PRICES_BY_QTY_MULTIPRICES')) && !empty($object->fk_soc)){
+
   dol_include_once('/adherentsplus/class/adherent_type.class.php');
   $type=new AdherentTypePlus($db);
   $type->fetch($object->typeid);
@@ -273,7 +274,7 @@ if (! empty($conf->global->PRODUIT_MULTIPRICES) && !empty($object->fk_soc)){
 	$soc->setPriceLevel($type->price_level, $user);
 } 
     	}  else if ($action == 'MEMBER_RESILIATE' || $action == 'MEMBER_DELETE' ){
-if (! empty($conf->global->PRODUIT_MULTIPRICES) && !empty($object->fk_soc)){
+if ( ( getDolGlobalString('PRODUIT_MULTIPRICES') || getDolGlobalString('PRODUIT_CUSTOMER_PRICES_AND_MULTIPRICES') || getDolGlobalString('PRODUIT_CUSTOMER_PRICES_BY_QTY_MULTIPRICES')) && !empty($object->fk_soc)){
 	$soc = new Societe($db);
 	$soc->fetch($object->fk_soc);
 	$soc->setPriceLevel('1', $user);

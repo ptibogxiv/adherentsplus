@@ -472,7 +472,8 @@ if ($duration >= (2629872*6)) $rate['biannual'] = $langs->trans("biannual");
     print $form->selectarray('prorata', $rate, (!empty($object->prorata)?$object->prorata:null), null);
 		print '</tr>';
 
-if (! empty($conf->global->PRODUIT_MULTIPRICES)){    
+if ( getDolGlobalString('PRODUIT_MULTIPRICES') || getDolGlobalString('PRODUIT_CUSTOMER_PRICES_AND_MULTIPRICES') || getDolGlobalString('PRODUIT_CUSTOMER_PRICES_BY_QTY_MULTIPRICES')) {
+ 
     print '<tr><td>';
 	  print $langs->trans("PriceLevel").'</td><td colspan="2">';
 	  print '<select name="price_level" class="flat">';
