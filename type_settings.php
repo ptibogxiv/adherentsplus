@@ -254,7 +254,7 @@ if (!empty($conf->global->ADHERENT_SUBSCRIPTION_PRORATA) && $conf->global->ADHER
 		print $langs->trans((!empty($object->prorata)?$object->prorata:'None'));
 		print '</td></tr>';
 
-if ( getDolGlobalString('PRODUIT_MULTIPRICES') || getDolGlobalString('PRODUIT_CUSTOMER_PRICES_AND_MULTIPRICES') ) {
+if ( getDolGlobalString('PRODUIT_MULTIPRICES') || getDolGlobalString('PRODUIT_CUSTOMER_PRICES_AND_MULTIPRICES') || getDolGlobalString('PRODUIT_CUSTOMER_PRICES_BY_QTY_MULTIPRICES')) {
     print '<tr><td>'.$langs->trans("PriceLevel").'</td><td>';
     print $object->price_level;
 	  $keyforlabel='PRODUIT_MULTIPRICES_LABEL'.$object->price_level;
