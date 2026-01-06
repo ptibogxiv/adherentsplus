@@ -254,13 +254,14 @@ if (!empty($conf->global->ADHERENT_SUBSCRIPTION_PRORATA) && $conf->global->ADHER
 		print $langs->trans((!empty($object->prorata)?$object->prorata:'None'));
 		print '</td></tr>';
 
-if (! empty($conf->global->PRODUIT_MULTIPRICES)){
+if ( getDolGlobalString('PRODUIT_MULTIPRICES') || getDolGlobalString('PRODUIT_CUSTOMER_PRICES_AND_MULTIPRICES') ) {
     print '<tr><td>'.$langs->trans("PriceLevel").'</td><td>';
     print $object->price_level;
 	  $keyforlabel='PRODUIT_MULTIPRICES_LABEL'.$object->price_level;
 		if (! empty($conf->global->$keyforlabel)) print ' - '.$langs->trans($conf->global->$keyforlabel);
     print '</td></tr>';
 }
+
 if ((float) DOL_VERSION < 11.0) {
     print '<tr><td class="titlefield">'.$langs->trans("Duration").'</td><td colspan="2">'.$object->duration_value.'&nbsp;';
     if ($object->duration_value > 1)
