@@ -505,13 +505,17 @@ class AdherentsPlus extends DolibarrApi
                     if ($result < 0) {
                         throw new RestException(500, 'Error when resiliating member: '.$member->error);
                     }
-                } else if ($value == '1') {
-                    $result = $member->validate(DolibarrApiAccess::$user);
-                    if ($result < 0) {
-                        throw new RestException(500, 'Error when validating member: '.$member->error);
-                    }
-                }
-                else if ($value == '-1') {
+				} elseif ($value == '1') {
+					$result = $member->validate(DolibarrApiAccess::$user);
+					if ($result < 0) {
+						throw new RestException(500, 'Error when validating member: '.$member->error);
+					}
+				} elseif ($value == '-2') {
+					$result = $member->exclude(DolibarrApiAccess::$user);
+					if ($result < 0) {
+						throw new RestException(500, 'Error when excluding member: '.$member->error);
+					}
+				} elseif ($value == '-1') {
                     $result = $member->revalidate(DolibarrApiAccess::$user);
                     if ($result < 0) {
                         throw new RestException(500, 'Error when validating member: '.$member->error);
