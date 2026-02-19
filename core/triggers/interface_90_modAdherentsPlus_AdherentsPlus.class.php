@@ -1,5 +1,5 @@
 <?php
-/* Copyright (C) 2022	    ThibaulT FOUCART	<support@ptibogxiv.net>
+/* Copyright (C) 2022-2026	    ThibaulT FOUCART	<support@ptibogxiv.eu>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -208,93 +208,83 @@ $invoice->add_object_linked('subscription', $idcot);
         //if (! $error)
         //{
             // Send confirmation Email
-            if ($idcot>0 && $member->email && ! empty($conf->global->ADHERENT_DEFAULT_SENDINFOBYMAIL))   // $object is 'Adherent'
-            {
-				$subject = '';
-				$msg = '';
-				$member = new Adherent($db);
-				$member->fetch($memberid);
-				// Send subscription email
-				include_once DOL_DOCUMENT_ROOT.'/core/class/html.formmail.class.php';
-				$formmail=new FormMail($db);
-				// Set output language
-				$outputlangs = new Translate('', $conf);
-				$outputlangs->setDefaultLang(empty($member->thirdparty->default_lang) ? $mysoc->default_lang : $member->thirdparty->default_lang);
-				// Load traductions files requiredby by page
-				$outputlangs->loadLangs(array("main", "members"));
-				// Get email content from template
-				$arraydefaultmessage=null;
-				$labeltouse = $conf->global->ADHERENT_EMAIL_TEMPLATE_SUBSCRIPTION;
+								if ($idcot>0 && $member->email && ! empty($conf->global->ADHERENT_DEFAULT_SENDINFOBYMAIL)) {
+									$subject = '';
+									$msg = '';
+									$member = new Adherent($db);
+									$member->fetch($memberid);
+									// Send subscription email
+									include_once DOL_DOCUMENT_ROOT.'/core/class/html.formmail.class.php';
+									$formmail=new FormMail($db);
+									// Set output language
+									$outputlangs = new Translate('', $conf);
+									$outputlangs->setDefaultLang(empty($member->thirdparty->default_lang) ? $mysoc->default_lang : $member->thirdparty->default_lang);
+									// Load traductions files requiredby by page
+									$outputlangs->loadLangs(array("main", "members"));
+									// Get email content from template
+									$arraydefaultmessage=null;
+									$labeltouse = $conf->global->ADHERENT_EMAIL_TEMPLATE_SUBSCRIPTION;
 
-				if (! empty($labeltouse)) $arraydefaultmessage=$formmail->getEMailTemplate($db, 'member', $user, $outputlangs, 0, 1, $labeltouse);
+									if (! empty($labeltouse)) $arraydefaultmessage=$formmail->getEMailTemplate($db, 'member', $user, $outputlangs, 0, 1, $labeltouse);
 
-				if (! empty($labeltouse) && is_object($arraydefaultmessage) && $arraydefaultmessage->id > 0)
-				{
-					$subject = $arraydefaultmessage->topic;
-					$msg     = $arraydefaultmessage->content;
-				}
+									if (! empty($labeltouse) && is_object($arraydefaultmessage) && $arraydefaultmessage->id > 0)
+									{
+										$subject = $arraydefaultmessage->topic;
+										$msg     = $arraydefaultmessage->content;
+									}
 
-				if (empty($labeltouse) || (int) $labeltouse === -1) {
-					//fallback on the old configuration.
-					setEventMessages('WarningMandatorySetupNotComplete', [], 'errors');
-					$error++;
-				}
-				else {
-					$substitutionarray=getCommonSubstitutionArray($outputlangs, 0, null, $member);
-					complete_substitutions_array($substitutionarray, $outputlangs, $member);
-					$subjecttosend = make_substitutions($subject, $substitutionarray, $outputlangs);
-					$texttosend = make_substitutions(dol_concatdesc($msg, $adht->getMailOnValid()), $substitutionarray, $outputlangs);
+									if (empty($labeltouse) || (int) $labeltouse === -1) {
+										//fallback on the old configuration.
+										setEventMessages('WarningMandatorySetupNotComplete', [], 'errors');
+										$error++;
+									} else {
+										$substitutionarray=getCommonSubstitutionArray($outputlangs, 0, null, $member);
+										complete_substitutions_array($substitutionarray, $outputlangs, $member);
+										$subjecttosend = make_substitutions($subject, $substitutionarray, $outputlangs);
+										$texttosend = make_substitutions(dol_concatdesc($msg, $adht->getMailOnValid()), $substitutionarray, $outputlangs);
 
-					$moreinheader='X-Dolibarr-Info: send_an_email by adherents/card.php'."\r\n";
+										$moreinheader='X-Dolibarr-Info: send_an_email by adherents/card.php'."\r\n";
 
-					$result=$member->send_an_email($texttosend, $subjecttosend, array(), array(), array(), "", "", 0, -1, '', $moreinheader);
-					if ($result < 0)
-					{
-						$error++;
-						setEventMessages($member->error, $member->errors, 'errors');
-					}
-				}
-            }
+										$result=$member->send_an_email($texttosend, $subjecttosend, array(), array(), array(), "", "", 0, -1, '', $moreinheader);
+										if ($result < 0)
+										{
+											$error++;
+											setEventMessages($member->error, $member->errors, 'errors');
+										}
+									}
+            					}                     
+							}                    
+            			} 
+					$i++;
+        		}  
+			}
+    	} elseif ($action == 'MEMBER_VALIDATE' || ($action == 'MEMBER_MODIFY' && !empty($object->statut)) ){
+			if ( ( getDolGlobalString('PRODUIT_MULTIPRICES') || getDolGlobalString('PRODUIT_CUSTOMER_PRICES_AND_MULTIPRICES') || getDolGlobalString('PRODUIT_CUSTOMER_PRICES_BY_QTY_MULTIPRICES')) && !empty($object->fk_soc)){
+				dol_include_once('/adherentsplus/class/adherent_type.class.php');
+				$type=new AdherentTypePlus($db);
+				$type->fetch($object->typeid);
+				$soc = new Societe($db);
+				$soc->fetch($object->fk_soc);
+				$soc->setPriceLevel($type->price_level, $user);
+			} 
+    	}  elseif ($action == 'MEMBER_RESILIATE' || $action == 'MEMBER_DELETE' ){
+			if ( ( getDolGlobalString('PRODUIT_MULTIPRICES') || getDolGlobalString('PRODUIT_CUSTOMER_PRICES_AND_MULTIPRICES') || getDolGlobalString('PRODUIT_CUSTOMER_PRICES_BY_QTY_MULTIPRICES')) && !empty($object->fk_soc)){
+				$soc = new Societe($db);
+				$soc->fetch($object->fk_soc);
+				$soc->setPriceLevel('1', $user);
+			} 
+		}  elseif ($action == 'MEMBER_SUBSCRIPTION_CREATE' && !empty($conf->global->ADHERENT_FEDERAL_PART)) {
+			require_once DOL_DOCUMENT_ROOT.'/fourn/class/fournisseur.facture.class.php';
+			$object = new FactureFournisseur($db);
 
-       // }
-                             
-}                    
-            } 
-$i++;
-        }  }
-    	} else if ($action == 'MEMBER_VALIDATE' || ($action == 'MEMBER_MODIFY' && !empty($object->statut)) ){
-if ( ( getDolGlobalString('PRODUIT_MULTIPRICES') || getDolGlobalString('PRODUIT_CUSTOMER_PRICES_AND_MULTIPRICES') || getDolGlobalString('PRODUIT_CUSTOMER_PRICES_BY_QTY_MULTIPRICES')) && !empty($object->fk_soc)){
-
-  dol_include_once('/adherentsplus/class/adherent_type.class.php');
-  $type=new AdherentTypePlus($db);
-  $type->fetch($object->typeid);
-
-	$soc = new Societe($db);
-	$soc->fetch($object->fk_soc);
-	$soc->setPriceLevel($type->price_level, $user);
-} 
-    	}  else if ($action == 'MEMBER_RESILIATE' || $action == 'MEMBER_DELETE' ){
-if ( ( getDolGlobalString('PRODUIT_MULTIPRICES') || getDolGlobalString('PRODUIT_CUSTOMER_PRICES_AND_MULTIPRICES') || getDolGlobalString('PRODUIT_CUSTOMER_PRICES_BY_QTY_MULTIPRICES')) && !empty($object->fk_soc)){
-	$soc = new Societe($db);
-	$soc->fetch($object->fk_soc);
-	$soc->setPriceLevel('1', $user);
-} 
-}  else if ($action == 'MEMBER_SUBSCRIPTION_CREATE' && !empty($conf->global->ADHERENT_FEDERAL_PART)){
-require_once DOL_DOCUMENT_ROOT.'/fourn/class/fournisseur.facture.class.php';
-$object = new FactureFournisseur($db);
-
-$object->ref_supplier = $object->note;
-$object->socid				= $conf->global->ADHERENT_FEDERAL_PART;
-$object->label				= $object->note;
-$object->date = $object->datec;
-$object->multicurrency_code	= GETPOST('multicurrency_code', 'alpha');
-$object->multicurrency_tx = GETPOST('originmulticurrency_tx', 'int');
-$object->create($user);
-
-    	}    
-              
-          
- 
+			$object->ref_supplier = $object->note;
+			$object->socid				= $conf->global->ADHERENT_FEDERAL_PART;
+			$object->label				= $object->note;
+			$object->date = $object->datec;
+			$object->multicurrency_code	= GETPOST('multicurrency_code', 'alpha');
+			$object->multicurrency_tx = GETPOST('originmulticurrency_tx', 'int');
+			$object->create($user);
+		}
 		return $ok;
 	}
 }
