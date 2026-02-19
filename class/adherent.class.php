@@ -30,10 +30,10 @@
  *	\ingroup    member
  *	\brief      File of class to manage members of a foundation
  */
+require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 require_once DOL_DOCUMENT_ROOT.'/core/class/commonobject.class.php';
 require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php';
-require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 require_once DOL_DOCUMENT_ROOT.'/core/class/commonpeople.class.php';
 
 /**
@@ -306,9 +306,13 @@ class AdherentPlus extends CommonObject
 	 */
 	public function makeSubstitution($text)
 	{
-		global $conf, $langs;
+		global $langs;
 
 		$birthday = dol_print_date($this->birth, 'day');
+		$photo = isset($this->photo) ? $this->photo : '';
+		$login = isset($this->login) ? $this->login : '';
+		$type = isset($this->type) ? $this->type : '';
+		$pass = isset($this->pass) ? $this->pass : '';
 
 		$msgishtml = 0;
 		if (dol_textishtml($text, 1)) {
@@ -319,8 +323,8 @@ class AdherentPlus extends CommonObject
 		if ($this->civility_id) {
 			$infos .= $langs->transnoentities("UserTitle").": ".$this->getCivilityLabel()."\n";
 		}
-		$infos .= $langs->transnoentities("id").": ".$this->id."\n";
-		$infos .= $langs->transnoentities("ref").": ".$this->ref."\n";
+		$infos .= $langs->transnoentities("Id").": ".$this->id."\n";
+		$infos .= $langs->transnoentities("Ref").": ".$this->ref."\n";
 		$infos .= $langs->transnoentities("Lastname").": ".$this->lastname."\n";
 		$infos .= $langs->transnoentities("Firstname").": ".$this->firstname."\n";
 		$infos .= $langs->transnoentities("Company").": ".$this->company."\n";
@@ -332,12 +336,12 @@ class AdherentPlus extends CommonObject
 		$infos .= $langs->transnoentities("PhonePro").": ".$this->phone."\n";
 		$infos .= $langs->transnoentities("PhonePerso").": ".$this->phone_perso."\n";
 		$infos .= $langs->transnoentities("PhoneMobile").": ".$this->phone_mobile."\n";
-		if (empty($conf->global->ADHERENT_LOGIN_NOT_REQUIRED)) {
-			$infos .= $langs->transnoentities("Login").": ".$this->login."\n";
-			$infos .= $langs->transnoentities("Password").": ".$this->pass."\n";
+		if (!getDolGlobalString('ADHERENT_LOGIN_NOT_REQUIRED')) {
+			$infos .= $langs->transnoentities("Login").": ".$login."\n";
+			$infos .= $langs->transnoentities("Password").": ".$pass."\n";
 		}
 		$infos .= $langs->transnoentities("Birthday").": ".$birthday."\n";
-		$infos .= $langs->transnoentities("Photo").": ".$this->photo."\n";
+		$infos .= $langs->transnoentities("Photo").": ".$photo."\n";
 		$infos .= $langs->transnoentities("Public").": ".yn($this->public);
 
 		// Substitutions
@@ -349,27 +353,26 @@ class AdherentPlus extends CommonObject
 			'__FIRSTNAME__' => $msgishtml ? dol_htmlentitiesbr($this->firstname) : ($this->firstname ? $this->firstname : ''),
 			'__LASTNAME__' => $msgishtml ? dol_htmlentitiesbr($this->lastname) : ($this->lastname ? $this->lastname : ''),
 			'__FULLNAME__' => $msgishtml ? dol_htmlentitiesbr($this->getFullName($langs)) : $this->getFullName($langs),
-			'__COMPANY__' => $msgishtml ? dol_htmlentitiesbr($this->company) : ($this->company ? $this->company : ''),
-			'__ADDRESS__' => $msgishtml ? dol_htmlentitiesbr($this->address) : ($this->address ? $this->address : ''),
-			'__ZIP__' => $msgishtml ? dol_htmlentitiesbr($this->zip) : ($this->zip ? $this->zip : ''),
-			'__TOWN__' => $msgishtml ? dol_htmlentitiesbr($this->town) : ($this->town ? $this->town : ''),
+			'__COMPANY__' => $msgishtml ? dol_htmlentitiesbr((string) $this->company) : ($this->company ? $this->company : ''),
+			'__ADDRESS__' => $msgishtml ? dol_htmlentitiesbr((string) $this->address) : ($this->address ? $this->address : ''),
+			'__ZIP__' => $msgishtml ? dol_htmlentitiesbr((string) $this->zip) : ($this->zip ? $this->zip : ''),
+			'__TOWN__' => $msgishtml ? dol_htmlentitiesbr((string) $this->town) : ($this->town ? $this->town : ''),
 			'__COUNTRY__' => $msgishtml ? dol_htmlentitiesbr($this->country) : ($this->country ? $this->country : ''),
-			'__EMAIL__' => $msgishtml ? dol_htmlentitiesbr($this->email) : ($this->email ? $this->email : ''),
+			'__EMAIL__' => $msgishtml ? dol_htmlentitiesbr((string) $this->email) : ($this->email ? $this->email : ''),
 			'__BIRTH__' => $msgishtml ? dol_htmlentitiesbr($birthday) : ($birthday ? $birthday : ''),
-			'__PHOTO__' => $msgishtml ? dol_htmlentitiesbr($this->photo) : ($this->photo ? $this->photo : ''),
-			'__LOGIN__' => $msgishtml ? dol_htmlentitiesbr($this->login) : ($this->login ? $this->login : ''),
-			'__PASSWORD__' => $msgishtml ? dol_htmlentitiesbr($this->pass) : ($this->pass ? $this->pass : ''),
+			'__PHOTO__' => $msgishtml ? dol_htmlentitiesbr($photo) : $photo,
+			'__LOGIN__' => $msgishtml ? dol_htmlentitiesbr($login) : $login,
+			'__PASSWORD__' => $msgishtml ? dol_htmlentitiesbr($pass) : $pass,
 			'__PHONE__' => $msgishtml ? dol_htmlentitiesbr($this->phone) : ($this->phone ? $this->phone : ''),
 			'__PHONEPRO__' => $msgishtml ? dol_htmlentitiesbr($this->phone_perso) : ($this->phone_perso ? $this->phone_perso : ''),
 			'__PHONEMOBILE__' => $msgishtml ? dol_htmlentitiesbr($this->phone_mobile) : ($this->phone_mobile ? $this->phone_mobile : ''),
-			'__TYPE__' => $msgishtml ? dol_htmlentitiesbr($this->type) : ($this->type ? $this->type : '')
+			'__TYPE__' => $msgishtml ? dol_htmlentitiesbr($type) : $type,
 		);
 
 		complete_substitutions_array($substitutionarray, $langs, $this);
 
 		return make_substitutions($text, $substitutionarray, $langs);
 	}
-
 
 	/**
 	 *	Return translated label by the nature of a adherent (physical or moral)
