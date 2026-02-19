@@ -247,53 +247,78 @@ class AdherentPlus extends CommonObject
 	/**
 	 *  Function sending an email to the current member with the text supplied in parameter.
 	 *
-	 *  @param	string	$text				Content of message (not html entities encoded)
-	 *  @param	string	$subject			Subject of message
-	 *  @param 	array	$filename_list      Array of attached files
-	 *  @param 	array	$mimetype_list      Array of mime types of attached files
-	 *  @param 	array	$mimefilename_list  Array of public names of attached files
-	 *  @param 	string	$addr_cc            Email cc
-	 *  @param 	string	$addr_bcc           Email bcc
-	 *  @param 	int		$deliveryreceipt	Ask a delivery receipt
-	 *  @param	int		$msgishtml			1=String IS already html, 0=String IS NOT html, -1=Unknown need autodetection
-	 *  @param	string	$errors_to			erros to
-	 *  @param	string	$moreinheader		Add more html headers
-	 *  @return	int							<0 if KO, >0 if OK
+	 *  @param	string		$text				Content of message (not html entities encoded)
+	 *  @param	string		$subject			Subject of message
+	 *  @param 	string[]	$filename_list      Array of attached files
+	 *  @param 	string[]	$mimetype_list      Array of mime types of attached files
+	 *  @param 	string[]	$mimefilename_list  Array of public names of attached files
+	 *  @param 	string		$addr_cc            Email cc
+	 *  @param 	string		$addr_bcc           Email bcc
+	 *  @param 	int			$deliveryreceipt	Ask a delivery receipt
+	 *  @param	int			$msgishtml			1=String IS already html, 0=String IS NOT html, -1=Unknown need autodetection
+	 *  @param	string		$errors_to			errors to
+	 *  @param	string		$moreinheader		Add more html headers
+	 *  @deprecated since V18
+	 *  @see sendEmail()
+	 *  @return	int								Return integer <0 if KO, >0 if OK
 	 */
 	public function send_an_email($text, $subject, $filename_list = array(), $mimetype_list = array(), $mimefilename_list = array(), $addr_cc = "", $addr_bcc = "", $deliveryreceipt = 0, $msgishtml = -1, $errors_to = '', $moreinheader = '')
 	{
-        // phpcs:enable
-		global $conf,$langs;
+		// phpcs:enable
+		dol_syslog('Warning using deprecated Adherent::send_an_email', LOG_WARNING);
+
+		return $this->sendEmail($text, $subject, $filename_list, $mimetype_list, $mimefilename_list, $addr_cc, $addr_bcc, $deliveryreceipt, $msgishtml, $errors_to, $moreinheader);
+	}
+
+	/**
+	 *  Function sending an email to the current member with the text supplied in parameter.
+	 *
+	 *  @param	string		$text				Content of message (not html entities encoded)
+	 *  @param	string		$subject			Subject of message
+	 *  @param 	string[]	$filename_list      Array of attached files
+	 *  @param 	string[]	$mimetype_list      Array of mime types of attached files
+	 *  @param 	string[]	$mimefilename_list  Array of public names of attached files
+	 *  @param 	string		$addr_cc            Email cc
+	 *  @param 	string		$addr_bcc           Email bcc
+	 *  @param 	int			$deliveryreceipt	Ask a delivery receipt
+	 *  @param	int			$msgishtml			1=String IS already html, 0=String IS NOT html, -1=Unknown need autodetection
+	 *  @param	string		$errors_to			errors to
+	 *  @param	string		$moreinheader		Add more html headers
+	 * 	@since V18
+	 *  @return	int								Return integer <0 if KO, >0 if OK
+	 */
+	public function sendEmail($text, $subject, $filename_list = array(), $mimetype_list = array(), $mimefilename_list = array(), $addr_cc = "", $addr_bcc = "", $deliveryreceipt = 0, $msgishtml = -1, $errors_to = '', $moreinheader = '')
+	{
+		global $conf, $langs;
 
 		// Detect if message is HTML
-		if ($msgishtml == -1)
-		{
+		if ($msgishtml == -1) {
 			$msgishtml = 0;
-			if (dol_textishtml($text, 0)) $msgishtml = 1;
+			if (dol_textishtml($text, 0)) {
+				$msgishtml = 1;
+			}
 		}
 
-		dol_syslog('send_an_email msgishtml='.$msgishtml);
+		dol_syslog('sendEmail msgishtml='.$msgishtml);
 
-		$texttosend=$this->makeSubstitution($text);
-		$subjecttosend=$this->makeSubstitution($subject);
-		if ($msgishtml) $texttosend=dol_htmlentitiesbr($texttosend);
+		$texttosend = $this->makeSubstitution($text);
+		$subjecttosend = $this->makeSubstitution($subject);
+		if ($msgishtml) {
+			$texttosend = dol_htmlentitiesbr($texttosend);
+		}
 
-		// Envoi mail confirmation
-		$from=$conf->email_from;
-		if (! empty($conf->global->ADHERENT_MAIL_FROM)) $from=$conf->global->ADHERENT_MAIL_FROM;
+		// Send mail confirmation
+		$from = getDolGlobalString('ADHERENT_MAIL_FROM', $conf->email_from);
 
 		$trackid = 'mem'.$this->id;
 
 		// Send email (substitutionarray must be done just before this)
 		include_once DOL_DOCUMENT_ROOT.'/core/class/CMailFile.class.php';
-		$mailfile = new CMailFile($subjecttosend, $this->email, $from, $texttosend, $filename_list, $mimetype_list, $mimefilename_list, $addr_cc, $addr_bcc, $deliveryreceipt, $msgishtml, '', '', $trackid, $moreinheader);
-		if ($mailfile->sendfile())
-		{
+		$mailfile = new CMailFile($subjecttosend, (string) $this->email, $from, $texttosend, $filename_list, $mimetype_list, $mimefilename_list, $addr_cc, $addr_bcc, $deliveryreceipt, $msgishtml, '', '', $trackid, $moreinheader);
+		if ($mailfile->sendfile()) {
 			return 1;
-		}
-		else
-		{
-			$this->error=$langs->trans("ErrorFailedToSendMail", $from, $this->email).'. '.$mailfile->error;
+		} else {
+			$this->error = $langs->trans("ErrorFailedToSendMail", $from, (string) $this->email).'. '.$mailfile->error;
 			return -1;
 		}
 	}
